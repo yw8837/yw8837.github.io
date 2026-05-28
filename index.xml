@@ -6,8 +6,22 @@
     <description>Recent content on AI_6스터디</description>
     <generator>Hugo</generator>
     <language>ko</language>
-    <lastBuildDate>Wed, 27 May 2026 18:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 28 May 2026 22:10:00 +0900</lastBuildDate>
     <atom:link href="https://yw8837.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>검은 화면이 두렵지 않은 리눅스(Linux) 왕초보 기초 명령어</title>
+      <link>https://yw8837.github.io/posts/5-28-%EB%A6%AC%EB%88%85%EC%8A%A4-%EC%97%B0%EC%8A%B5/</link>
+      <pubDate>Thu, 28 May 2026 22:10:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/5-28-%EB%A6%AC%EB%88%85%EC%8A%A4-%EC%97%B0%EC%8A%B5/</guid>
+      <description>리눅스 왕초보를 위한 필수 터미널 명령어와 실습 중심 가이드</description>
+    </item>
+    <item>
+      <title>5/28 네트워크 개론</title>
+      <link>https://yw8837.github.io/posts/5-28-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EA%B0%9C%EB%A1%A0/</link>
+      <pubDate>Thu, 28 May 2026 18:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/5-28-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EA%B0%9C%EB%A1%A0/</guid>
+      <description>네트워크 개요부터 HTTP, 주요 프로토콜, 보안(해시·쿠키·세션)까지 — 5/28 수업 노트 완전 정리</description>
+    </item>
     <item>
       <title>5/27 프로세스 미션 (1)</title>
       <link>https://yw8837.github.io/posts/5-27-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%AF%B8%EC%85%98-1/</link>
