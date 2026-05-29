@@ -6,8 +6,78 @@
     <description>Recent content in Tags on AI_6스터디</description>
     <generator>Hugo</generator>
     <language>ko</language>
-    <lastBuildDate>Thu, 28 May 2026 22:10:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 29 May 2026 10:00:00 +0900</lastBuildDate>
     <atom:link href="https://yw8837.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Python</title>
+      <link>https://yw8837.github.io/tags/python/</link>
+      <pubDate>Fri, 29 May 2026 10:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/python/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>리스트</title>
+      <link>https://yw8837.github.io/tags/%EB%A6%AC%EC%8A%A4%ED%8A%B8/</link>
+      <pubDate>Fri, 29 May 2026 10:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/%EB%A6%AC%EC%8A%A4%ED%8A%B8/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>실습</title>
+      <link>https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/</link>
+      <pubDate>Fri, 29 May 2026 10:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>자료형</title>
+      <link>https://yw8837.github.io/tags/%EC%9E%90%EB%A3%8C%ED%98%95/</link>
+      <pubDate>Fri, 29 May 2026 10:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/%EC%9E%90%EB%A3%8C%ED%98%95/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>조건문</title>
+      <link>https://yw8837.github.io/tags/%EC%A1%B0%EA%B1%B4%EB%AC%B8/</link>
+      <pubDate>Fri, 29 May 2026 10:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/%EC%A1%B0%EA%B1%B4%EB%AC%B8/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>코드노트</title>
+      <link>https://yw8837.github.io/tags/%EC%BD%94%EB%93%9C%EB%85%B8%ED%8A%B8/</link>
+      <pubDate>Fri, 29 May 2026 10:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/%EC%BD%94%EB%93%9C%EB%85%B8%ED%8A%B8/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>코딩기초</title>
+      <link>https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/</link>
+      <pubDate>Fri, 29 May 2026 10:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>파이썬</title>
+      <link>https://yw8837.github.io/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/</link>
+      <pubDate>Fri, 29 May 2026 10:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>변수</title>
+      <link>https://yw8837.github.io/tags/%EB%B3%80%EC%88%98/</link>
+      <pubDate>Fri, 29 May 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/%EB%B3%80%EC%88%98/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>초보자</title>
+      <link>https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/</link>
+      <pubDate>Fri, 29 May 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Linux</title>
       <link>https://yw8837.github.io/tags/linux/</link>
@@ -27,20 +97,6 @@
       <link>https://yw8837.github.io/tags/%EB%AA%85%EB%A0%B9%EC%96%B4/</link>
       <pubDate>Thu, 28 May 2026 22:10:00 +0900</pubDate>
       <guid>https://yw8837.github.io/tags/%EB%AA%85%EB%A0%B9%EC%96%B4/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>초보자</title>
-      <link>https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/</link>
-      <pubDate>Thu, 28 May 2026 22:10:00 +0900</pubDate>
-      <guid>https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>코딩기초</title>
-      <link>https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/</link>
-      <pubDate>Thu, 28 May 2026 22:10:00 +0900</pubDate>
-      <guid>https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/</guid>
       <description></description>
     </item>
     <item>

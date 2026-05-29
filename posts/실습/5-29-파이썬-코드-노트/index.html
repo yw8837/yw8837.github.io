@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>5/29 파이썬 실습 코드 노트 | AI_6스터디</title>
+<meta name="keywords" content="파이썬, Python, 코드노트, 자료형, 조건문, 리스트, 실습, 코딩기초">
+<meta name="description" content="파이썬 첫 수업 실습 코드 정리 — 기초 자료형부터 조건문·리스트까지, 수업 코드 전체와 공식 문서 레퍼런스를 한 곳에 모았습니다">
+<meta name="author" content="yw8837">
+<link rel="canonical" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yw8837.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-EQR4094Q13');
+        }
+      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+  <meta property="og:site_name" content="AI_6스터디">
+  <meta property="og:title" content="5/29 파이썬 실습 코드 노트">
+  <meta property="og:description" content="파이썬 첫 수업 실습 코드 정리 — 기초 자료형부터 조건문·리스트까지, 수업 코드 전체와 공식 문서 레퍼런스를 한 곳에 모았습니다">
+  <meta property="og:locale" content="ko">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-05-29T10:00:00+09:00">
+    <meta property="article:modified_time" content="2026-05-29T10:00:00+09:00">
+    <meta property="article:tag" content="파이썬">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="코드노트">
+    <meta property="article:tag" content="자료형">
+    <meta property="article:tag" content="조건문">
+    <meta property="article:tag" content="리스트">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="5/29 파이썬 실습 코드 노트">
+  <meta name="twitter:description" content="파이썬 첫 수업 실습 코드 정리 — 기초 자료형부터 조건문·리스트까지, 수업 코드 전체와 공식 문서 레퍼런스를 한 곳에 모았습니다">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yw8837.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "5/29 파이썬 실습 코드 노트",
+      "item": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "5/29 파이썬 실습 코드 노트",
+  "name": "5\/29 파이썬 실습 코드 노트",
+  "description": "파이썬 첫 수업 실습 코드 정리 — 기초 자료형부터 조건문·리스트까지, 수업 코드 전체와 공식 문서 레퍼런스를 한 곳에 모았습니다",
+  "keywords": [
+    "파이썬", "Python", "코드노트", "자료형", "조건문", "리스트", "실습", "코딩기초"
+  ],
+  "articleBody": "수업 실습 코드를 섹션별로 정리하고, 수업에서 다루지 못한 파이썬 공식 문서의 유용한 내용도 함께 담았습니다. 코드를 그냥 읽지 말고 직접 Colab에서 하나씩 쳐보세요! 🚀\n섹션 1 : 기초 자료형과 변수 print() 기본 사용법 print(\"Hello, Python!\") # Hello, Python! print(\"안녕\", \"파이썬\", \"!\") # 안녕 파이썬 ! (콤마로 구분하면 띄어쓰기 자동 추가) print(\"안녕\" + \"파이썬\") # 안녕파이썬 (+ 는 붙여서 출력) 자료형 5가지 # 정수 (int) num_int = 42 print(type(num_int)) # ",
+  "wordCount" : "2191",
+  "inLanguage": "en",
+  "datePublished": "2026-05-29T10:00:00+09:00",
+  "dateModified": "2026-05-29T10:00:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "yw8837"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI_6스터디",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yw8837.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
+                    <span>📚 Year Study</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
+                    <span>강의 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
+                    <span>실습 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
+                    <span>프로젝트</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/search/" title="🔍 검색">
+                    <span>🔍 검색</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+            <a href="/">홈</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="/posts/">Posts</a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+</nav>
+    <h1 class="post-title entry-hint-parent">
+      5/29 파이썬 실습 코드 노트
+    </h1>
+    <div class="post-description">
+      파이썬 첫 수업 실습 코드 정리 — 기초 자료형부터 조건문·리스트까지, 수업 코드 전체와 공식 문서 레퍼런스를 한 곳에 모았습니다
+    </div>
+    <div class="post-meta">
+
+<span title='2026-05-29 10:00:00 +0900 KST'>2026년 5월 29일</span>&nbsp;·&nbsp;<span>11 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+
+</div>
+  </header> <details class="toc" >
+    <summary accesskey="c" title="(Alt + C)">
+        <span class="title">목차</span>
+    </summary>
+
+    <div class="inner"><ul>
+            <li>
+                <a href="#%ec%84%b9%ec%85%98-1--%ea%b8%b0%ec%b4%88-%ec%9e%90%eb%a3%8c%ed%98%95%ea%b3%bc-%eb%b3%80%ec%88%98" aria-label="섹션 1 : 기초 자료형과 변수">섹션 1 : 기초 자료형과 변수</a><ul>
+                    
+            <li>
+                <a href="#print-%ea%b8%b0%eb%b3%b8-%ec%82%ac%ec%9a%a9%eb%b2%95" aria-label="print() 기본 사용법">print() 기본 사용법</a></li>
+            <li>
+                <a href="#%ec%9e%90%eb%a3%8c%ed%98%95-5%ea%b0%80%ec%a7%80" aria-label="자료형 5가지">자료형 5가지</a></li>
+            <li>
+                <a href="#%eb%b3%80%ec%88%98%ec%99%80-%ec%97%b0%ec%82%b0%ec%9e%90" aria-label="변수와 연산자">변수와 연산자</a></li>
+            <li>
+                <a href="#%eb%ac%b8%ec%9e%90%ec%97%b4-%ec%97%b0%ec%82%b0--" aria-label="문자열 연산 (&#43;, *)">문자열 연산 (+, *)</a></li>
+            <li>
+                <a href="#%ec%9d%b8%eb%8d%b1%ec%8b%b1%ea%b3%bc-%ec%8a%ac%eb%9d%bc%ec%9d%b4%ec%8b%b1" aria-label="인덱싱과 슬라이싱">인덱싱과 슬라이싱</a></li>
+            <li>
+                <a href="#%ec%a4%91%ec%b2%a9-%eb%a6%ac%ec%8a%a4%ed%8a%b8-%ec%a0%91%ea%b7%bc" aria-label="중첩 리스트 접근">중첩 리스트 접근</a></li></ul>
+            </li>
+            <li>
+                <a href="#%ec%84%b9%ec%85%98-2--%ec%a1%b0%ea%b1%b4%eb%ac%b8" aria-label="섹션 2 : 조건문">섹션 2 : 조건문</a><ul>
+                    
+            <li>
+                <a href="#input--%ec%a3%bc%ec%9d%98%ec%82%ac%ed%95%ad" aria-label="input() — 주의사항">input() — 주의사항</a></li>
+            <li>
+                <a href="#%ed%98%95-%eb%b3%80%ed%99%98-type-casting" aria-label="형 변환 (Type Casting)">형 변환 (Type Casting)</a></li>
+            <li>
+                <a href="#if---elif---else-%ec%84%b1%ec%a0%81-%ed%8c%90%eb%b3%84" aria-label="if - elif - else 성적 판별">if - elif - else 성적 판별</a></li>
+            <li>
+                <a href="#%ec%8b%a4%ec%9a%a9-%ec%98%88%ec%a0%9c-%eb%aa%a8%ec%9d%8c" aria-label="실용 예제 모음">실용 예제 모음</a></li></ul>
+            </li>
+            <li>
+                <a href="#%ec%84%b9%ec%85%98-3--%eb%a6%ac%ec%8a%a4%ed%8a%b8-%eb%a9%94%ec%84%9c%eb%93%9c" aria-label="섹션 3 : 리스트 메서드">섹션 3 : 리스트 메서드</a><ul>
+                    
+            <li>
+                <a href="#%ec%88%98%ec%97%85%ec%97%90%ec%84%9c-%eb%8b%a4%eb%a3%ac-%eb%a9%94%ec%84%9c%eb%93%9c" aria-label="수업에서 다룬 메서드">수업에서 다룬 메서드</a></li>
+            <li>
+                <a href="#%ec%84%b1%ec%a0%81-%ea%b4%80%eb%a6%ac-%ec%8b%a4%ec%8a%b5" aria-label="성적 관리 실습">성적 관리 실습</a></li>
+            <li>
+                <a href="#to-do-%eb%a6%ac%ec%8a%a4%ed%8a%b8-%ec%8b%a4%ec%8a%b5" aria-label="To-Do 리스트 실습">To-Do 리스트 실습</a></li></ul>
+            </li>
+            <li>
+                <a href="#%ec%84%b9%ec%85%98-4--%ec%8b%9c%eb%82%98%eb%a6%ac%ec%98%a4-%ec%8b%a4%ec%8a%b5" aria-label="섹션 4 : 시나리오 실습">섹션 4 : 시나리오 실습</a><ul>
+                    
+            <li>
+                <a href="#%ec%8b%9c%eb%82%98%eb%a6%ac%ec%98%a4-1--%ed%95%99%ec%83%9d-%ec%84%b1%ec%a0%81-%ea%b4%80%eb%a6%ac" aria-label="시나리오 1 — 학생 성적 관리">시나리오 1 — 학생 성적 관리</a></li>
+            <li>
+                <a href="#%ec%8b%9c%eb%82%98%eb%a6%ac%ec%98%a4-2--%ed%8e%b8%ec%9d%98%ec%a0%90-%ec%9e%ac%ea%b3%a0--%eb%a7%a4%ec%b6%9c-%ea%b4%80%eb%a6%ac" aria-label="시나리오 2 — 편의점 재고 &amp; 매출 관리">시나리오 2 — 편의점 재고 &amp; 매출 관리</a></li>
+            <li>
+                <a href="#%ec%8b%9c%eb%82%98%eb%a6%ac%ec%98%a4-3--%ec%88%ab%ec%9e%90-%eb%a7%9e%ed%9e%88%ea%b8%b0-%ea%b2%8c%ec%9e%84" aria-label="시나리오 3 — 숫자 맞히기 게임">시나리오 3 — 숫자 맞히기 게임</a></li>
+            <li>
+                <a href="#%ec%8b%9c%eb%82%98%eb%a6%ac%ec%98%a4-4--%eb%a1%9c%ea%b7%b8%ec%9d%b8--%eb%a9%94%eb%89%b4-%ec%8b%9c%ec%8a%a4%ed%85%9c" aria-label="시나리오 4 — 로그인 &amp; 메뉴 시스템">시나리오 4 — 로그인 &amp; 메뉴 시스템</a></li></ul>
+            </li>
+            <li>
+                <a href="#-%ea%b3%b5%ec%8b%9d-%eb%ac%b8%ec%84%9c-%eb%a0%88%ed%8d%bc%eb%9f%b0%ec%8a%a4" aria-label="📚 공식 문서 레퍼런스">📚 공식 문서 레퍼런스</a><ul>
+                    
+            <li>
+                <a href="#%eb%a6%ac%ec%8a%a4%ed%8a%b8-%ec%a0%84%ec%b2%b4-%eb%a9%94%ec%84%9c%eb%93%9c" aria-label="리스트 전체 메서드">리스트 전체 메서드</a></li>
+            <li>
+                <a href="#%eb%a6%ac%ec%8a%a4%ed%8a%b8%eb%a5%bc-%ec%8a%a4%ed%83%9dstack%ec%9c%bc%eb%a1%9c-%ec%82%ac%ec%9a%a9%ed%95%98%ea%b8%b0" aria-label="리스트를 스택(Stack)으로 사용하기">리스트를 스택(Stack)으로 사용하기</a></li>
+            <li>
+                <a href="#%eb%a6%ac%ec%8a%a4%ed%8a%b8%eb%a5%bc-%ed%81%90queue%eb%a1%9c-%ec%82%ac%ec%9a%a9%ed%95%98%ea%b8%b0" aria-label="리스트를 큐(Queue)로 사용하기">리스트를 큐(Queue)로 사용하기</a></li>
+            <li>
+                <a href="#%eb%a6%ac%ec%8a%a4%ed%8a%b8-%ec%bb%b4%ed%94%84%eb%a6%ac%ed%97%a8%ec%85%98-list-comprehension" aria-label="리스트 컴프리헨션 (List Comprehension)">리스트 컴프리헨션 (List Comprehension)</a></li>
+            <li>
+                <a href="#del-%eb%ac%b8--%ec%9d%b8%eb%8d%b1%ec%8a%a4%ec%8a%ac%eb%9d%bc%ec%9d%b4%ec%8a%a4%eb%a1%9c-%ec%82%ad%ec%a0%9c" aria-label="del 문 — 인덱스/슬라이스로 삭제">del 문 — 인덱스/슬라이스로 삭제</a></li>
+            <li>
+                <a href="#%ec%a7%91%ed%95%a9-set--%ec%a4%91%eb%b3%b5-%ec%97%86%eb%8a%94-%ec%9e%90%eb%a3%8c%ea%b5%ac%ec%a1%b0" aria-label="집합 (Set) — 중복 없는 자료구조">집합 (Set) — 중복 없는 자료구조</a></li>
+            <li>
+                <a href="#%ed%8a%9c%ed%94%8c-tuple--%eb%b3%80%ea%b2%bd-%eb%b6%88%ea%b0%80-%eb%a6%ac%ec%8a%a4%ed%8a%b8" aria-label="튜플 (Tuple) — 변경 불가 리스트">튜플 (Tuple) — 변경 불가 리스트</a></li>
+            <li>
+                <a href="#%eb%94%95%ec%85%94%eb%84%88%eb%a6%ac-dictionary--%ed%82%a4-%ea%b0%92-%ec%8c%8d" aria-label="딕셔너리 (Dictionary) — 키-값 쌍">딕셔너리 (Dictionary) — 키-값 쌍</a></li></ul>
+            </li>
+            <li>
+                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
+            </li>
+        </ul>
+    </div>
+</details>
+
+  <div class="post-content md-content"><p>수업 실습 코드를 섹션별로 정리하고, 수업에서 다루지 못한 파이썬 공식 문서의 유용한 내용도 함께 담았습니다. 코드를 그냥 읽지 말고 직접 Colab에서 하나씩 쳐보세요! 🚀</p>
+<hr>
+<h2 id="섹션-1--기초-자료형과-변수">섹션 1 : 기초 자료형과 변수<a hidden class="anchor" aria-hidden="true" href="#섹션-1--기초-자료형과-변수">#</a></h2>
+<h3 id="print-기본-사용법">print() 기본 사용법<a hidden class="anchor" aria-hidden="true" href="#print-기본-사용법">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;Hello, Python!&#34;</span>)         <span style="color:#75715e"># Hello, Python!</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;안녕&#34;</span>, <span style="color:#e6db74">&#34;파이썬&#34;</span>, <span style="color:#e6db74">&#34;!&#34;</span>)    <span style="color:#75715e"># 안녕 파이썬 !  (콤마로 구분하면 띄어쓰기 자동 추가)</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;안녕&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;파이썬&#34;</span>)        <span style="color:#75715e"># 안녕파이썬     (+ 는 붙여서 출력)</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="자료형-5가지">자료형 5가지<a hidden class="anchor" aria-hidden="true" href="#자료형-5가지">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 정수 (int)</span>
+</span></span><span style="display:flex;"><span>num_int <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>
+</span></span><span style="display:flex;"><span>print(type(num_int))      <span style="color:#75715e"># &lt;class &#39;int&#39;&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 실수 (float)</span>
+</span></span><span style="display:flex;"><span>num_float <span style="color:#f92672">=</span> <span style="color:#ae81ff">3.14</span>
+</span></span><span style="display:flex;"><span>print(type(num_float))    <span style="color:#75715e"># &lt;class &#39;float&#39;&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 문자열 (str)</span>
+</span></span><span style="display:flex;"><span>text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;파이썬&#34;</span>
+</span></span><span style="display:flex;"><span>print(type(text))         <span style="color:#75715e"># &lt;class &#39;str&#39;&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 리스트 (list)</span>
+</span></span><span style="display:flex;"><span>my_list <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>print(type(my_list))      <span style="color:#75715e"># &lt;class &#39;list&#39;&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 불리언 (bool)</span>
+</span></span><span style="display:flex;"><span>flag <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>print(type(flag))         <span style="color:#75715e"># &lt;class &#39;bool&#39;&gt;</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="변수와-연산자">변수와 연산자<a hidden class="anchor" aria-hidden="true" href="#변수와-연산자">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 기본 사칙연산</span>
+</span></span><span style="display:flex;"><span>a, b <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">+</span> b)    <span style="color:#75715e"># 13</span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">-</span> b)    <span style="color:#75715e"># 7</span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">*</span> b)    <span style="color:#75715e"># 30</span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">/</span> b)    <span style="color:#75715e"># 3.3333333333333335</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 특수 연산자</span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">//</span> b)   <span style="color:#75715e"># 3   (몫: 소수점 버림)</span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">%</span> b)    <span style="color:#75715e"># 1   (나머지)</span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">**</span> b)   <span style="color:#75715e"># 1000  (10의 3승)</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="문자열-연산--">문자열 연산 (+, *)<a hidden class="anchor" aria-hidden="true" href="#문자열-연산--">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>first_name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;길동&#34;</span>
+</span></span><span style="display:flex;"><span>last_name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;홍&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 문자열 더하기 (이어 붙이기)</span>
+</span></span><span style="display:flex;"><span>full_name <span style="color:#f92672">=</span> last_name <span style="color:#f92672">+</span> first_name
+</span></span><span style="display:flex;"><span>print(full_name)          <span style="color:#75715e"># 홍길동</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 문자열 곱하기 (반복)</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;파이썬! &#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">3</span>)    <span style="color:#75715e"># 파이썬! 파이썬! 파이썬! </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 숫자를 문자열로 변환해서 합치기</span>
+</span></span><span style="display:flex;"><span>age <span style="color:#f92672">=</span> <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;나는 &#34;</span> <span style="color:#f92672">+</span> str(age) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;살 입니다.&#34;</span>)    <span style="color:#75715e"># 나는 25살 입니다.</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;나는 </span><span style="color:#e6db74">{</span>age<span style="color:#e6db74">}</span><span style="color:#e6db74">살 입니다.&#34;</span>)              <span style="color:#75715e"># 나는 25살 입니다.  (f-string 방식)</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="인덱싱과-슬라이싱">인덱싱과 슬라이싱<a hidden class="anchor" aria-hidden="true" href="#인덱싱과-슬라이싱">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>word <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Python&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#       0 1 2 3 4 5</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#      -6-5-4-3-2-1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 인덱싱</span>
+</span></span><span style="display:flex;"><span>print(word[<span style="color:#ae81ff">0</span>])     <span style="color:#75715e"># P</span>
+</span></span><span style="display:flex;"><span>print(word[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])    <span style="color:#75715e"># n  (마지막 글자)</span>
+</span></span><span style="display:flex;"><span>print(word[<span style="color:#ae81ff">2</span>])     <span style="color:#75715e"># t</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 슬라이싱 [시작:끝]  ← 끝 번호는 포함 안 됨</span>
+</span></span><span style="display:flex;"><span>beta <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;abcdefg&#34;</span>
+</span></span><span style="display:flex;"><span>print(beta[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">5</span>])   <span style="color:#75715e"># cde   (인덱스 2, 3, 4)</span>
+</span></span><span style="display:flex;"><span>print(beta[:<span style="color:#ae81ff">3</span>])    <span style="color:#75715e"># abc   (처음 ~ 인덱스 2)</span>
+</span></span><span style="display:flex;"><span>print(beta[<span style="color:#ae81ff">4</span>:])    <span style="color:#75715e"># efg   (인덱스 4 ~ 끝)</span>
+</span></span><span style="display:flex;"><span>print(beta[:])     <span style="color:#75715e"># abcdefg (전체)</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="중첩-리스트-접근">중첩 리스트 접근<a hidden class="anchor" aria-hidden="true" href="#중첩-리스트-접근">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>student_info <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;홍길동&#34;</span>, <span style="color:#ae81ff">20</span>, <span style="color:#e6db74">&#34;컴퓨터공학&#34;</span>, [<span style="color:#e6db74">&#34;파이썬&#34;</span>, <span style="color:#e6db74">&#34;자바&#34;</span>, <span style="color:#e6db74">&#34;C++&#34;</span>]]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(student_info[<span style="color:#ae81ff">0</span>])      <span style="color:#75715e"># 홍길동</span>
+</span></span><span style="display:flex;"><span>print(student_info[<span style="color:#ae81ff">3</span>])      <span style="color:#75715e"># [&#39;파이썬&#39;, &#39;자바&#39;, &#39;C++&#39;]</span>
+</span></span><span style="display:flex;"><span>print(student_info[<span style="color:#ae81ff">3</span>][<span style="color:#ae81ff">0</span>])   <span style="color:#75715e"># 파이썬  (리스트 안의 리스트 → [행][열] 로 접근)</span>
+</span></span><span style="display:flex;"><span>print(student_info[<span style="color:#ae81ff">3</span>][<span style="color:#ae81ff">2</span>])   <span style="color:#75715e"># C++</span>
+</span></span></code></pre></div><hr>
+<h2 id="섹션-2--조건문">섹션 2 : 조건문<a hidden class="anchor" aria-hidden="true" href="#섹션-2--조건문">#</a></h2>
+<h3 id="input--주의사항">input() — 주의사항<a hidden class="anchor" aria-hidden="true" href="#input--주의사항">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># input() 의 반환값은 항상 str(문자열)!</span>
+</span></span><span style="display:flex;"><span>num1 <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;숫자 입력: &#34;</span>)   <span style="color:#75715e"># &#34;100&#34; 입력</span>
+</span></span><span style="display:flex;"><span>num2 <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;숫자 입력: &#34;</span>)   <span style="color:#75715e"># &#34;300&#34; 입력</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(num1 <span style="color:#f92672">+</span> num2)             <span style="color:#75715e"># 100300  ← 문자열 이어붙이기가 됨!</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 정수로 변환 후 계산</span>
+</span></span><span style="display:flex;"><span>print(int(num1) <span style="color:#f92672">+</span> int(num2))   <span style="color:#75715e"># 400     ← 이게 우리가 원하는 결과</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="형-변환-type-casting">형 변환 (Type Casting)<a hidden class="anchor" aria-hidden="true" href="#형-변환-type-casting">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 문자열 → 정수</span>
+</span></span><span style="display:flex;"><span>print(int(<span style="color:#e6db74">&#34;42&#34;</span>))           <span style="color:#75715e"># 42</span>
+</span></span><span style="display:flex;"><span>print(int(<span style="color:#e6db74">&#34;3.14&#34;</span>))         <span style="color:#75715e"># ValueError!  소수점 있는 문자열은 int() 직접 불가</span>
+</span></span><span style="display:flex;"><span>print(int(float(<span style="color:#e6db74">&#34;3.14&#34;</span>))) <span style="color:#75715e"># 3  ← float 먼저, 그 다음 int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 정수 → 실수</span>
+</span></span><span style="display:flex;"><span>print(float(<span style="color:#ae81ff">7</span>))            <span style="color:#75715e"># 7.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 숫자 → 문자열</span>
+</span></span><span style="display:flex;"><span>print(str(<span style="color:#ae81ff">100</span>))            <span style="color:#75715e"># &#34;100&#34;</span>
+</span></span><span style="display:flex;"><span>print(str(<span style="color:#66d9ef">True</span>))           <span style="color:#75715e"># &#34;True&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 문자열 → 리스트</span>
+</span></span><span style="display:flex;"><span>print(list(<span style="color:#e6db74">&#34;abc&#34;</span>))         <span style="color:#75715e"># [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]</span>
+</span></span><span style="display:flex;"><span>print(list(<span style="color:#e6db74">&#34;파이썬&#34;</span>))      <span style="color:#75715e"># [&#39;파&#39;, &#39;이&#39;, &#39;썬&#39;]</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="if---elif---else-성적-판별">if - elif - else 성적 판별<a hidden class="anchor" aria-hidden="true" href="#if---elif---else-성적-판별">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>score <span style="color:#f92672">=</span> int(input(<span style="color:#e6db74">&#34;점수를 입력하세요: &#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> score <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">90</span>:
+</span></span><span style="display:flex;"><span>    grade <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;A&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> score <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">80</span>:
+</span></span><span style="display:flex;"><span>    grade <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;B&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> score <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">70</span>:
+</span></span><span style="display:flex;"><span>    grade <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;C&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> score <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">60</span>:
+</span></span><span style="display:flex;"><span>    grade <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;D&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    grade <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;F&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;당신의 학점은 </span><span style="color:#e6db74">{</span>grade<span style="color:#e6db74">}</span><span style="color:#e6db74">입니다.&#34;</span>)
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="실용-예제-모음">실용 예제 모음<a hidden class="anchor" aria-hidden="true" href="#실용-예제-모음">#</a></h3>
+<p><strong>BMI 계산기</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>weight <span style="color:#f92672">=</span> float(input(<span style="color:#e6db74">&#34;몸무게(kg): &#34;</span>))
+</span></span><span style="display:flex;"><span>height <span style="color:#f92672">=</span> float(input(<span style="color:#e6db74">&#34;키(m): &#34;</span>))     <span style="color:#75715e"># 예: 1.75</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>bmi <span style="color:#f92672">=</span> weight <span style="color:#f92672">/</span> (height <span style="color:#f92672">**</span> <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;BMI: </span><span style="color:#e6db74">{</span>bmi<span style="color:#e6db74">:</span><span style="color:#e6db74">.1f</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)             <span style="color:#75715e"># 소수점 1자리로 출력</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> bmi <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">18.5</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;저체중&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> bmi <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">23</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;정상&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> bmi <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">25</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;과체중&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;비만&#34;</span>)
+</span></span></code></pre></div><p><strong>홀짝 판별기</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>num <span style="color:#f92672">=</span> int(input(<span style="color:#e6db74">&#34;정수를 입력하세요: &#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> num <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>num<span style="color:#e6db74">}</span><span style="color:#e6db74">은(는) 짝수입니다.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>num<span style="color:#e6db74">}</span><span style="color:#e6db74">은(는) 홀수입니다.&#34;</span>)
+</span></span></code></pre></div><p><strong>계절 판별기</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>month <span style="color:#f92672">=</span> int(input(<span style="color:#e6db74">&#34;월을 입력하세요 (1~12): &#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> month <span style="color:#f92672">in</span> [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>]:
+</span></span><span style="display:flex;"><span>    season <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;봄&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> month <span style="color:#f92672">in</span> [<span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>]:
+</span></span><span style="display:flex;"><span>    season <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;여름&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> month <span style="color:#f92672">in</span> [<span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">11</span>]:
+</span></span><span style="display:flex;"><span>    season <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;가을&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    season <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;겨울&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>month<span style="color:#e6db74">}</span><span style="color:#e6db74">월은 </span><span style="color:#e6db74">{</span>season<span style="color:#e6db74">}</span><span style="color:#e6db74">입니다.&#34;</span>)
+</span></span></code></pre></div><p><strong>간단 계산기</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>num1 <span style="color:#f92672">=</span> float(input(<span style="color:#e6db74">&#34;첫 번째 숫자: &#34;</span>))
+</span></span><span style="display:flex;"><span>op <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;연산자 (+, -, *, /): &#34;</span>)
+</span></span><span style="display:flex;"><span>num2 <span style="color:#f92672">=</span> float(input(<span style="color:#e6db74">&#34;두 번째 숫자: &#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> op <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;+&#34;</span>:
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> num1 <span style="color:#f92672">+</span> num2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> op <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;-&#34;</span>:
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> num1 <span style="color:#f92672">-</span> num2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> op <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;*&#34;</span>:
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> num1 <span style="color:#f92672">*</span> num2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">elif</span> op <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;/&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> num2 <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;0으로 나눌 수 없습니다.&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> num1 <span style="color:#f92672">/</span> num2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;알 수 없는 연산자입니다.&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;결과: </span><span style="color:#e6db74">{</span>result<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span></code></pre></div><hr>
+<h2 id="섹션-3--리스트-메서드">섹션 3 : 리스트 메서드<a hidden class="anchor" aria-hidden="true" href="#섹션-3--리스트-메서드">#</a></h2>
+<h3 id="수업에서-다룬-메서드">수업에서 다룬 메서드<a hidden class="anchor" aria-hidden="true" href="#수업에서-다룬-메서드">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 장바구니 실습</span>
+</span></span><span style="display:flex;"><span>cart <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;라면&#34;</span>, <span style="color:#e6db74">&#34;계란&#34;</span>, <span style="color:#e6db74">&#34;우유&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># append(값) — 끝에 하나 추가</span>
+</span></span><span style="display:flex;"><span>cart<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;빵&#34;</span>)
+</span></span><span style="display:flex;"><span>print(cart)    <span style="color:#75715e"># [&#39;라면&#39;, &#39;계란&#39;, &#39;우유&#39;, &#39;빵&#39;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># insert(위치, 값) — 원하는 위치에 삽입</span>
+</span></span><span style="display:flex;"><span>cart<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;쌀&#34;</span>)
+</span></span><span style="display:flex;"><span>print(cart)    <span style="color:#75715e"># [&#39;라면&#39;, &#39;쌀&#39;, &#39;계란&#39;, &#39;우유&#39;, &#39;빵&#39;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># remove(값) — 해당 값의 첫 번째 항목 삭제</span>
+</span></span><span style="display:flex;"><span>cart<span style="color:#f92672">.</span>remove(<span style="color:#e6db74">&#34;계란&#34;</span>)
+</span></span><span style="display:flex;"><span>print(cart)    <span style="color:#75715e"># [&#39;라면&#39;, &#39;쌀&#39;, &#39;우유&#39;, &#39;빵&#39;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ⚠️ 없는 값을 remove() 하면 ValueError 발생!</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># cart.remove(&#34;없는항목&#34;)   → ValueError: list.remove(x): x not in list</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># sort() — 정렬 (기본: 오름차순)</span>
+</span></span><span style="display:flex;"><span>numbers <span style="color:#f92672">=</span> [<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>numbers<span style="color:#f92672">.</span>sort()
+</span></span><span style="display:flex;"><span>print(numbers)                   <span style="color:#75715e"># [1, 2, 3, 5, 8, 9]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>numbers<span style="color:#f92672">.</span>sort(reverse<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>print(numbers)                   <span style="color:#75715e"># [9, 8, 5, 3, 2, 1]</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>sort()는 반환값이 None입니다!</strong><br>
+<code>sort()</code>는 리스트 자체를 바꾸고 아무것도 돌려주지 않습니다.<br>
+아래처럼 쓰면 <code>result</code>가 <code>None</code>이 되는 흔한 실수가 납니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>numbers <span style="color:#f92672">=</span> [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>result <span style="color:#f92672">=</span> numbers<span style="color:#f92672">.</span>sort()    <span style="color:#75715e"># ❌ result = None !</span>
+</span></span><span style="display:flex;"><span>print(result)              <span style="color:#75715e"># None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 올바른 사용법</span>
+</span></span><span style="display:flex;"><span>numbers<span style="color:#f92672">.</span>sort()             <span style="color:#75715e"># ✅ 리스트가 직접 정렬됨</span>
+</span></span><span style="display:flex;"><span>print(numbers)             <span style="color:#75715e"># [1, 2, 3]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 원본을 유지하고 새 정렬 리스트가 필요하면 sorted() 사용</span>
+</span></span><span style="display:flex;"><span>original <span style="color:#f92672">=</span> [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>sorted_list <span style="color:#f92672">=</span> sorted(original)   <span style="color:#75715e"># ✅ 새 리스트 반환</span>
+</span></span><span style="display:flex;"><span>print(original)                  <span style="color:#75715e"># [3, 1, 2]  (원본 유지)</span>
+</span></span><span style="display:flex;"><span>print(sorted_list)               <span style="color:#75715e"># [1, 2, 3]</span>
+</span></span></code></pre></div></blockquote>
+<!-- raw HTML omitted -->
+<h3 id="성적-관리-실습">성적 관리 실습<a hidden class="anchor" aria-hidden="true" href="#성적-관리-실습">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>scores <span style="color:#f92672">=</span> [<span style="color:#ae81ff">85</span>, <span style="color:#ae81ff">92</span>, <span style="color:#ae81ff">78</span>, <span style="color:#ae81ff">96</span>, <span style="color:#ae81ff">88</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scores<span style="color:#f92672">.</span>append(<span style="color:#ae81ff">75</span>)                      <span style="color:#75715e"># 새 점수 추가</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;전체 점수: </span><span style="color:#e6db74">{</span>scores<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>scores<span style="color:#f92672">.</span>sort(reverse<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)             <span style="color:#75715e"># 내림차순 정렬</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;정렬된 점수: </span><span style="color:#e6db74">{</span>scores<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;최고 점수: </span><span style="color:#e6db74">{</span>scores[<span style="color:#ae81ff">0</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)      <span style="color:#75715e"># 정렬 후 첫 번째 = 최고점</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;최저 점수: </span><span style="color:#e6db74">{</span>scores[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)     <span style="color:#75715e"># 정렬 후 마지막 = 최저점</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;평균: </span><span style="color:#e6db74">{</span>sum(scores)<span style="color:#f92672">/</span>len(scores)<span style="color:#e6db74">:</span><span style="color:#e6db74">.1f</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)  <span style="color:#75715e"># sum(): 합계</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="to-do-리스트-실습">To-Do 리스트 실습<a hidden class="anchor" aria-hidden="true" href="#to-do-리스트-실습">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>todo <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>todo<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;파이썬 공부하기&#34;</span>)
+</span></span><span style="display:flex;"><span>todo<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;운동하기&#34;</span>)
+</span></span><span style="display:flex;"><span>todo<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;독서 30분&#34;</span>)
+</span></span><span style="display:flex;"><span>todo<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#34;아침 먹기&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;=== 오늘 할 일 ===&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i, task <span style="color:#f92672">in</span> enumerate(todo):      <span style="color:#75715e"># enumerate: 번호 + 값 동시에</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#e6db74">}</span><span style="color:#e6db74">. </span><span style="color:#e6db74">{</span>task<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>todo<span style="color:#f92672">.</span>remove(<span style="color:#e6db74">&#34;운동하기&#34;</span>)               <span style="color:#75715e"># 완료한 항목 삭제</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">남은 할 일: </span><span style="color:#e6db74">{</span>len(todo)<span style="color:#e6db74">}</span><span style="color:#e6db74">개&#34;</span>)
+</span></span></code></pre></div><hr>
+<h2 id="섹션-4--시나리오-실습">섹션 4 : 시나리오 실습<a hidden class="anchor" aria-hidden="true" href="#섹션-4--시나리오-실습">#</a></h2>
+<h3 id="시나리오-1--학생-성적-관리">시나리오 1 — 학생 성적 관리<a hidden class="anchor" aria-hidden="true" href="#시나리오-1--학생-성적-관리">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 여러 학생의 점수를 리스트로 관리</span>
+</span></span><span style="display:flex;"><span>students <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;홍길동&#34;</span>, <span style="color:#e6db74">&#34;이몽룡&#34;</span>, <span style="color:#e6db74">&#34;성춘향&#34;</span>, <span style="color:#e6db74">&#34;변학도&#34;</span>]
+</span></span><span style="display:flex;"><span>scores   <span style="color:#f92672">=</span> [<span style="color:#ae81ff">85</span>, <span style="color:#ae81ff">92</span>, <span style="color:#ae81ff">78</span>, <span style="color:#ae81ff">96</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># for 반복문 미리보기 (다음 수업 내용!)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(students)):
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>students[i]<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>scores[i]<span style="color:#e6db74">}</span><span style="color:#e6db74">점&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 최고점 학생 찾기</span>
+</span></span><span style="display:flex;"><span>max_score <span style="color:#f92672">=</span> max(scores)
+</span></span><span style="display:flex;"><span>max_index <span style="color:#f92672">=</span> scores<span style="color:#f92672">.</span>index(max_score)   <span style="color:#75715e"># index(): 값의 위치 반환</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">최고점: </span><span style="color:#e6db74">{</span>students[max_index]<span style="color:#e6db74">}</span><span style="color:#e6db74"> (</span><span style="color:#e6db74">{</span>max_score<span style="color:#e6db74">}</span><span style="color:#e6db74">점)&#34;</span>)
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="시나리오-2--편의점-재고--매출-관리">시나리오 2 — 편의점 재고 &amp; 매출 관리<a hidden class="anchor" aria-hidden="true" href="#시나리오-2--편의점-재고--매출-관리">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>products <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;삼각김밥&#34;</span>, <span style="color:#e6db74">&#34;컵라면&#34;</span>, <span style="color:#e6db74">&#34;에너지바&#34;</span>, <span style="color:#e6db74">&#34;아메리카노&#34;</span>]
+</span></span><span style="display:flex;"><span>prices   <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1200</span>, <span style="color:#ae81ff">1500</span>, <span style="color:#ae81ff">800</span>, <span style="color:#ae81ff">2000</span>]
+</span></span><span style="display:flex;"><span>stock    <span style="color:#f92672">=</span> [<span style="color:#ae81ff">50</span>, <span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">80</span>, <span style="color:#ae81ff">20</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;=&#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">40</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span><span style="color:#e6db74">&#39;상품명&#39;</span><span style="color:#e6db74">:</span><span style="color:#e6db74">&lt;12</span><span style="color:#e6db74">}{</span><span style="color:#e6db74">&#39;단가&#39;</span><span style="color:#e6db74">:</span><span style="color:#e6db74">&gt;8</span><span style="color:#e6db74">}{</span><span style="color:#e6db74">&#39;재고&#39;</span><span style="color:#e6db74">:</span><span style="color:#e6db74">&gt;8</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">40</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(products)):
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>products[i]<span style="color:#e6db74">:</span><span style="color:#e6db74">&lt;12</span><span style="color:#e6db74">}{</span>prices[i]<span style="color:#e6db74">:</span><span style="color:#e6db74">&gt;8,</span><span style="color:#e6db74">}</span><span style="color:#e6db74">원</span><span style="color:#e6db74">{</span>stock[i]<span style="color:#e6db74">:</span><span style="color:#e6db74">&gt;7</span><span style="color:#e6db74">}</span><span style="color:#e6db74">개&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>total_value <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(products)):
+</span></span><span style="display:flex;"><span>    total_value <span style="color:#f92672">+=</span> prices[i] <span style="color:#f92672">*</span> stock[i]
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">총 재고 가치: </span><span style="color:#e6db74">{</span>total_value<span style="color:#e6db74">:</span><span style="color:#e6db74">,</span><span style="color:#e6db74">}</span><span style="color:#e6db74">원&#34;</span>)
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="시나리오-3--숫자-맞히기-게임">시나리오 3 — 숫자 맞히기 게임<a hidden class="anchor" aria-hidden="true" href="#시나리오-3--숫자-맞히기-게임">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>answer <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100</span>)   <span style="color:#75715e"># 1~100 사이 랜덤 정수</span>
+</span></span><span style="display:flex;"><span>count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;1~100 사이의 숫자를 맞혀보세요!&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    guess <span style="color:#f92672">=</span> int(input(<span style="color:#e6db74">&#34;숫자 입력: &#34;</span>))
+</span></span><span style="display:flex;"><span>    count <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> guess <span style="color:#f92672">&lt;</span> answer:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;UP! 더 큰 수입니다.&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> guess <span style="color:#f92672">&gt;</span> answer:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;DOWN! 더 작은 수입니다.&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;CORRECT! 정답은 </span><span style="color:#e6db74">{</span>answer<span style="color:#e6db74">}</span><span style="color:#e6db74">이고, </span><span style="color:#e6db74">{</span>count<span style="color:#e6db74">}</span><span style="color:#e6db74">번 만에 맞혔습니다!&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="시나리오-4--로그인--메뉴-시스템">시나리오 4 — 로그인 &amp; 메뉴 시스템<a hidden class="anchor" aria-hidden="true" href="#시나리오-4--로그인--메뉴-시스템">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 미리 등록된 사용자</span>
+</span></span><span style="display:flex;"><span>users <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;admin&#34;</span>: <span style="color:#e6db74">&#34;1234&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;user1&#34;</span>: <span style="color:#e6db74">&#34;abcd&#34;</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;=== 로그인 ===&#34;</span>)
+</span></span><span style="display:flex;"><span>username <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;아이디: &#34;</span>)
+</span></span><span style="display:flex;"><span>password <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;비밀번호: &#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> username <span style="color:#f92672">in</span> users <span style="color:#f92672">and</span> users[username] <span style="color:#f92672">==</span> password:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>username<span style="color:#e6db74">}</span><span style="color:#e6db74">님, 환영합니다!&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">1. 내 정보 보기&#34;</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;2. 비밀번호 변경&#34;</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;3. 로그아웃&#34;</span>)
+</span></span><span style="display:flex;"><span>        choice <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;선택: &#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;1&#34;</span>:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;아이디: </span><span style="color:#e6db74">{</span>username<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;2&#34;</span>:
+</span></span><span style="display:flex;"><span>            new_pw <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;새 비밀번호: &#34;</span>)
+</span></span><span style="display:flex;"><span>            users[username] <span style="color:#f92672">=</span> new_pw
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;비밀번호가 변경되었습니다.&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> choice <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;3&#34;</span>:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;로그아웃합니다.&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;잘못된 선택입니다.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;아이디 또는 비밀번호가 틀렸습니다.&#34;</span>)
+</span></span></code></pre></div><hr>
+<h2 id="-공식-문서-레퍼런스">📚 공식 문서 레퍼런스<a hidden class="anchor" aria-hidden="true" href="#-공식-문서-레퍼런스">#</a></h2>
+<p>수업에서 다루지 못했지만 알아두면 유용한 내용들입니다.<br>
+출처: <a href="https://docs.python.org/ko/3/tutorial/datastructures.html">Python 공식 문서 — 자료 구조</a></p>
+<!-- raw HTML omitted -->
+<h3 id="리스트-전체-메서드">리스트 전체 메서드<a hidden class="anchor" aria-hidden="true" href="#리스트-전체-메서드">#</a></h3>
+<p>수업에서 배운 <code>append</code>, <code>insert</code>, <code>remove</code>, <code>sort</code> 외에도 다양한 메서드가 있습니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>sample <span style="color:#f92672">=</span> [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># extend(iterable) — 여러 항목을 한 번에 끝에 추가</span>
+</span></span><span style="display:flex;"><span>sample<span style="color:#f92672">.</span>extend([<span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>])
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># append([7, 8]) 는 리스트 자체가 하나로 추가되지만</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># extend([7, 8]) 는 7, 8 이 각각 추가됩니다</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>a <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>a<span style="color:#f92672">.</span>append([<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>])    <span style="color:#75715e"># [1, 2, 3, [4, 5]]  ← 리스트가 통째로 들어감</span>
+</span></span><span style="display:flex;"><span>b <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>b<span style="color:#f92672">.</span>extend([<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>])    <span style="color:#75715e"># [1, 2, 3, 4, 5]    ← 개별 항목으로 펼쳐짐</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>nums <span style="color:#f92672">=</span> [<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">30</span>, <span style="color:#ae81ff">40</span>, <span style="color:#ae81ff">50</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># pop([인덱스]) — 해당 위치 항목을 꺼내면서 삭제, 반환값 있음</span>
+</span></span><span style="display:flex;"><span>last <span style="color:#f92672">=</span> nums<span style="color:#f92672">.</span>pop()       <span style="color:#75715e"># 인덱스 생략 시 맨 마지막 항목 꺼냄</span>
+</span></span><span style="display:flex;"><span>print(last)             <span style="color:#75715e"># 50</span>
+</span></span><span style="display:flex;"><span>print(nums)             <span style="color:#75715e"># [10, 20, 30, 40]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>second <span style="color:#f92672">=</span> nums<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">1</span>)    <span style="color:#75715e"># 인덱스 1 항목 꺼냄</span>
+</span></span><span style="display:flex;"><span>print(second)           <span style="color:#75715e"># 20</span>
+</span></span><span style="display:flex;"><span>print(nums)             <span style="color:#75715e"># [10, 30, 40]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>data <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># count(값) — 해당 값이 몇 번 등장하는지 반환</span>
+</span></span><span style="display:flex;"><span>print(data<span style="color:#f92672">.</span>count(<span style="color:#ae81ff">2</span>))    <span style="color:#75715e"># 3   (2가 세 번 있음)</span>
+</span></span><span style="display:flex;"><span>print(data<span style="color:#f92672">.</span>count(<span style="color:#ae81ff">5</span>))    <span style="color:#75715e"># 0   (5는 없음, 에러 없이 0 반환)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># index(값) — 해당 값의 첫 번째 위치(인덱스) 반환</span>
+</span></span><span style="display:flex;"><span>print(data<span style="color:#f92672">.</span>index(<span style="color:#ae81ff">3</span>))    <span style="color:#75715e"># 2   (인덱스 2에 있음)</span>
+</span></span><span style="display:flex;"><span>print(data<span style="color:#f92672">.</span>index(<span style="color:#ae81ff">2</span>))    <span style="color:#75715e"># 1   (첫 번째 2의 위치)</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>없는 값을 index() 로 찾으면 ValueError 발생!</strong><br>
+<code>count()</code>와 달리 <code>index()</code>는 값이 없으면 에러가 납니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>data <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>print(data<span style="color:#f92672">.</span>index(<span style="color:#ae81ff">99</span>))   <span style="color:#75715e"># ValueError: 99 is not in list</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 안전하게 쓰려면 in으로 먼저 확인</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#ae81ff">99</span> <span style="color:#f92672">in</span> data:
+</span></span><span style="display:flex;"><span>    print(data<span style="color:#f92672">.</span>index(<span style="color:#ae81ff">99</span>))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;없는 값입니다.&#34;</span>)
+</span></span></code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>letters <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;d&#39;</span>, <span style="color:#e6db74">&#39;a&#39;</span>, <span style="color:#e6db74">&#39;c&#39;</span>, <span style="color:#e6db74">&#39;b&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># reverse() — 제자리에서 순서를 뒤집음 (정렬이 아님!)</span>
+</span></span><span style="display:flex;"><span>letters<span style="color:#f92672">.</span>reverse()
+</span></span><span style="display:flex;"><span>print(letters)    <span style="color:#75715e"># [&#39;b&#39;, &#39;c&#39;, &#39;a&#39;, &#39;d&#39;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># copy() — 리스트의 얕은 복사본 반환</span>
+</span></span><span style="display:flex;"><span>original <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>copied <span style="color:#f92672">=</span> original<span style="color:#f92672">.</span>copy()
+</span></span><span style="display:flex;"><span>copied<span style="color:#f92672">.</span>append(<span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(original)   <span style="color:#75715e"># [1, 2, 3]  ← 원본은 변하지 않음</span>
+</span></span><span style="display:flex;"><span>print(copied)     <span style="color:#75715e"># [1, 2, 3, 4]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>items <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># clear() — 모든 항목 삭제 (빈 리스트로 만들기)</span>
+</span></span><span style="display:flex;"><span>items<span style="color:#f92672">.</span>clear()
+</span></span><span style="display:flex;"><span>print(items)      <span style="color:#75715e"># []</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="리스트를-스택stack으로-사용하기">리스트를 스택(Stack)으로 사용하기<a hidden class="anchor" aria-hidden="true" href="#리스트를-스택stack으로-사용하기">#</a></h3>
+<p>스택은 <strong>나중에 넣은 것이 먼저 나오는(LIFO: Last-In, First-Out)</strong> 자료구조입니다. 리스트의 <code>append()</code>와 <code>pop()</code>으로 간단히 구현합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>stack <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>stack<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;첫 번째&#34;</span>)
+</span></span><span style="display:flex;"><span>stack<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;두 번째&#34;</span>)
+</span></span><span style="display:flex;"><span>stack<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;세 번째&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(stack<span style="color:#f92672">.</span>pop())    <span style="color:#75715e"># 세 번째  (마지막 넣은 것이 먼저 나옴)</span>
+</span></span><span style="display:flex;"><span>print(stack<span style="color:#f92672">.</span>pop())    <span style="color:#75715e"># 두 번째</span>
+</span></span><span style="display:flex;"><span>print(stack<span style="color:#f92672">.</span>pop())    <span style="color:#75715e"># 첫 번째</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="리스트를-큐queue로-사용하기">리스트를 큐(Queue)로 사용하기<a hidden class="anchor" aria-hidden="true" href="#리스트를-큐queue로-사용하기">#</a></h3>
+<p>큐는 <strong>먼저 넣은 것이 먼저 나오는(FIFO: First-In, First-Out)</strong> 자료구조입니다. 은행 번호표처럼 먼저 온 순서대로 처리합니다.</p>
+<p>리스트로도 가능하지만, 앞에서 꺼내는 게 느립니다(나머지 요소를 전부 한 칸씩 이동해야 해서). 공식 문서에서는 <code>collections.deque</code>를 권장합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> deque
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>queue <span style="color:#f92672">=</span> deque([<span style="color:#e6db74">&#34;Alice&#34;</span>, <span style="color:#e6db74">&#34;Bob&#34;</span>, <span style="color:#e6db74">&#34;Charlie&#34;</span>])
+</span></span><span style="display:flex;"><span>queue<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;Dave&#34;</span>)      <span style="color:#75715e"># 줄 맨 뒤에 추가</span>
+</span></span><span style="display:flex;"><span>queue<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;Eve&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(queue<span style="color:#f92672">.</span>popleft())    <span style="color:#75715e"># Alice   (먼저 온 사람이 먼저 나감)</span>
+</span></span><span style="display:flex;"><span>print(queue<span style="color:#f92672">.</span>popleft())    <span style="color:#75715e"># Bob</span>
+</span></span><span style="display:flex;"><span>print(queue)              <span style="color:#75715e"># deque([&#39;Charlie&#39;, &#39;Dave&#39;, &#39;Eve&#39;])</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <strong>스택 vs 큐 한 눈에 비교</strong></p>
+<table>
+	<thead>
+			<tr>
+					<th style="text-align: left">구분</th>
+					<th style="text-align: left">스택(Stack)</th>
+					<th style="text-align: left">큐(Queue)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: left">원리</td>
+					<td style="text-align: left">LIFO (나중에 넣은 것 먼저)</td>
+					<td style="text-align: left">FIFO (먼저 넣은 것 먼저)</td>
+			</tr>
+			<tr>
+					<td style="text-align: left">비유</td>
+					<td style="text-align: left">접시 쌓기 (맨 위가 먼저)</td>
+					<td style="text-align: left">줄 서기 (맨 앞이 먼저)</td>
+			</tr>
+			<tr>
+					<td style="text-align: left">추가</td>
+					<td style="text-align: left"><code>append()</code></td>
+					<td style="text-align: left"><code>append()</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left">꺼내기</td>
+					<td style="text-align: left"><code>pop()</code> (뒤에서)</td>
+					<td style="text-align: left"><code>popleft()</code> (앞에서)</td>
+			</tr>
+	</tbody>
+</table>
+</blockquote>
+<!-- raw HTML omitted -->
+<h3 id="리스트-컴프리헨션-list-comprehension">리스트 컴프리헨션 (List Comprehension)<a hidden class="anchor" aria-hidden="true" href="#리스트-컴프리헨션-list-comprehension">#</a></h3>
+<p>반복문과 조건문을 한 줄로 압축해서 리스트를 만드는 파이썬다운 문법입니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 기존 방식: for 반복문으로 만들기</span>
+</span></span><span style="display:flex;"><span>squares <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>):
+</span></span><span style="display:flex;"><span>    squares<span style="color:#f92672">.</span>append(x <span style="color:#f92672">**</span> <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>print(squares)    <span style="color:#75715e"># [1, 4, 9, 16, 25]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 리스트 컴프리헨션으로 동일한 결과</span>
+</span></span><span style="display:flex;"><span>squares <span style="color:#f92672">=</span> [x <span style="color:#f92672">**</span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>)]
+</span></span><span style="display:flex;"><span>print(squares)    <span style="color:#75715e"># [1, 4, 9, 16, 25]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 조건 추가: 짝수만 골라서 제곱</span>
+</span></span><span style="display:flex;"><span>even_squares <span style="color:#f92672">=</span> [x <span style="color:#f92672">**</span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">11</span>) <span style="color:#66d9ef">if</span> x <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>print(even_squares)    <span style="color:#75715e"># [4, 16, 36, 64, 100]</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="del-문--인덱스슬라이스로-삭제">del 문 — 인덱스/슬라이스로 삭제<a hidden class="anchor" aria-hidden="true" href="#del-문--인덱스슬라이스로-삭제">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>a <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">del</span> a[<span style="color:#ae81ff">0</span>]        <span style="color:#75715e"># 인덱스 0 삭제</span>
+</span></span><span style="display:flex;"><span>print(a)        <span style="color:#75715e"># [2, 3, 4, 5, 6]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">del</span> a[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>]      <span style="color:#75715e"># 슬라이스로 범위 삭제 (인덱스 2, 3)</span>
+</span></span><span style="display:flex;"><span>print(a)        <span style="color:#75715e"># [2, 3, 6]</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <strong>remove() vs del vs pop() 비교</strong></p>
+<table>
+	<thead>
+			<tr>
+					<th style="text-align: left">방법</th>
+					<th style="text-align: left">기준</th>
+					<th style="text-align: center">반환값</th>
+					<th style="text-align: left">예시</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: left"><code>remove(값)</code></td>
+					<td style="text-align: left">값으로 삭제</td>
+					<td style="text-align: center">없음</td>
+					<td style="text-align: left"><code>a.remove(3)</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><code>del a[i]</code></td>
+					<td style="text-align: left">인덱스로 삭제</td>
+					<td style="text-align: center">없음</td>
+					<td style="text-align: left"><code>del a[1]</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><code>pop(i)</code></td>
+					<td style="text-align: left">인덱스로 삭제</td>
+					<td style="text-align: center"><strong>삭제된 값</strong></td>
+					<td style="text-align: left"><code>a.pop(1)</code></td>
+			</tr>
+	</tbody>
+</table>
+</blockquote>
+<!-- raw HTML omitted -->
+<h3 id="집합-set--중복-없는-자료구조">집합 (Set) — 중복 없는 자료구조<a hidden class="anchor" aria-hidden="true" href="#집합-set--중복-없는-자료구조">#</a></h3>
+<p>집합은 <strong>순서가 없고 중복을 허용하지 않는</strong> 자료구조입니다. 중괄호 <code>{}</code>로 만듭니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 집합 만들기</span>
+</span></span><span style="display:flex;"><span>fruits <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;사과&#34;</span>, <span style="color:#e6db74">&#34;바나나&#34;</span>, <span style="color:#e6db74">&#34;사과&#34;</span>, <span style="color:#e6db74">&#34;체리&#34;</span>, <span style="color:#e6db74">&#34;바나나&#34;</span>}
+</span></span><span style="display:flex;"><span>print(fruits)    <span style="color:#75715e"># {&#39;사과&#39;, &#39;바나나&#39;, &#39;체리&#39;}  ← 중복 자동 제거!</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 리스트의 중복 제거에 활용</span>
+</span></span><span style="display:flex;"><span>numbers <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>]
+</span></span><span style="display:flex;"><span>unique <span style="color:#f92672">=</span> list(set(numbers))
+</span></span><span style="display:flex;"><span>print(unique)    <span style="color:#75715e"># [1, 2, 3, 4]  (순서는 보장 안 됨)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 포함 여부 확인 (리스트보다 훨씬 빠름)</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;사과&#34;</span> <span style="color:#f92672">in</span> fruits)     <span style="color:#75715e"># True</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;딸기&#34;</span> <span style="color:#f92672">in</span> fruits)     <span style="color:#75715e"># False</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>주의사항</strong></p>
+<ul>
+<li>집합은 <strong>순서가 없어서 인덱싱 불가</strong>: <code>fruits[0]</code> → TypeError</li>
+<li>빈 집합은 반드시 <code>set()</code>으로 생성: <code>{}</code> 는 빈 딕셔너리가 됩니다!</li>
+</ul>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 집합 연산 (수학의 집합과 동일)</span>
+</span></span><span style="display:flex;"><span>a <span style="color:#f92672">=</span> {<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>}
+</span></span><span style="display:flex;"><span>b <span style="color:#f92672">=</span> {<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">|</span> b)    <span style="color:#75715e"># {1, 2, 3, 4, 5, 6}  합집합 (둘 중 하나라도 있으면)</span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">&amp;</span> b)    <span style="color:#75715e"># {3, 4}              교집합 (둘 다 있는 것)</span>
+</span></span><span style="display:flex;"><span>print(a <span style="color:#f92672">-</span> b)    <span style="color:#75715e"># {1, 2}              차집합 (a에만 있는 것)</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="튜플-tuple--변경-불가-리스트">튜플 (Tuple) — 변경 불가 리스트<a hidden class="anchor" aria-hidden="true" href="#튜플-tuple--변경-불가-리스트">#</a></h3>
+<p>리스트와 비슷하지만 <strong>한 번 만들면 수정할 수 없는</strong> 자료구조입니다. 소괄호 <code>()</code>를 사용합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 튜플 생성</span>
+</span></span><span style="display:flex;"><span>point <span style="color:#f92672">=</span> (<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">20</span>)
+</span></span><span style="display:flex;"><span>colors <span style="color:#f92672">=</span> (<span style="color:#e6db74">&#34;red&#34;</span>, <span style="color:#e6db74">&#34;green&#34;</span>, <span style="color:#e6db74">&#34;blue&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 인덱싱, 슬라이싱은 리스트와 동일</span>
+</span></span><span style="display:flex;"><span>print(colors[<span style="color:#ae81ff">0</span>])     <span style="color:#75715e"># red</span>
+</span></span><span style="display:flex;"><span>print(colors[<span style="color:#ae81ff">1</span>:])    <span style="color:#75715e"># (&#39;green&#39;, &#39;blue&#39;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 수정 불가</span>
+</span></span><span style="display:flex;"><span>colors[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;yellow&#34;</span>  <span style="color:#75715e"># TypeError: &#39;tuple&#39; object does not support item assignment</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 패킹(packing): 여러 값을 하나의 튜플로</span>
+</span></span><span style="display:flex;"><span>packed <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>print(packed)    <span style="color:#75715e"># (1, 2, 3)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 언패킹(unpacking): 튜플을 여러 변수에 분배</span>
+</span></span><span style="display:flex;"><span>x, y, z <span style="color:#f92672">=</span> packed
+</span></span><span style="display:flex;"><span>print(x, y, z)   <span style="color:#75715e"># 1 2 3</span>
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<h3 id="딕셔너리-dictionary--키-값-쌍">딕셔너리 (Dictionary) — 키-값 쌍<a hidden class="anchor" aria-hidden="true" href="#딕셔너리-dictionary--키-값-쌍">#</a></h3>
+<p>중괄호 <code>{}</code>로 만들며, <strong>키(key)로 값(value)에 접근</strong>합니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 딕셔너리 생성</span>
+</span></span><span style="display:flex;"><span>person <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;홍길동&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;age&#34;</span>: <span style="color:#ae81ff">25</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;skills&#34;</span>: [<span style="color:#e6db74">&#34;Python&#34;</span>, <span style="color:#e6db74">&#34;Java&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 값 접근</span>
+</span></span><span style="display:flex;"><span>print(person[<span style="color:#e6db74">&#34;name&#34;</span>])      <span style="color:#75715e"># 홍길동</span>
+</span></span><span style="display:flex;"><span>print(person[<span style="color:#e6db74">&#34;skills&#34;</span>])    <span style="color:#75715e"># [&#39;Python&#39;, &#39;Java&#39;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 값 추가 / 수정</span>
+</span></span><span style="display:flex;"><span>person[<span style="color:#e6db74">&#34;email&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hong@example.com&#34;</span>    <span style="color:#75715e"># 새 키 추가</span>
+</span></span><span style="display:flex;"><span>person[<span style="color:#e6db74">&#34;age&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">26</span>                       <span style="color:#75715e"># 기존 값 수정</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 키 존재 여부 확인</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;name&#34;</span> <span style="color:#f92672">in</span> person)     <span style="color:#75715e"># True</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;phone&#34;</span> <span style="color:#f92672">in</span> person)    <span style="color:#75715e"># False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 반복</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> key, value <span style="color:#f92672">in</span> person<span style="color:#f92672">.</span>items():
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>key<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>value<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span></code></pre></div><hr>
+<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
+<ul>
+<li>[[5-29 파이썬 기초|5/29 파이썬 기초 강의 정리]] — 오늘 강의 이론·개념 정리</li>
+<li>[[5-28 리눅스 기초|리눅스 기초 명령어]] — 터미널 기초</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yw8837.github.io/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/">파이썬</a></li>
+      <li><a href="https://yw8837.github.io/tags/python/">Python</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%BD%94%EB%93%9C%EB%85%B8%ED%8A%B8/">코드노트</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%9E%90%EB%A3%8C%ED%98%95/">자료형</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%A1%B0%EA%B1%B4%EB%AC%B8/">조건문</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EB%A6%AC%EC%8A%A4%ED%8A%B8/">리스트</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/">실습</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/">코딩기초</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%88/">
+    <span class="title">다음 페이지 »</span>
+    <span>5/29 파이썬 기초 (자료형 · 조건문 · 리스트)</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
+        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '복사';
+
+        function copyingDone() {
+            copybutton.innerHTML = '복사 완료!';
+            setTimeout(() => {
+                copybutton.innerHTML = '복사';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

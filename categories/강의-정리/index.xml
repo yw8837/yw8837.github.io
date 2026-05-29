@@ -6,8 +6,15 @@
     <description>Recent content in 강의 정리 on AI_6스터디</description>
     <generator>Hugo</generator>
     <language>ko</language>
-    <lastBuildDate>Thu, 28 May 2026 18:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 29 May 2026 09:00:00 +0900</lastBuildDate>
     <atom:link href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>5/29 파이썬 기초 (자료형 · 조건문 · 리스트)</title>
+      <link>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%88/</link>
+      <pubDate>Fri, 29 May 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%88/</guid>
+      <description>파이썬 왕초보를 위한 기초 강의 정리 — 자료형·변수·연산자부터 조건문·리스트까지 처음 만나는 파이썬 핵심 개념을 쉽게 풀어 정리했습니다</description>
+    </item>
     <item>
       <title>5/28 네트워크 개론</title>
       <link>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/5-28-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EA%B0%9C%EB%A1%A0/</link>

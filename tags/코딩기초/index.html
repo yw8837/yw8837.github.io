@@ -168,6 +168,39 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">5/29 파이썬 실습 코드 노트
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>수업 실습 코드를 섹션별로 정리하고, 수업에서 다루지 못한 파이썬 공식 문서의 유용한 내용도 함께 담았습니다. 코드를 그냥 읽지 말고 직접 Colab에서 하나씩 쳐보세요! 🚀
+섹션 1 : 기초 자료형과 변수 print() 기본 사용법 print(&#34;Hello, Python!&#34;) # Hello, Python! print(&#34;안녕&#34;, &#34;파이썬&#34;, &#34;!&#34;) # 안녕 파이썬 ! (콤마로 구분하면 띄어쓰기 자동 추가) print(&#34;안녕&#34; &#43; &#34;파이썬&#34;) # 안녕파이썬 (&#43; 는 붙여서 출력) 자료형 5가지 # 정수 (int) num_int = 42 print(type(num_int)) # &lt;class &#39;int&#39;&gt; # 실수 (float) num_float = 3.14 print(type(num_float)) # &lt;class &#39;float&#39;&gt; # 문자열 (str) text = &#34;파이썬&#34; print(type(text)) # &lt;class &#39;str&#39;&gt; # 리스트 (list) my_list = [1, 2, 3] print(type(my_list)) # &lt;class &#39;list&#39;&gt; # 불리언 (bool) flag = True print(type(flag)) # &lt;class &#39;bool&#39;&gt; 변수와 연산자 # 기본 사칙연산 a, b = 10, 3 print(a &#43; b) # 13 print(a - b) # 7 print(a * b) # 30 print(a / b) # 3.3333333333333335 # 특수 연산자 print(a // b) # 3 (몫: 소수점 버림) print(a % b) # 1 (나머지) print(a ** b) # 1000 (10의 3승) 문자열 연산 (&#43;, *) first_name = &#34;길동&#34; last_name = &#34;홍&#34; # 문자열 더하기 (이어 붙이기) full_name = last_name &#43; first_name print(full_name) # 홍길동 # 문자열 곱하기 (반복) print(&#34;파이썬! &#34; * 3) # 파이썬! 파이썬! 파이썬! # 숫자를 문자열로 변환해서 합치기 age = 25 print(&#34;나는 &#34; &#43; str(age) &#43; &#34;살 입니다.&#34;) # 나는 25살 입니다. print(f&#34;나는 {age}살 입니다.&#34;) # 나는 25살 입니다. (f-string 방식) 인덱싱과 슬라이싱 word = &#34;Python&#34; # 0 1 2 3 4 5 # -6-5-4-3-2-1 # 인덱싱 print(word[0]) # P print(word[-1]) # n (마지막 글자) print(word[2]) # t # 슬라이싱 [시작:끝] ← 끝 번호는 포함 안 됨 beta = &#34;abcdefg&#34; print(beta[2:5]) # cde (인덱스 2, 3, 4) print(beta[:3]) # abc (처음 ~ 인덱스 2) print(beta[4:]) # efg (인덱스 4 ~ 끝) print(beta[:]) # abcdefg (전체) 중첩 리스트 접근 student_info = [&#34;홍길동&#34;, 20, &#34;컴퓨터공학&#34;, [&#34;파이썬&#34;, &#34;자바&#34;, &#34;C&#43;&#43;&#34;]] print(student_info[0]) # 홍길동 print(student_info[3]) # [&#39;파이썬&#39;, &#39;자바&#39;, &#39;C&#43;&#43;&#39;] print(student_info[3][0]) # 파이썬 (리스트 안의 리스트 → [행][열] 로 접근) print(student_info[3][2]) # C&#43;&#43; 섹션 2 : 조건문 input() — 주의사항 # input() 의 반환값은 항상 str(문자열)! num1 = input(&#34;숫자 입력: &#34;) # &#34;100&#34; 입력 num2 = input(&#34;숫자 입력: &#34;) # &#34;300&#34; 입력 print(num1 &#43; num2) # 100300 ← 문자열 이어붙이기가 됨! # 정수로 변환 후 계산 print(int(num1) &#43; int(num2)) # 400 ← 이게 우리가 원하는 결과 형 변환 (Type Casting) # 문자열 → 정수 print(int(&#34;42&#34;)) # 42 print(int(&#34;3.14&#34;)) # ValueError! 소수점 있는 문자열은 int() 직접 불가 print(int(float(&#34;3.14&#34;))) # 3 ← float 먼저, 그 다음 int # 정수 → 실수 print(float(7)) # 7.0 # 숫자 → 문자열 print(str(100)) # &#34;100&#34; print(str(True)) # &#34;True&#34; # 문자열 → 리스트 print(list(&#34;abc&#34;)) # [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;] print(list(&#34;파이썬&#34;)) # [&#39;파&#39;, &#39;이&#39;, &#39;썬&#39;] if - elif - else 성적 판별 score = int(input(&#34;점수를 입력하세요: &#34;)) if score &gt;= 90: grade = &#34;A&#34; elif score &gt;= 80: grade = &#34;B&#34; elif score &gt;= 70: grade = &#34;C&#34; elif score &gt;= 60: grade = &#34;D&#34; else: grade = &#34;F&#34; print(f&#34;당신의 학점은 {grade}입니다.&#34;) 실용 예제 모음 BMI 계산기
+...</p>
+  </div>
+  <footer class="entry-footer">
+
+<span title='2026-05-29 10:00:00 +0900 KST'>2026년 5월 29일</span>&nbsp;·&nbsp;<span>11 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
+  <a class="entry-link" aria-label="post link to 5/29 파이썬 실습 코드 노트" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">5/29 파이썬 기초 (자료형 · 조건문 · 리스트)
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>파이썬은 문법이 영어 문장처럼 읽히는 언어입니다. 코딩을 한 번도 해본 적 없어도 “내가 컴퓨터에게 이렇게 말하면 컴퓨터가 이렇게 이해하는구나” 라는 감각만 잡으면 빠르게 익힐 수 있습니다. 오늘 배운 내용을 최대한 쉬운 말로 풀어 정리해 봤습니다. 🐍
+1. 자료형 (Data Type) — 데이터의 종류 컴퓨터는 숫자와 문자를 다르게 취급합니다. 3이라는 숫자와 &#34;3&#34;이라는 문자는 완전히 다른 것이에요. 파이썬에서 다루는 기본 자료형 5가지를 먼저 알아봅시다.
+정수 int (Integer) 소수점 없는 숫자입니다.
+...</p>
+  </div>
+  <footer class="entry-footer">
+
+<span title='2026-05-29 09:00:00 +0900 KST'>2026년 5월 29일</span>&nbsp;·&nbsp;<span>7 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
+  <a class="entry-link" aria-label="post link to 5/29 파이썬 기초 (자료형 · 조건문 · 리스트)" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%88/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">리눅스 연습 (Linux 왕초보 기초 명령어)
     </h2>
   </header>
