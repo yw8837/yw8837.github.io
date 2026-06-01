@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>코딩기초 | AI_6스터디</title>
+<title>JupyterLab | AI_6스터디</title>
 <meta name="keywords" content="">
 <meta name="description" content="이어드림스쿨 AI 공부 기록 블로그">
 <meta name="author" content="yw8837">
-<link rel="canonical" href="https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/">
+<link rel="canonical" href="https://yw8837.github.io/tags/jupyterlab/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://yw8837.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
@@ -18,8 +18,8 @@
 <link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/index.xml" title="rss">
-<link rel="alternate" hreflang="en" href="https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/">
+<link rel="alternate" type="application/rss+xml" href="https://yw8837.github.io/tags/jupyterlab/index.xml" title="rss">
+<link rel="alternate" hreflang="en" href="https://yw8837.github.io/tags/jupyterlab/">
 <noscript>
     <style>
         #theme-toggle,
@@ -79,15 +79,15 @@
           gtag('js', new Date());
           gtag('config', 'G-EQR4094Q13');
         }
-      </script><meta property="og:url" content="https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/">
+      </script><meta property="og:url" content="https://yw8837.github.io/tags/jupyterlab/">
   <meta property="og:site_name" content="AI_6스터디">
-  <meta property="og:title" content="코딩기초">
+  <meta property="og:title" content="JupyterLab">
   <meta property="og:description" content="이어드림스쿨 AI 공부 기록 블로그">
   <meta property="og:locale" content="ko">
   <meta property="og:type" content="website">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="코딩기초">
+  <meta name="twitter:title" content="JupyterLab">
   <meta name="twitter:description" content="이어드림스쿨 AI 공부 기록 블로그">
 
 </head>
@@ -162,77 +162,9 @@
     </svg>
 </nav>
   <h1>
-    코딩기초
+    JupyterLab
   </h1>
 </header>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">6/1 파이썬 실습2 (코드 노트)
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>오늘 실습 노트북 코드를 강의에서 쓴 그대로 정리하고, 초보자가 봐도 “이게 무슨 뜻인지” 알 수 있게 한 줄씩 풀어 설명했습니다. 각 개념마다 ① 한 줄 설명 → ② 코드 → ③ 출력 → ④ 한 줄씩 뜯어보기 → ⑤ 팁 순서로 정리했어요. 눈으로만 읽지 말고 직접 쳐보세요! 🚀
-Part 1. 반복문 반복문은 “같은 일을 여러 번 자동으로 시키는 것” 입니다. 별 5개 출력하려고 print를 5번 쓰는 대신 “반복해!“라고 한 번에 시키는 거예요.
-...</p>
-  </div>
-  <footer class="entry-footer">
-
-<span title='2026-06-01 10:00:00 +0900 KST'>2026년 6월 1일</span>&nbsp;·&nbsp;<span>15 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
-  <a class="entry-link" aria-label="post link to 6/1 파이썬 실습2 (코드 노트)" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B82/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">6/1 파이썬 기초2
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>지난 시간에 자료형·변수·조건문·리스트를 배웠습니다. 오늘은 그 위에 “여러 데이터를 묶고(튜플·딕셔너리), 반복하고(for·while), 묶음으로 재사용(함수)” 하는 도구를 얹습니다. 여기까지 오면 비로소 “프로그램다운 프로그램&#34;을 만들 수 있습니다. 🐍
-1. 문자열·리스트 추가 메서드 리스트와 문자열을 더 자유롭게 다루는 메서드 4개를 먼저 익힙니다.
-pop() — 꺼내면서 삭제 값을 삭제하는 동시에 그 값을 돌려줍니다. (remove는 돌려주지 않습니다.)
-my_list = [2, 3, 5, 7, 11] print(my_list.pop(0)) # 2 (인덱스 0을 꺼내고 삭제) print(my_list.pop()) # 11 (괄호 비우면 맨 마지막) print(my_list) # [3, 5, 7] count() — 개수 세기 [2, 2, 3, 2].count(2) # 3 &#34;elice and alice&#34;.count(&#34;e&#34;) # 3 split() — 문자열을 리스트로 쪼개기 &#34;1 2 3&#34;.split() # [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;] (괄호 비우면 공백 기준) &#34;Na,Mg,Al&#34;.split(&#34;,&#34;) # [&#39;Na&#39;, &#39;Mg&#39;, &#39;Al&#39;] join() — 리스트를 문자열로 합치기 split()의 반대입니다. 구분자.join(리스트) 순서가 헷갈리기 쉬우니 주의하세요.
-...</p>
-  </div>
-  <footer class="entry-footer">
-
-<span title='2026-06-01 09:00:00 +0900 KST'>2026년 6월 1일</span>&nbsp;·&nbsp;<span>6 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
-  <a class="entry-link" aria-label="post link to 6/1 파이썬 기초2" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">5/29 파이썬 실습 (코드 노트)
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>파이썬 첫 실습 코드를 강의에서 쓴 그대로 정리하고, 처음 코딩하는 분도 “이게 무슨 뜻인지” 알 수 있게 한 줄씩 풀어 설명했습니다. 각 개념마다 ① 한 줄 설명 → ② 코드 → ③ 출력 → ④ 한 줄씩 뜯어보기 → ⑤ 팁 순서예요. 직접 쳐보면서 익히세요! 🚀
-Part 1. 기초 자료형 1. 출력 — print() print()는 괄호 안의 값을 화면에 보여주는 가장 기본 함수입니다.
-print(&#34;나의 꿈은 파이썬 정복!&#34;) # 콤마로 여러 값을 공백 구분하여 한 줄 출력 print(3, &#34;Hello!&#34;) print(&#34;이름:&#34;, &#34;Alice&#34;, &#34;나이:&#34;, 20) # print 여러 번 → 여러 줄 출력 print(&#34;비행기에 타신 승객 여러분&#34;) print(&#34;행복한 여행 되십시오&#34;) print(&#34;기내식은 바밤바&#34;) 출력:
-...</p>
-  </div>
-  <footer class="entry-footer">
-
-<span title='2026-05-29 10:00:00 +0900 KST'>2026년 5월 29일</span>&nbsp;·&nbsp;<span>12 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
-  <a class="entry-link" aria-label="post link to 5/29 파이썬 실습 (코드 노트)" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">5/29 파이썬 기초
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>파이썬은 문법이 영어 문장처럼 읽히는 언어입니다. 코딩을 한 번도 해본 적 없어도 “내가 컴퓨터에게 이렇게 말하면 컴퓨터가 이렇게 이해하는구나” 라는 감각만 잡으면 빠르게 익힐 수 있습니다. 오늘 배운 내용을 최대한 쉬운 말로 풀어 정리해 봤습니다. 🐍
-1. 자료형 (Data Type) — 데이터의 종류 컴퓨터는 숫자와 문자를 다르게 취급합니다. 3이라는 숫자와 &#34;3&#34;이라는 문자는 완전히 다른 것이에요. 파이썬에서 다루는 기본 자료형 5가지를 먼저 알아봅시다.
-정수 int (Integer) 소수점 없는 숫자입니다.
-...</p>
-  </div>
-  <footer class="entry-footer">
-
-<span title='2026-05-29 09:00:00 +0900 KST'>2026년 5월 29일</span>&nbsp;·&nbsp;<span>7 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
-  <a class="entry-link" aria-label="post link to 5/29 파이썬 기초" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%88/"></a>
-</article>
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
@@ -249,25 +181,6 @@ uv가 뭔가요? uv는 파이썬의 패키지·프로젝트 관리 도구입니�
 
 <span title='2026-05-29 08:00:00 +0900 KST'>2026년 5월 29일</span>&nbsp;·&nbsp;<span>4 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
   <a class="entry-link" aria-label="post link to 5/29 개발 환경 설정 (uv)" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD-%EC%84%A4%EC%A0%95/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">5/28 리눅스 연습 (Linux 왕초보 기초 명령어)
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>처음 리눅스 터미널(검은 화면)을 마주하면 마우스도 안 먹히고 막막하게 느껴질 수 있습니다. 하지만 걱정 마세요. 리눅스 명령어는 우리가 평소 윈도우에서 “마우스로 클릭해서 하던 행동&#34;을 “키보드로 타자 쳐서” 하는 것일 뿐입니다.
-코딩을 1도 모르는 비전공자도 무작정 따라 하며 익힐 수 있도록 정리해 봤습니다. 🐧
-🗺️ 시작 전에 — 경로(Path)가 뭔지 딱 한 번만 짚고 가자 리눅스를 처음 다루면 가장 먼저 헷갈리는 개념이 경로입니다.
-경로란 파일이나 폴더가 어디에 있는지 알려주는 주소예요.
-윈도우로 치면 C:\Users\최용우\Desktop\TEST 이런 것처럼, 리눅스도 폴더가 깊이 중첩된 구조로 되어 있습니다.
-...</p>
-  </div>
-  <footer class="entry-footer">
-
-<span title='2026-05-28 22:10:00 +0900 KST'>2026년 5월 28일</span>&nbsp;·&nbsp;<span>8 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
-  <a class="entry-link" aria-label="post link to 5/28 리눅스 연습 (Linux 왕초보 기초 명령어)" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-28-%EB%A6%AC%EB%88%85%EC%8A%A4-%EC%97%B0%EC%8A%B5/"></a>
 </article>
     </main>
     
