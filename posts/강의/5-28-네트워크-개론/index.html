@@ -727,12 +727,12 @@
 <p>주요 프로토콜 기능: 단편화, 캡슐화, 연결 제어, 순서 결정, 주소 설정, 동기화</p>
 <hr>
 <h3 id="캡슐화encapsulation--역캡슐화decapsulation">캡슐화(Encapsulation) / 역캡슐화(Decapsulation)<a hidden class="anchor" aria-hidden="true" href="#캡슐화encapsulation--역캡슐화decapsulation">#</a></h3>
-<pre tabindex="0"><code>[보내는 쪽] 데이터 → 세그먼트 → 패킷 → 프레임 → 비트열
-                  (각 계층에서 헤더 추가)
-
-[받는 쪽]  비트열 → 프레임 → 패킷 → 세그먼트 → 데이터
-                  (각 계층에서 헤더 제거)
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[보내는 쪽] 데이터 → 세그먼트 → 패킷 → 프레임 → 비트열
+</span></span><span class="line"><span class="cl">                  (각 계층에서 헤더 추가)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[받는 쪽]  비트열 → 프레임 → 패킷 → 세그먼트 → 데이터
+</span></span><span class="line"><span class="cl">                  (각 계층에서 헤더 제거)
+</span></span></code></pre></div><hr>
 <h3 id="httphypertext-transfer-protocol">HTTP(HyperText Transfer Protocol)<a hidden class="anchor" aria-hidden="true" href="#httphypertext-transfer-protocol">#</a></h3>
 <blockquote>
 <p>웹에서 HTML 등 <strong>하이퍼텍스트 문서를 전송</strong>하기 위한 프로토콜.<br>
@@ -887,25 +887,25 @@
 <blockquote>
 <p>IP 주소·서브넷 마스크·게이트웨이 등을 <strong>자동으로 할당</strong>하는 프로토콜.</p>
 </blockquote>
-<pre tabindex="0"><code>클라이언트 → (Discover) → DHCP 서버
-클라이언트 ← (Offer)    ← DHCP 서버
-클라이언트 → (Request)  → DHCP 서버
-클라이언트 ← (Ack)      ← DHCP 서버
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">클라이언트 → (Discover) → DHCP 서버
+</span></span><span class="line"><span class="cl">클라이언트 ← (Offer)    ← DHCP 서버
+</span></span><span class="line"><span class="cl">클라이언트 → (Request)  → DHCP 서버
+</span></span><span class="line"><span class="cl">클라이언트 ← (Ack)      ← DHCP 서버
+</span></span></code></pre></div><hr>
 <h3 id="tcptransmission-control-protocol">TCP(Transmission Control Protocol)<a hidden class="anchor" aria-hidden="true" href="#tcptransmission-control-protocol">#</a></h3>
 <blockquote>
 <p><strong>연결형·신뢰성</strong> 전송 프로토콜. 데이터 순서·오류·흐름을 제어한다.</p>
 </blockquote>
 <h4 id="3-way-handshake-연결-수립">3-way Handshake (연결 수립)<a hidden class="anchor" aria-hidden="true" href="#3-way-handshake-연결-수립">#</a></h4>
-<pre tabindex="0"><code>클라이언트 → SYN      → 서버
-클라이언트 ← SYN/ACK  ← 서버
-클라이언트 → ACK      → 서버
-</code></pre><h4 id="4-way-handshake-연결-종료">4-way Handshake (연결 종료)<a hidden class="anchor" aria-hidden="true" href="#4-way-handshake-연결-종료">#</a></h4>
-<pre tabindex="0"><code>클라이언트 → FIN  → 서버
-클라이언트 ← ACK  ← 서버
-클라이언트 ← FIN  ← 서버
-클라이언트 → ACK  → 서버
-</code></pre><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">클라이언트 → SYN      → 서버
+</span></span><span class="line"><span class="cl">클라이언트 ← SYN/ACK  ← 서버
+</span></span><span class="line"><span class="cl">클라이언트 → ACK      → 서버
+</span></span></code></pre></div><h4 id="4-way-handshake-연결-종료">4-way Handshake (연결 종료)<a hidden class="anchor" aria-hidden="true" href="#4-way-handshake-연결-종료">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">클라이언트 → FIN  → 서버
+</span></span><span class="line"><span class="cl">클라이언트 ← ACK  ← 서버
+</span></span><span class="line"><span class="cl">클라이언트 ← FIN  ← 서버
+</span></span><span class="line"><span class="cl">클라이언트 → ACK  → 서버
+</span></span></code></pre></div><blockquote>
 <p><strong>Full-Duplex</strong> : 양방향 동시 통신 지원</p>
 </blockquote>
 <hr>
@@ -1173,11 +1173,11 @@
 	</tbody>
 </table>
 <h4 id="쿠키-작동-원리">쿠키 작동 원리<a hidden class="anchor" aria-hidden="true" href="#쿠키-작동-원리">#</a></h4>
-<pre tabindex="0"><code>1. 클라이언트 → HTTP 요청 → 서버
-2. 서버 → 쿠키를 HTTP 헤더(Set-Cookie)에 담아 응답
-3. 클라이언트가 쿠키 저장, 이후 요청마다 쿠키 포함
-4. 서버 → 쿠키 업데이트 시 응답에 전달
-</code></pre><h4 id="쿠키의-장단점">쿠키의 장단점<a hidden class="anchor" aria-hidden="true" href="#쿠키의-장단점">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">1. 클라이언트 → HTTP 요청 → 서버
+</span></span><span class="line"><span class="cl">2. 서버 → 쿠키를 HTTP 헤더(Set-Cookie)에 담아 응답
+</span></span><span class="line"><span class="cl">3. 클라이언트가 쿠키 저장, 이후 요청마다 쿠키 포함
+</span></span><span class="line"><span class="cl">4. 서버 → 쿠키 업데이트 시 응답에 전달
+</span></span></code></pre></div><h4 id="쿠키의-장단점">쿠키의 장단점<a hidden class="anchor" aria-hidden="true" href="#쿠키의-장단점">#</a></h4>
 <p><strong>장점</strong></p>
 <ul>
 <li>서버에 추가 저장 불필요 → 서버 Scale-out 부담 없음</li>
@@ -1194,11 +1194,11 @@
 <blockquote>
 <p>서버 측에 사용자 정보를 저장하고, 클라이언트에는 <strong>세션 ID만</strong> 발급하는 방식.</p>
 </blockquote>
-<pre tabindex="0"><code>1. 클라이언트 → 로그인 요청
-2. 서버 → 세션 생성 + 세션 ID 쿠키로 전달
-3. 클라이언트 → 이후 요청마다 세션 ID 전송
-4. 서버 → 세션 ID로 사용자 정보 조회
-</code></pre><table>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">1. 클라이언트 → 로그인 요청
+</span></span><span class="line"><span class="cl">2. 서버 → 세션 생성 + 세션 ID 쿠키로 전달
+</span></span><span class="line"><span class="cl">3. 클라이언트 → 이후 요청마다 세션 ID 전송
+</span></span><span class="line"><span class="cl">4. 서버 → 세션 ID로 사용자 정보 조회
+</span></span></code></pre></div><table>
 	<thead>
 			<tr>
 					<th>구분</th>
@@ -1235,8 +1235,8 @@
 <p><strong>토큰(Token)</strong> : 사용자 인증 정보를 담은 문자열. 서버에 저장하지 않아도 됨.</p>
 </blockquote>
 <p><strong>JWT(JSON Web Token)</strong></p>
-<pre tabindex="0"><code>[Header].[Payload].[Signature]
-</code></pre><table>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="p">[</span><span class="n">Header</span><span class="p">]</span><span class="o">.</span><span class="p">[</span><span class="n">Payload</span><span class="p">]</span><span class="o">.</span><span class="p">[</span><span class="n">Signature</span><span class="p">]</span>
+</span></span></code></pre></div><table>
 	<thead>
 			<tr>
 					<th>구성</th>

@@ -182,6 +182,22 @@
     </h2>
   </header>
   <div class="entry-content">
+    <p>오늘 실습 노트북 코드를 강의에서 쓴 그대로 정리하고, 초보자가 봐도 “이게 무슨 뜻인지” 알 수 있게 한 줄씩 풀어 설명했습니다. 각 개념마다 ① 한 줄 설명 → ② 코드 → ③ 출력 → ④ 한 줄씩 뜯어보기 → ⑤ 팁 순서로 정리했어요. 눈으로만 읽지 말고 직접 쳐보세요! 🚀
+Part 1. 반복문 반복문은 “같은 일을 여러 번 자동으로 시키는 것” 입니다. 별 5개 출력하려고 print를 5번 쓰는 대신 “반복해!“라고 한 번에 시키는 거예요.
+...</p>
+  </div>
+  <footer class="entry-footer">
+
+<span title='2026-06-01 10:00:00 +0900 KST'>2026년 6월 1일</span>&nbsp;·&nbsp;<span>15 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
+  <a class="entry-link" aria-label="post link to 6/1 파이썬 실습2 (코드 노트)" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">6/1 파이썬 실습2 (코드 노트)
+    </h2>
+  </header>
+  <div class="entry-content">
     <p>오늘 실습 노트북 코드를 섹션별로 정리했습니다. 빈칸 실습은 동작하는 정답 코드로 채워 두었습니다. 눈으로 읽지 말고 Colab에서 직접 한 줄씩 쳐보세요! 🚀
 섹션 1 : 반복문 for 문 — 시퀀스 순회 # [1, 3, 5] 원소를 순서대로 더하기 total = 0 for n in [1, 3, 5]: total &#43;= n print(&#34;합계:&#34;, total) # 합계: 9 # 1부터 10까지 출력 for i in range(1, 11): print(i, end=&#34; &#34;) # 1 2 3 4 5 6 7 8 9 10 과일 목록 출력 / 합계·평균 fruits = [&#34;사과&#34;, &#34;바나나&#34;, &#34;체리&#34;, &#34;망고&#34;, &#34;딸기&#34;] for f in fruits: print(f) scores = [92, 88, 95, 70, 93] total = 0 for s in scores: total &#43;= s print(&#34;합계:&#34;, total) # 합계: 438 print(&#34;평균:&#34;, total / len(scores)) # 평균: 87.6 for &#43; range() — 횟수/구간 반복 print(list(range(1, 9))) # [1, 2, 3, 4, 5, 6, 7, 8] print(list(range(5))) # [0, 1, 2, 3, 4] # range &#43; len &#43; 인덱싱 (위치 번호가 필요할 때) my_list = [&#34;a&#34;, &#34;b&#34;, &#34;c&#34;, &#34;d&#34;] for idx in range(len(my_list)): print(my_list[idx], end=&#34; &#34;) # a b c d 구구단 / 별 삼각형 / 짝수 합 # 3단 출력 for i in range(1, 10): print(f&#34;3 x {i} = {3 * i}&#34;) # 별 삼각형 for i in range(1, 6): print(&#34;*&#34; * i) # * # ** # *** # **** # ***** # 1~20 짝수 합 total = 0 for i in range(1, 21): if i % 2 == 0: total &#43;= i print(&#34;1~20 짝수 합:&#34;, total) # 110 while 문 — 조건 기반 반복 # 카운트다운 i = 5 while i &gt; 0: print(i) i -= 1 print(&#34;Launch!&#34;) # 1~4 합 i, total = 1, 0 while i &lt;= 4: total &#43;= i i &#43;= 1 print(&#34;1~4 합:&#34;, total) # 10 ⚠️ 무한루프 주의! while 안에서 조건을 변하게 만드는 코드(i -= 1)가 없으면 영원히 돕니다.
 ...</p>
@@ -216,13 +232,14 @@ my_list = [2, 3, 5, 7, 11] print(my_list.pop(0)) # 2 (인덱스 0을 꺼내고 �
     </h2>
   </header>
   <div class="entry-content">
-    <p>수업 실습 코드를 섹션별로 정리하고, 수업에서 다루지 못한 파이썬 공식 문서의 유용한 내용도 함께 담았습니다. 코드를 그냥 읽지 말고 직접 Colab에서 하나씩 쳐보세요! 🚀
-섹션 1 : 기초 자료형과 변수 print() 기본 사용법 print(&#34;Hello, Python!&#34;) # Hello, Python! print(&#34;안녕&#34;, &#34;파이썬&#34;, &#34;!&#34;) # 안녕 파이썬 ! (콤마로 구분하면 띄어쓰기 자동 추가) print(&#34;안녕&#34; &#43; &#34;파이썬&#34;) # 안녕파이썬 (&#43; 는 붙여서 출력) 자료형 5가지 # 정수 (int) num_int = 42 print(type(num_int)) # &lt;class &#39;int&#39;&gt; # 실수 (float) num_float = 3.14 print(type(num_float)) # &lt;class &#39;float&#39;&gt; # 문자열 (str) text = &#34;파이썬&#34; print(type(text)) # &lt;class &#39;str&#39;&gt; # 리스트 (list) my_list = [1, 2, 3] print(type(my_list)) # &lt;class &#39;list&#39;&gt; # 불리언 (bool) flag = True print(type(flag)) # &lt;class &#39;bool&#39;&gt; 변수와 연산자 # 기본 사칙연산 a, b = 10, 3 print(a &#43; b) # 13 print(a - b) # 7 print(a * b) # 30 print(a / b) # 3.3333333333333335 # 특수 연산자 print(a // b) # 3 (몫: 소수점 버림) print(a % b) # 1 (나머지) print(a ** b) # 1000 (10의 3승) 문자열 연산 (&#43;, *) first_name = &#34;길동&#34; last_name = &#34;홍&#34; # 문자열 더하기 (이어 붙이기) full_name = last_name &#43; first_name print(full_name) # 홍길동 # 문자열 곱하기 (반복) print(&#34;파이썬! &#34; * 3) # 파이썬! 파이썬! 파이썬! # 숫자를 문자열로 변환해서 합치기 age = 25 print(&#34;나는 &#34; &#43; str(age) &#43; &#34;살 입니다.&#34;) # 나는 25살 입니다. print(f&#34;나는 {age}살 입니다.&#34;) # 나는 25살 입니다. (f-string 방식) 인덱싱과 슬라이싱 word = &#34;Python&#34; # 0 1 2 3 4 5 # -6-5-4-3-2-1 # 인덱싱 print(word[0]) # P print(word[-1]) # n (마지막 글자) print(word[2]) # t # 슬라이싱 [시작:끝] ← 끝 번호는 포함 안 됨 beta = &#34;abcdefg&#34; print(beta[2:5]) # cde (인덱스 2, 3, 4) print(beta[:3]) # abc (처음 ~ 인덱스 2) print(beta[4:]) # efg (인덱스 4 ~ 끝) print(beta[:]) # abcdefg (전체) 중첩 리스트 접근 student_info = [&#34;홍길동&#34;, 20, &#34;컴퓨터공학&#34;, [&#34;파이썬&#34;, &#34;자바&#34;, &#34;C&#43;&#43;&#34;]] print(student_info[0]) # 홍길동 print(student_info[3]) # [&#39;파이썬&#39;, &#39;자바&#39;, &#39;C&#43;&#43;&#39;] print(student_info[3][0]) # 파이썬 (리스트 안의 리스트 → [행][열] 로 접근) print(student_info[3][2]) # C&#43;&#43; 섹션 2 : 조건문 input() — 주의사항 # input() 의 반환값은 항상 str(문자열)! num1 = input(&#34;숫자 입력: &#34;) # &#34;100&#34; 입력 num2 = input(&#34;숫자 입력: &#34;) # &#34;300&#34; 입력 print(num1 &#43; num2) # 100300 ← 문자열 이어붙이기가 됨! # 정수로 변환 후 계산 print(int(num1) &#43; int(num2)) # 400 ← 이게 우리가 원하는 결과 형 변환 (Type Casting) # 문자열 → 정수 print(int(&#34;42&#34;)) # 42 print(int(&#34;3.14&#34;)) # ValueError! 소수점 있는 문자열은 int() 직접 불가 print(int(float(&#34;3.14&#34;))) # 3 ← float 먼저, 그 다음 int # 정수 → 실수 print(float(7)) # 7.0 # 숫자 → 문자열 print(str(100)) # &#34;100&#34; print(str(True)) # &#34;True&#34; # 문자열 → 리스트 print(list(&#34;abc&#34;)) # [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;] print(list(&#34;파이썬&#34;)) # [&#39;파&#39;, &#39;이&#39;, &#39;썬&#39;] if - elif - else 성적 판별 score = int(input(&#34;점수를 입력하세요: &#34;)) if score &gt;= 90: grade = &#34;A&#34; elif score &gt;= 80: grade = &#34;B&#34; elif score &gt;= 70: grade = &#34;C&#34; elif score &gt;= 60: grade = &#34;D&#34; else: grade = &#34;F&#34; print(f&#34;당신의 학점은 {grade}입니다.&#34;) 실용 예제 모음 BMI 계산기
+    <p>파이썬 첫 실습 코드를 강의에서 쓴 그대로 정리하고, 처음 코딩하는 분도 “이게 무슨 뜻인지” 알 수 있게 한 줄씩 풀어 설명했습니다. 각 개념마다 ① 한 줄 설명 → ② 코드 → ③ 출력 → ④ 한 줄씩 뜯어보기 → ⑤ 팁 순서예요. 직접 쳐보면서 익히세요! 🚀
+Part 1. 기초 자료형 1. 출력 — print() print()는 괄호 안의 값을 화면에 보여주는 가장 기본 함수입니다.
+print(&#34;나의 꿈은 파이썬 정복!&#34;) # 콤마로 여러 값을 공백 구분하여 한 줄 출력 print(3, &#34;Hello!&#34;) print(&#34;이름:&#34;, &#34;Alice&#34;, &#34;나이:&#34;, 20) # print 여러 번 → 여러 줄 출력 print(&#34;비행기에 타신 승객 여러분&#34;) print(&#34;행복한 여행 되십시오&#34;) print(&#34;기내식은 바밤바&#34;) 출력:
 ...</p>
   </div>
   <footer class="entry-footer">
 
-<span title='2026-05-29 10:00:00 +0900 KST'>2026년 5월 29일</span>&nbsp;·&nbsp;<span>11 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
+<span title='2026-05-29 10:00:00 +0900 KST'>2026년 5월 29일</span>&nbsp;·&nbsp;<span>12 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
   <a class="entry-link" aria-label="post link to 5/29 파이썬 실습 (코드 노트)" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"></a>
 </article>
 
@@ -328,23 +345,6 @@ my_list = [2, 3, 5, 7, 11] print(my_list.pop(0)) # 2 (인덱스 0을 꺼내고 �
 
 <span title='2026-05-27 18:00:00 +0900 KST'>2026년 5월 27일</span>&nbsp;·&nbsp;<span>1 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
   <a class="entry-link" aria-label="post link to 5/27 프로세스 미션 (3)" href="https://yw8837.github.io/posts/%EB%AF%B8%EC%85%98/5-27-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%AF%B8%EC%85%98-3/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">5/27 프로세스 미션 (4)
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 📌 5/27 프로세스 미션 | books.toscrape.com 크롤링 실습 5페이지(100권) 수집 후 평점 상위 5권을 선별하여 포스팅합니다.
-수집 도서 정보 항목 내용 제목 Rip it Up and Start Again 장르 가격 £35.02 평점 ⭐⭐⭐⭐⭐ (5/5) 재고 UPC 책 소개 (소개 없음)
-원문 보기 · 전체 목록
-</p>
-  </div>
-  <footer class="entry-footer">
-
-<span title='2026-05-27 18:00:00 +0900 KST'>2026년 5월 27일</span>&nbsp;·&nbsp;<span>1 분</span>&nbsp;·&nbsp;<span>yw8837</span></footer>
-  <a class="entry-link" aria-label="post link to 5/27 프로세스 미션 (4)" href="https://yw8837.github.io/posts/%EB%AF%B8%EC%85%98/5-27-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%AF%B8%EC%85%98-4/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
