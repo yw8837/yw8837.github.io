@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>6/1 파이썬 기초2 | AI_6스터디</title>
+<meta name="keywords" content="파이썬, Python, 튜플, 딕셔너리, 반복문, for, while, 함수, 메서드, 코딩기초, 초보자">
+<meta name="description" content="파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다">
+<meta name="author" content="yw8837">
+<link rel="canonical" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yw8837.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-EQR4094Q13');
+        }
+      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/">
+  <meta property="og:site_name" content="AI_6스터디">
+  <meta property="og:title" content="6/1 파이썬 기초2">
+  <meta property="og:description" content="파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다">
+  <meta property="og:locale" content="ko">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-01T09:00:00+09:00">
+    <meta property="article:modified_time" content="2026-06-01T09:00:00+09:00">
+    <meta property="article:tag" content="파이썬">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="튜플">
+    <meta property="article:tag" content="딕셔너리">
+    <meta property="article:tag" content="반복문">
+    <meta property="article:tag" content="For">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="6/1 파이썬 기초2">
+  <meta name="twitter:description" content="파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yw8837.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "6/1 파이썬 기초2",
+      "item": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "6/1 파이썬 기초2",
+  "name": "6\/1 파이썬 기초2",
+  "description": "파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다",
+  "keywords": [
+    "파이썬", "Python", "튜플", "딕셔너리", "반복문", "for", "while", "함수", "메서드", "코딩기초", "초보자"
+  ],
+  "articleBody": "지난 시간에 자료형·변수·조건문·리스트를 배웠습니다. 오늘은 그 위에 “여러 데이터를 묶고(튜플·딕셔너리), 반복하고(for·while), 묶음으로 재사용(함수)” 하는 도구를 얹습니다. 여기까지 오면 비로소 “프로그램다운 프로그램\"을 만들 수 있습니다. 🐍\n1. 문자열·리스트 추가 메서드 리스트와 문자열을 더 자유롭게 다루는 메서드 4개를 먼저 익힙니다.\npop() — 꺼내면서 삭제 값을 삭제하는 동시에 그 값을 돌려줍니다. (remove는 돌려주지 않습니다.)\nmy_list = [2, 3, 5, 7, 11] print(my_list.pop(0)) # 2 (인덱스 0을 꺼내고 삭제) print(my_list.pop()) # 11 (괄호 비우면 맨 마지막) print(my_list) # [3, 5, 7] count() — 개수 세기 [2, 2, 3, 2].count(2) # 3 \"elice and alice\".count(\"e\") # 3 split() — 문자열을 리스트로 쪼개기 \"1 2 3\".split() # ['1', '2', '3'] (괄호 비우면 공백 기준) \"Na,Mg,Al\".split(\",\") # ['Na', 'Mg', 'Al'] join() — 리스트를 문자열로 합치기 split()의 반대입니다. 구분자.join(리스트) 순서가 헷갈리기 쉬우니 주의하세요.\n\"\".join([\"e\", \"l\", \"i\", \"c\", \"e\"]) # \"elice\" \"→\".join([\"서울\", \"대전\", \"대구\"]) # \"서울→대전→대구\" 💡 split()과 join()은 한 쌍입니다. “문자열 → 쪼개서 가공 → 다시 합치기\"는 데이터 처리에서 가장 많이 쓰는 흐름입니다.\n2. 튜플 (Tuple) — 바뀌지 않는 묶음 튜플은 리스트와 거의 같지만 한 번 만들면 값을 바꿀 수 없습니다(불변). 소괄호 ()로 만듭니다.\nt = (1, 2, 3, 4, 5) # 리스트처럼 되는 것들 print(t[2]) # 3 (인덱싱) print(t[:2]) # (1, 2) (슬라이싱) print(2 in t) # True (포함 여부) print(len(t)) # 5 (길이) # 리스트와 다른 점 — 수정 불가 t[0] = 99 # TypeError: 'tuple' object does not support item assignment ⚠️ 원소가 1개인 튜플은 쉼표 필수!\n(1,) # 튜플 ✅ (1) # 그냥 정수 1 ❌ (괄호일 뿐) 언제 쓰나? 좌표·날짜처럼 바뀌면 안 되는 데이터, 딕셔너리의 키, 함수가 여러 값을 한 번에 돌려줄 때 사용합니다.\n자료형 표현 수정 특징 리스트 List [1, 2, 3] 가능 순서 O, 자유롭게 변경 튜플 Tuple (1, 2, 3) 불가 순서 O, 불변(안전) 3. 딕셔너리 (Dictionary) — 이름표가 붙은 데이터 딕셔너리는 키(key)와 값(value)을 짝지어 저장합니다. 사전에서 단어(키)를 찾으면 뜻(값)이 나오는 것과 같습니다. 중괄호 {}로 만듭니다.\nperson = {\"name\": \"Rabbit\", \"age\": 22} # 값 꺼내기 — 번호가 아니라 '키'로 접근 print(person[\"name\"]) # Rabbit 추가·수정·삭제 (CRUD) person[\"mail\"] = \"rabbit@elice.com\" # 추가 (없는 키에 넣으면 새로 생김) person[\"age\"] = 23 # 수정 (있는 키에 넣으면 덮어씀) del person[\"age\"] # 삭제 키·값·쌍 꺼내기 person.keys() # 키 전체 person.values() # 값 전체 person.items() # (키, 값) 쌍 전체 ⚠️ 키 규칙: 키에는 바뀌지 않는 자료형만 쓸 수 있습니다. 문자열·숫자·튜플 → OK, 리스트 → ❌ TypeError.\nfor문과 조합 (자주 쓰는 패턴) scores = {\"수학\": 95, \"영어\": 88, \"과학\": 92} for 과목, 점수 in scores.items(): print(f\"{과목}: {점수}점\") 💡 웹에서 데이터를 주고받는 JSON 형식이 딕셔너리와 똑같이 생겼습니다. 앞으로 API를 다룰 때 매일 만나게 됩니다.\n4. 반복문 (Loop) — 같은 일을 자동으로 되풀이 별 5개를 출력하려고 print를 5번 쓸 수는 있지만, 100개라면? 반복문이 답입니다.\nfor 문 — 목록을 하나씩 꺼내기 for fruit in [\"사과\", \"바나나\", \"체리\"]: print(fruit) # 사과 / 바나나 / 체리 (한 줄씩) for + range() — 정해진 횟수만큼 range()는 연속된 숫자를 만들어 줍니다. 끝 숫자는 포함하지 않습니다.\nrange(5) # 0, 1, 2, 3, 4 range(1, 6) # 1, 2, 3, 4, 5 range(0, 10, 2) # 0, 2, 4, 6, 8 (2칸씩) for i in range(1, 10): print(f\"3 x {i} = {3 * i}\") # 구구단 3단 while 문 — 조건이 참인 동안 계속 i = 5 while i \u003e 0: print(i) # 5 4 3 2 1 i -= 1 # 이 줄이 없으면 무한루프! print(\"발사!\") ⚠️ 무한루프 주의: while 안에서 조건을 변하게 만드는 코드(i -= 1 등)를 꼭 넣어야 합니다. 멈추지 않으면 Ctrl + C로 강제 종료하세요.\nbreak — 반복 도중 탈출 for fruit in [\"사과\", \"바나나\", \"체리\", \"망고\", \"딸기\"]: if fruit == \"망고\": break # 망고를 만나면 반복 종료 print(fruit) # 사과 / 바나나 / 체리 💡 for vs while 언제? 횟수·범위가 정해져 있으면 for, 조건에 따라 끝나면 while을 주로 씁니다.\n구문 용도 for i in 시퀀스 리스트·문자열 원소 순회 for i in range(n) n번 반복 while 조건 조건이 참인 동안 반복 break 반복문 즉시 탈출 5. 함수 (Function) — 코드 묶어서 재사용하기 함수는 특정 작업을 하는 코드 묶음에 이름을 붙여 두고 필요할 때마다 부르는 것입니다. 프로그래밍의 기본 틀은 입력 → 처리 → 출력입니다.\n내장 함수 — 파이썬이 미리 만들어 둔 것 len([1, 2, 3]) # 3 (길이) sum([1, 2, 3, 4, 5]) # 15 (합) max([1, 2, 3]) # 3 (최댓값) min([1, 2, 3]) # 1 (최솟값) 직접 함수 만들기 — def def plus_double(a, b): # def 이름(매개변수): c = a + b # 들여쓰기로 본문 return 2 * c # return으로 결과 돌려주기 print(plus_double(3, 4)) # 14 ( (3+4) × 2 ) 매개변수(parameter): 함수가 받는 입력값 자리 (a, b) return: 결과를 함수 밖으로 돌려줌 ⚠️ return이 없으면 결과는 None! 화면에 print만 하는 것과, 값을 return해서 다른 곳에 쓰는 것은 다릅니다.\ndef add(a, b): print(a + b) # 보여주기만 함 x = add(2, 3) # 화면엔 5가 찍히지만 x = None\n전역 변수 vs 지역 변수 함수 안에서 만든 변수는 함수 밖에서 쓸 수 없습니다.\nx = \"전역\" # 어디서든 접근 가능 def my_func(): y = \"지역\" # 이 함수 안에서만 존재 print(x) # 전역변수 읽기 OK my_func() print(y) # NameError! — 함수 밖에는 y가 없음 함수 vs 메서드 — 무엇이 다른가 둘 다 기능 묶음이지만 부르는 방법이 다릅니다.\n구분 함수 (Function) 메서드 (Method) 호출 함수명(자료) 자료.메서드명() 특징 범용 기능 특정 자료형에 딸린 기능 예시 len(my_list) my_list.append(4) 📌 보충 — 실무에서 함수를 쓰는 법 (타입 힌트 \u0026 독스트링) 수업 마지막에 다룬, 함수를 전문가답게 쓰는 두 가지 관행입니다. 코드의 가독성과 협업 효율을 크게 높입니다.\n타입 힌트 (Type Hint) 매개변수와 반환값의 자료형을 명시해 둡니다. 강제는 아니지만, 코드를 읽는 사람과 에디터가 실수를 빨리 잡게 도와줍니다.\n# 타입 힌트 없음 — a, b가 뭔지 알 수 없음 def add(a, b): return a + b # 타입 힌트 있음 — int 두 개를 받아 int를 반환한다고 명확히 표현 def add(a: int, b: int) -\u003e int: return a + b 독스트링 (Docstring) 함수 첫 줄에 \"\"\"설명\"\"\"을 적으면 그 함수의 설명서가 됩니다. help(함수명)으로 볼 수 있고, 오픈소스 라이브러리 공식 문서도 대부분 여기서 자동 생성됩니다.\ndef celsius_to_fahrenheit(celsius: float) -\u003e float: \"\"\"섭씨 온도를 화씨 온도로 변환합니다. Args: celsius (float): 변환할 섭씨 온도 Returns: float: 변환된 화씨 온도 \"\"\" return celsius * 9 / 5 + 32 help(celsius_to_fahrenheit) # 위 설명이 그대로 출력됨 출처: Python 공식 문서 — 함수 정의, 타입 힌트(typing)\n마무리 오늘 배운 것을 한 문장으로 묶으면 이렇습니다. “데이터를 묶고(튜플·딕셔너리), 반복으로 처리하고(for·while), 그 처리를 함수로 포장해 재사용한다.”\n이 세 가지가 합쳐지면 “성적표를 분석하고”, “재고를 계산하고”, “로그인을 처리하는” 실제 프로그램이 됩니다. 머리로만 읽지 말고 직접 손으로 쳐보면서 익히세요. 💪\n실습 코드 전체는 아래 코드 노트에 정리해 두었습니다.\n🔗 연관 노트 [[6-01 파이썬 코드 노트|6/1 파이썬 실습2 (코드 노트)]] — 오늘 실습 코드 전체 + 공식 문서 레퍼런스 [[5-29 파이썬 기초|5/29 파이썬 기초]] — 자료형·변수·조건문·리스트 (오늘의 전제) ",
+  "wordCount" : "1086",
+  "inLanguage": "en",
+  "datePublished": "2026-06-01T09:00:00+09:00",
+  "dateModified": "2026-06-01T09:00:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "yw8837"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI_6스터디",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yw8837.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
+                    <span>📚 Year Study</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
+                    <span>강의 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
+                    <span>실습 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
+                    <span>프로젝트</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/search/" title="🔍 검색">
+                    <span>🔍 검색</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+            <a href="/">홈</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="/posts/">Posts</a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+</nav>
+    <h1 class="post-title entry-hint-parent">
+      6/1 파이썬 기초2
+    </h1>
+    <div class="post-description">
+      파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다
+    </div>
+    <div class="post-meta">
+
+<span title='2026-06-01 09:00:00 +0900 KST'>2026년 6월 1일</span>&nbsp;·&nbsp;<span>6 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+
+</div>
+  </header> <details class="toc" >
+    <summary accesskey="c" title="(Alt + C)">
+        <span class="title">목차</span>
+    </summary>
+
+    <div class="inner"><ul>
+            <li>
+                <a href="#1-%eb%ac%b8%ec%9e%90%ec%97%b4%eb%a6%ac%ec%8a%a4%ed%8a%b8-%ec%b6%94%ea%b0%80-%eb%a9%94%ec%84%9c%eb%93%9c" aria-label="1. 문자열·리스트 추가 메서드">1. 문자열·리스트 추가 메서드</a><ul>
+                    
+            <li>
+                <a href="#pop--%ea%ba%bc%eb%82%b4%eb%a9%b4%ec%84%9c-%ec%82%ad%ec%a0%9c" aria-label="pop() — 꺼내면서 삭제">pop() — 꺼내면서 삭제</a></li>
+            <li>
+                <a href="#count--%ea%b0%9c%ec%88%98-%ec%84%b8%ea%b8%b0" aria-label="count() — 개수 세기">count() — 개수 세기</a></li>
+            <li>
+                <a href="#split--%eb%ac%b8%ec%9e%90%ec%97%b4%ec%9d%84-%eb%a6%ac%ec%8a%a4%ed%8a%b8%eb%a1%9c-%ec%aa%bc%ea%b0%9c%ea%b8%b0" aria-label="split() — 문자열을 리스트로 쪼개기">split() — 문자열을 리스트로 쪼개기</a></li>
+            <li>
+                <a href="#join--%eb%a6%ac%ec%8a%a4%ed%8a%b8%eb%a5%bc-%eb%ac%b8%ec%9e%90%ec%97%b4%eb%a1%9c-%ed%95%a9%ec%b9%98%ea%b8%b0" aria-label="join() — 리스트를 문자열로 합치기">join() — 리스트를 문자열로 합치기</a></li></ul>
+            </li>
+            <li>
+                <a href="#2-%ed%8a%9c%ed%94%8c-tuple--%eb%b0%94%eb%80%8c%ec%a7%80-%ec%95%8a%eb%8a%94-%eb%ac%b6%ec%9d%8c" aria-label="2. 튜플 (Tuple) — 바뀌지 않는 묶음">2. 튜플 (Tuple) — 바뀌지 않는 묶음</a></li>
+            <li>
+                <a href="#3-%eb%94%95%ec%85%94%eb%84%88%eb%a6%ac-dictionary--%ec%9d%b4%eb%a6%84%ed%91%9c%ea%b0%80-%eb%b6%99%ec%9d%80-%eb%8d%b0%ec%9d%b4%ed%84%b0" aria-label="3. 딕셔너리 (Dictionary) — 이름표가 붙은 데이터">3. 딕셔너리 (Dictionary) — 이름표가 붙은 데이터</a><ul>
+                    
+            <li>
+                <a href="#%ec%b6%94%ea%b0%80%ec%88%98%ec%a0%95%ec%82%ad%ec%a0%9c-crud" aria-label="추가·수정·삭제 (CRUD)">추가·수정·삭제 (CRUD)</a></li>
+            <li>
+                <a href="#%ed%82%a4%ea%b0%92%ec%8c%8d-%ea%ba%bc%eb%82%b4%ea%b8%b0" aria-label="키·값·쌍 꺼내기">키·값·쌍 꺼내기</a></li>
+            <li>
+                <a href="#for%eb%ac%b8%ea%b3%bc-%ec%a1%b0%ed%95%a9-%ec%9e%90%ec%a3%bc-%ec%93%b0%eb%8a%94-%ed%8c%a8%ed%84%b4" aria-label="for문과 조합 (자주 쓰는 패턴)">for문과 조합 (자주 쓰는 패턴)</a></li></ul>
+            </li>
+            <li>
+                <a href="#4-%eb%b0%98%eb%b3%b5%eb%ac%b8-loop--%ea%b0%99%ec%9d%80-%ec%9d%bc%ec%9d%84-%ec%9e%90%eb%8f%99%ec%9c%bc%eb%a1%9c-%eb%90%98%ed%92%80%ec%9d%b4" aria-label="4. 반복문 (Loop) — 같은 일을 자동으로 되풀이">4. 반복문 (Loop) — 같은 일을 자동으로 되풀이</a><ul>
+                    
+            <li>
+                <a href="#for-%eb%ac%b8--%eb%aa%a9%eb%a1%9d%ec%9d%84-%ed%95%98%eb%82%98%ec%94%a9-%ea%ba%bc%eb%82%b4%ea%b8%b0" aria-label="for 문 — 목록을 하나씩 꺼내기">for 문 — 목록을 하나씩 꺼내기</a></li>
+            <li>
+                <a href="#for--range--%ec%a0%95%ed%95%b4%ec%a7%84-%ed%9a%9f%ec%88%98%eb%a7%8c%ed%81%bc" aria-label="for &#43; range() — 정해진 횟수만큼">for + range() — 정해진 횟수만큼</a></li>
+            <li>
+                <a href="#while-%eb%ac%b8--%ec%a1%b0%ea%b1%b4%ec%9d%b4-%ec%b0%b8%ec%9d%b8-%eb%8f%99%ec%95%88-%ea%b3%84%ec%86%8d" aria-label="while 문 — 조건이 참인 동안 계속">while 문 — 조건이 참인 동안 계속</a></li>
+            <li>
+                <a href="#break--%eb%b0%98%eb%b3%b5-%eb%8f%84%ec%a4%91-%ed%83%88%ec%b6%9c" aria-label="break — 반복 도중 탈출">break — 반복 도중 탈출</a></li></ul>
+            </li>
+            <li>
+                <a href="#5-%ed%95%a8%ec%88%98-function--%ec%bd%94%eb%93%9c-%eb%ac%b6%ec%96%b4%ec%84%9c-%ec%9e%ac%ec%82%ac%ec%9a%a9%ed%95%98%ea%b8%b0" aria-label="5. 함수 (Function) — 코드 묶어서 재사용하기">5. 함수 (Function) — 코드 묶어서 재사용하기</a><ul>
+                    
+            <li>
+                <a href="#%eb%82%b4%ec%9e%a5-%ed%95%a8%ec%88%98--%ed%8c%8c%ec%9d%b4%ec%8d%ac%ec%9d%b4-%eb%af%b8%eb%a6%ac-%eb%a7%8c%eb%93%a4%ec%96%b4-%eb%91%94-%ea%b2%83" aria-label="내장 함수 — 파이썬이 미리 만들어 둔 것">내장 함수 — 파이썬이 미리 만들어 둔 것</a></li>
+            <li>
+                <a href="#%ec%a7%81%ec%a0%91-%ed%95%a8%ec%88%98-%eb%a7%8c%eb%93%a4%ea%b8%b0--def" aria-label="직접 함수 만들기 — def">직접 함수 만들기 — def</a></li>
+            <li>
+                <a href="#%ec%a0%84%ec%97%ad-%eb%b3%80%ec%88%98-vs-%ec%a7%80%ec%97%ad-%eb%b3%80%ec%88%98" aria-label="전역 변수 vs 지역 변수">전역 변수 vs 지역 변수</a></li>
+            <li>
+                <a href="#%ed%95%a8%ec%88%98-vs-%eb%a9%94%ec%84%9c%eb%93%9c--%eb%ac%b4%ec%97%87%ec%9d%b4-%eb%8b%a4%eb%a5%b8%ea%b0%80" aria-label="함수 vs 메서드 — 무엇이 다른가">함수 vs 메서드 — 무엇이 다른가</a></li></ul>
+            </li>
+            <li>
+                <a href="#-%eb%b3%b4%ec%b6%a9--%ec%8b%a4%eb%ac%b4%ec%97%90%ec%84%9c-%ed%95%a8%ec%88%98%eb%a5%bc-%ec%93%b0%eb%8a%94-%eb%b2%95-%ed%83%80%ec%9e%85-%ed%9e%8c%ed%8a%b8--%eb%8f%85%ec%8a%a4%ed%8a%b8%eb%a7%81" aria-label="📌 보충 — 실무에서 함수를 쓰는 법 (타입 힌트 &amp; 독스트링)">📌 보충 — 실무에서 함수를 쓰는 법 (타입 힌트 &amp; 독스트링)</a><ul>
+                    
+            <li>
+                <a href="#%ed%83%80%ec%9e%85-%ed%9e%8c%ed%8a%b8-type-hint" aria-label="타입 힌트 (Type Hint)">타입 힌트 (Type Hint)</a></li>
+            <li>
+                <a href="#%eb%8f%85%ec%8a%a4%ed%8a%b8%eb%a7%81-docstring" aria-label="독스트링 (Docstring)">독스트링 (Docstring)</a></li></ul>
+            </li>
+            <li>
+                <a href="#%eb%a7%88%eb%ac%b4%eb%a6%ac" aria-label="마무리">마무리</a></li>
+            <li>
+                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
+            </li>
+        </ul>
+    </div>
+</details>
+
+  <div class="post-content md-content"><p>지난 시간에 자료형·변수·조건문·리스트를 배웠습니다. 오늘은 그 위에 <strong>&ldquo;여러 데이터를 묶고(튜플·딕셔너리), 반복하고(for·while), 묶음으로 재사용(함수)&rdquo;</strong> 하는 도구를 얹습니다. 여기까지 오면 비로소 &ldquo;프로그램다운 프로그램&quot;을 만들 수 있습니다. 🐍</p>
+<hr>
+<h2 id="1-문자열리스트-추가-메서드">1. 문자열·리스트 추가 메서드<a hidden class="anchor" aria-hidden="true" href="#1-문자열리스트-추가-메서드">#</a></h2>
+<p>리스트와 문자열을 더 자유롭게 다루는 메서드 4개를 먼저 익힙니다.</p>
+<h3 id="pop--꺼내면서-삭제"><code>pop()</code> — 꺼내면서 삭제<a hidden class="anchor" aria-hidden="true" href="#pop--꺼내면서-삭제">#</a></h3>
+<p>값을 <strong>삭제하는 동시에 그 값을 돌려줍니다.</strong> (<code>remove</code>는 돌려주지 않습니다.)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>my_list <span style="color:#f92672">=</span> [<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">11</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(my_list<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>))   <span style="color:#75715e"># 2    (인덱스 0을 꺼내고 삭제)</span>
+</span></span><span style="display:flex;"><span>print(my_list<span style="color:#f92672">.</span>pop())    <span style="color:#75715e"># 11   (괄호 비우면 맨 마지막)</span>
+</span></span><span style="display:flex;"><span>print(my_list)          <span style="color:#75715e"># [3, 5, 7]</span>
+</span></span></code></pre></div><h3 id="count--개수-세기"><code>count()</code> — 개수 세기<a hidden class="anchor" aria-hidden="true" href="#count--개수-세기">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>[<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>count(<span style="color:#ae81ff">2</span>)          <span style="color:#75715e"># 3</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;elice and alice&#34;</span><span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#34;e&#34;</span>)   <span style="color:#75715e"># 3</span>
+</span></span></code></pre></div><h3 id="split--문자열을-리스트로-쪼개기"><code>split()</code> — 문자열을 리스트로 쪼개기<a hidden class="anchor" aria-hidden="true" href="#split--문자열을-리스트로-쪼개기">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#e6db74">&#34;1 2 3&#34;</span><span style="color:#f92672">.</span>split()         <span style="color:#75715e"># [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]   (괄호 비우면 공백 기준)</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Na,Mg,Al&#34;</span><span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;,&#34;</span>)   <span style="color:#75715e"># [&#39;Na&#39;, &#39;Mg&#39;, &#39;Al&#39;]</span>
+</span></span></code></pre></div><h3 id="join--리스트를-문자열로-합치기"><code>join()</code> — 리스트를 문자열로 합치기<a hidden class="anchor" aria-hidden="true" href="#join--리스트를-문자열로-합치기">#</a></h3>
+<p><code>split()</code>의 반대입니다. <strong>구분자.join(리스트)</strong> 순서가 헷갈리기 쉬우니 주의하세요.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join([<span style="color:#e6db74">&#34;e&#34;</span>, <span style="color:#e6db74">&#34;l&#34;</span>, <span style="color:#e6db74">&#34;i&#34;</span>, <span style="color:#e6db74">&#34;c&#34;</span>, <span style="color:#e6db74">&#34;e&#34;</span>])    <span style="color:#75715e"># &#34;elice&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;→&#34;</span><span style="color:#f92672">.</span>join([<span style="color:#e6db74">&#34;서울&#34;</span>, <span style="color:#e6db74">&#34;대전&#34;</span>, <span style="color:#e6db74">&#34;대구&#34;</span>])     <span style="color:#75715e"># &#34;서울→대전→대구&#34;</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <code>split()</code>과 <code>join()</code>은 한 쌍입니다. &ldquo;문자열 → 쪼개서 가공 → 다시 합치기&quot;는 데이터 처리에서 가장 많이 쓰는 흐름입니다.</p>
+</blockquote>
+<hr>
+<h2 id="2-튜플-tuple--바뀌지-않는-묶음">2. 튜플 (Tuple) — 바뀌지 않는 묶음<a hidden class="anchor" aria-hidden="true" href="#2-튜플-tuple--바뀌지-않는-묶음">#</a></h2>
+<p>튜플은 리스트와 거의 같지만 <strong>한 번 만들면 값을 바꿀 수 없습니다(불변).</strong> 소괄호 <code>()</code>로 만듭니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>t <span style="color:#f92672">=</span> (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 리스트처럼 되는 것들</span>
+</span></span><span style="display:flex;"><span>print(t[<span style="color:#ae81ff">2</span>])       <span style="color:#75715e"># 3        (인덱싱)</span>
+</span></span><span style="display:flex;"><span>print(t[:<span style="color:#ae81ff">2</span>])      <span style="color:#75715e"># (1, 2)   (슬라이싱)</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#ae81ff">2</span> <span style="color:#f92672">in</span> t)     <span style="color:#75715e"># True     (포함 여부)</span>
+</span></span><span style="display:flex;"><span>print(len(t))     <span style="color:#75715e"># 5        (길이)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 리스트와 다른 점 — 수정 불가</span>
+</span></span><span style="display:flex;"><span>t[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">99</span>         <span style="color:#75715e"># TypeError: &#39;tuple&#39; object does not support item assignment</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>원소가 1개인 튜플은 쉼표 필수!</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>(<span style="color:#ae81ff">1</span>,)    <span style="color:#75715e"># 튜플 ✅</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">1</span>)     <span style="color:#75715e"># 그냥 정수 1 ❌ (괄호일 뿐)</span>
+</span></span></code></pre></div></blockquote>
+<p><strong>언제 쓰나?</strong> 좌표·날짜처럼 <strong>바뀌면 안 되는 데이터</strong>, 딕셔너리의 키, 함수가 여러 값을 한 번에 돌려줄 때 사용합니다.</p>
+<table>
+	<thead>
+			<tr>
+					<th style="text-align: left">자료형</th>
+					<th style="text-align: left">표현</th>
+					<th style="text-align: center">수정</th>
+					<th style="text-align: left">특징</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: left">리스트 List</td>
+					<td style="text-align: left"><code>[1, 2, 3]</code></td>
+					<td style="text-align: center">가능</td>
+					<td style="text-align: left">순서 O, 자유롭게 변경</td>
+			</tr>
+			<tr>
+					<td style="text-align: left">튜플 Tuple</td>
+					<td style="text-align: left"><code>(1, 2, 3)</code></td>
+					<td style="text-align: center"><strong>불가</strong></td>
+					<td style="text-align: left">순서 O, 불변(안전)</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h2 id="3-딕셔너리-dictionary--이름표가-붙은-데이터">3. 딕셔너리 (Dictionary) — 이름표가 붙은 데이터<a hidden class="anchor" aria-hidden="true" href="#3-딕셔너리-dictionary--이름표가-붙은-데이터">#</a></h2>
+<p>딕셔너리는 <strong>키(key)와 값(value)을 짝지어</strong> 저장합니다. 사전에서 단어(키)를 찾으면 뜻(값)이 나오는 것과 같습니다. 중괄호 <code>{}</code>로 만듭니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>person <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Rabbit&#34;</span>, <span style="color:#e6db74">&#34;age&#34;</span>: <span style="color:#ae81ff">22</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 값 꺼내기 — 번호가 아니라 &#39;키&#39;로 접근</span>
+</span></span><span style="display:flex;"><span>print(person[<span style="color:#e6db74">&#34;name&#34;</span>])    <span style="color:#75715e"># Rabbit</span>
+</span></span></code></pre></div><h3 id="추가수정삭제-crud">추가·수정·삭제 (CRUD)<a hidden class="anchor" aria-hidden="true" href="#추가수정삭제-crud">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>person[<span style="color:#e6db74">&#34;mail&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;rabbit@elice.com&#34;</span>   <span style="color:#75715e"># 추가 (없는 키에 넣으면 새로 생김)</span>
+</span></span><span style="display:flex;"><span>person[<span style="color:#e6db74">&#34;age&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">23</span>                    <span style="color:#75715e"># 수정 (있는 키에 넣으면 덮어씀)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">del</span> person[<span style="color:#e6db74">&#34;age&#34;</span>]                     <span style="color:#75715e"># 삭제</span>
+</span></span></code></pre></div><h3 id="키값쌍-꺼내기">키·값·쌍 꺼내기<a hidden class="anchor" aria-hidden="true" href="#키값쌍-꺼내기">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>person<span style="color:#f92672">.</span>keys()      <span style="color:#75715e"># 키 전체</span>
+</span></span><span style="display:flex;"><span>person<span style="color:#f92672">.</span>values()    <span style="color:#75715e"># 값 전체</span>
+</span></span><span style="display:flex;"><span>person<span style="color:#f92672">.</span>items()     <span style="color:#75715e"># (키, 값) 쌍 전체</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>키 규칙</strong>: 키에는 바뀌지 않는 자료형만 쓸 수 있습니다. 문자열·숫자·튜플 → OK, <strong>리스트 → ❌ TypeError</strong>.</p>
+</blockquote>
+<h3 id="for문과-조합-자주-쓰는-패턴">for문과 조합 (자주 쓰는 패턴)<a hidden class="anchor" aria-hidden="true" href="#for문과-조합-자주-쓰는-패턴">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>scores <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;수학&#34;</span>: <span style="color:#ae81ff">95</span>, <span style="color:#e6db74">&#34;영어&#34;</span>: <span style="color:#ae81ff">88</span>, <span style="color:#e6db74">&#34;과학&#34;</span>: <span style="color:#ae81ff">92</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> 과목, 점수 <span style="color:#f92672">in</span> scores<span style="color:#f92672">.</span>items():
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>과목<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>점수<span style="color:#e6db74">}</span><span style="color:#e6db74">점&#34;</span>)
+</span></span></code></pre></div><blockquote>
+<p>💡 웹에서 데이터를 주고받는 <strong>JSON</strong> 형식이 딕셔너리와 똑같이 생겼습니다. 앞으로 API를 다룰 때 매일 만나게 됩니다.</p>
+</blockquote>
+<hr>
+<h2 id="4-반복문-loop--같은-일을-자동으로-되풀이">4. 반복문 (Loop) — 같은 일을 자동으로 되풀이<a hidden class="anchor" aria-hidden="true" href="#4-반복문-loop--같은-일을-자동으로-되풀이">#</a></h2>
+<p>별 5개를 출력하려고 <code>print</code>를 5번 쓸 수는 있지만, 100개라면? 반복문이 답입니다.</p>
+<h3 id="for-문--목록을-하나씩-꺼내기">for 문 — 목록을 하나씩 꺼내기<a hidden class="anchor" aria-hidden="true" href="#for-문--목록을-하나씩-꺼내기">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> fruit <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#34;사과&#34;</span>, <span style="color:#e6db74">&#34;바나나&#34;</span>, <span style="color:#e6db74">&#34;체리&#34;</span>]:
+</span></span><span style="display:flex;"><span>    print(fruit)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 사과 / 바나나 / 체리 (한 줄씩)</span>
+</span></span></code></pre></div><h3 id="for--range--정해진-횟수만큼">for + range() — 정해진 횟수만큼<a hidden class="anchor" aria-hidden="true" href="#for--range--정해진-횟수만큼">#</a></h3>
+<p><code>range()</code>는 연속된 숫자를 만들어 줍니다. <strong>끝 숫자는 포함하지 않습니다.</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>range(<span style="color:#ae81ff">5</span>)         <span style="color:#75715e"># 0, 1, 2, 3, 4</span>
+</span></span><span style="display:flex;"><span>range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>)      <span style="color:#75715e"># 1, 2, 3, 4, 5</span>
+</span></span><span style="display:flex;"><span>range(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">2</span>)  <span style="color:#75715e"># 0, 2, 4, 6, 8  (2칸씩)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>):
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;3 x </span><span style="color:#e6db74">{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74"> = </span><span style="color:#e6db74">{</span><span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)   <span style="color:#75715e"># 구구단 3단</span>
+</span></span></code></pre></div><h3 id="while-문--조건이-참인-동안-계속">while 문 — 조건이 참인 동안 계속<a hidden class="anchor" aria-hidden="true" href="#while-문--조건이-참인-동안-계속">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>i <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> i <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>    print(i)     <span style="color:#75715e"># 5 4 3 2 1</span>
+</span></span><span style="display:flex;"><span>    i <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>       <span style="color:#75715e"># 이 줄이 없으면 무한루프!</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;발사!&#34;</span>)
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>무한루프 주의</strong>: while 안에서 조건을 변하게 만드는 코드(<code>i -= 1</code> 등)를 꼭 넣어야 합니다. 멈추지 않으면 <code>Ctrl + C</code>로 강제 종료하세요.</p>
+</blockquote>
+<h3 id="break--반복-도중-탈출">break — 반복 도중 탈출<a hidden class="anchor" aria-hidden="true" href="#break--반복-도중-탈출">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> fruit <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#34;사과&#34;</span>, <span style="color:#e6db74">&#34;바나나&#34;</span>, <span style="color:#e6db74">&#34;체리&#34;</span>, <span style="color:#e6db74">&#34;망고&#34;</span>, <span style="color:#e6db74">&#34;딸기&#34;</span>]:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> fruit <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;망고&#34;</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>        <span style="color:#75715e"># 망고를 만나면 반복 종료</span>
+</span></span><span style="display:flex;"><span>    print(fruit)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 사과 / 바나나 / 체리</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <strong>for vs while 언제?</strong> 횟수·범위가 정해져 있으면 <code>for</code>, 조건에 따라 끝나면 <code>while</code>을 주로 씁니다.</p>
+</blockquote>
+<table>
+	<thead>
+			<tr>
+					<th style="text-align: left">구문</th>
+					<th style="text-align: left">용도</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: left"><code>for i in 시퀀스</code></td>
+					<td style="text-align: left">리스트·문자열 원소 순회</td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><code>for i in range(n)</code></td>
+					<td style="text-align: left">n번 반복</td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><code>while 조건</code></td>
+					<td style="text-align: left">조건이 참인 동안 반복</td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><code>break</code></td>
+					<td style="text-align: left">반복문 즉시 탈출</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h2 id="5-함수-function--코드-묶어서-재사용하기">5. 함수 (Function) — 코드 묶어서 재사용하기<a hidden class="anchor" aria-hidden="true" href="#5-함수-function--코드-묶어서-재사용하기">#</a></h2>
+<p>함수는 <strong>특정 작업을 하는 코드 묶음에 이름을 붙여 두고</strong> 필요할 때마다 부르는 것입니다. 프로그래밍의 기본 틀은 <strong>입력 → 처리 → 출력</strong>입니다.</p>
+<h3 id="내장-함수--파이썬이-미리-만들어-둔-것">내장 함수 — 파이썬이 미리 만들어 둔 것<a hidden class="anchor" aria-hidden="true" href="#내장-함수--파이썬이-미리-만들어-둔-것">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>len([<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>])        <span style="color:#75715e"># 3   (길이)</span>
+</span></span><span style="display:flex;"><span>sum([<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>])  <span style="color:#75715e"># 15  (합)</span>
+</span></span><span style="display:flex;"><span>max([<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>])        <span style="color:#75715e"># 3   (최댓값)</span>
+</span></span><span style="display:flex;"><span>min([<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>])        <span style="color:#75715e"># 1   (최솟값)</span>
+</span></span></code></pre></div><h3 id="직접-함수-만들기--def">직접 함수 만들기 — <code>def</code><a hidden class="anchor" aria-hidden="true" href="#직접-함수-만들기--def">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plus_double</span>(a, b):     <span style="color:#75715e"># def 이름(매개변수):</span>
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b              <span style="color:#75715e">#   들여쓰기로 본문</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> c           <span style="color:#75715e">#   return으로 결과 돌려주기</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(plus_double(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>))   <span style="color:#75715e"># 14   ( (3+4) × 2 )</span>
+</span></span></code></pre></div><ul>
+<li><strong>매개변수(parameter)</strong>: 함수가 받는 입력값 자리 (<code>a</code>, <code>b</code>)</li>
+<li><strong><code>return</code></strong>: 결과를 함수 밖으로 돌려줌</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong><code>return</code>이 없으면 결과는 <code>None</code>!</strong> 화면에 <code>print</code>만 하는 것과, 값을 <code>return</code>해서 다른 곳에 쓰는 것은 다릅니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add</span>(a, b):
+</span></span><span style="display:flex;"><span>    print(a <span style="color:#f92672">+</span> b)     <span style="color:#75715e"># 보여주기만 함</span>
+</span></span></code></pre></div></blockquote>
+<blockquote>
+<p>x = add(2, 3)        # 화면엔 5가 찍히지만 x = None</p>
+<pre tabindex="0"><code></code></pre></blockquote>
+<h3 id="전역-변수-vs-지역-변수">전역 변수 vs 지역 변수<a hidden class="anchor" aria-hidden="true" href="#전역-변수-vs-지역-변수">#</a></h3>
+<p>함수 <strong>안에서 만든 변수</strong>는 함수 밖에서 쓸 수 없습니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;전역&#34;</span>          <span style="color:#75715e"># 어디서든 접근 가능</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">my_func</span>():
+</span></span><span style="display:flex;"><span>    y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;지역&#34;</span>      <span style="color:#75715e"># 이 함수 안에서만 존재</span>
+</span></span><span style="display:flex;"><span>    print(x)        <span style="color:#75715e"># 전역변수 읽기 OK</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>my_func()
+</span></span><span style="display:flex;"><span>print(y)            <span style="color:#75715e"># NameError! — 함수 밖에는 y가 없음</span>
+</span></span></code></pre></div><h3 id="함수-vs-메서드--무엇이-다른가">함수 vs 메서드 — 무엇이 다른가<a hidden class="anchor" aria-hidden="true" href="#함수-vs-메서드--무엇이-다른가">#</a></h3>
+<p>둘 다 기능 묶음이지만 <strong>부르는 방법</strong>이 다릅니다.</p>
+<table>
+	<thead>
+			<tr>
+					<th style="text-align: left">구분</th>
+					<th style="text-align: left">함수 (Function)</th>
+					<th style="text-align: left">메서드 (Method)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: left">호출</td>
+					<td style="text-align: left"><code>함수명(자료)</code></td>
+					<td style="text-align: left"><code>자료.메서드명()</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left">특징</td>
+					<td style="text-align: left">범용 기능</td>
+					<td style="text-align: left">특정 자료형에 딸린 기능</td>
+			</tr>
+			<tr>
+					<td style="text-align: left">예시</td>
+					<td style="text-align: left"><code>len(my_list)</code></td>
+					<td style="text-align: left"><code>my_list.append(4)</code></td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h2 id="-보충--실무에서-함수를-쓰는-법-타입-힌트--독스트링">📌 보충 — 실무에서 함수를 쓰는 법 (타입 힌트 &amp; 독스트링)<a hidden class="anchor" aria-hidden="true" href="#-보충--실무에서-함수를-쓰는-법-타입-힌트--독스트링">#</a></h2>
+<p>수업 마지막에 다룬, 함수를 <strong>전문가답게</strong> 쓰는 두 가지 관행입니다. 코드의 가독성과 협업 효율을 크게 높입니다.</p>
+<h3 id="타입-힌트-type-hint">타입 힌트 (Type Hint)<a hidden class="anchor" aria-hidden="true" href="#타입-힌트-type-hint">#</a></h3>
+<p>매개변수와 반환값의 <strong>자료형을 명시</strong>해 둡니다. 강제는 아니지만, 코드를 읽는 사람과 에디터가 실수를 빨리 잡게 도와줍니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 타입 힌트 없음 — a, b가 뭔지 알 수 없음</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add</span>(a, b):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> a <span style="color:#f92672">+</span> b
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 타입 힌트 있음 — int 두 개를 받아 int를 반환한다고 명확히 표현</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add</span>(a: int, b: int) <span style="color:#f92672">-&gt;</span> int:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> a <span style="color:#f92672">+</span> b
+</span></span></code></pre></div><h3 id="독스트링-docstring">독스트링 (Docstring)<a hidden class="anchor" aria-hidden="true" href="#독스트링-docstring">#</a></h3>
+<p>함수 첫 줄에 <code>&quot;&quot;&quot;설명&quot;&quot;&quot;</code>을 적으면 그 함수의 설명서가 됩니다. <code>help(함수명)</code>으로 볼 수 있고, 오픈소스 라이브러리 공식 문서도 대부분 여기서 자동 생성됩니다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">celsius_to_fahrenheit</span>(celsius: float) <span style="color:#f92672">-&gt;</span> float:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;섭씨 온도를 화씨 온도로 변환합니다.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Args:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        celsius (float): 변환할 섭씨 온도
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Returns:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        float: 변환된 화씨 온도
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> celsius <span style="color:#f92672">*</span> <span style="color:#ae81ff">9</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>help(celsius_to_fahrenheit)   <span style="color:#75715e"># 위 설명이 그대로 출력됨</span>
+</span></span></code></pre></div><blockquote>
+<p>출처: <a href="https://docs.python.org/ko/3/tutorial/controlflow.html#defining-functions">Python 공식 문서 — 함수 정의</a>, <a href="https://docs.python.org/ko/3/library/typing.html">타입 힌트(typing)</a></p>
+</blockquote>
+<hr>
+<h2 id="마무리">마무리<a hidden class="anchor" aria-hidden="true" href="#마무리">#</a></h2>
+<p>오늘 배운 것을 한 문장으로 묶으면 이렇습니다.
+<strong>&ldquo;데이터를 묶고(튜플·딕셔너리), 반복으로 처리하고(for·while), 그 처리를 함수로 포장해 재사용한다.&rdquo;</strong></p>
+<p>이 세 가지가 합쳐지면 &ldquo;성적표를 분석하고&rdquo;, &ldquo;재고를 계산하고&rdquo;, &ldquo;로그인을 처리하는&rdquo; 실제 프로그램이 됩니다. 머리로만 읽지 말고 직접 손으로 쳐보면서 익히세요. 💪</p>
+<p>실습 코드 전체는 아래 코드 노트에 정리해 두었습니다.</p>
+<hr>
+<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
+<ul>
+<li>[[6-01 파이썬 코드 노트|6/1 파이썬 실습2 (코드 노트)]] — 오늘 실습 코드 전체 + 공식 문서 레퍼런스</li>
+<li>[[5-29 파이썬 기초|5/29 파이썬 기초]] — 자료형·변수·조건문·리스트 (오늘의 전제)</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yw8837.github.io/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/">파이썬</a></li>
+      <li><a href="https://yw8837.github.io/tags/python/">Python</a></li>
+      <li><a href="https://yw8837.github.io/tags/%ED%8A%9C%ED%94%8C/">튜플</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EB%94%95%EC%85%94%EB%84%88%EB%A6%AC/">딕셔너리</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EB%B0%98%EB%B3%B5%EB%AC%B8/">반복문</a></li>
+      <li><a href="https://yw8837.github.io/tags/for/">For</a></li>
+      <li><a href="https://yw8837.github.io/tags/while/">While</a></li>
+      <li><a href="https://yw8837.github.io/tags/%ED%95%A8%EC%88%98/">함수</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EB%A9%94%EC%84%9C%EB%93%9C/">메서드</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/">코딩기초</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+    <span class="title">« 이전 페이지</span>
+    <span>6/1 파이썬 실습2 (코드 노트)</span>
+  </a>
+  <a class="next" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+    <span class="title">다음 페이지 »</span>
+    <span>5/29 파이썬 실습 (코드 노트)</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
+        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '복사';
+
+        function copyingDone() {
+            copybutton.innerHTML = '복사 완료!';
+            setTimeout(() => {
+                copybutton.innerHTML = '복사';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
