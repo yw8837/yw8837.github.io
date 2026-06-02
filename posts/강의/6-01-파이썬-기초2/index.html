@@ -7,7 +7,7 @@
 <meta name="robots" content="index, follow">
 <title>6/1 파이썬 기초2 | AI_6스터디</title>
 <meta name="keywords" content="파이썬, Python, 튜플, 딕셔너리, 반복문, for, while, 함수, 메서드, 코딩기초, 초보자">
-<meta name="description" content="파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다">
+<meta name="description" content="파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지 초보자 눈높이로 정리했습니다">
 <meta name="author" content="yw8837">
 <link rel="canonical" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
@@ -81,7 +81,7 @@
       </script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/">
   <meta property="og:site_name" content="AI_6스터디">
   <meta property="og:title" content="6/1 파이썬 기초2">
-  <meta property="og:description" content="파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다">
+  <meta property="og:description" content="파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지 초보자 눈높이로 정리했습니다">
   <meta property="og:locale" content="ko">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -96,7 +96,7 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="6/1 파이썬 기초2">
-  <meta name="twitter:description" content="파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다">
+  <meta name="twitter:description" content="파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지 초보자 눈높이로 정리했습니다">
 
 
 <script type="application/ld+json">
@@ -125,12 +125,12 @@
   "@type": "BlogPosting",
   "headline": "6/1 파이썬 기초2",
   "name": "6\/1 파이썬 기초2",
-  "description": "파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다",
+  "description": "파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지 초보자 눈높이로 정리했습니다",
   "keywords": [
     "파이썬", "Python", "튜플", "딕셔너리", "반복문", "for", "while", "함수", "메서드", "코딩기초", "초보자"
   ],
-  "articleBody": "지난 시간에 자료형·변수·조건문·리스트를 배웠습니다. 오늘은 그 위에 “여러 데이터를 묶고(튜플·딕셔너리), 반복하고(for·while), 묶음으로 재사용(함수)” 하는 도구를 얹습니다. 여기까지 오면 비로소 “프로그램다운 프로그램\"을 만들 수 있습니다. 🐍\n1. 문자열·리스트 추가 메서드 리스트와 문자열을 더 자유롭게 다루는 메서드 4개를 먼저 익힙니다.\npop() — 꺼내면서 삭제 값을 삭제하는 동시에 그 값을 돌려줍니다. (remove는 돌려주지 않습니다.)\nmy_list = [2, 3, 5, 7, 11] print(my_list.pop(0)) # 2 (인덱스 0을 꺼내고 삭제) print(my_list.pop()) # 11 (괄호 비우면 맨 마지막) print(my_list) # [3, 5, 7] count() — 개수 세기 [2, 2, 3, 2].count(2) # 3 \"elice and alice\".count(\"e\") # 3 split() — 문자열을 리스트로 쪼개기 \"1 2 3\".split() # ['1', '2', '3'] (괄호 비우면 공백 기준) \"Na,Mg,Al\".split(\",\") # ['Na', 'Mg', 'Al'] join() — 리스트를 문자열로 합치기 split()의 반대입니다. 구분자.join(리스트) 순서가 헷갈리기 쉬우니 주의하세요.\n\"\".join([\"e\", \"l\", \"i\", \"c\", \"e\"]) # \"elice\" \"→\".join([\"서울\", \"대전\", \"대구\"]) # \"서울→대전→대구\" 💡 split()과 join()은 한 쌍입니다. “문자열 → 쪼개서 가공 → 다시 합치기\"는 데이터 처리에서 가장 많이 쓰는 흐름입니다.\n2. 튜플 (Tuple) — 바뀌지 않는 묶음 튜플은 리스트와 거의 같지만 한 번 만들면 값을 바꿀 수 없습니다(불변). 소괄호 ()로 만듭니다.\nt = (1, 2, 3, 4, 5) # 리스트처럼 되는 것들 print(t[2]) # 3 (인덱싱) print(t[:2]) # (1, 2) (슬라이싱) print(2 in t) # True (포함 여부) print(len(t)) # 5 (길이) # 리스트와 다른 점 — 수정 불가 t[0] = 99 # TypeError: 'tuple' object does not support item assignment ⚠️ 원소가 1개인 튜플은 쉼표 필수!\n(1,) # 튜플 ✅ (1) # 그냥 정수 1 ❌ (괄호일 뿐) 언제 쓰나? 좌표·날짜처럼 바뀌면 안 되는 데이터, 딕셔너리의 키, 함수가 여러 값을 한 번에 돌려줄 때 사용합니다.\n자료형 표현 수정 특징 리스트 List [1, 2, 3] 가능 순서 O, 자유롭게 변경 튜플 Tuple (1, 2, 3) 불가 순서 O, 불변(안전) 3. 딕셔너리 (Dictionary) — 이름표가 붙은 데이터 딕셔너리는 키(key)와 값(value)을 짝지어 저장합니다. 사전에서 단어(키)를 찾으면 뜻(값)이 나오는 것과 같습니다. 중괄호 {}로 만듭니다.\nperson = {\"name\": \"Rabbit\", \"age\": 22} # 값 꺼내기 — 번호가 아니라 '키'로 접근 print(person[\"name\"]) # Rabbit 추가·수정·삭제 (CRUD) person[\"mail\"] = \"rabbit@elice.com\" # 추가 (없는 키에 넣으면 새로 생김) person[\"age\"] = 23 # 수정 (있는 키에 넣으면 덮어씀) del person[\"age\"] # 삭제 키·값·쌍 꺼내기 person.keys() # 키 전체 person.values() # 값 전체 person.items() # (키, 값) 쌍 전체 ⚠️ 키 규칙: 키에는 바뀌지 않는 자료형만 쓸 수 있습니다. 문자열·숫자·튜플 → OK, 리스트 → ❌ TypeError.\nfor문과 조합 (자주 쓰는 패턴) scores = {\"수학\": 95, \"영어\": 88, \"과학\": 92} for 과목, 점수 in scores.items(): print(f\"{과목}: {점수}점\") 💡 웹에서 데이터를 주고받는 JSON 형식이 딕셔너리와 똑같이 생겼습니다. 앞으로 API를 다룰 때 매일 만나게 됩니다.\n4. 반복문 (Loop) — 같은 일을 자동으로 되풀이 별 5개를 출력하려고 print를 5번 쓸 수는 있지만, 100개라면? 반복문이 답입니다.\nfor 문 — 목록을 하나씩 꺼내기 for fruit in [\"사과\", \"바나나\", \"체리\"]: print(fruit) # 사과 / 바나나 / 체리 (한 줄씩) for + range() — 정해진 횟수만큼 range()는 연속된 숫자를 만들어 줍니다. 끝 숫자는 포함하지 않습니다.\nrange(5) # 0, 1, 2, 3, 4 range(1, 6) # 1, 2, 3, 4, 5 range(0, 10, 2) # 0, 2, 4, 6, 8 (2칸씩) for i in range(1, 10): print(f\"3 x {i} = {3 * i}\") # 구구단 3단 while 문 — 조건이 참인 동안 계속 i = 5 while i \u003e 0: print(i) # 5 4 3 2 1 i -= 1 # 이 줄이 없으면 무한루프! print(\"발사!\") ⚠️ 무한루프 주의: while 안에서 조건을 변하게 만드는 코드(i -= 1 등)를 꼭 넣어야 합니다. 멈추지 않으면 Ctrl + C로 강제 종료하세요.\nbreak — 반복 도중 탈출 for fruit in [\"사과\", \"바나나\", \"체리\", \"망고\", \"딸기\"]: if fruit == \"망고\": break # 망고를 만나면 반복 종료 print(fruit) # 사과 / 바나나 / 체리 💡 for vs while 언제? 횟수·범위가 정해져 있으면 for, 조건에 따라 끝나면 while을 주로 씁니다.\n구문 용도 for i in 시퀀스 리스트·문자열 원소 순회 for i in range(n) n번 반복 while 조건 조건이 참인 동안 반복 break 반복문 즉시 탈출 5. 함수 (Function) — 코드 묶어서 재사용하기 함수는 특정 작업을 하는 코드 묶음에 이름을 붙여 두고 필요할 때마다 부르는 것입니다. 프로그래밍의 기본 틀은 입력 → 처리 → 출력입니다.\n내장 함수 — 파이썬이 미리 만들어 둔 것 len([1, 2, 3]) # 3 (길이) sum([1, 2, 3, 4, 5]) # 15 (합) max([1, 2, 3]) # 3 (최댓값) min([1, 2, 3]) # 1 (최솟값) 직접 함수 만들기 — def def plus_double(a, b): # def 이름(매개변수): c = a + b # 들여쓰기로 본문 return 2 * c # return으로 결과 돌려주기 print(plus_double(3, 4)) # 14 ( (3+4) × 2 ) 매개변수(parameter): 함수가 받는 입력값 자리 (a, b) return: 결과를 함수 밖으로 돌려줌 ⚠️ return이 없으면 결과는 None! 화면에 print만 하는 것과, 값을 return해서 다른 곳에 쓰는 것은 다릅니다.\ndef add(a, b): print(a + b) # 보여주기만 함 x = add(2, 3) # 화면엔 5가 찍히지만 x = None\n전역 변수 vs 지역 변수 함수 안에서 만든 변수는 함수 밖에서 쓸 수 없습니다.\nx = \"전역\" # 어디서든 접근 가능 def my_func(): y = \"지역\" # 이 함수 안에서만 존재 print(x) # 전역변수 읽기 OK my_func() print(y) # NameError! — 함수 밖에는 y가 없음 함수 vs 메서드 — 무엇이 다른가 둘 다 기능 묶음이지만 부르는 방법이 다릅니다.\n구분 함수 (Function) 메서드 (Method) 호출 함수명(자료) 자료.메서드명() 특징 범용 기능 특정 자료형에 딸린 기능 예시 len(my_list) my_list.append(4) 📌 보충 — 실무에서 함수를 쓰는 법 (타입 힌트 \u0026 독스트링) 수업 마지막에 다룬, 함수를 전문가답게 쓰는 두 가지 관행입니다. 코드의 가독성과 협업 효율을 크게 높입니다.\n타입 힌트 (Type Hint) 매개변수와 반환값의 자료형을 명시해 둡니다. 강제는 아니지만, 코드를 읽는 사람과 에디터가 실수를 빨리 잡게 도와줍니다.\n# 타입 힌트 없음 — a, b가 뭔지 알 수 없음 def add(a, b): return a + b # 타입 힌트 있음 — int 두 개를 받아 int를 반환한다고 명확히 표현 def add(a: int, b: int) -\u003e int: return a + b 독스트링 (Docstring) 함수 첫 줄에 \"\"\"설명\"\"\"을 적으면 그 함수의 설명서가 됩니다. help(함수명)으로 볼 수 있고, 오픈소스 라이브러리 공식 문서도 대부분 여기서 자동 생성됩니다.\ndef celsius_to_fahrenheit(celsius: float) -\u003e float: \"\"\"섭씨 온도를 화씨 온도로 변환합니다. Args: celsius (float): 변환할 섭씨 온도 Returns: float: 변환된 화씨 온도 \"\"\" return celsius * 9 / 5 + 32 help(celsius_to_fahrenheit) # 위 설명이 그대로 출력됨 출처: Python 공식 문서 — 함수 정의, 타입 힌트(typing)\n마무리 오늘 배운 것을 한 문장으로 묶으면 이렇습니다. “데이터를 묶고(튜플·딕셔너리), 반복으로 처리하고(for·while), 그 처리를 함수로 포장해 재사용한다.”\n이 세 가지가 합쳐지면 “성적표를 분석하고”, “재고를 계산하고”, “로그인을 처리하는” 실제 프로그램이 됩니다. 머리로만 읽지 말고 직접 손으로 쳐보면서 익히세요. 💪\n실습 코드 전체는 아래 코드 노트에 정리해 두었습니다.\n🔗 연관 노트 [[6-01 파이썬 코드 노트2|6/1 파이썬 실습2 (코드 노트)]] — 오늘 실습 코드 전체 + 공식 문서 레퍼런스 [[5-29 파이썬 기초|5/29 파이썬 기초]] — 자료형·변수·조건문·리스트 (오늘의 전제) ",
-  "wordCount" : "1086",
+  "articleBody": " 이어드림스쿨 AI 과정 수업 자료를 기반으로 정리한 내용입니다. 지난 시간(자료형·변수·조건문·리스트) 위에, 데이터를 묶고(튜플·딕셔너리) → 반복으로 처리하고(for·while) → 함수로 재사용하는 도구를 얹습니다. 🐍\n📖 수업 내용 01 · 문자열·리스트 메서드 pop() — 꺼내면서 삭제 my_list = [2, 3, 5, 7, 11] print(my_list.pop(0)) # 2 인덱스 0을 꺼내고 삭제 print(my_list.pop()) # 11 괄호 비우면 마지막 print(my_list) # [3, 5, 7] 💡 remove는 지우기만, pop은 지우면서 그 값을 돌려줍니다.\ncount · split · join \"elice and alice\".count(\"e\") # 3 특정 값 개수 \"1 2 3\".split() # ['1','2','3'] 문자열 → 리스트 (공백 기준) \"Na,Mg,Al\".split(\",\") # ['Na','Mg','Al'] \"\".join([\"e\",\"l\",\"i\",\"c\",\"e\"]) # \"elice\" 리스트 → 문자열 \"→\".join([\"서울\",\"대전\",\"대구\"]) # \"서울→대전→대구\" 💡 split ↔ join은 한 쌍 (쪼개기 ↔ 합치기). join은 \"구분자\".join(리스트) 순서 주의.\n02 · 튜플 (Tuple) — 바뀌지 않는 묶음 리스트와 거의 같지만 한 번 만들면 값을 못 바꾸는(불변) 자료형. 소괄호 ()로 만듭니다.\nt = (1, 2, 3, 4, 5) print(t[2]) # 3 인덱싱·슬라이싱·in·len·+·* 가능 print(2 in t) # True t[0] = 99 # TypeError — 수정 불가 ⚠️ 원소 1개 튜플은 쉼표 필수: (1,)은 튜플, (1)은 그냥 정수.\n언제 쓰나? 좌표·날짜처럼 바뀌면 안 되는 데이터, 딕셔너리 Key, 함수가 여러 값을 반환할 때.\n자료형 표현 수정 리스트 [1, 2, 3] 가능 튜플 (1, 2, 3) 불가(안전) 03 · 딕셔너리 (Dictionary) — 이름표가 붙은 데이터 키(key)와 값(value)을 짝지어 저장. 번호가 아니라 이름(키) 으로 값을 꺼냅니다. 중괄호 {}.\nperson = {\"name\": \"Rabbit\", \"age\": 22} print(person[\"name\"]) # Rabbit (키로 접근) person[\"mail\"] = \"rabbit@elice.com\" # 추가 person[\"age\"] = 23 # 수정 (추가와 문법 동일) del person[\"age\"] # 삭제 person.keys() # 키 전체 person.values() # 값 전체 person.items() # (키, 값) 쌍 전체 ⚠️ 키 규칙: 바뀌지 않는 자료형만 가능 (문자열·숫자·튜플 OK / 리스트 ❌).\n# for문과 조합 (가장 많이 쓰는 패턴) scores = {\"수학\": 95, \"영어\": 88} for 과목, 점수 in scores.items(): print(f\"{과목}: {점수}점\") 💡 웹에서 데이터를 주고받는 JSON이 딕셔너리와 똑같이 생겼습니다. 앞으로 API 다룰 때 매일 만납니다.\n04 · 반복문 (Loop) for 문 · range() for fruit in [\"사과\", \"바나나\"]: # 목록을 하나씩 꺼내 반복 print(fruit) for i in range(1, 10): # 1~9 (끝 미포함) print(f\"3 x {i} = {3 * i}\") # 구구단 3단 ⚠️ range(1, 10)은 10 직전까지. 끝 숫자는 포함하지 않습니다(슬라이싱과 같은 규칙).\nwhile 문 · break i = 5 while i \u003e 0: # 조건이 참인 동안 반복 print(i) i -= 1 # 이 줄이 없으면 무한루프! print(\"발사!\") for fruit in [\"사과\", \"망고\", \"딸기\"]: if fruit == \"망고\": break # 망고를 만나면 반복 종료 print(fruit) 💡 for → 횟수·범위가 정해질 때 / while → 조건으로 끝날 때. 무한루프 시 Ctrl + C.\n05 · 함수와 메서드 함수는 작업하는 코드 묶음에 이름을 붙여 재사용하는 것. 기본 틀은 입력 → 처리 → 출력.\n내장 함수 · 사용자 정의 함수 len([1,2,3]) # 3 sum([1,2,3]) # 6 max([1,2,3]) # 3 def plus_double(a, b): # def 이름(매개변수): c = a + b return 2 * c # return으로 결과 반환 print(plus_double(3, 4)) # 14 ⚠️ return이 없으면 결과는 None. 화면에 print만 하는 것과, 값을 return해 다른 곳에 쓰는 것은 다릅니다.\n전역 변수 vs 지역 변수 x = \"전역\" # 어디서든 접근 def my_func(): y = \"지역\" # 이 함수 안에서만 존재 print(x) # 전역변수 읽기 OK my_func() print(y) # NameError! — 함수 밖엔 y 없음 함수 vs 메서드 구분 함수 메서드 호출 함수명(자료) 자료.메서드명() 예시 len(my_list) my_list.append(4) 📚 참고자료 수업 마지막에 다룬 실무 관행 + 알아두면 좋은 내용을 Python 공식 문서에서 보충했습니다.\n타입 힌트 (Type Hint) 매개변수·반환값의 자료형을 명시합니다. 강제는 아니지만(어겨도 에러 안 남) 가독성·협업에 도움이 됩니다.\ndef add(a: int, b: int) -\u003e int: # int 둘을 받아 int 반환 return a + b def log(msg: str) -\u003e None: # 반환값 없으면 -\u003e None print(msg) 출처: typing — 형 힌트 지원\n독스트링 (Docstring) 함수 첫 줄에 \"\"\"설명\"\"\"을 적으면 함수의 설명서가 됩니다. help(함수명)으로 보고, 라이브러리 공식 문서도 대부분 여기서 자동 생성됩니다.\ndef c_to_f(c: float) -\u003e float: \"\"\"섭씨를 화씨로 변환한다.\"\"\" return c * 9 / 5 + 32 help(c_to_f) # 위 설명이 출력됨 반복을 더 편하게 — enumerate · zip # enumerate: 인덱스와 값을 동시에 for i, fruit in enumerate([\"사과\", \"배\"]): print(i, fruit) # 0 사과 / 1 배 # zip: 두 리스트를 나란히 묶기 names, ages = [\"철수\", \"영희\"], [20, 22] for name, age in zip(names, ages): print(name, age) # 철수 20 / 영희 22 dict(zip(names, ages)) # {'철수': 20, '영희': 22} break 의 짝 — continue break는 반복을 완전히 탈출, continue는 이번 회차만 건너뛰고 다음으로 진행합니다.\nfor i in range(1, 6): if i == 3: continue # 3만 건너뜀 print(i) # 1 2 4 5 마무리 데이터를 묶고(튜플·딕셔너리) → 반복으로 처리하고(for·while) → 함수로 포장해 재사용한다. 이 셋이 합쳐지면 “성적표 분석·재고 계산·로그인 처리” 같은 진짜 프로그램이 된다.\n머리로만 읽지 말고 직접 손으로 쳐보며 익히세요. 실습 코드는 아래 코드 노트에 정리해 두었습니다. 💪\n작성: AI_6스터디 | 수업 출처: 이어드림스쿨 파이썬 기초 II 수업 자료 (Elice)\n🔗 연관 노트 6/1 파이썬 실습2 (코드 노트) — 오늘 실습 코드 전체 + 공식 문서 레퍼런스 5/29 파이썬 기초 — 자료형·변수·조건문·리스트 (오늘의 전제) ",
+  "wordCount" : "805",
   "inLanguage": "en",
   "datePublished": "2026-06-01T09:00:00+09:00",
   "dateModified": "2026-06-01T09:00:00+09:00",
@@ -230,11 +230,11 @@
       6/1 파이썬 기초2
     </h1>
     <div class="post-description">
-      파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지. 코딩 초보자도 이해할 수 있게 쉽게 풀어 정리했습니다
+      파이썬 기초 두 번째 시간 — 문자열·리스트 메서드부터 튜플·딕셔너리, 반복문(for/while), 함수와 메서드까지 초보자 눈높이로 정리했습니다
     </div>
     <div class="post-meta">
 
-<span title='2026-06-01 09:00:00 +0900 KST'>2026년 6월 1일</span>&nbsp;·&nbsp;<span>6 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+<span title='2026-06-01 09:00:00 +0900 KST'>2026년 6월 1일</span>&nbsp;·&nbsp;<span>4 분</span>&nbsp;·&nbsp;<span>yw8837</span>
 
 </div>
   </header> <details class="toc" >
@@ -244,266 +244,199 @@
 
     <div class="inner"><ul>
             <li>
-                <a href="#1-%eb%ac%b8%ec%9e%90%ec%97%b4%eb%a6%ac%ec%8a%a4%ed%8a%b8-%ec%b6%94%ea%b0%80-%eb%a9%94%ec%84%9c%eb%93%9c" aria-label="1. 문자열·리스트 추가 메서드">1. 문자열·리스트 추가 메서드</a><ul>
+                <a href="#-%ec%88%98%ec%97%85-%eb%82%b4%ec%9a%a9" aria-label="📖 수업 내용">📖 수업 내용</a><ul>
+                    
+            <li>
+                <a href="#01--%eb%ac%b8%ec%9e%90%ec%97%b4%eb%a6%ac%ec%8a%a4%ed%8a%b8-%eb%a9%94%ec%84%9c%eb%93%9c" aria-label="01 · 문자열·리스트 메서드">01 · 문자열·리스트 메서드</a><ul>
                     
             <li>
                 <a href="#pop--%ea%ba%bc%eb%82%b4%eb%a9%b4%ec%84%9c-%ec%82%ad%ec%a0%9c" aria-label="pop() — 꺼내면서 삭제">pop() — 꺼내면서 삭제</a></li>
             <li>
-                <a href="#count--%ea%b0%9c%ec%88%98-%ec%84%b8%ea%b8%b0" aria-label="count() — 개수 세기">count() — 개수 세기</a></li>
-            <li>
-                <a href="#split--%eb%ac%b8%ec%9e%90%ec%97%b4%ec%9d%84-%eb%a6%ac%ec%8a%a4%ed%8a%b8%eb%a1%9c-%ec%aa%bc%ea%b0%9c%ea%b8%b0" aria-label="split() — 문자열을 리스트로 쪼개기">split() — 문자열을 리스트로 쪼개기</a></li>
-            <li>
-                <a href="#join--%eb%a6%ac%ec%8a%a4%ed%8a%b8%eb%a5%bc-%eb%ac%b8%ec%9e%90%ec%97%b4%eb%a1%9c-%ed%95%a9%ec%b9%98%ea%b8%b0" aria-label="join() — 리스트를 문자열로 합치기">join() — 리스트를 문자열로 합치기</a></li></ul>
+                <a href="#count--split--join" aria-label="count · split · join">count · split · join</a></li></ul>
             </li>
             <li>
-                <a href="#2-%ed%8a%9c%ed%94%8c-tuple--%eb%b0%94%eb%80%8c%ec%a7%80-%ec%95%8a%eb%8a%94-%eb%ac%b6%ec%9d%8c" aria-label="2. 튜플 (Tuple) — 바뀌지 않는 묶음">2. 튜플 (Tuple) — 바뀌지 않는 묶음</a></li>
+                <a href="#02--%ed%8a%9c%ed%94%8c-tuple--%eb%b0%94%eb%80%8c%ec%a7%80-%ec%95%8a%eb%8a%94-%eb%ac%b6%ec%9d%8c" aria-label="02 · 튜플 (Tuple) — 바뀌지 않는 묶음">02 · 튜플 (Tuple) — 바뀌지 않는 묶음</a></li>
             <li>
-                <a href="#3-%eb%94%95%ec%85%94%eb%84%88%eb%a6%ac-dictionary--%ec%9d%b4%eb%a6%84%ed%91%9c%ea%b0%80-%eb%b6%99%ec%9d%80-%eb%8d%b0%ec%9d%b4%ed%84%b0" aria-label="3. 딕셔너리 (Dictionary) — 이름표가 붙은 데이터">3. 딕셔너리 (Dictionary) — 이름표가 붙은 데이터</a><ul>
+                <a href="#03--%eb%94%95%ec%85%94%eb%84%88%eb%a6%ac-dictionary--%ec%9d%b4%eb%a6%84%ed%91%9c%ea%b0%80-%eb%b6%99%ec%9d%80-%eb%8d%b0%ec%9d%b4%ed%84%b0" aria-label="03 · 딕셔너리 (Dictionary) — 이름표가 붙은 데이터">03 · 딕셔너리 (Dictionary) — 이름표가 붙은 데이터</a></li>
+            <li>
+                <a href="#04--%eb%b0%98%eb%b3%b5%eb%ac%b8-loop" aria-label="04 · 반복문 (Loop)">04 · 반복문 (Loop)</a><ul>
                     
             <li>
-                <a href="#%ec%b6%94%ea%b0%80%ec%88%98%ec%a0%95%ec%82%ad%ec%a0%9c-crud" aria-label="추가·수정·삭제 (CRUD)">추가·수정·삭제 (CRUD)</a></li>
+                <a href="#for-%eb%ac%b8--range" aria-label="for 문 · range()">for 문 · range()</a></li>
             <li>
-                <a href="#%ed%82%a4%ea%b0%92%ec%8c%8d-%ea%ba%bc%eb%82%b4%ea%b8%b0" aria-label="키·값·쌍 꺼내기">키·값·쌍 꺼내기</a></li>
-            <li>
-                <a href="#for%eb%ac%b8%ea%b3%bc-%ec%a1%b0%ed%95%a9-%ec%9e%90%ec%a3%bc-%ec%93%b0%eb%8a%94-%ed%8c%a8%ed%84%b4" aria-label="for문과 조합 (자주 쓰는 패턴)">for문과 조합 (자주 쓰는 패턴)</a></li></ul>
+                <a href="#while-%eb%ac%b8--break" aria-label="while 문 · break">while 문 · break</a></li></ul>
             </li>
             <li>
-                <a href="#4-%eb%b0%98%eb%b3%b5%eb%ac%b8-loop--%ea%b0%99%ec%9d%80-%ec%9d%bc%ec%9d%84-%ec%9e%90%eb%8f%99%ec%9c%bc%eb%a1%9c-%eb%90%98%ed%92%80%ec%9d%b4" aria-label="4. 반복문 (Loop) — 같은 일을 자동으로 되풀이">4. 반복문 (Loop) — 같은 일을 자동으로 되풀이</a><ul>
+                <a href="#05--%ed%95%a8%ec%88%98%ec%99%80-%eb%a9%94%ec%84%9c%eb%93%9c" aria-label="05 · 함수와 메서드">05 · 함수와 메서드</a><ul>
                     
             <li>
-                <a href="#for-%eb%ac%b8--%eb%aa%a9%eb%a1%9d%ec%9d%84-%ed%95%98%eb%82%98%ec%94%a9-%ea%ba%bc%eb%82%b4%ea%b8%b0" aria-label="for 문 — 목록을 하나씩 꺼내기">for 문 — 목록을 하나씩 꺼내기</a></li>
-            <li>
-                <a href="#for--range--%ec%a0%95%ed%95%b4%ec%a7%84-%ed%9a%9f%ec%88%98%eb%a7%8c%ed%81%bc" aria-label="for &#43; range() — 정해진 횟수만큼">for + range() — 정해진 횟수만큼</a></li>
-            <li>
-                <a href="#while-%eb%ac%b8--%ec%a1%b0%ea%b1%b4%ec%9d%b4-%ec%b0%b8%ec%9d%b8-%eb%8f%99%ec%95%88-%ea%b3%84%ec%86%8d" aria-label="while 문 — 조건이 참인 동안 계속">while 문 — 조건이 참인 동안 계속</a></li>
-            <li>
-                <a href="#break--%eb%b0%98%eb%b3%b5-%eb%8f%84%ec%a4%91-%ed%83%88%ec%b6%9c" aria-label="break — 반복 도중 탈출">break — 반복 도중 탈출</a></li></ul>
-            </li>
-            <li>
-                <a href="#5-%ed%95%a8%ec%88%98-function--%ec%bd%94%eb%93%9c-%eb%ac%b6%ec%96%b4%ec%84%9c-%ec%9e%ac%ec%82%ac%ec%9a%a9%ed%95%98%ea%b8%b0" aria-label="5. 함수 (Function) — 코드 묶어서 재사용하기">5. 함수 (Function) — 코드 묶어서 재사용하기</a><ul>
-                    
-            <li>
-                <a href="#%eb%82%b4%ec%9e%a5-%ed%95%a8%ec%88%98--%ed%8c%8c%ec%9d%b4%ec%8d%ac%ec%9d%b4-%eb%af%b8%eb%a6%ac-%eb%a7%8c%eb%93%a4%ec%96%b4-%eb%91%94-%ea%b2%83" aria-label="내장 함수 — 파이썬이 미리 만들어 둔 것">내장 함수 — 파이썬이 미리 만들어 둔 것</a></li>
-            <li>
-                <a href="#%ec%a7%81%ec%a0%91-%ed%95%a8%ec%88%98-%eb%a7%8c%eb%93%a4%ea%b8%b0--def" aria-label="직접 함수 만들기 — def">직접 함수 만들기 — def</a></li>
+                <a href="#%eb%82%b4%ec%9e%a5-%ed%95%a8%ec%88%98--%ec%82%ac%ec%9a%a9%ec%9e%90-%ec%a0%95%ec%9d%98-%ed%95%a8%ec%88%98" aria-label="내장 함수 · 사용자 정의 함수">내장 함수 · 사용자 정의 함수</a></li>
             <li>
                 <a href="#%ec%a0%84%ec%97%ad-%eb%b3%80%ec%88%98-vs-%ec%a7%80%ec%97%ad-%eb%b3%80%ec%88%98" aria-label="전역 변수 vs 지역 변수">전역 변수 vs 지역 변수</a></li>
             <li>
-                <a href="#%ed%95%a8%ec%88%98-vs-%eb%a9%94%ec%84%9c%eb%93%9c--%eb%ac%b4%ec%97%87%ec%9d%b4-%eb%8b%a4%eb%a5%b8%ea%b0%80" aria-label="함수 vs 메서드 — 무엇이 다른가">함수 vs 메서드 — 무엇이 다른가</a></li></ul>
+                <a href="#%ed%95%a8%ec%88%98-vs-%eb%a9%94%ec%84%9c%eb%93%9c" aria-label="함수 vs 메서드">함수 vs 메서드</a></li></ul>
+            </li></ul>
             </li>
             <li>
-                <a href="#-%eb%b3%b4%ec%b6%a9--%ec%8b%a4%eb%ac%b4%ec%97%90%ec%84%9c-%ed%95%a8%ec%88%98%eb%a5%bc-%ec%93%b0%eb%8a%94-%eb%b2%95-%ed%83%80%ec%9e%85-%ed%9e%8c%ed%8a%b8--%eb%8f%85%ec%8a%a4%ed%8a%b8%eb%a7%81" aria-label="📌 보충 — 실무에서 함수를 쓰는 법 (타입 힌트 &amp; 독스트링)">📌 보충 — 실무에서 함수를 쓰는 법 (타입 힌트 &amp; 독스트링)</a><ul>
+                <a href="#-%ec%b0%b8%ea%b3%a0%ec%9e%90%eb%a3%8c" aria-label="📚 참고자료">📚 참고자료</a><ul>
                     
             <li>
                 <a href="#%ed%83%80%ec%9e%85-%ed%9e%8c%ed%8a%b8-type-hint" aria-label="타입 힌트 (Type Hint)">타입 힌트 (Type Hint)</a></li>
             <li>
-                <a href="#%eb%8f%85%ec%8a%a4%ed%8a%b8%eb%a7%81-docstring" aria-label="독스트링 (Docstring)">독스트링 (Docstring)</a></li></ul>
-            </li>
+                <a href="#%eb%8f%85%ec%8a%a4%ed%8a%b8%eb%a7%81-docstring" aria-label="독스트링 (Docstring)">독스트링 (Docstring)</a></li>
+            <li>
+                <a href="#%eb%b0%98%eb%b3%b5%ec%9d%84-%eb%8d%94-%ed%8e%b8%ed%95%98%ea%b2%8c--enumerate--zip" aria-label="반복을 더 편하게 — enumerate · zip">반복을 더 편하게 — enumerate · zip</a></li>
+            <li>
+                <a href="#break-%ec%9d%98-%ec%a7%9d--continue" aria-label="break 의 짝 — continue">break 의 짝 — continue</a></li>
             <li>
                 <a href="#%eb%a7%88%eb%ac%b4%eb%a6%ac" aria-label="마무리">마무리</a></li>
             <li>
                 <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
             </li>
         </ul>
+        </li>
+        </ul>
     </div>
 </details>
 
-  <div class="post-content md-content"><p>지난 시간에 자료형·변수·조건문·리스트를 배웠습니다. 오늘은 그 위에 <strong>&ldquo;여러 데이터를 묶고(튜플·딕셔너리), 반복하고(for·while), 묶음으로 재사용(함수)&rdquo;</strong> 하는 도구를 얹습니다. 여기까지 오면 비로소 &ldquo;프로그램다운 프로그램&quot;을 만들 수 있습니다. 🐍</p>
-<hr>
-<h2 id="1-문자열리스트-추가-메서드">1. 문자열·리스트 추가 메서드<a hidden class="anchor" aria-hidden="true" href="#1-문자열리스트-추가-메서드">#</a></h2>
-<p>리스트와 문자열을 더 자유롭게 다루는 메서드 4개를 먼저 익힙니다.</p>
-<h3 id="pop--꺼내면서-삭제"><code>pop()</code> — 꺼내면서 삭제<a hidden class="anchor" aria-hidden="true" href="#pop--꺼내면서-삭제">#</a></h3>
-<p>값을 <strong>삭제하는 동시에 그 값을 돌려줍니다.</strong> (<code>remove</code>는 돌려주지 않습니다.)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">my_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">my_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>   <span class="c1"># 2    (인덱스 0을 꺼내고 삭제)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">my_list</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>    <span class="c1"># 11   (괄호 비우면 맨 마지막)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">my_list</span><span class="p">)</span>          <span class="c1"># [3, 5, 7]</span>
-</span></span></code></pre></div><h3 id="count--개수-세기"><code>count()</code> — 개수 세기<a hidden class="anchor" aria-hidden="true" href="#count--개수-세기">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>          <span class="c1"># 3</span>
-</span></span><span class="line"><span class="cl"><span class="s2">&#34;elice and alice&#34;</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&#34;e&#34;</span><span class="p">)</span>   <span class="c1"># 3</span>
-</span></span></code></pre></div><h3 id="split--문자열을-리스트로-쪼개기"><code>split()</code> — 문자열을 리스트로 쪼개기<a hidden class="anchor" aria-hidden="true" href="#split--문자열을-리스트로-쪼개기">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="s2">&#34;1 2 3&#34;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>         <span class="c1"># [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]   (괄호 비우면 공백 기준)</span>
-</span></span><span class="line"><span class="cl"><span class="s2">&#34;Na,Mg,Al&#34;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34;,&#34;</span><span class="p">)</span>   <span class="c1"># [&#39;Na&#39;, &#39;Mg&#39;, &#39;Al&#39;]</span>
-</span></span></code></pre></div><h3 id="join--리스트를-문자열로-합치기"><code>join()</code> — 리스트를 문자열로 합치기<a hidden class="anchor" aria-hidden="true" href="#join--리스트를-문자열로-합치기">#</a></h3>
-<p><code>split()</code>의 반대입니다. <strong>구분자.join(리스트)</strong> 순서가 헷갈리기 쉬우니 주의하세요.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&#34;e&#34;</span><span class="p">,</span> <span class="s2">&#34;l&#34;</span><span class="p">,</span> <span class="s2">&#34;i&#34;</span><span class="p">,</span> <span class="s2">&#34;c&#34;</span><span class="p">,</span> <span class="s2">&#34;e&#34;</span><span class="p">])</span>    <span class="c1"># &#34;elice&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="s2">&#34;→&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&#34;서울&#34;</span><span class="p">,</span> <span class="s2">&#34;대전&#34;</span><span class="p">,</span> <span class="s2">&#34;대구&#34;</span><span class="p">])</span>     <span class="c1"># &#34;서울→대전→대구&#34;</span>
-</span></span></code></pre></div><blockquote>
-<p>💡 <code>split()</code>과 <code>join()</code>은 한 쌍입니다. &ldquo;문자열 → 쪼개서 가공 → 다시 합치기&quot;는 데이터 처리에서 가장 많이 쓰는 흐름입니다.</p>
+  <div class="post-content md-content"><blockquote>
+<p>이어드림스쿨 AI 과정 수업 자료를 기반으로 정리한 내용입니다.
+지난 시간(자료형·변수·조건문·리스트) 위에, <strong>데이터를 묶고(튜플·딕셔너리) → 반복으로 처리하고(for·while) → 함수로 재사용</strong>하는 도구를 얹습니다. 🐍</p>
 </blockquote>
 <hr>
-<h2 id="2-튜플-tuple--바뀌지-않는-묶음">2. 튜플 (Tuple) — 바뀌지 않는 묶음<a hidden class="anchor" aria-hidden="true" href="#2-튜플-tuple--바뀌지-않는-묶음">#</a></h2>
-<p>튜플은 리스트와 거의 같지만 <strong>한 번 만들면 값을 바꿀 수 없습니다(불변).</strong> 소괄호 <code>()</code>로 만듭니다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># 리스트처럼 되는 것들</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>       <span class="c1"># 3        (인덱싱)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>      <span class="c1"># (1, 2)   (슬라이싱)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="mi">2</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span>     <span class="c1"># True     (포함 여부)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>     <span class="c1"># 5        (길이)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># 리스트와 다른 점 — 수정 불가</span>
-</span></span><span class="line"><span class="cl"><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">99</span>         <span class="c1"># TypeError: &#39;tuple&#39; object does not support item assignment</span>
+<h1 id="-수업-내용">📖 수업 내용<a hidden class="anchor" aria-hidden="true" href="#-수업-내용">#</a></h1>
+<h2 id="01--문자열리스트-메서드">01 · 문자열·리스트 메서드<a hidden class="anchor" aria-hidden="true" href="#01--문자열리스트-메서드">#</a></h2>
+<h3 id="pop--꺼내면서-삭제"><code>pop()</code> — 꺼내면서 삭제<a hidden class="anchor" aria-hidden="true" href="#pop--꺼내면서-삭제">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">my_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">my_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>   <span class="c1"># 2    인덱스 0을 꺼내고 삭제</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">my_list</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>    <span class="c1"># 11   괄호 비우면 마지막</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">my_list</span><span class="p">)</span>          <span class="c1"># [3, 5, 7]</span>
 </span></span></code></pre></div><blockquote>
-<p>⚠️ <strong>원소가 1개인 튜플은 쉼표 필수!</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="p">(</span><span class="mi">1</span><span class="p">,)</span>    <span class="c1"># 튜플 ✅</span>
-</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">1</span><span class="p">)</span>     <span class="c1"># 그냥 정수 1 ❌ (괄호일 뿐)</span>
-</span></span></code></pre></div></blockquote>
-<p><strong>언제 쓰나?</strong> 좌표·날짜처럼 <strong>바뀌면 안 되는 데이터</strong>, 딕셔너리의 키, 함수가 여러 값을 한 번에 돌려줄 때 사용합니다.</p>
+<p>💡 <code>remove</code>는 지우기만, <code>pop</code>은 <strong>지우면서 그 값을 돌려줍니다.</strong></p>
+</blockquote>
+<h3 id="count--split--join"><code>count</code> · <code>split</code> · <code>join</code><a hidden class="anchor" aria-hidden="true" href="#count--split--join">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="s2">&#34;elice and alice&#34;</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&#34;e&#34;</span><span class="p">)</span>   <span class="c1"># 3   특정 값 개수</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;1 2 3&#34;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>         <span class="c1"># [&#39;1&#39;,&#39;2&#39;,&#39;3&#39;]   문자열 → 리스트 (공백 기준)</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;Na,Mg,Al&#34;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34;,&#34;</span><span class="p">)</span>   <span class="c1"># [&#39;Na&#39;,&#39;Mg&#39;,&#39;Al&#39;]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&#34;e&#34;</span><span class="p">,</span><span class="s2">&#34;l&#34;</span><span class="p">,</span><span class="s2">&#34;i&#34;</span><span class="p">,</span><span class="s2">&#34;c&#34;</span><span class="p">,</span><span class="s2">&#34;e&#34;</span><span class="p">])</span>   <span class="c1"># &#34;elice&#34;        리스트 → 문자열</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;→&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&#34;서울&#34;</span><span class="p">,</span><span class="s2">&#34;대전&#34;</span><span class="p">,</span><span class="s2">&#34;대구&#34;</span><span class="p">])</span> <span class="c1"># &#34;서울→대전→대구&#34;</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <code>split</code> ↔ <code>join</code>은 한 쌍 (쪼개기 ↔ 합치기). <code>join</code>은 <code>&quot;구분자&quot;.join(리스트)</code> 순서 주의.</p>
+</blockquote>
+<hr>
+<h2 id="02--튜플-tuple--바뀌지-않는-묶음">02 · 튜플 (Tuple) — 바뀌지 않는 묶음<a hidden class="anchor" aria-hidden="true" href="#02--튜플-tuple--바뀌지-않는-묶음">#</a></h2>
+<p>리스트와 거의 같지만 <strong>한 번 만들면 값을 못 바꾸는(불변)</strong> 자료형. 소괄호 <code>()</code>로 만듭니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>       <span class="c1"># 3        인덱싱·슬라이싱·in·len·+·* 가능</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="mi">2</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span>     <span class="c1"># True</span>
+</span></span><span class="line"><span class="cl"><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">99</span>         <span class="c1"># TypeError — 수정 불가</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ 원소 1개 튜플은 쉼표 필수: <code>(1,)</code>은 튜플, <code>(1)</code>은 그냥 정수.</p>
+</blockquote>
+<p><strong>언제 쓰나?</strong> 좌표·날짜처럼 바뀌면 안 되는 데이터, 딕셔너리 Key, 함수가 여러 값을 반환할 때.</p>
 <table>
 	<thead>
 			<tr>
 					<th style="text-align: left">자료형</th>
 					<th style="text-align: left">표현</th>
 					<th style="text-align: center">수정</th>
-					<th style="text-align: left">특징</th>
 			</tr>
 	</thead>
 	<tbody>
 			<tr>
-					<td style="text-align: left">리스트 List</td>
+					<td style="text-align: left">리스트</td>
 					<td style="text-align: left"><code>[1, 2, 3]</code></td>
 					<td style="text-align: center">가능</td>
-					<td style="text-align: left">순서 O, 자유롭게 변경</td>
 			</tr>
 			<tr>
-					<td style="text-align: left">튜플 Tuple</td>
+					<td style="text-align: left">튜플</td>
 					<td style="text-align: left"><code>(1, 2, 3)</code></td>
-					<td style="text-align: center"><strong>불가</strong></td>
-					<td style="text-align: left">순서 O, 불변(안전)</td>
+					<td style="text-align: center"><strong>불가(안전)</strong></td>
 			</tr>
 	</tbody>
 </table>
 <hr>
-<h2 id="3-딕셔너리-dictionary--이름표가-붙은-데이터">3. 딕셔너리 (Dictionary) — 이름표가 붙은 데이터<a hidden class="anchor" aria-hidden="true" href="#3-딕셔너리-dictionary--이름표가-붙은-데이터">#</a></h2>
-<p>딕셔너리는 <strong>키(key)와 값(value)을 짝지어</strong> 저장합니다. 사전에서 단어(키)를 찾으면 뜻(값)이 나오는 것과 같습니다. 중괄호 <code>{}</code>로 만듭니다.</p>
+<h2 id="03--딕셔너리-dictionary--이름표가-붙은-데이터">03 · 딕셔너리 (Dictionary) — 이름표가 붙은 데이터<a hidden class="anchor" aria-hidden="true" href="#03--딕셔너리-dictionary--이름표가-붙은-데이터">#</a></h2>
+<p><strong>키(key)와 값(value)을 짝지어</strong> 저장. 번호가 아니라 <strong>이름(키)</strong> 으로 값을 꺼냅니다. 중괄호 <code>{}</code>.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">person</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;Rabbit&#34;</span><span class="p">,</span> <span class="s2">&#34;age&#34;</span><span class="p">:</span> <span class="mi">22</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">person</span><span class="p">[</span><span class="s2">&#34;name&#34;</span><span class="p">])</span>               <span class="c1"># Rabbit (키로 접근)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># 값 꺼내기 — 번호가 아니라 &#39;키&#39;로 접근</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">person</span><span class="p">[</span><span class="s2">&#34;name&#34;</span><span class="p">])</span>    <span class="c1"># Rabbit</span>
-</span></span></code></pre></div><h3 id="추가수정삭제-crud">추가·수정·삭제 (CRUD)<a hidden class="anchor" aria-hidden="true" href="#추가수정삭제-crud">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">person</span><span class="p">[</span><span class="s2">&#34;mail&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;rabbit@elice.com&#34;</span>   <span class="c1"># 추가 (없는 키에 넣으면 새로 생김)</span>
-</span></span><span class="line"><span class="cl"><span class="n">person</span><span class="p">[</span><span class="s2">&#34;age&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">23</span>                    <span class="c1"># 수정 (있는 키에 넣으면 덮어씀)</span>
-</span></span><span class="line"><span class="cl"><span class="k">del</span> <span class="n">person</span><span class="p">[</span><span class="s2">&#34;age&#34;</span><span class="p">]</span>                     <span class="c1"># 삭제</span>
-</span></span></code></pre></div><h3 id="키값쌍-꺼내기">키·값·쌍 꺼내기<a hidden class="anchor" aria-hidden="true" href="#키값쌍-꺼내기">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">person</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>      <span class="c1"># 키 전체</span>
-</span></span><span class="line"><span class="cl"><span class="n">person</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>    <span class="c1"># 값 전체</span>
-</span></span><span class="line"><span class="cl"><span class="n">person</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>     <span class="c1"># (키, 값) 쌍 전체</span>
+</span></span><span class="line"><span class="cl"><span class="n">person</span><span class="p">[</span><span class="s2">&#34;mail&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;rabbit@elice.com&#34;</span> <span class="c1"># 추가</span>
+</span></span><span class="line"><span class="cl"><span class="n">person</span><span class="p">[</span><span class="s2">&#34;age&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">23</span>                  <span class="c1"># 수정 (추가와 문법 동일)</span>
+</span></span><span class="line"><span class="cl"><span class="k">del</span> <span class="n">person</span><span class="p">[</span><span class="s2">&#34;age&#34;</span><span class="p">]</span>                   <span class="c1"># 삭제</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">person</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>    <span class="c1"># 키 전체</span>
+</span></span><span class="line"><span class="cl"><span class="n">person</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>  <span class="c1"># 값 전체</span>
+</span></span><span class="line"><span class="cl"><span class="n">person</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>   <span class="c1"># (키, 값) 쌍 전체</span>
 </span></span></code></pre></div><blockquote>
-<p>⚠️ <strong>키 규칙</strong>: 키에는 바뀌지 않는 자료형만 쓸 수 있습니다. 문자열·숫자·튜플 → OK, <strong>리스트 → ❌ TypeError</strong>.</p>
+<p>⚠️ <strong>키 규칙</strong>: 바뀌지 않는 자료형만 가능 (문자열·숫자·튜플 OK / 리스트 ❌).</p>
 </blockquote>
-<h3 id="for문과-조합-자주-쓰는-패턴">for문과 조합 (자주 쓰는 패턴)<a hidden class="anchor" aria-hidden="true" href="#for문과-조합-자주-쓰는-패턴">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">scores</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;수학&#34;</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span> <span class="s2">&#34;영어&#34;</span><span class="p">:</span> <span class="mi">88</span><span class="p">,</span> <span class="s2">&#34;과학&#34;</span><span class="p">:</span> <span class="mi">92</span><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># for문과 조합 (가장 많이 쓰는 패턴)</span>
+</span></span><span class="line"><span class="cl"><span class="n">scores</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;수학&#34;</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span> <span class="s2">&#34;영어&#34;</span><span class="p">:</span> <span class="mi">88</span><span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">과목</span><span class="p">,</span> <span class="n">점수</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 </span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">과목</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">점수</span><span class="si">}</span><span class="s2">점&#34;</span><span class="p">)</span>
 </span></span></code></pre></div><blockquote>
-<p>💡 웹에서 데이터를 주고받는 <strong>JSON</strong> 형식이 딕셔너리와 똑같이 생겼습니다. 앞으로 API를 다룰 때 매일 만나게 됩니다.</p>
+<p>💡 웹에서 데이터를 주고받는 <strong>JSON</strong>이 딕셔너리와 똑같이 생겼습니다. 앞으로 API 다룰 때 매일 만납니다.</p>
 </blockquote>
 <hr>
-<h2 id="4-반복문-loop--같은-일을-자동으로-되풀이">4. 반복문 (Loop) — 같은 일을 자동으로 되풀이<a hidden class="anchor" aria-hidden="true" href="#4-반복문-loop--같은-일을-자동으로-되풀이">#</a></h2>
-<p>별 5개를 출력하려고 <code>print</code>를 5번 쓸 수는 있지만, 100개라면? 반복문이 답입니다.</p>
-<h3 id="for-문--목록을-하나씩-꺼내기">for 문 — 목록을 하나씩 꺼내기<a hidden class="anchor" aria-hidden="true" href="#for-문--목록을-하나씩-꺼내기">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">for</span> <span class="n">fruit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&#34;사과&#34;</span><span class="p">,</span> <span class="s2">&#34;바나나&#34;</span><span class="p">,</span> <span class="s2">&#34;체리&#34;</span><span class="p">]:</span>
+<h2 id="04--반복문-loop">04 · 반복문 (Loop)<a hidden class="anchor" aria-hidden="true" href="#04--반복문-loop">#</a></h2>
+<h3 id="for-문--range">for 문 · range()<a hidden class="anchor" aria-hidden="true" href="#for-문--range">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">for</span> <span class="n">fruit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&#34;사과&#34;</span><span class="p">,</span> <span class="s2">&#34;바나나&#34;</span><span class="p">]:</span>   <span class="c1"># 목록을 하나씩 꺼내 반복</span>
 </span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">fruit</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 사과 / 바나나 / 체리 (한 줄씩)</span>
-</span></span></code></pre></div><h3 id="for--range--정해진-횟수만큼">for + range() — 정해진 횟수만큼<a hidden class="anchor" aria-hidden="true" href="#for--range--정해진-횟수만큼">#</a></h3>
-<p><code>range()</code>는 연속된 숫자를 만들어 줍니다. <strong>끝 숫자는 포함하지 않습니다.</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>         <span class="c1"># 0, 1, 2, 3, 4</span>
-</span></span><span class="line"><span class="cl"><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>      <span class="c1"># 1, 2, 3, 4, 5</span>
-</span></span><span class="line"><span class="cl"><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># 0, 2, 4, 6, 8  (2칸씩)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;3 x </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="mi">3</span> <span class="o">*</span> <span class="n">i</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>   <span class="c1"># 구구단 3단</span>
-</span></span></code></pre></div><h3 id="while-문--조건이-참인-동안-계속">while 문 — 조건이 참인 동안 계속<a hidden class="anchor" aria-hidden="true" href="#while-문--조건이-참인-동안-계속">#</a></h3>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>             <span class="c1"># 1~9 (끝 미포함)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;3 x </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="mi">3</span> <span class="o">*</span> <span class="n">i</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>    <span class="c1"># 구구단 3단</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <code>range(1, 10)</code>은 10 직전까지. 끝 숫자는 포함하지 않습니다(슬라이싱과 같은 규칙).</p>
+</blockquote>
+<h3 id="while-문--break">while 문 · break<a hidden class="anchor" aria-hidden="true" href="#while-문--break">#</a></h3>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>
-</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>     <span class="c1"># 5 4 3 2 1</span>
-</span></span><span class="line"><span class="cl">    <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>       <span class="c1"># 이 줄이 없으면 무한루프!</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>        <span class="c1"># 조건이 참인 동안 반복</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>          <span class="c1"># 이 줄이 없으면 무한루프!</span>
 </span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;발사!&#34;</span><span class="p">)</span>
-</span></span></code></pre></div><blockquote>
-<p>⚠️ <strong>무한루프 주의</strong>: while 안에서 조건을 변하게 만드는 코드(<code>i -= 1</code> 등)를 꼭 넣어야 합니다. 멈추지 않으면 <code>Ctrl + C</code>로 강제 종료하세요.</p>
-</blockquote>
-<h3 id="break--반복-도중-탈출">break — 반복 도중 탈출<a hidden class="anchor" aria-hidden="true" href="#break--반복-도중-탈출">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">for</span> <span class="n">fruit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&#34;사과&#34;</span><span class="p">,</span> <span class="s2">&#34;바나나&#34;</span><span class="p">,</span> <span class="s2">&#34;체리&#34;</span><span class="p">,</span> <span class="s2">&#34;망고&#34;</span><span class="p">,</span> <span class="s2">&#34;딸기&#34;</span><span class="p">]:</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">fruit</span> <span class="o">==</span> <span class="s2">&#34;망고&#34;</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">        <span class="k">break</span>        <span class="c1"># 망고를 만나면 반복 종료</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">fruit</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 사과 / 바나나 / 체리</span>
-</span></span></code></pre></div><blockquote>
-<p>💡 <strong>for vs while 언제?</strong> 횟수·범위가 정해져 있으면 <code>for</code>, 조건에 따라 끝나면 <code>while</code>을 주로 씁니다.</p>
-</blockquote>
-<table>
-	<thead>
-			<tr>
-					<th style="text-align: left">구문</th>
-					<th style="text-align: left">용도</th>
-			</tr>
-	</thead>
-	<tbody>
-			<tr>
-					<td style="text-align: left"><code>for i in 시퀀스</code></td>
-					<td style="text-align: left">리스트·문자열 원소 순회</td>
-			</tr>
-			<tr>
-					<td style="text-align: left"><code>for i in range(n)</code></td>
-					<td style="text-align: left">n번 반복</td>
-			</tr>
-			<tr>
-					<td style="text-align: left"><code>while 조건</code></td>
-					<td style="text-align: left">조건이 참인 동안 반복</td>
-			</tr>
-			<tr>
-					<td style="text-align: left"><code>break</code></td>
-					<td style="text-align: left">반복문 즉시 탈출</td>
-			</tr>
-	</tbody>
-</table>
-<hr>
-<h2 id="5-함수-function--코드-묶어서-재사용하기">5. 함수 (Function) — 코드 묶어서 재사용하기<a hidden class="anchor" aria-hidden="true" href="#5-함수-function--코드-묶어서-재사용하기">#</a></h2>
-<p>함수는 <strong>특정 작업을 하는 코드 묶음에 이름을 붙여 두고</strong> 필요할 때마다 부르는 것입니다. 프로그래밍의 기본 틀은 <strong>입력 → 처리 → 출력</strong>입니다.</p>
-<h3 id="내장-함수--파이썬이-미리-만들어-둔-것">내장 함수 — 파이썬이 미리 만들어 둔 것<a hidden class="anchor" aria-hidden="true" href="#내장-함수--파이썬이-미리-만들어-둔-것">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nb">len</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>        <span class="c1"># 3   (길이)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">sum</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>  <span class="c1"># 15  (합)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">max</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>        <span class="c1"># 3   (최댓값)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">min</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>        <span class="c1"># 1   (최솟값)</span>
-</span></span></code></pre></div><h3 id="직접-함수-만들기--def">직접 함수 만들기 — <code>def</code><a hidden class="anchor" aria-hidden="true" href="#직접-함수-만들기--def">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">plus_double</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>     <span class="c1"># def 이름(매개변수):</span>
-</span></span><span class="line"><span class="cl">    <span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>              <span class="c1">#   들여쓰기로 본문</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span>           <span class="c1">#   return으로 결과 돌려주기</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">plus_double</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>   <span class="c1"># 14   ( (3+4) × 2 )</span>
-</span></span></code></pre></div><ul>
-<li><strong>매개변수(parameter)</strong>: 함수가 받는 입력값 자리 (<code>a</code>, <code>b</code>)</li>
-<li><strong><code>return</code></strong>: 결과를 함수 밖으로 돌려줌</li>
-</ul>
-<blockquote>
-<p>⚠️ <strong><code>return</code>이 없으면 결과는 <code>None</code>!</strong> 화면에 <code>print</code>만 하는 것과, 값을 <code>return</code>해서 다른 곳에 쓰는 것은 다릅니다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>     <span class="c1"># 보여주기만 함</span>
-</span></span></code></pre></div></blockquote>
-<blockquote>
-<p>x = add(2, 3)        # 화면엔 5가 찍히지만 x = None</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"></code></pre></div></blockquote>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">fruit</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&#34;사과&#34;</span><span class="p">,</span> <span class="s2">&#34;망고&#34;</span><span class="p">,</span> <span class="s2">&#34;딸기&#34;</span><span class="p">]:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">fruit</span> <span class="o">==</span> <span class="s2">&#34;망고&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span>       <span class="c1"># 망고를 만나면 반복 종료</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">fruit</span><span class="p">)</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <strong>for</strong> → 횟수·범위가 정해질 때 / <strong>while</strong> → 조건으로 끝날 때. 무한루프 시 <code>Ctrl + C</code>.</p>
+</blockquote>
+<hr>
+<h2 id="05--함수와-메서드">05 · 함수와 메서드<a hidden class="anchor" aria-hidden="true" href="#05--함수와-메서드">#</a></h2>
+<p>함수는 <strong>작업하는 코드 묶음에 이름을 붙여</strong> 재사용하는 것. 기본 틀은 <strong>입력 → 처리 → 출력</strong>.</p>
+<h3 id="내장-함수--사용자-정의-함수">내장 함수 · 사용자 정의 함수<a hidden class="anchor" aria-hidden="true" href="#내장-함수--사용자-정의-함수">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nb">len</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>     <span class="c1"># 3</span>
+</span></span><span class="line"><span class="cl"><span class="nb">sum</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>     <span class="c1"># 6</span>
+</span></span><span class="line"><span class="cl"><span class="nb">max</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>     <span class="c1"># 3</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">plus_double</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>     <span class="c1"># def 이름(매개변수):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span>           <span class="c1"># return으로 결과 반환</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">plus_double</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>   <span class="c1"># 14</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <code>return</code>이 없으면 결과는 <code>None</code>. 화면에 <code>print</code>만 하는 것과, 값을 <code>return</code>해 다른 곳에 쓰는 것은 다릅니다.</p>
+</blockquote>
 <h3 id="전역-변수-vs-지역-변수">전역 변수 vs 지역 변수<a hidden class="anchor" aria-hidden="true" href="#전역-변수-vs-지역-변수">#</a></h3>
-<p>함수 <strong>안에서 만든 변수</strong>는 함수 밖에서 쓸 수 없습니다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">x</span> <span class="o">=</span> <span class="s2">&#34;전역&#34;</span>          <span class="c1"># 어디서든 접근 가능</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">x</span> <span class="o">=</span> <span class="s2">&#34;전역&#34;</span>          <span class="c1"># 어디서든 접근</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">my_func</span><span class="p">():</span>
 </span></span><span class="line"><span class="cl">    <span class="n">y</span> <span class="o">=</span> <span class="s2">&#34;지역&#34;</span>      <span class="c1"># 이 함수 안에서만 존재</span>
 </span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>        <span class="c1"># 전역변수 읽기 OK</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">my_func</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>            <span class="c1"># NameError! — 함수 밖에는 y가 없음</span>
-</span></span></code></pre></div><h3 id="함수-vs-메서드--무엇이-다른가">함수 vs 메서드 — 무엇이 다른가<a hidden class="anchor" aria-hidden="true" href="#함수-vs-메서드--무엇이-다른가">#</a></h3>
-<p>둘 다 기능 묶음이지만 <strong>부르는 방법</strong>이 다릅니다.</p>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>            <span class="c1"># NameError! — 함수 밖엔 y 없음</span>
+</span></span></code></pre></div><h3 id="함수-vs-메서드">함수 vs 메서드<a hidden class="anchor" aria-hidden="true" href="#함수-vs-메서드">#</a></h3>
 <table>
 	<thead>
 			<tr>
 					<th style="text-align: left">구분</th>
-					<th style="text-align: left">함수 (Function)</th>
-					<th style="text-align: left">메서드 (Method)</th>
+					<th style="text-align: left">함수</th>
+					<th style="text-align: left">메서드</th>
 			</tr>
 	</thead>
 	<tbody>
@@ -513,11 +446,6 @@
 					<td style="text-align: left"><code>자료.메서드명()</code></td>
 			</tr>
 			<tr>
-					<td style="text-align: left">특징</td>
-					<td style="text-align: left">범용 기능</td>
-					<td style="text-align: left">특정 자료형에 딸린 기능</td>
-			</tr>
-			<tr>
 					<td style="text-align: left">예시</td>
 					<td style="text-align: left"><code>len(my_list)</code></td>
 					<td style="text-align: left"><code>my_list.append(4)</code></td>
@@ -525,44 +453,58 @@
 	</tbody>
 </table>
 <hr>
-<h2 id="-보충--실무에서-함수를-쓰는-법-타입-힌트--독스트링">📌 보충 — 실무에서 함수를 쓰는 법 (타입 힌트 &amp; 독스트링)<a hidden class="anchor" aria-hidden="true" href="#-보충--실무에서-함수를-쓰는-법-타입-힌트--독스트링">#</a></h2>
-<p>수업 마지막에 다룬, 함수를 <strong>전문가답게</strong> 쓰는 두 가지 관행입니다. 코드의 가독성과 협업 효율을 크게 높입니다.</p>
-<h3 id="타입-힌트-type-hint">타입 힌트 (Type Hint)<a hidden class="anchor" aria-hidden="true" href="#타입-힌트-type-hint">#</a></h3>
-<p>매개변수와 반환값의 <strong>자료형을 명시</strong>해 둡니다. 강제는 아니지만, 코드를 읽는 사람과 에디터가 실수를 빨리 잡게 도와줍니다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 타입 힌트 없음 — a, b가 뭔지 알 수 없음</span>
-</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># 타입 힌트 있음 — int 두 개를 받아 int를 반환한다고 명확히 표현</span>
-</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
-</span></span></code></pre></div><h3 id="독스트링-docstring">독스트링 (Docstring)<a hidden class="anchor" aria-hidden="true" href="#독스트링-docstring">#</a></h3>
-<p>함수 첫 줄에 <code>&quot;&quot;&quot;설명&quot;&quot;&quot;</code>을 적으면 그 함수의 설명서가 됩니다. <code>help(함수명)</code>으로 볼 수 있고, 오픈소스 라이브러리 공식 문서도 대부분 여기서 자동 생성됩니다.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">celsius_to_fahrenheit</span><span class="p">(</span><span class="n">celsius</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;섭씨 온도를 화씨 온도로 변환합니다.
-</span></span></span><span class="line"><span class="cl"><span class="s2">
-</span></span></span><span class="line"><span class="cl"><span class="s2">    Args:
-</span></span></span><span class="line"><span class="cl"><span class="s2">        celsius (float): 변환할 섭씨 온도
-</span></span></span><span class="line"><span class="cl"><span class="s2">    Returns:
-</span></span></span><span class="line"><span class="cl"><span class="s2">        float: 변환된 화씨 온도
-</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">celsius</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">/</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">32</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">help</span><span class="p">(</span><span class="n">celsius_to_fahrenheit</span><span class="p">)</span>   <span class="c1"># 위 설명이 그대로 출력됨</span>
-</span></span></code></pre></div><blockquote>
-<p>출처: <a href="https://docs.python.org/ko/3/tutorial/controlflow.html#defining-functions">Python 공식 문서 — 함수 정의</a>, <a href="https://docs.python.org/ko/3/library/typing.html">타입 힌트(typing)</a></p>
+<h1 id="-참고자료">📚 참고자료<a hidden class="anchor" aria-hidden="true" href="#-참고자료">#</a></h1>
+<blockquote>
+<p>수업 마지막에 다룬 실무 관행 + 알아두면 좋은 내용을 <a href="https://docs.python.org/ko/3/">Python 공식 문서</a>에서 보충했습니다.</p>
 </blockquote>
-<hr>
+<h2 id="타입-힌트-type-hint">타입 힌트 (Type Hint)<a hidden class="anchor" aria-hidden="true" href="#타입-힌트-type-hint">#</a></h2>
+<p>매개변수·반환값의 <strong>자료형을 명시</strong>합니다. 강제는 아니지만(어겨도 에러 안 남) 가독성·협업에 도움이 됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>   <span class="c1"># int 둘을 받아 int 반환</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>        <span class="c1"># 반환값 없으면 -&gt; None</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span></span></code></pre></div><blockquote>
+<p>출처: <a href="https://docs.python.org/ko/3/library/typing.html">typing — 형 힌트 지원</a></p>
+</blockquote>
+<h2 id="독스트링-docstring">독스트링 (Docstring)<a hidden class="anchor" aria-hidden="true" href="#독스트링-docstring">#</a></h2>
+<p>함수 첫 줄에 <code>&quot;&quot;&quot;설명&quot;&quot;&quot;</code>을 적으면 함수의 설명서가 됩니다. <code>help(함수명)</code>으로 보고, 라이브러리 공식 문서도 대부분 여기서 자동 생성됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">c_to_f</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;섭씨를 화씨로 변환한다.&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">c</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">/</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">32</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">help</span><span class="p">(</span><span class="n">c_to_f</span><span class="p">)</span>   <span class="c1"># 위 설명이 출력됨</span>
+</span></span></code></pre></div><h2 id="반복을-더-편하게--enumerate--zip">반복을 더 편하게 — <code>enumerate</code> · <code>zip</code><a hidden class="anchor" aria-hidden="true" href="#반복을-더-편하게--enumerate--zip">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># enumerate: 인덱스와 값을 동시에</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fruit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&#34;사과&#34;</span><span class="p">,</span> <span class="s2">&#34;배&#34;</span><span class="p">]):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fruit</span><span class="p">)</span>        <span class="c1"># 0 사과 / 1 배</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># zip: 두 리스트를 나란히 묶기</span>
+</span></span><span class="line"><span class="cl"><span class="n">names</span><span class="p">,</span> <span class="n">ages</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;철수&#34;</span><span class="p">,</span> <span class="s2">&#34;영희&#34;</span><span class="p">],</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">ages</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">)</span>       <span class="c1"># 철수 20 / 영희 22</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">ages</span><span class="p">))</span>     <span class="c1"># {&#39;철수&#39;: 20, &#39;영희&#39;: 22}</span>
+</span></span></code></pre></div><h2 id="break-의-짝--continue"><code>break</code> 의 짝 — <code>continue</code><a hidden class="anchor" aria-hidden="true" href="#break-의-짝--continue">#</a></h2>
+<p><code>break</code>는 반복을 완전히 탈출, <code>continue</code>는 <strong>이번 회차만 건너뛰고</strong> 다음으로 진행합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">continue</span>       <span class="c1"># 3만 건너뜀</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>           <span class="c1"># 1 2 4 5</span>
+</span></span></code></pre></div><hr>
 <h2 id="마무리">마무리<a hidden class="anchor" aria-hidden="true" href="#마무리">#</a></h2>
-<p>오늘 배운 것을 한 문장으로 묶으면 이렇습니다.
-<strong>&ldquo;데이터를 묶고(튜플·딕셔너리), 반복으로 처리하고(for·while), 그 처리를 함수로 포장해 재사용한다.&rdquo;</strong></p>
-<p>이 세 가지가 합쳐지면 &ldquo;성적표를 분석하고&rdquo;, &ldquo;재고를 계산하고&rdquo;, &ldquo;로그인을 처리하는&rdquo; 실제 프로그램이 됩니다. 머리로만 읽지 말고 직접 손으로 쳐보면서 익히세요. 💪</p>
-<p>실습 코드 전체는 아래 코드 노트에 정리해 두었습니다.</p>
+<blockquote>
+<p><strong>데이터를 묶고(튜플·딕셔너리) → 반복으로 처리하고(for·while) → 함수로 포장해 재사용한다.</strong>
+이 셋이 합쳐지면 &ldquo;성적표 분석·재고 계산·로그인 처리&rdquo; 같은 진짜 프로그램이 된다.</p>
+</blockquote>
+<p>머리로만 읽지 말고 직접 손으로 쳐보며 익히세요. 실습 코드는 아래 코드 노트에 정리해 두었습니다. 💪</p>
+<hr>
+<p><em>작성: AI_6스터디 | 수업 출처: 이어드림스쿨 파이썬 기초 II 수업 자료 (Elice)</em></p>
 <hr>
 <h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
 <ul>
-<li>[[6-01 파이썬 코드 노트2|6/1 파이썬 실습2 (코드 노트)]] — 오늘 실습 코드 전체 + 공식 문서 레퍼런스</li>
-<li>[[5-29 파이썬 기초|5/29 파이썬 기초]] — 자료형·변수·조건문·리스트 (오늘의 전제)</li>
+<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B82/">6/1 파이썬 실습2 (코드 노트)</a> — 오늘 실습 코드 전체 + 공식 문서 레퍼런스</li>
+<li><a href="/posts/%EA%B0%95%EC%9D%98/5-29-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%88/">5/29 파이썬 기초</a> — 자료형·변수·조건문·리스트 (오늘의 전제)</li>
 </ul>
 
 
