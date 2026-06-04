@@ -1,733 +1,198 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트) | AI_6스터디</title>
-<meta name="keywords" content="파이썬, Python, 클래스, OOP, 상속, 다형성, 코드노트, 실습, 초보자">
-<meta name="description" content="파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다">
-<meta name="author" content="yw8837">
-<link rel="canonical" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://yw8837.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-                color-scheme: dark;
-            }
-
-            .list {
-                background: var(--theme);
-            }
-
-            .toc {
-                background: var(--entry);
-            }
-        }
-
-    </style>
-</noscript>
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else if (localStorage.getItem("pref-theme") === "light") {
-       document.querySelector("html").dataset.theme = 'light';
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else {
-        document.querySelector("html").dataset.theme = 'light';
-    }
-
-</script>
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
-      <script>
-        var doNotTrack = false;
-        if ( true ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
-        }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-EQR4094Q13');
-        }
-      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-  <meta property="og:site_name" content="AI_6스터디">
-  <meta property="og:title" content="6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)">
-  <meta property="og:description" content="파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다">
-  <meta property="og:locale" content="ko">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2026-06-02T11:00:00+09:00">
-    <meta property="article:modified_time" content="2026-06-02T11:00:00+09:00">
-    <meta property="article:tag" content="파이썬">
-    <meta property="article:tag" content="Python">
-    <meta property="article:tag" content="클래스">
-    <meta property="article:tag" content="OOP">
-    <meta property="article:tag" content="상속">
-    <meta property="article:tag" content="다형성">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)">
-  <meta name="twitter:description" content="파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://yw8837.github.io/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)",
-      "item": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)",
-  "name": "6\/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)",
-  "description": "파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다",
-  "keywords": [
-    "파이썬", "Python", "클래스", "OOP", "상속", "다형성", "코드노트", "실습", "초보자"
-  ],
-  "articleBody": "파이썬 클래스 실습 — “IT 회사의 팀원과 부서\"를 코드로 만들며 객체지향을 익혔습니다. 강의 노트북 코드를 그대로 정리하고, 각 단계를 ① 한 줄 설명 → ② 코드 → ③ 출력 → ④ 한 줄씩 뜯어보기 → ⑤ 팁 으로 풀었어요. 직접 쳐보세요! 🏢\nPart 1. 클래스 기초 1. 빈 클래스와 인스턴스 class TeamMember: # 설계도 (클래스명 첫 글자 대문자) pass # 아직 내용 없음 member1 = TeamMember() # 설계도로 실제 객체 생성 member2 = TeamMember() print(type(member1)) # ",
-  "wordCount" : "1109",
-  "inLanguage": "en",
-  "datePublished": "2026-06-02T11:00:00+09:00",
-  "dateModified": "2026-06-02T11:00:00+09:00",
-  "author":{
-    "@type": "Person",
-    "name": "yw8837"
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "AI_6스터디",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://yw8837.github.io/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-<body id="top">
-    <header class="header">
-    <nav class="header-nav">
-        <div class="logo">
-            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
-                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <ul id="menu" class="menu">
-            <li>
-                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
-                    <span>📚 Year Study</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
-                    <span>강의 정리</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
-                    <span>실습 정리</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
-                    <span>프로젝트</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
-    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-            <a href="/">홈</a>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-            <a href="/posts/">Posts</a>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-        <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
-</nav>
-    <h1 class="post-title entry-hint-parent">
-      6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)
-    </h1>
-    <div class="post-description">
-      파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다
-    </div>
-    <div class="post-meta">
-
-<span title='2026-06-02 11:00:00 +0900 KST'>2026년 6월 2일</span>&nbsp;·&nbsp;<span>6 분</span>&nbsp;·&nbsp;<span>yw8837</span>
-
-</div>
-  </header> <details class="toc" >
-    <summary accesskey="c" title="(Alt + C)">
-        <span class="title">목차</span>
-    </summary>
-
-    <div class="inner"><ul>
-            <li>
-                <a href="#part-1-%ed%81%b4%eb%9e%98%ec%8a%a4-%ea%b8%b0%ec%b4%88" aria-label="Part 1. 클래스 기초">Part 1. 클래스 기초</a><ul>
-                    
-            <li>
-                <a href="#1-%eb%b9%88-%ed%81%b4%eb%9e%98%ec%8a%a4%ec%99%80-%ec%9d%b8%ec%8a%a4%ed%84%b4%ec%8a%a4" aria-label="1. 빈 클래스와 인스턴스">1. 빈 클래스와 인스턴스</a></li>
-            <li>
-                <a href="#2-__init__-%ec%99%80-%ec%86%8d%ec%84%b1" aria-label="2. __init__ 와 속성">2. __init__ 와 속성</a></li>
-            <li>
-                <a href="#3-%eb%a9%94%ec%84%9c%eb%93%9c--%ea%b0%9d%ec%b2%b4%ec%9d%98-%ed%96%89%eb%8f%99" aria-label="3. 메서드 — 객체의 행동">3. 메서드 — 객체의 행동</a></li>
-            <li>
-                <a href="#4-%ed%81%b4%eb%9e%98%ec%8a%a4-%eb%b3%80%ec%88%98-vs-%ec%9d%b8%ec%8a%a4%ed%84%b4%ec%8a%a4-%eb%b3%80%ec%88%98" aria-label="4. 클래스 변수 vs 인스턴스 변수">4. 클래스 변수 vs 인스턴스 변수</a></li>
-            <li>
-                <a href="#5-__str__--__repr__" aria-label="5. __str__ / __repr__">5. __str__ / __repr__</a></li>
-            <li>
-                <a href="#6-%ed%81%b4%eb%9e%98%ec%8a%a4-%eb%a9%94%ec%84%9c%eb%93%9c--%ec%a0%95%ec%a0%81-%eb%a9%94%ec%84%9c%eb%93%9c" aria-label="6. 클래스 메서드 · 정적 메서드">6. 클래스 메서드 · 정적 메서드</a></li></ul>
-            </li>
-            <li>
-                <a href="#part-2-%ec%83%81%ec%86%8d%ea%b3%bc-%eb%8b%a4%ed%98%95%ec%84%b1" aria-label="Part 2. 상속과 다형성">Part 2. 상속과 다형성</a><ul>
-                    
-            <li>
-                <a href="#7-%eb%b6%80%eb%aa%a8-%ed%81%b4%eb%9e%98%ec%8a%a4--%ec%9e%90%ec%8b%9d-%ed%81%b4%eb%9e%98%ec%8a%a4-%ec%83%81%ec%86%8d" aria-label="7. 부모 클래스 &#43; 자식 클래스 (상속)">7. 부모 클래스 + 자식 클래스 (상속)</a></li>
-            <li>
-                <a href="#8-%ed%8c%80-%ea%b5%ac%ec%84%b1-%ec%8b%9c%eb%ae%ac%eb%a0%88%ec%9d%b4%ec%85%98" aria-label="8. 팀 구성 시뮬레이션">8. 팀 구성 시뮬레이션</a></li>
-            <li>
-                <a href="#9-%eb%8b%a4%ed%98%95%ec%84%b1-polymorphism" aria-label="9. 다형성 (Polymorphism)">9. 다형성 (Polymorphism)</a></li>
-            <li>
-                <a href="#10-isinstance--issubclass--%ec%98%88%ec%8a%b5-%ec%95%84%ec%a7%81-%ec%95%88-%eb%b0%b0%ec%9b%80--%eb%b0%b0%ec%9a%b4-%eb%92%a4-%eb%b3%b4%ea%b0%95" aria-label="10. isinstance() · issubclass() 🔜 예습 (아직 안 배움 · 배운 뒤 보강)">10. isinstance() · issubclass() 🔜 예습 (아직 안 배움 · 배운 뒤 보강)</a></li></ul>
-            </li>
-            <li>
-                <a href="#-%eb%b3%b4%ec%b6%a9" aria-label="📚 보충">📚 보충</a><ul>
-                    
-            <li>
-                <a href="#self%ea%b0%80-%ed%97%b7%ea%b0%88%eb%a6%b4-%eb%95%8c" aria-label="self가 헷갈릴 때">self가 헷갈릴 때</a></li>
-            <li>
-                <a href="#%ed%81%b4%eb%9e%98%ec%8a%a4-%eb%b3%80%ec%88%98-%ec%88%98%ec%a0%95-%ec%a3%bc%ec%9d%98" aria-label="클래스 변수 수정 주의">클래스 변수 수정 주의</a></li>
-            <li>
-                <a href="#enumerate--sum-for-" aria-label="enumerate · sum(... for ...)">enumerate · sum(... for ...)</a></li>
-            <li>
-                <a href="#%ed%95%b5%ec%8b%ac-%ec%a0%95%eb%a6%ac" aria-label="핵심 정리">핵심 정리</a></li>
-            <li>
-                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
-            </li>
-        </ul>
-        </li>
-        </ul>
-    </div>
-</details>
-
-  <div class="post-content md-content"><p>파이썬 <strong>클래스 실습</strong> — &ldquo;IT 회사의 팀원과 부서&quot;를 코드로 만들며 객체지향을 익혔습니다. 강의 노트북 코드를 그대로 정리하고, 각 단계를 <strong>① 한 줄 설명 → ② 코드 → ③ 출력 → ④ 한 줄씩 뜯어보기 → ⑤ 팁</strong> 으로 풀었어요. 직접 쳐보세요! 🏢</p>
-<hr>
-<h1 id="part-1-클래스-기초">Part 1. 클래스 기초<a hidden class="anchor" aria-hidden="true" href="#part-1-클래스-기초">#</a></h1>
-<h2 id="1-빈-클래스와-인스턴스">1. 빈 클래스와 인스턴스<a hidden class="anchor" aria-hidden="true" href="#1-빈-클래스와-인스턴스">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">TeamMember</span><span class="p">:</span>      <span class="c1"># 설계도 (클래스명 첫 글자 대문자)</span>
-</span></span><span class="line"><span class="cl">    <span class="k">pass</span>               <span class="c1"># 아직 내용 없음</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">member1</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="p">()</span>   <span class="c1"># 설계도로 실제 객체 생성</span>
-</span></span><span class="line"><span class="cl"><span class="n">member2</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">member1</span><span class="p">))</span>       <span class="c1"># &lt;class &#39;__main__.TeamMember&#39;&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">member1</span> <span class="ow">is</span> <span class="n">member2</span><span class="p">)</span>  <span class="c1"># False — 서로 다른 객체</span>
-</span></span></code></pre></div><p>🔍 <code>TeamMember()</code> 처럼 괄호를 붙이면 인스턴스(객체)가 만들어집니다. <code>member1</code>과 <code>member2</code>는 같은 설계도지만 <strong>다른 물건</strong>이에요.</p>
-<hr>
-<h2 id="2-__init__-와-속성">2. <code>__init__</code> 와 속성<a hidden class="anchor" aria-hidden="true" href="#2-__init__-와-속성">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">TeamMember</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>        <span class="c1"># 인스턴스 속성 저장</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">=</span> <span class="n">role</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">salary</span> <span class="o">=</span> <span class="n">salary</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">alice</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;Alice&#34;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&#34;시니어 개발자&#34;</span><span class="p">,</span> <span class="n">salary</span><span class="o">=</span><span class="mi">60000</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">bob</span>   <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&#34;Bob&#34;</span><span class="p">,</span>   <span class="n">role</span><span class="o">=</span><span class="s2">&#34;주니어 기획자&#34;</span><span class="p">,</span> <span class="n">salary</span><span class="o">=</span><span class="mi">3000</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">alice</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">의 직책: </span><span class="si">{</span><span class="n">alice</span><span class="o">.</span><span class="n">role</span><span class="si">}</span><span class="s2">, 연봉: </span><span class="si">{</span><span class="n">alice</span><span class="o">.</span><span class="n">salary</span><span class="si">}</span><span class="s2">만원&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">bob</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">의 직책: </span><span class="si">{</span><span class="n">bob</span><span class="o">.</span><span class="n">role</span><span class="si">}</span><span class="s2">, 연봉: </span><span class="si">{</span><span class="n">bob</span><span class="o">.</span><span class="n">salary</span><span class="si">}</span><span class="s2">만원&#34;</span><span class="p">)</span>
-</span></span></code></pre></div><p>출력:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Alice의 직책: 시니어 개발자, 연봉: 60000만원
-</span></span><span class="line"><span class="cl">Bob의 직책: 주니어 기획자, 연봉: 3000만원
-</span></span></code></pre></div><p>🔍 <code>__init__</code>은 <code>TeamMember(...)</code>를 호출하는 순간 자동 실행돼 속성을 채웁니다. <code>self</code>는 만들어지는 그 객체(alice, bob)예요.</p>
-<hr>
-<h2 id="3-메서드--객체의-행동">3. 메서드 — 객체의 행동<a hidden class="anchor" aria-hidden="true" href="#3-메서드--객체의-행동">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">TeamMember</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">salary</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">projects</span> <span class="o">=</span> <span class="p">[]</span>      <span class="c1"># 참여 중인 프로젝트 목록</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">introduce</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;안녕하세요! 저는 </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">입니다.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">negotiate_salary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>     <span class="c1"># 연봉 인상</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">salary</span> <span class="o">+=</span> <span class="n">amount</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;축하합니다! </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">님 연봉이 </span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2">만원 올라 총 </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">salary</span><span class="si">}</span><span class="s2">만원입니다.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">develop_skill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_role</span><span class="p">):</span>      <span class="c1"># 승진(직책 변경)</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">=</span> <span class="n">new_role</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;멋집니다! </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">님이 &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="si">}</span><span class="s2">&#39;(으)로 승진했습니다.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">alice</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="s2">&#34;Alice&#34;</span><span class="p">,</span> <span class="s2">&#34;주니어 기획자&#34;</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">alice</span><span class="o">.</span><span class="n">introduce</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="n">alice</span><span class="o">.</span><span class="n">develop_skill</span><span class="p">(</span><span class="s2">&#34;시니어 기획자&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">alice</span><span class="o">.</span><span class="n">negotiate_salary</span><span class="p">(</span><span class="mi">2000</span><span class="p">)</span>
-</span></span></code></pre></div><p>출력:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">안녕하세요! 저는 주니어 기획자 Alice입니다.
-</span></span><span class="line"><span class="cl">멋집니다! Alice님이 &#39;시니어 기획자&#39;(으)로 승진했습니다.
-</span></span><span class="line"><span class="cl">축하합니다! Alice님 연봉이 2000만원 올라 총 5000만원입니다.
-</span></span></code></pre></div><blockquote>
-<p>💡 <code>alice.develop_skill(&quot;시니어 기획자&quot;)</code> — <code>self</code>는 자동으로 <code>alice</code>, <code>new_role</code>에 &ldquo;시니어 기획자&quot;가 들어갑니다.</p>
-</blockquote>
-<hr>
-<h2 id="4-클래스-변수-vs-인스턴스-변수">4. 클래스 변수 vs 인스턴스 변수<a hidden class="anchor" aria-hidden="true" href="#4-클래스-변수-vs-인스턴스-변수">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">TeamMember</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">company_name</span> <span class="o">=</span> <span class="s2">&#34;앨리스&#34;</span>      <span class="c1"># 클래스 변수 (모두 공유)</span>
-</span></span><span class="line"><span class="cl">    <span class="n">total_member</span> <span class="o">=</span> <span class="mi">0</span>            <span class="c1"># 전체 인원 카운터</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>        <span class="c1"># 인스턴스 변수 (각자 다름)</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">=</span> <span class="n">role</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">salary</span> <span class="o">=</span> <span class="n">salary</span>
-</span></span><span class="line"><span class="cl">        <span class="n">TeamMember</span><span class="o">.</span><span class="n">total_member</span> <span class="o">+=</span> <span class="mi">1</span>     <span class="c1"># 객체 생길 때마다 +1</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">introduce</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">company_name</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (연봉: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">salary</span><span class="si">}</span><span class="s2">만원)&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">alice</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="s2">&#34;Alice&#34;</span><span class="p">,</span> <span class="s2">&#34;시니어 개발자&#34;</span><span class="p">,</span> <span class="mi">60000</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">bob</span>   <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="s2">&#34;Bob&#34;</span><span class="p">,</span> <span class="s2">&#34;주니어 기획자&#34;</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">alice</span><span class="o">.</span><span class="n">introduce</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="n">bob</span><span class="o">.</span><span class="n">introduce</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;현재 총 팀원 수: </span><span class="si">{</span><span class="n">TeamMember</span><span class="o">.</span><span class="n">total_member</span><span class="si">}</span><span class="s2">명&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># 클래스 변수를 바꾸면 → 모든 객체에 반영</span>
-</span></span><span class="line"><span class="cl"><span class="n">TeamMember</span><span class="o">.</span><span class="n">company_name</span> <span class="o">=</span> <span class="s2">&#34;이어드림스쿨&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="n">alice</span><span class="o">.</span><span class="n">introduce</span><span class="p">()</span>
-</span></span></code></pre></div><p>출력:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[앨리스] 시니어 개발자 Alice (연봉: 60000만원)
-</span></span><span class="line"><span class="cl">[앨리스] 주니어 기획자 Bob (연봉: 3000만원)
-</span></span><span class="line"><span class="cl">현재 총 팀원 수: 2명
-</span></span><span class="line"><span class="cl">[이어드림스쿨] 시니어 개발자 Alice (연봉: 60000만원)
-</span></span></code></pre></div><blockquote>
-<p>💡 <code>company_name</code>을 한 번 바꾸니 alice·bob 모두 바뀝니다 → <strong>공유</strong>되는 클래스 변수의 특징.</p>
-</blockquote>
-<hr>
-<h2 id="5-__str__--__repr__">5. <code>__str__</code> / <code>__repr__</code><a hidden class="anchor" aria-hidden="true" href="#5-__str__--__repr__">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">TeamMember</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">salary</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>      <span class="c1"># print() 할 때 — 사람이 읽기 좋게</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>     <span class="c1"># 디버깅용 — 정확한 표현</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="sa">f</span><span class="s2">&#34;TeamMember(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;, role=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="si">}</span><span class="s2">&#39;, salary=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">salary</span><span class="si">}</span><span class="s2">)&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">alice</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="s2">&#34;Alice&#34;</span><span class="p">,</span> <span class="s2">&#34;시니어 개발자&#34;</span><span class="p">,</span> <span class="mi">60000</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">alice</span><span class="p">))</span>    <span class="c1"># 시니어 개발자 Alice</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">alice</span><span class="p">))</span>   <span class="c1"># TeamMember(name=&#39;Alice&#39;, role=&#39;시니어 개발자&#39;, salary=60000)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">alice</span><span class="p">)</span>         <span class="c1"># 시니어 개발자 Alice  (print는 __str__ 사용)</span>
-</span></span></code></pre></div><hr>
-<h2 id="6-클래스-메서드--정적-메서드">6. 클래스 메서드 · 정적 메서드<a hidden class="anchor" aria-hidden="true" href="#6-클래스-메서드--정적-메서드">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">TeamMember</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">total_members</span> <span class="o">=</span> <span class="mi">0</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">salary</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span>
-</span></span><span class="line"><span class="cl">        <span class="n">TeamMember</span><span class="o">.</span><span class="n">total_members</span> <span class="o">+=</span> <span class="mi">1</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@classmethod</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">get_total_members</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>           <span class="c1"># cls = 클래스 자신</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">total_members</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@classmethod</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">member_string</span><span class="p">):</span>  <span class="c1"># 대체 생성자</span>
-</span></span><span class="line"><span class="cl">        <span class="s2">&#34;&#34;&#34;&#39;이름-직책-연봉&#39; 문자열로 객체 생성&#34;&#34;&#34;</span>
-</span></span><span class="line"><span class="cl">        <span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span> <span class="o">=</span> <span class="n">member_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34;-&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">salary</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="nd">@staticmethod</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">is_valid_salary</span><span class="p">(</span><span class="n">salary</span><span class="p">):</span>          <span class="c1"># self·cls 없는 유틸 함수</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">1000</span> <span class="o">&lt;=</span> <span class="n">salary</span> <span class="o">&lt;=</span> <span class="mi">10000</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">alice</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="s2">&#34;Alice&#34;</span><span class="p">,</span> <span class="s2">&#34;시니어 개발자&#34;</span><span class="p">,</span> <span class="mi">60000</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">bob</span>   <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="s2">&#34;Bob&#34;</span><span class="p">,</span> <span class="s2">&#34;주니어 기획자&#34;</span><span class="p">,</span> <span class="mi">3000</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">TeamMember</span><span class="o">.</span><span class="n">get_total_members</span><span class="p">())</span>          <span class="c1"># 2</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">carol</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">&#34;Carol-데이터 분석가-4500&#34;</span><span class="p">)</span>   <span class="c1"># 문자열로 생성!</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">TeamMember</span><span class="o">.</span><span class="n">get_total_members</span><span class="p">())</span>          <span class="c1"># 3</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">TeamMember</span><span class="o">.</span><span class="n">is_valid_salary</span><span class="p">(</span><span class="mi">6000</span><span class="p">))</span>        <span class="c1"># True</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">TeamMember</span><span class="o">.</span><span class="n">is_valid_salary</span><span class="p">(</span><span class="mi">500</span><span class="p">))</span>         <span class="c1"># False</span>
-</span></span></code></pre></div><blockquote>
-<p>💡 <code>from_string</code>은 <strong>대체 생성자</strong> — <code>&quot;Carol-데이터 분석가-4500&quot;</code> 한 줄로 객체를 만듭니다. <code>cls(...)</code>가 곧 <code>TeamMember(...)</code>.</p>
-</blockquote>
-<hr>
-<h1 id="part-2-상속과-다형성">Part 2. 상속과 다형성<a hidden class="anchor" aria-hidden="true" href="#part-2-상속과-다형성">#</a></h1>
-<h2 id="7-부모-클래스--자식-클래스-상속">7. 부모 클래스 + 자식 클래스 (상속)<a hidden class="anchor" aria-hidden="true" href="#7-부모-클래스--자식-클래스-상속">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Department</span><span class="p">:</span>                  <span class="c1"># 부모: 모든 팀의 공통 기능</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team_name</span><span class="p">,</span> <span class="n">budget</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">team_name</span> <span class="o">=</span> <span class="n">team_name</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">budget</span> <span class="o">=</span> <span class="n">budget</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="p">[]</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">add_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">team_name</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">님이 합류했습니다.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">show_members</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;=== </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">team_name</span><span class="si">}</span><span class="s2"> 구성원 (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">)</span><span class="si">}</span><span class="s2">명) ===&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;  </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">role</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (연봉 </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">salary</span><span class="si">}</span><span class="s2">만원)&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">get_total_salary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">salary</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">team_meeting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>                  <span class="c1"># 자식이 재정의할 수 있음</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">team_name</span><span class="si">}</span><span class="s2">] 정기 회의를 시작합니다.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">DevTeam</span><span class="p">(</span><span class="n">Department</span><span class="p">):</span>          <span class="c1"># 자식: Department 상속</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget</span><span class="p">,</span> <span class="n">tech_stack</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&#34;개발팀&#34;</span><span class="p">,</span> <span class="n">budget</span><span class="p">)</span>   <span class="c1"># 부모 __init__ 호출</span>
-</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">tech_stack</span> <span class="o">=</span> <span class="n">tech_stack</span>          <span class="c1"># 개발팀만의 추가 속성</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">team_meeting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>                   <span class="c1"># 오버라이딩</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">team_name</span><span class="si">}</span><span class="s2">] 스프린트 계획 회의 (기술: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tech_stack</span><span class="p">)</span><span class="si">}</span><span class="s2">)&#34;</span><span class="p">)</span>
-</span></span></code></pre></div><p>🔍 <code>DevTeam</code>은 <code>add_member</code>·<code>show_members</code>를 <strong>물려받아</strong> 그대로 쓰고, <code>team_meeting</code>만 <strong>자기 방식으로 재정의</strong>했습니다. (영업팀·기획팀·분석팀도 같은 패턴)</p>
-<hr>
-<h2 id="8-팀-구성-시뮬레이션">8. 팀 구성 시뮬레이션<a hidden class="anchor" aria-hidden="true" href="#8-팀-구성-시뮬레이션">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># ① 팀원 생성</span>
-</span></span><span class="line"><span class="cl"><span class="n">alice</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="s2">&#34;Alice&#34;</span><span class="p">,</span> <span class="s2">&#34;시니어 백엔드 개발자&#34;</span><span class="p">,</span> <span class="mi">6500</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">derek</span> <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="s2">&#34;Derek&#34;</span><span class="p">,</span> <span class="s2">&#34;프론트엔드 개발자&#34;</span><span class="p">,</span> <span class="mi">4800</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">eve</span>   <span class="o">=</span> <span class="n">TeamMember</span><span class="p">(</span><span class="s2">&#34;Eve&#34;</span><span class="p">,</span>   <span class="s2">&#34;주니어 백엔드 개발자&#34;</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># ② 팀 생성</span>
-</span></span><span class="line"><span class="cl"><span class="n">dev_team</span> <span class="o">=</span> <span class="n">DevTeam</span><span class="p">(</span><span class="n">budget</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">tech_stack</span><span class="o">=</span><span class="p">[</span><span class="s2">&#34;Python&#34;</span><span class="p">,</span> <span class="s2">&#34;React&#34;</span><span class="p">,</span> <span class="s2">&#34;PostgreSQL&#34;</span><span class="p">,</span> <span class="s2">&#34;Docker&#34;</span><span class="p">])</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># ③ 팀에 배정</span>
-</span></span><span class="line"><span class="cl"><span class="n">dev_team</span><span class="o">.</span><span class="n">add_member</span><span class="p">(</span><span class="n">alice</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">dev_team</span><span class="o">.</span><span class="n">add_member</span><span class="p">(</span><span class="n">derek</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">dev_team</span><span class="o">.</span><span class="n">add_member</span><span class="p">(</span><span class="n">eve</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># ④ 현황</span>
-</span></span><span class="line"><span class="cl"><span class="n">dev_team</span><span class="o">.</span><span class="n">show_members</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;   =&gt; 팀 연봉 합계: </span><span class="si">{</span><span class="n">dev_team</span><span class="o">.</span><span class="n">get_total_salary</span><span class="p">()</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">만원&#34;</span><span class="p">)</span>
-</span></span></code></pre></div><p>출력:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[개발팀] Alice님이 합류했습니다.
-</span></span><span class="line"><span class="cl">[개발팀] Derek님이 합류했습니다.
-</span></span><span class="line"><span class="cl">[개발팀] Eve님이 합류했습니다.
-</span></span><span class="line"><span class="cl">=== 개발팀 구성원 (3명) ===
-</span></span><span class="line"><span class="cl">  1. 시니어 백엔드 개발자: Alice (연봉 6500만원)
-</span></span><span class="line"><span class="cl">  2. 프론트엔드 개발자: Derek (연봉 4800만원)
-</span></span><span class="line"><span class="cl">  3. 주니어 백엔드 개발자: Eve (연봉 3600만원)
-</span></span><span class="line"><span class="cl">   =&gt; 팀 연봉 합계: 14,900만원
-</span></span></code></pre></div><blockquote>
-<p>💡 <code>enumerate(self.members, 1)</code> → 1번부터 번호 매기기, <code>sum(m.salary for m in ...)</code> → 연봉 합계.</p>
-</blockquote>
-<hr>
-<h2 id="9-다형성-polymorphism">9. 다형성 (Polymorphism)<a hidden class="anchor" aria-hidden="true" href="#9-다형성-polymorphism">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">PlanningTeam</span><span class="p">(</span><span class="n">Department</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&#34;기획팀&#34;</span><span class="p">,</span> <span class="n">budget</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">team_meeting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">team_name</span><span class="si">}</span><span class="s2">] 기획 검토 회의를 시작합니다.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">SalesTeam</span><span class="p">(</span><span class="n">Department</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&#34;영업팀&#34;</span><span class="p">,</span> <span class="n">budget</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">team_meeting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">team_name</span><span class="si">}</span><span class="s2">] 영업 현황 회의를 시작합니다.&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># 같은 team_meeting() 호출 → 팀마다 다르게 동작</span>
-</span></span><span class="line"><span class="cl"><span class="n">teams</span> <span class="o">=</span> <span class="p">[</span><span class="n">DevTeam</span><span class="p">(</span><span class="mi">50000</span><span class="p">,</span> <span class="p">[</span><span class="s2">&#34;Python&#34;</span><span class="p">]),</span> <span class="n">PlanningTeam</span><span class="p">(</span><span class="mi">20000</span><span class="p">),</span> <span class="n">SalesTeam</span><span class="p">(</span><span class="mi">30000</span><span class="p">)]</span>
-</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="n">teams</span><span class="p">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">team</span><span class="o">.</span><span class="n">team_meeting</span><span class="p">()</span>
-</span></span></code></pre></div><p>출력:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[개발팀] 스프린트 계획 회의 (기술: Python)
-</span></span><span class="line"><span class="cl">[기획팀] 기획 검토 회의를 시작합니다.
-</span></span><span class="line"><span class="cl">[영업팀] 영업 현황 회의를 시작합니다.
-</span></span></code></pre></div><p>🔍 리스트에 담아 <strong>똑같이 <code>team.team_meeting()</code></strong> 을 불렀는데 팀마다 결과가 달라요 — 이게 <strong>다형성</strong>입니다.</p>
-<hr>
-<h2 id="10-isinstance--issubclass--예습-아직-안-배움--배운-뒤-보강">10. <code>isinstance()</code> · <code>issubclass()</code> 🔜 <em>예습 (아직 안 배움 · 배운 뒤 보강)</em><a hidden class="anchor" aria-hidden="true" href="#10-isinstance--issubclass--예습-아직-안-배움--배운-뒤-보강">#</a></h2>
-<blockquote>
-<p>⏳ 수업에서 아직 안 다룬 부분이에요. 흐름상 짧게만 적어둡니다.</p>
-</blockquote>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_team</span><span class="p">,</span> <span class="n">DevTeam</span><span class="p">))</span>       <span class="c1"># True</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_team</span><span class="p">,</span> <span class="n">Department</span><span class="p">))</span>    <span class="c1"># True — 부모 타입으로도 True</span>
-</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">issubclass</span><span class="p">(</span><span class="n">DevTeam</span><span class="p">,</span> <span class="n">Department</span><span class="p">))</span>     <span class="c1"># True — DevTeam은 Department의 자식</span>
-</span></span></code></pre></div><hr>
-<h1 id="-보충">📚 보충<a hidden class="anchor" aria-hidden="true" href="#-보충">#</a></h1>
-<blockquote>
-<p>실습에서 한 걸 더 깊게 — <a href="https://docs.python.org/ko/3/tutorial/classes.html">Python 공식 문서</a> 기반.</p>
-</blockquote>
-<h2 id="self가-헷갈릴-때"><code>self</code>가 헷갈릴 때<a hidden class="anchor" aria-hidden="true" href="#self가-헷갈릴-때">#</a></h2>
-<p><code>alice.introduce()</code> 는 사실 <code>TeamMember.introduce(alice)</code> 와 같아요. 그래서 메서드 첫 칸 <code>self</code>에 <strong>그 객체(alice)</strong> 가 자동으로 들어갑니다. &ldquo;내 정보를 쓰는 메서드라 자기 자신을 받는다&quot;고 기억하세요.</p>
-<h2 id="클래스-변수-수정-주의">클래스 변수 수정 주의<a hidden class="anchor" aria-hidden="true" href="#클래스-변수-수정-주의">#</a></h2>
-<p><code>self.company_name = &quot;X&quot;</code> 처럼 <strong>객체로</strong> 바꾸면 그 객체만의 인스턴스 변수가 새로 생깁니다. <strong>모두에게 반영하려면</strong> <code>TeamMember.company_name = &quot;X&quot;</code> 처럼 <strong>클래스로</strong> 바꿔야 해요.</p>
-<h2 id="enumerate--sum-for-"><code>enumerate</code> · <code>sum(... for ...)</code><a hidden class="anchor" aria-hidden="true" href="#enumerate--sum-for-">#</a></h2>
-<ul>
-<li><code>enumerate(목록, 1)</code> : 번호 + 값 동시에 (1부터)</li>
-<li><code>sum(m.salary for m in members)</code> : 각 객체의 속성을 꺼내 합산 (제너레이터)</li>
-</ul>
-<hr>
-<h2 id="핵심-정리">핵심 정리<a hidden class="anchor" aria-hidden="true" href="#핵심-정리">#</a></h2>
-<table>
-	<thead>
-			<tr>
-					<th style="text-align: left">개념</th>
-					<th style="text-align: left">한 줄</th>
-			</tr>
-	</thead>
-	<tbody>
-			<tr>
-					<td style="text-align: left">클래스 / 인스턴스</td>
-					<td style="text-align: left">설계도 / 그걸로 만든 실제 객체</td>
-			</tr>
-			<tr>
-					<td style="text-align: left"><code>__init__</code> / <code>self</code></td>
-					<td style="text-align: left">생성 시 자동 실행 / 그 객체 자신</td>
-			</tr>
-			<tr>
-					<td style="text-align: left">인스턴스 vs 클래스 변수</td>
-					<td style="text-align: left">각자 다른 값 / 모두 공유</td>
-			</tr>
-			<tr>
-					<td style="text-align: left">상속 / <code>super()</code></td>
-					<td style="text-align: left">부모 기능 물려받기 / 부모 호출</td>
-			</tr>
-			<tr>
-					<td style="text-align: left">오버라이딩 / 다형성</td>
-					<td style="text-align: left">부모 메서드 재정의 / 같은 호출 다른 동작</td>
-			</tr>
-	</tbody>
-</table>
-<hr>
-<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
-<ul>
-<li><a href="/posts/%EA%B0%95%EC%9D%98/6-02-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%ED%81%B4%EB%9E%98%EC%8A%A4/">6/2 파이썬 클래스 (OOP)</a> — 오늘 강의 이론·개념 정리</li>
-<li><a href="/posts/%EA%B0%95%EC%9D%98/6-02-%EB%AA%A8%EB%93%88%EA%B3%BC-%ED%8C%A8%ED%82%A4%EC%A7%80/">6/2 모듈과 패키지</a> — 같은 날 강의</li>
-<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B82/">6/1 파이썬 실습2 (코드 노트)</a> — 반복문·함수 실습</li>
-</ul>
-
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="https://yw8837.github.io/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/">파이썬</a></li>
-      <li><a href="https://yw8837.github.io/tags/python/">Python</a></li>
-      <li><a href="https://yw8837.github.io/tags/%ED%81%B4%EB%9E%98%EC%8A%A4/">클래스</a></li>
-      <li><a href="https://yw8837.github.io/tags/oop/">OOP</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%83%81%EC%86%8D/">상속</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EB%8B%A4%ED%98%95%EC%84%B1/">다형성</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%BD%94%EB%93%9C%EB%85%B8%ED%8A%B8/">코드노트</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/">실습</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
-    </ul>
-<nav class="paginav">
-  <a class="prev" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/">
-    <span class="title">« 이전 페이지</span>
-    <span>6/4 파이썬 중급 문법2 — 실무 문법 패턴</span>
-  </a>
-  <a class="next" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-02-%EB%AA%A8%EB%93%88%EA%B3%BC-%ED%8C%A8%ED%82%A4%EC%A7%80/">
-    <span class="title">다음 페이지 »</span>
-    <span>6/2 파이썬 중급 문법2 — 모듈과 패키지</span>
-  </a>
-</nav>
-
-  </footer>
-</article>
-    </main>
-    
-<footer class="footer">
-        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
-        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
-
-    
-    
-    <span>
-        Powered by
-        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
-        <polyline points="17 11 12 6 7 11"></polyline>
-        <polyline points="17 18 12 13 7 18"></polyline>
-    </svg>
-</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
-
-<script>
-    let menu = document.getElementById('menu');
-    if (menu) {
-        
-        const scrollPosition = localStorage.getItem("menu-scroll-position");
-        if (scrollPosition) {
-            menu.scrollLeft = parseInt(scrollPosition, 10);
-        }
-        
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
-</script>
-<script>
-    var toplink = document.getElementById("top-link");
-    window.onscroll = function () {
-        const scrollThreshold = window.innerHeight;
-        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
-            toplink.classList.remove("hidden");
-        } else {
-            toplink.classList.add("hidden");
-        }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        const html = document.querySelector("html");
-        if (html.dataset.theme === "dark") {
-            html.dataset.theme = 'light';
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            html.dataset.theme = 'dark';
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = '복사';
-
-        function copyingDone() {
-            copybutton.innerHTML = '복사 완료!';
-            setTimeout(() => {
-                copybutton.innerHTML = '복사';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
-</script>
-</body>
-
-</html>
+<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트) | AI_6스터디</title><meta name=keywords content="파이썬,Python,클래스,OOP,상속,다형성,코드노트,실습,초보자"><meta name=description content="파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다"><meta name=author content="yw8837"><link rel=canonical href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><link crossorigin=anonymous href=/assets/css/stylesheet.css rel="preload stylesheet" as=style><link rel=icon href=https://yw8837.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://yw8837.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://yw8837.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://yw8837.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yw8837.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script><script>var doNotTrack=!1,dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes";if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-EQR4094Q13")}</script><meta property="og:url" content="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"><meta property="og:site_name" content="AI_6스터디"><meta property="og:title" content="6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)"><meta property="og:description" content="파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-06-02T11:00:00+09:00"><meta property="article:modified_time" content="2026-06-02T11:00:00+09:00"><meta property="article:tag" content="파이썬"><meta property="article:tag" content="Python"><meta property="article:tag" content="클래스"><meta property="article:tag" content="OOP"><meta property="article:tag" content="상속"><meta property="article:tag" content="다형성"><meta name=twitter:card content="summary"><meta name=twitter:title content="6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)"><meta name=twitter:description content="파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yw8837.github.io/posts/"},{"@type":"ListItem","position":2,"name":"6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)","item":"https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)","name":"6\/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)","description":"파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다","keywords":["파이썬","Python","클래스","OOP","상속","다형성","코드노트","실습","초보자"],"articleBody":"파이썬 클래스 실습 — “IT 회사의 팀원과 부서\"를 코드로 만들며 객체지향을 익혔습니다. 강의 노트북 코드를 그대로 정리하고, 각 단계를 ① 한 줄 설명 → ② 코드 → ③ 출력 → ④ 한 줄씩 뜯어보기 → ⑤ 팁 으로 풀었어요. 직접 쳐보세요! 🏢\nPart 1. 클래스 기초 1. 빈 클래스와 인스턴스 class TeamMember: # 설계도 (클래스명 첫 글자 대문자) pass # 아직 내용 없음 member1 = TeamMember() # 설계도로 실제 객체 생성 member2 = TeamMember() print(type(member1)) # ","wordCount":"1109","inLanguage":"en","datePublished":"2026-06-02T11:00:00+09:00","dateModified":"2026-06-02T11:00:00+09:00","author":{"@type":"Person","name":"yw8837"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"AI_6스터디","logo":{"@type":"ImageObject","url":"https://yw8837.github.io/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=header-nav><div class=logo><a href=https://yw8837.github.io/ accesskey=h title="AI_6스터디 (Alt + H)">AI_6스터디</a><div class=logo-switches><button id=theme-toggle class=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
+<svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+<svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu class=menu><li><a href=https://yw8837.github.io/categories/year-study/ title="📚 Year Study"><span>📚 Year Study</span></a></li><li><a href=https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/ title="강의 정리"><span>강의 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/ title="실습 정리"><span>실습 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/ title=프로젝트><span>프로젝트</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><nav class=breadcrumbs role=navigation aria-label=Breadcrumb><a href=/>홈</a>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg>
+<a href=/posts/>Posts</a>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg></nav><h1 class="post-title entry-hint-parent">6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)</h1><div class=post-description>파이썬 클래스 실습 — IT 회사 팀원·부서를 코드로 만들며 클래스·상속·다형성을 한 줄씩 풀어 설명한 실습 코드 노트입니다</div><div class=post-meta><span title='2026-06-02 11:00:00 +0900 KST'>2026년 6월 2일</span>&nbsp;·&nbsp;<span>6 분</span>&nbsp;·&nbsp;<span>yw8837</span></div></header><details class=toc><summary accesskey=c title="(Alt + C)"><span class=title>목차</span></summary><div class=inner><ul><li><a href=#part-1-%ed%81%b4%eb%9e%98%ec%8a%a4-%ea%b8%b0%ec%b4%88 aria-label="Part 1. 클래스 기초">Part 1. 클래스 기초</a><ul><li><a href=#1-%eb%b9%88-%ed%81%b4%eb%9e%98%ec%8a%a4%ec%99%80-%ec%9d%b8%ec%8a%a4%ed%84%b4%ec%8a%a4 aria-label="1. 빈 클래스와 인스턴스">1. 빈 클래스와 인스턴스</a></li><li><a href=#2-__init__-%ec%99%80-%ec%86%8d%ec%84%b1 aria-label="2. __init__ 와 속성">2. __init__ 와 속성</a></li><li><a href=#3-%eb%a9%94%ec%84%9c%eb%93%9c--%ea%b0%9d%ec%b2%b4%ec%9d%98-%ed%96%89%eb%8f%99 aria-label="3. 메서드 — 객체의 행동">3. 메서드 — 객체의 행동</a></li><li><a href=#4-%ed%81%b4%eb%9e%98%ec%8a%a4-%eb%b3%80%ec%88%98-vs-%ec%9d%b8%ec%8a%a4%ed%84%b4%ec%8a%a4-%eb%b3%80%ec%88%98 aria-label="4. 클래스 변수 vs 인스턴스 변수">4. 클래스 변수 vs 인스턴스 변수</a></li><li><a href=#5-__str__--__repr__ aria-label="5. __str__ / __repr__">5. __str__ / __repr__</a></li><li><a href=#6-%ed%81%b4%eb%9e%98%ec%8a%a4-%eb%a9%94%ec%84%9c%eb%93%9c--%ec%a0%95%ec%a0%81-%eb%a9%94%ec%84%9c%eb%93%9c aria-label="6. 클래스 메서드 · 정적 메서드">6. 클래스 메서드 · 정적 메서드</a></li></ul></li><li><a href=#part-2-%ec%83%81%ec%86%8d%ea%b3%bc-%eb%8b%a4%ed%98%95%ec%84%b1 aria-label="Part 2. 상속과 다형성">Part 2. 상속과 다형성</a><ul><li><a href=#7-%eb%b6%80%eb%aa%a8-%ed%81%b4%eb%9e%98%ec%8a%a4--%ec%9e%90%ec%8b%9d-%ed%81%b4%eb%9e%98%ec%8a%a4-%ec%83%81%ec%86%8d aria-label="7. 부모 클래스 + 자식 클래스 (상속)">7. 부모 클래스 + 자식 클래스 (상속)</a></li><li><a href=#8-%ed%8c%80-%ea%b5%ac%ec%84%b1-%ec%8b%9c%eb%ae%ac%eb%a0%88%ec%9d%b4%ec%85%98 aria-label="8. 팀 구성 시뮬레이션">8. 팀 구성 시뮬레이션</a></li><li><a href=#9-%eb%8b%a4%ed%98%95%ec%84%b1-polymorphism aria-label="9. 다형성 (Polymorphism)">9. 다형성 (Polymorphism)</a></li><li><a href=#10-isinstance--issubclass--%ec%98%88%ec%8a%b5-%ec%95%84%ec%a7%81-%ec%95%88-%eb%b0%b0%ec%9b%80--%eb%b0%b0%ec%9a%b4-%eb%92%a4-%eb%b3%b4%ea%b0%95 aria-label="10. isinstance() · issubclass() 🔜 예습 (아직 안 배움 · 배운 뒤 보강)">10. isinstance() · issubclass() 🔜 예습 (아직 안 배움 · 배운 뒤 보강)</a></li></ul></li><li><a href=#-%eb%b3%b4%ec%b6%a9 aria-label="📚 보충">📚 보충</a><ul><li><a href=#self%ea%b0%80-%ed%97%b7%ea%b0%88%eb%a6%b4-%eb%95%8c aria-label="self가 헷갈릴 때">self가 헷갈릴 때</a></li><li><a href=#%ed%81%b4%eb%9e%98%ec%8a%a4-%eb%b3%80%ec%88%98-%ec%88%98%ec%a0%95-%ec%a3%bc%ec%9d%98 aria-label="클래스 변수 수정 주의">클래스 변수 수정 주의</a></li><li><a href=#enumerate--sum-for- aria-label="enumerate · sum(... for ...)">enumerate · sum(... for ...)</a></li><li><a href=#%ed%95%b5%ec%8b%ac-%ec%a0%95%eb%a6%ac aria-label="핵심 정리">핵심 정리</a></li><li><a href=#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8 aria-label="🔗 연관 노트">🔗 연관 노트</a></li></ul></li></ul></div></details><div class="post-content md-content"><p>파이썬 <strong>클래스 실습</strong> — &ldquo;IT 회사의 팀원과 부서"를 코드로 만들며 객체지향을 익혔습니다. 강의 노트북 코드를 그대로 정리하고, 각 단계를 <strong>① 한 줄 설명 → ② 코드 → ③ 출력 → ④ 한 줄씩 뜯어보기 → ⑤ 팁</strong> 으로 풀었어요. 직접 쳐보세요! 🏢</p><hr><h1 id=part-1-클래스-기초>Part 1. 클래스 기초<a hidden class=anchor aria-hidden=true href=#part-1-클래스-기초>#</a></h1><h2 id=1-빈-클래스와-인스턴스>1. 빈 클래스와 인스턴스<a hidden class=anchor aria-hidden=true href=#1-빈-클래스와-인스턴스>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>TeamMember</span><span class=p>:</span>      <span class=c1># 설계도 (클래스명 첫 글자 대문자)</span>
+</span></span><span class=line><span class=cl>    <span class=k>pass</span>               <span class=c1># 아직 내용 없음</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>member1</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=p>()</span>   <span class=c1># 설계도로 실제 객체 생성</span>
+</span></span><span class=line><span class=cl><span class=n>member2</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>member1</span><span class=p>))</span>       <span class=c1># &lt;class &#39;__main__.TeamMember&#39;&gt;</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>member1</span> <span class=ow>is</span> <span class=n>member2</span><span class=p>)</span>  <span class=c1># False — 서로 다른 객체</span>
+</span></span></code></pre></div><p>🔍 <code>TeamMember()</code> 처럼 괄호를 붙이면 인스턴스(객체)가 만들어집니다. <code>member1</code>과 <code>member2</code>는 같은 설계도지만 <strong>다른 물건</strong>이에요.</p><hr><h2 id=2-__init__-와-속성>2. <code>__init__</code> 와 속성<a hidden class=anchor aria-hidden=true href=#2-__init__-와-속성>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>TeamMember</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=n>salary</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>name</span> <span class=o>=</span> <span class=n>name</span>        <span class=c1># 인스턴스 속성 저장</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>role</span> <span class=o>=</span> <span class=n>role</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>salary</span> <span class=o>=</span> <span class=n>salary</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>alice</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s2>&#34;Alice&#34;</span><span class=p>,</span> <span class=n>role</span><span class=o>=</span><span class=s2>&#34;시니어 개발자&#34;</span><span class=p>,</span> <span class=n>salary</span><span class=o>=</span><span class=mi>60000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>bob</span>   <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s2>&#34;Bob&#34;</span><span class=p>,</span>   <span class=n>role</span><span class=o>=</span><span class=s2>&#34;주니어 기획자&#34;</span><span class=p>,</span> <span class=n>salary</span><span class=o>=</span><span class=mi>3000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>alice</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>의 직책: </span><span class=si>{</span><span class=n>alice</span><span class=o>.</span><span class=n>role</span><span class=si>}</span><span class=s2>, 연봉: </span><span class=si>{</span><span class=n>alice</span><span class=o>.</span><span class=n>salary</span><span class=si>}</span><span class=s2>만원&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>bob</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>의 직책: </span><span class=si>{</span><span class=n>bob</span><span class=o>.</span><span class=n>role</span><span class=si>}</span><span class=s2>, 연봉: </span><span class=si>{</span><span class=n>bob</span><span class=o>.</span><span class=n>salary</span><span class=si>}</span><span class=s2>만원&#34;</span><span class=p>)</span>
+</span></span></code></pre></div><p>출력:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>Alice의 직책: 시니어 개발자, 연봉: 60000만원
+</span></span><span class=line><span class=cl>Bob의 직책: 주니어 기획자, 연봉: 3000만원
+</span></span></code></pre></div><p>🔍 <code>__init__</code>은 <code>TeamMember(...)</code>를 호출하는 순간 자동 실행돼 속성을 채웁니다. <code>self</code>는 만들어지는 그 객체(alice, bob)예요.</p><hr><h2 id=3-메서드--객체의-행동>3. 메서드 — 객체의 행동<a hidden class=anchor aria-hidden=true href=#3-메서드--객체의-행동>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>TeamMember</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=n>salary</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>role</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>salary</span> <span class=o>=</span> <span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=n>salary</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>projects</span> <span class=o>=</span> <span class=p>[]</span>      <span class=c1># 참여 중인 프로젝트 목록</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>introduce</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;안녕하세요! 저는 </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>role</span><span class=si>}</span><span class=s2> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>입니다.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>negotiate_salary</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>amount</span><span class=p>):</span>     <span class=c1># 연봉 인상</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>salary</span> <span class=o>+=</span> <span class=n>amount</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;축하합니다! </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>님 연봉이 </span><span class=si>{</span><span class=n>amount</span><span class=si>}</span><span class=s2>만원 올라 총 </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>salary</span><span class=si>}</span><span class=s2>만원입니다.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>develop_skill</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>new_role</span><span class=p>):</span>      <span class=c1># 승진(직책 변경)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>role</span> <span class=o>=</span> <span class=n>new_role</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;멋집니다! </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>님이 &#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>role</span><span class=si>}</span><span class=s2>&#39;(으)로 승진했습니다.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>alice</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=s2>&#34;Alice&#34;</span><span class=p>,</span> <span class=s2>&#34;주니어 기획자&#34;</span><span class=p>,</span> <span class=mi>3000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>alice</span><span class=o>.</span><span class=n>introduce</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>alice</span><span class=o>.</span><span class=n>develop_skill</span><span class=p>(</span><span class=s2>&#34;시니어 기획자&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>alice</span><span class=o>.</span><span class=n>negotiate_salary</span><span class=p>(</span><span class=mi>2000</span><span class=p>)</span>
+</span></span></code></pre></div><p>출력:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>안녕하세요! 저는 주니어 기획자 Alice입니다.
+</span></span><span class=line><span class=cl>멋집니다! Alice님이 &#39;시니어 기획자&#39;(으)로 승진했습니다.
+</span></span><span class=line><span class=cl>축하합니다! Alice님 연봉이 2000만원 올라 총 5000만원입니다.
+</span></span></code></pre></div><blockquote><p>💡 <code>alice.develop_skill("시니어 기획자")</code> — <code>self</code>는 자동으로 <code>alice</code>, <code>new_role</code>에 &ldquo;시니어 기획자"가 들어갑니다.</p></blockquote><hr><h2 id=4-클래스-변수-vs-인스턴스-변수>4. 클래스 변수 vs 인스턴스 변수<a hidden class=anchor aria-hidden=true href=#4-클래스-변수-vs-인스턴스-변수>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>TeamMember</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>company_name</span> <span class=o>=</span> <span class=s2>&#34;앨리스&#34;</span>      <span class=c1># 클래스 변수 (모두 공유)</span>
+</span></span><span class=line><span class=cl>    <span class=n>total_member</span> <span class=o>=</span> <span class=mi>0</span>            <span class=c1># 전체 인원 카운터</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=n>salary</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>name</span> <span class=o>=</span> <span class=n>name</span>        <span class=c1># 인스턴스 변수 (각자 다름)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>role</span> <span class=o>=</span> <span class=n>role</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>salary</span> <span class=o>=</span> <span class=n>salary</span>
+</span></span><span class=line><span class=cl>        <span class=n>TeamMember</span><span class=o>.</span><span class=n>total_member</span> <span class=o>+=</span> <span class=mi>1</span>     <span class=c1># 객체 생길 때마다 +1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>introduce</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;[</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>company_name</span><span class=si>}</span><span class=s2>] </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>role</span><span class=si>}</span><span class=s2> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2> (연봉: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>salary</span><span class=si>}</span><span class=s2>만원)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>alice</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=s2>&#34;Alice&#34;</span><span class=p>,</span> <span class=s2>&#34;시니어 개발자&#34;</span><span class=p>,</span> <span class=mi>60000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>bob</span>   <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=s2>&#34;Bob&#34;</span><span class=p>,</span> <span class=s2>&#34;주니어 기획자&#34;</span><span class=p>,</span> <span class=mi>3000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>alice</span><span class=o>.</span><span class=n>introduce</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>bob</span><span class=o>.</span><span class=n>introduce</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;현재 총 팀원 수: </span><span class=si>{</span><span class=n>TeamMember</span><span class=o>.</span><span class=n>total_member</span><span class=si>}</span><span class=s2>명&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 클래스 변수를 바꾸면 → 모든 객체에 반영</span>
+</span></span><span class=line><span class=cl><span class=n>TeamMember</span><span class=o>.</span><span class=n>company_name</span> <span class=o>=</span> <span class=s2>&#34;이어드림스쿨&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>alice</span><span class=o>.</span><span class=n>introduce</span><span class=p>()</span>
+</span></span></code></pre></div><p>출력:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>[앨리스] 시니어 개발자 Alice (연봉: 60000만원)
+</span></span><span class=line><span class=cl>[앨리스] 주니어 기획자 Bob (연봉: 3000만원)
+</span></span><span class=line><span class=cl>현재 총 팀원 수: 2명
+</span></span><span class=line><span class=cl>[이어드림스쿨] 시니어 개발자 Alice (연봉: 60000만원)
+</span></span></code></pre></div><blockquote><p>💡 <code>company_name</code>을 한 번 바꾸니 alice·bob 모두 바뀝니다 → <strong>공유</strong>되는 클래스 변수의 특징.</p></blockquote><hr><h2 id=5-__str__--__repr__>5. <code>__str__</code> / <code>__repr__</code><a hidden class=anchor aria-hidden=true href=#5-__str__--__repr__>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>TeamMember</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=n>salary</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>role</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>salary</span> <span class=o>=</span> <span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=n>salary</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>      <span class=c1># print() 할 때 — 사람이 읽기 좋게</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>role</span><span class=si>}</span><span class=s2> </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__repr__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>     <span class=c1># 디버깅용 — 정확한 표현</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=sa>f</span><span class=s2>&#34;TeamMember(name=&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>&#39;, role=&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>role</span><span class=si>}</span><span class=s2>&#39;, salary=</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>salary</span><span class=si>}</span><span class=s2>)&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>alice</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=s2>&#34;Alice&#34;</span><span class=p>,</span> <span class=s2>&#34;시니어 개발자&#34;</span><span class=p>,</span> <span class=mi>60000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>alice</span><span class=p>))</span>    <span class=c1># 시니어 개발자 Alice</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>repr</span><span class=p>(</span><span class=n>alice</span><span class=p>))</span>   <span class=c1># TeamMember(name=&#39;Alice&#39;, role=&#39;시니어 개발자&#39;, salary=60000)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>alice</span><span class=p>)</span>         <span class=c1># 시니어 개발자 Alice  (print는 __str__ 사용)</span>
+</span></span></code></pre></div><hr><h2 id=6-클래스-메서드--정적-메서드>6. 클래스 메서드 · 정적 메서드<a hidden class=anchor aria-hidden=true href=#6-클래스-메서드--정적-메서드>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>TeamMember</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>total_members</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=n>salary</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>role</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>salary</span> <span class=o>=</span> <span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=n>salary</span>
+</span></span><span class=line><span class=cl>        <span class=n>TeamMember</span><span class=o>.</span><span class=n>total_members</span> <span class=o>+=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_total_members</span><span class=p>(</span><span class=bp>cls</span><span class=p>):</span>           <span class=c1># cls = 클래스 자신</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=o>.</span><span class=n>total_members</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>from_string</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>member_string</span><span class=p>):</span>  <span class=c1># 대체 생성자</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;&#39;이름-직책-연봉&#39; 문자열로 객체 생성&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=n>salary</span> <span class=o>=</span> <span class=n>member_string</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=s2>&#34;-&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span><span class=n>name</span><span class=p>,</span> <span class=n>role</span><span class=p>,</span> <span class=nb>int</span><span class=p>(</span><span class=n>salary</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@staticmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>is_valid_salary</span><span class=p>(</span><span class=n>salary</span><span class=p>):</span>          <span class=c1># self·cls 없는 유틸 함수</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=mi>1000</span> <span class=o>&lt;=</span> <span class=n>salary</span> <span class=o>&lt;=</span> <span class=mi>10000</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>alice</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=s2>&#34;Alice&#34;</span><span class=p>,</span> <span class=s2>&#34;시니어 개발자&#34;</span><span class=p>,</span> <span class=mi>60000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>bob</span>   <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=s2>&#34;Bob&#34;</span><span class=p>,</span> <span class=s2>&#34;주니어 기획자&#34;</span><span class=p>,</span> <span class=mi>3000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>TeamMember</span><span class=o>.</span><span class=n>get_total_members</span><span class=p>())</span>          <span class=c1># 2</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>carol</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=o>.</span><span class=n>from_string</span><span class=p>(</span><span class=s2>&#34;Carol-데이터 분석가-4500&#34;</span><span class=p>)</span>   <span class=c1># 문자열로 생성!</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>TeamMember</span><span class=o>.</span><span class=n>get_total_members</span><span class=p>())</span>          <span class=c1># 3</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>TeamMember</span><span class=o>.</span><span class=n>is_valid_salary</span><span class=p>(</span><span class=mi>6000</span><span class=p>))</span>        <span class=c1># True</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>TeamMember</span><span class=o>.</span><span class=n>is_valid_salary</span><span class=p>(</span><span class=mi>500</span><span class=p>))</span>         <span class=c1># False</span>
+</span></span></code></pre></div><blockquote><p>💡 <code>from_string</code>은 <strong>대체 생성자</strong> — <code>"Carol-데이터 분석가-4500"</code> 한 줄로 객체를 만듭니다. <code>cls(...)</code>가 곧 <code>TeamMember(...)</code>.</p></blockquote><hr><h1 id=part-2-상속과-다형성>Part 2. 상속과 다형성<a hidden class=anchor aria-hidden=true href=#part-2-상속과-다형성>#</a></h1><h2 id=7-부모-클래스--자식-클래스-상속>7. 부모 클래스 + 자식 클래스 (상속)<a hidden class=anchor aria-hidden=true href=#7-부모-클래스--자식-클래스-상속>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>Department</span><span class=p>:</span>                  <span class=c1># 부모: 모든 팀의 공통 기능</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>team_name</span><span class=p>,</span> <span class=n>budget</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>team_name</span> <span class=o>=</span> <span class=n>team_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>budget</span> <span class=o>=</span> <span class=n>budget</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>members</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>add_member</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>member</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>members</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>member</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;[</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>team_name</span><span class=si>}</span><span class=s2>] </span><span class=si>{</span><span class=n>member</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>님이 합류했습니다.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>show_members</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;=== </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>team_name</span><span class=si>}</span><span class=s2> 구성원 (</span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>members</span><span class=p>)</span><span class=si>}</span><span class=s2>명) ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>m</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>members</span><span class=p>,</span> <span class=mi>1</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  </span><span class=si>{</span><span class=n>i</span><span class=si>}</span><span class=s2>. </span><span class=si>{</span><span class=n>m</span><span class=o>.</span><span class=n>role</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>m</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2> (연봉 </span><span class=si>{</span><span class=n>m</span><span class=o>.</span><span class=n>salary</span><span class=si>}</span><span class=s2>만원)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_total_salary</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nb>sum</span><span class=p>(</span><span class=n>m</span><span class=o>.</span><span class=n>salary</span> <span class=k>for</span> <span class=n>m</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>members</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>team_meeting</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>                  <span class=c1># 자식이 재정의할 수 있음</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;[</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>team_name</span><span class=si>}</span><span class=s2>] 정기 회의를 시작합니다.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>DevTeam</span><span class=p>(</span><span class=n>Department</span><span class=p>):</span>          <span class=c1># 자식: Department 상속</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>budget</span><span class=p>,</span> <span class=n>tech_stack</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=s2>&#34;개발팀&#34;</span><span class=p>,</span> <span class=n>budget</span><span class=p>)</span>   <span class=c1># 부모 __init__ 호출</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>tech_stack</span> <span class=o>=</span> <span class=n>tech_stack</span>          <span class=c1># 개발팀만의 추가 속성</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>team_meeting</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>                   <span class=c1># 오버라이딩</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;[</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>team_name</span><span class=si>}</span><span class=s2>] 스프린트 계획 회의 (기술: </span><span class=si>{</span><span class=s1>&#39;, &#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>tech_stack</span><span class=p>)</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span></code></pre></div><p>🔍 <code>DevTeam</code>은 <code>add_member</code>·<code>show_members</code>를 <strong>물려받아</strong> 그대로 쓰고, <code>team_meeting</code>만 <strong>자기 방식으로 재정의</strong>했습니다. (영업팀·기획팀·분석팀도 같은 패턴)</p><hr><h2 id=8-팀-구성-시뮬레이션>8. 팀 구성 시뮬레이션<a hidden class=anchor aria-hidden=true href=#8-팀-구성-시뮬레이션>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=c1># ① 팀원 생성</span>
+</span></span><span class=line><span class=cl><span class=n>alice</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=s2>&#34;Alice&#34;</span><span class=p>,</span> <span class=s2>&#34;시니어 백엔드 개발자&#34;</span><span class=p>,</span> <span class=mi>6500</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>derek</span> <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=s2>&#34;Derek&#34;</span><span class=p>,</span> <span class=s2>&#34;프론트엔드 개발자&#34;</span><span class=p>,</span> <span class=mi>4800</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>eve</span>   <span class=o>=</span> <span class=n>TeamMember</span><span class=p>(</span><span class=s2>&#34;Eve&#34;</span><span class=p>,</span>   <span class=s2>&#34;주니어 백엔드 개발자&#34;</span><span class=p>,</span> <span class=mi>3600</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ② 팀 생성</span>
+</span></span><span class=line><span class=cl><span class=n>dev_team</span> <span class=o>=</span> <span class=n>DevTeam</span><span class=p>(</span><span class=n>budget</span><span class=o>=</span><span class=mi>50000</span><span class=p>,</span> <span class=n>tech_stack</span><span class=o>=</span><span class=p>[</span><span class=s2>&#34;Python&#34;</span><span class=p>,</span> <span class=s2>&#34;React&#34;</span><span class=p>,</span> <span class=s2>&#34;PostgreSQL&#34;</span><span class=p>,</span> <span class=s2>&#34;Docker&#34;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ③ 팀에 배정</span>
+</span></span><span class=line><span class=cl><span class=n>dev_team</span><span class=o>.</span><span class=n>add_member</span><span class=p>(</span><span class=n>alice</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>dev_team</span><span class=o>.</span><span class=n>add_member</span><span class=p>(</span><span class=n>derek</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>dev_team</span><span class=o>.</span><span class=n>add_member</span><span class=p>(</span><span class=n>eve</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ④ 현황</span>
+</span></span><span class=line><span class=cl><span class=n>dev_team</span><span class=o>.</span><span class=n>show_members</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;   =&gt; 팀 연봉 합계: </span><span class=si>{</span><span class=n>dev_team</span><span class=o>.</span><span class=n>get_total_salary</span><span class=p>()</span><span class=si>:</span><span class=s2>,</span><span class=si>}</span><span class=s2>만원&#34;</span><span class=p>)</span>
+</span></span></code></pre></div><p>출력:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>[개발팀] Alice님이 합류했습니다.
+</span></span><span class=line><span class=cl>[개발팀] Derek님이 합류했습니다.
+</span></span><span class=line><span class=cl>[개발팀] Eve님이 합류했습니다.
+</span></span><span class=line><span class=cl>=== 개발팀 구성원 (3명) ===
+</span></span><span class=line><span class=cl>  1. 시니어 백엔드 개발자: Alice (연봉 6500만원)
+</span></span><span class=line><span class=cl>  2. 프론트엔드 개발자: Derek (연봉 4800만원)
+</span></span><span class=line><span class=cl>  3. 주니어 백엔드 개발자: Eve (연봉 3600만원)
+</span></span><span class=line><span class=cl>   =&gt; 팀 연봉 합계: 14,900만원
+</span></span></code></pre></div><blockquote><p>💡 <code>enumerate(self.members, 1)</code> → 1번부터 번호 매기기, <code>sum(m.salary for m in ...)</code> → 연봉 합계.</p></blockquote><hr><h2 id=9-다형성-polymorphism>9. 다형성 (Polymorphism)<a hidden class=anchor aria-hidden=true href=#9-다형성-polymorphism>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>PlanningTeam</span><span class=p>(</span><span class=n>Department</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>budget</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=s2>&#34;기획팀&#34;</span><span class=p>,</span> <span class=n>budget</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>team_meeting</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;[</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>team_name</span><span class=si>}</span><span class=s2>] 기획 검토 회의를 시작합니다.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SalesTeam</span><span class=p>(</span><span class=n>Department</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>budget</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=s2>&#34;영업팀&#34;</span><span class=p>,</span> <span class=n>budget</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>team_meeting</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;[</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>team_name</span><span class=si>}</span><span class=s2>] 영업 현황 회의를 시작합니다.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 같은 team_meeting() 호출 → 팀마다 다르게 동작</span>
+</span></span><span class=line><span class=cl><span class=n>teams</span> <span class=o>=</span> <span class=p>[</span><span class=n>DevTeam</span><span class=p>(</span><span class=mi>50000</span><span class=p>,</span> <span class=p>[</span><span class=s2>&#34;Python&#34;</span><span class=p>]),</span> <span class=n>PlanningTeam</span><span class=p>(</span><span class=mi>20000</span><span class=p>),</span> <span class=n>SalesTeam</span><span class=p>(</span><span class=mi>30000</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>team</span> <span class=ow>in</span> <span class=n>teams</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>team</span><span class=o>.</span><span class=n>team_meeting</span><span class=p>()</span>
+</span></span></code></pre></div><p>출력:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>[개발팀] 스프린트 계획 회의 (기술: Python)
+</span></span><span class=line><span class=cl>[기획팀] 기획 검토 회의를 시작합니다.
+</span></span><span class=line><span class=cl>[영업팀] 영업 현황 회의를 시작합니다.
+</span></span></code></pre></div><p>🔍 리스트에 담아 <strong>똑같이 <code>team.team_meeting()</code></strong> 을 불렀는데 팀마다 결과가 달라요 — 이게 <strong>다형성</strong>입니다.</p><hr><h2 id=10-isinstance--issubclass--예습-아직-안-배움--배운-뒤-보강>10. <code>isinstance()</code> · <code>issubclass()</code> 🔜 <em>예습 (아직 안 배움 · 배운 뒤 보강)</em><a hidden class=anchor aria-hidden=true href=#10-isinstance--issubclass--예습-아직-안-배움--배운-뒤-보강>#</a></h2><blockquote><p>⏳ 수업에서 아직 안 다룬 부분이에요. 흐름상 짧게만 적어둡니다.</p></blockquote><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>isinstance</span><span class=p>(</span><span class=n>dev_team</span><span class=p>,</span> <span class=n>DevTeam</span><span class=p>))</span>       <span class=c1># True</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>isinstance</span><span class=p>(</span><span class=n>dev_team</span><span class=p>,</span> <span class=n>Department</span><span class=p>))</span>    <span class=c1># True — 부모 타입으로도 True</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>issubclass</span><span class=p>(</span><span class=n>DevTeam</span><span class=p>,</span> <span class=n>Department</span><span class=p>))</span>     <span class=c1># True — DevTeam은 Department의 자식</span>
+</span></span></code></pre></div><hr><h1 id=-보충>📚 보충<a hidden class=anchor aria-hidden=true href=#-보충>#</a></h1><blockquote><p>실습에서 한 걸 더 깊게 — <a href=https://docs.python.org/ko/3/tutorial/classes.html>Python 공식 문서</a> 기반.</p></blockquote><h2 id=self가-헷갈릴-때><code>self</code>가 헷갈릴 때<a hidden class=anchor aria-hidden=true href=#self가-헷갈릴-때>#</a></h2><p><code>alice.introduce()</code> 는 사실 <code>TeamMember.introduce(alice)</code> 와 같아요. 그래서 메서드 첫 칸 <code>self</code>에 <strong>그 객체(alice)</strong> 가 자동으로 들어갑니다. &ldquo;내 정보를 쓰는 메서드라 자기 자신을 받는다"고 기억하세요.</p><h2 id=클래스-변수-수정-주의>클래스 변수 수정 주의<a hidden class=anchor aria-hidden=true href=#클래스-변수-수정-주의>#</a></h2><p><code>self.company_name = "X"</code> 처럼 <strong>객체로</strong> 바꾸면 그 객체만의 인스턴스 변수가 새로 생깁니다. <strong>모두에게 반영하려면</strong> <code>TeamMember.company_name = "X"</code> 처럼 <strong>클래스로</strong> 바꿔야 해요.</p><h2 id=enumerate--sum-for-><code>enumerate</code> · <code>sum(... for ...)</code><a hidden class=anchor aria-hidden=true href=#enumerate--sum-for->#</a></h2><ul><li><code>enumerate(목록, 1)</code> : 번호 + 값 동시에 (1부터)</li><li><code>sum(m.salary for m in members)</code> : 각 객체의 속성을 꺼내 합산 (제너레이터)</li></ul><hr><h2 id=핵심-정리>핵심 정리<a hidden class=anchor aria-hidden=true href=#핵심-정리>#</a></h2><table><thead><tr><th style=text-align:left>개념</th><th style=text-align:left>한 줄</th></tr></thead><tbody><tr><td style=text-align:left>클래스 / 인스턴스</td><td style=text-align:left>설계도 / 그걸로 만든 실제 객체</td></tr><tr><td style=text-align:left><code>__init__</code> / <code>self</code></td><td style=text-align:left>생성 시 자동 실행 / 그 객체 자신</td></tr><tr><td style=text-align:left>인스턴스 vs 클래스 변수</td><td style=text-align:left>각자 다른 값 / 모두 공유</td></tr><tr><td style=text-align:left>상속 / <code>super()</code></td><td style=text-align:left>부모 기능 물려받기 / 부모 호출</td></tr><tr><td style=text-align:left>오버라이딩 / 다형성</td><td style=text-align:left>부모 메서드 재정의 / 같은 호출 다른 동작</td></tr></tbody></table><hr><h2 id=-연관-노트>🔗 연관 노트<a hidden class=anchor aria-hidden=true href=#-연관-노트>#</a></h2><ul><li><a href=/posts/%EA%B0%95%EC%9D%98/6-02-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%ED%81%B4%EB%9E%98%EC%8A%A4/>6/2 파이썬 클래스 (OOP)</a> — 오늘 강의 이론·개념 정리</li><li><a href=/posts/%EA%B0%95%EC%9D%98/6-02-%EB%AA%A8%EB%93%88%EA%B3%BC-%ED%8C%A8%ED%82%A4%EC%A7%80/>6/2 모듈과 패키지</a> — 같은 날 강의</li><li><a href=/posts/%EC%8B%A4%EC%8A%B5/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B82/>6/1 파이썬 실습2 (코드 노트)</a> — 반복문·함수 실습</li></ul></div><footer class=post-footer><ul class=post-tags><li><a href=https://yw8837.github.io/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/>파이썬</a></li><li><a href=https://yw8837.github.io/tags/python/>Python</a></li><li><a href=https://yw8837.github.io/tags/%ED%81%B4%EB%9E%98%EC%8A%A4/>클래스</a></li><li><a href=https://yw8837.github.io/tags/oop/>OOP</a></li><li><a href=https://yw8837.github.io/tags/%EC%83%81%EC%86%8D/>상속</a></li><li><a href=https://yw8837.github.io/tags/%EB%8B%A4%ED%98%95%EC%84%B1/>다형성</a></li><li><a href=https://yw8837.github.io/tags/%EC%BD%94%EB%93%9C%EB%85%B8%ED%8A%B8/>코드노트</a></li><li><a href=https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/>실습</a></li><li><a href=https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/>초보자</a></li></ul><nav class=paginav><a class=prev href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/><span class=title>« 이전 페이지</span>
+<span>6/4 파이썬 중급 문법2 — 실무 문법 패턴</span>
+</a><a class=next href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-02-%EB%AA%A8%EB%93%88%EA%B3%BC-%ED%8C%A8%ED%82%A4%EC%A7%80/><span class=title>다음 페이지 »</span>
+<span>6/2 파이썬 중급 문법2 — 모듈과 패키지</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2026 <a href=https://yw8837.github.io/>AI_6스터디</a></span> ·
+<a href=/posts/privacy-policy/>개인정보처리방침</a> · <a href=/posts/disclaimer/>서비스 이용 안내</a> ·
+<span>Powered by
+<a href="https://gohugo.io/?utm_source=papermod" rel=noopener target=_blank>Hugo</a> &
+<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top id=top-link class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey=g><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></a><div style=text-align:center;margin-top:8px;font-size:13px;color:#888><a href=/posts/privacy-policy/ style=color:#888>개인정보처리방침</a> · <a href=/posts/disclaimer/ style=color:#888>서비스 이용 안내</a></div><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var toplink=document.getElementById("top-link");window.onscroll=function(){const e=window.innerHeight;document.body.scrollTop>e||document.documentElement.scrollTop>e?toplink.classList.remove("hidden"):toplink.classList.add("hidden")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="복사";function s(){t.innerHTML="복사 완료!",setTimeout(()=>{t.innerHTML="복사"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
