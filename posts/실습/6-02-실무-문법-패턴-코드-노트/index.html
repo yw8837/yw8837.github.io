@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>6/2 파이썬 중급 문법2 — 실무 문법 패턴 실습 (코드 노트) | AI_6스터디</title>
+<meta name="keywords" content="파이썬, Python, f-string, 컴프리헨션, sorted, lambda, map, 코드노트, 실습, 초보자">
+<meta name="description" content="실무 문법 패턴 실습 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map·filter, __name__을 강사님 코드로 한 줄씩 풀어 정리">
+<meta name="author" content="yw8837">
+<link rel="canonical" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yw8837.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-EQR4094Q13');
+        }
+      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+  <meta property="og:site_name" content="AI_6스터디">
+  <meta property="og:title" content="6/2 파이썬 중급 문법2 — 실무 문법 패턴 실습 (코드 노트)">
+  <meta property="og:description" content="실무 문법 패턴 실습 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map·filter, __name__을 강사님 코드로 한 줄씩 풀어 정리">
+  <meta property="og:locale" content="ko">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-02T12:00:00+09:00">
+    <meta property="article:modified_time" content="2026-06-02T12:00:00+09:00">
+    <meta property="article:tag" content="파이썬">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="F-String">
+    <meta property="article:tag" content="컴프리헨션">
+    <meta property="article:tag" content="Sorted">
+    <meta property="article:tag" content="Lambda">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="6/2 파이썬 중급 문법2 — 실무 문법 패턴 실습 (코드 노트)">
+  <meta name="twitter:description" content="실무 문법 패턴 실습 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map·filter, __name__을 강사님 코드로 한 줄씩 풀어 정리">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yw8837.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "6/2 파이썬 중급 문법2 — 실무 문법 패턴 실습 (코드 노트)",
+      "item": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "6/2 파이썬 중급 문법2 — 실무 문법 패턴 실습 (코드 노트)",
+  "name": "6\/2 파이썬 중급 문법2 — 실무 문법 패턴 실습 (코드 노트)",
+  "description": "실무 문법 패턴 실습 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map·filter, __name__을 강사님 코드로 한 줄씩 풀어 정리",
+  "keywords": [
+    "파이썬", "Python", "f-string", "컴프리헨션", "sorted", "lambda", "map", "코드노트", "실습", "초보자"
+  ],
+  "articleBody": "실무에서 자주 쓰는 심화 문법 6가지를 코드로 익힌 실습 노트입니다. 강의 노트북 코드를 그대로 정리하고 한 줄씩 풀었어요. 🧩\n1. f-string 포매팅 name, role, salary = 'Alice', '시니어 개발자', 6500 print(f\"이름: {name}, 직책: {role}, 연봉: {salary}만원\") # 식·조건도 가능 a, b = 15, 4 print(f\"{a} + {b} = {a + b}\") # 15 + 4 = 19 score = 85 print(f\"점수: {score}점 -\u003e {'합격' if score \u003e= 60 else '불합격'}\") # 숫자 포맷 pi, big, rate = 3.141592, 1234567890, 0.12345 print(f\"π = {pi:.2f}\") # 3.14 print(f\"큰 숫자: {big:,}\") # 1,234,567,890 print(f\"달성률: {rate:.1%}\") # 12.3% print(f\"연봉: {65000000:,}원\") # 65,000,000원 # 정렬 (로그 출력) import datetime def log(level, msg): now = datetime.datetime.now().strftime('%H:%M:%S') print(f'[{now}] {level:\u003e7} | {msg}') # 레벨 오른쪽 7칸 정렬 log('INFO', '서버 시작') log('ERROR', 'DB 연결 실패') 출력:\n[14:12:51] INFO | 서버 시작 [14:12:51] ERROR | DB 연결 실패 2. 리스트 컴프리헨션 # for문 → 컴프리헨션 squares = [i ** 2 for i in range(1, 11)] print(squares) # [1, 4, 9, 16, 25, 36, 49, 64, 81, 100] members = [ {'name': 'Alice', 'team': '개발팀', 'salary': 6500}, {'name': 'Bob', 'team': '기획팀', 'salary': 5200}, {'name': 'Derek', 'team': '개발팀', 'salary': 4800}, {'name': 'Eve', 'team': '분석팀', 'salary': 3600}, ] # 필터: 연봉 5000+ 이름 high = [m['name'] for m in members if m['salary'] \u003e= 5000] print(high) # ['Alice', 'Bob'] # 개발팀만 + f-string dev = [f\"{m['name']}({m['salary']:,}만원)\" for m in members if m['team'] == '개발팀'] print(dev) # ['Alice(6,500만원)', 'Derek(4,800만원)'] # if-else 변환 (순서 주의!) grade = [f\"{m['name']}: 고연봉\" if m['salary'] \u003e= 5000 else f\"{m['name']}: 일반\" for m in members] # 실무: 데이터 전처리 (공백 제거 + 빈 값 필터) raw = [' Python ', 'Django ', ' React', 'SQL', ' ', ''] clean = [s.strip() for s in raw if s.strip()] print(clean) # ['Python', 'Django', 'React', 'SQL'] # 딕셔너리 컴프리헨션 salary_dict = {m['name']: m['salary'] for m in members} print(salary_dict) # {'Alice': 6500, 'Bob': 5200, 'Derek': 4800, 'Eve': 3600} ⚠️ 필터 if는 뒤(for x in seq if 조건), if-else 변환은 앞(A if 조건 else B for x in seq).\n3. sorted — 정렬 scores = [85, 92, 78, 96, 73, 88] print(sorted(scores)) # [73, 78, 85, 88, 92, 96] 원본 유지 print(sorted(scores, reverse=True)) # [96, 92, 88, 85, 78, 73] scores.sort() # 원본 자체를 변경, 반환은 None members = [ {'name': 'Alice', 'team': '개발팀', 'salary': 6500}, {'name': 'Carol', 'team': '영업팀', 'salary': 6100}, {'name': 'Eve', 'team': '분석팀', 'salary': 3600}, {'name': 'Helen', 'team': '분석팀', 'salary': 5500}, ] # key=lambda 로 정렬 기준 지정 by_salary = sorted(members, key=lambda m: m['salary'], reverse=True) for m in by_salary: print(f\" {m['name']:\u003c8} {m['salary']:,}만원\") # 다중 기준: 팀명 오름차순 → 같은 팀 연봉 내림차순 multi = sorted(members, key=lambda m: (m['team'], -m['salary'])) # 글자 수 기준 words = ['Python', 'AI', 'MachineLearning', 'SQL'] print(sorted(words, key=len)) # ['AI', 'SQL', 'Python', 'MachineLearning'] 4. enumerate — 인덱스 + 값 for idx, season in enumerate(['봄', '여름', '가을', '겨울']): print(f\" {idx}: {season}\") # start=1 (1번부터) for idx, team in enumerate(['개발팀', '기획팀'], start=1): print(f\" {idx}번 팀: {team}\") # 실무: 정렬 후 순위 매기기 scores = [{'name':'Alice','score':95}, {'name':'Bob','score':82}, {'name':'Derek','score':91}] ranked = sorted(scores, key=lambda m: m['score'], reverse=True) medals = {1:'🥇', 2:'🥈', 3:'🥉'} for rank, m in enumerate(ranked, 1): print(f\" {medals.get(rank, str(rank)+'위')} {m['name']:\u003c8} {m['score']}점\") 출력:\n🥇 Alice 95점 🥈 Derek 91점 🥉 Bob 82점 5. lambda · map · filter square = lambda x: x ** 2 # 이름 없는 한 줄 함수 print(square(5)) # 25 nums = [1, 2, 3, 4, 5] print(list(map(lambda x: x*2, nums))) # [2, 4, 6, 8, 10] print(list(filter(lambda x: x%2==0, nums))) # [2, 4] (짝수만) # 실무: 연봉 원 단위 → 만원 단위 salaries = [65000000, 52000000, 48000000] man = list(map(lambda w: w // 10000, salaries)) print(man) # [6500, 5200, 4800] # 복잡한 로직은 일반 함수로 (lambda 한계) def calculate_bonus(m): base = m['salary'] * 0.1 if m.get('years', 1) \u003e= 5: base *= 1.05 if m.get('score', 80) \u003e= 90: base *= 1.1 return int(base) 💡 map/filter는 list()로 감싸야 결과가 보입니다. 간단하면 lambda, 복잡하면 def.\n6. if __name__ == \"__main__\": def greet(name): return f'안녕하세요, {name}님!' if __name__ == '__main__': # 직접 실행할 때만 동작 print(greet('Alice')) # import로 불러오면 실행 안 됨 print('메인 실행 완료!') 💡 함수·클래스는 어디서 import해도 쓰되, “직접 실행 코드\"는 이 블록 안에 둬서 분리합니다.\n📚 보충 Python 공식 문서 기반.\nmap vs 컴프리헨션: 같은 일 → 보통 [x*2 for x in nums](컴프리헨션)이 더 읽기 쉬워 선호. sys.exit(main()) 패턴: .py 진입점에서 main() 결과를 종료코드로 반환(0=정상). 주피터에선 커널이 죽으니 주의. 정렬 안정성: sorted는 같은 key값의 원래 순서를 보존(stable). 다중 정렬에 활용. 핵심 정리 문법 형식 f-string f\"{값:.2f}\" {값:,} {값:\u003e7} 컴프리헨션 [식 for x in seq if 조건] sorted sorted(list, key=lambda, reverse=True) enumerate for i, v in enumerate(list, start=1) lambda/map list(map(lambda x: ..., list)) __name__ if __name__ == \"__main__\": 🔗 연관 노트 6/2 파이썬 중급 문법2 — 실무 문법 패턴 — 오늘 강의 이론 정리 6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트) — 같은 커리큘럼 실습 6/1 파이썬 기초2 — 실습 (코드 노트) — 반복문·함수 실습 ",
+  "wordCount" : "806",
+  "inLanguage": "en",
+  "datePublished": "2026-06-02T12:00:00+09:00",
+  "dateModified": "2026-06-02T12:00:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "yw8837"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI_6스터디",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yw8837.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
+                    <span>📚 Year Study</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
+                    <span>강의 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
+                    <span>실습 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
+                    <span>프로젝트</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+            <a href="/">홈</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="/posts/">Posts</a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+</nav>
+    <h1 class="post-title entry-hint-parent">
+      6/2 파이썬 중급 문법2 — 실무 문법 패턴 실습 (코드 노트)
+    </h1>
+    <div class="post-description">
+      실무 문법 패턴 실습 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map·filter, __name__을 강사님 코드로 한 줄씩 풀어 정리
+    </div>
+    <div class="post-meta">
+
+<span title='2026-06-02 12:00:00 +0900 KST'>2026년 6월 2일</span>&nbsp;·&nbsp;<span>4 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+
+</div>
+  </header> <details class="toc" >
+    <summary accesskey="c" title="(Alt + C)">
+        <span class="title">목차</span>
+    </summary>
+
+    <div class="inner"><ul>
+            <li>
+                <a href="#1-f-string-%ed%8f%ac%eb%a7%a4%ed%8c%85" aria-label="1. f-string 포매팅">1. f-string 포매팅</a></li>
+            <li>
+                <a href="#2-%eb%a6%ac%ec%8a%a4%ed%8a%b8-%ec%bb%b4%ed%94%84%eb%a6%ac%ed%97%a8%ec%85%98" aria-label="2. 리스트 컴프리헨션">2. 리스트 컴프리헨션</a></li>
+            <li>
+                <a href="#3-sorted--%ec%a0%95%eb%a0%ac" aria-label="3. sorted — 정렬">3. sorted — 정렬</a></li>
+            <li>
+                <a href="#4-enumerate--%ec%9d%b8%eb%8d%b1%ec%8a%a4--%ea%b0%92" aria-label="4. enumerate — 인덱스 &#43; 값">4. enumerate — 인덱스 + 값</a></li>
+            <li>
+                <a href="#5-lambda--map--filter" aria-label="5. lambda · map · filter">5. lambda · map · filter</a></li>
+            <li>
+                <a href="#6-if-__name__--__main__" aria-label="6. if __name__ == &quot;__main__&quot;:">6. if __name__ == &quot;__main__&quot;:</a></li>
+            <li>
+                <a href="#-%eb%b3%b4%ec%b6%a9" aria-label="📚 보충">📚 보충</a></li>
+            <li>
+                <a href="#%ed%95%b5%ec%8b%ac-%ec%a0%95%eb%a6%ac" aria-label="핵심 정리">핵심 정리</a></li>
+            <li>
+                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
+            </li>
+        </ul>
+    </div>
+</details>
+
+  <div class="post-content md-content"><p>실무에서 자주 쓰는 <strong>심화 문법 6가지</strong>를 코드로 익힌 실습 노트입니다. 강의 노트북 코드를 그대로 정리하고 한 줄씩 풀었어요. 🧩</p>
+<hr>
+<h2 id="1-f-string-포매팅">1. f-string 포매팅<a hidden class="anchor" aria-hidden="true" href="#1-f-string-포매팅">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">name</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">salary</span> <span class="o">=</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;시니어 개발자&#39;</span><span class="p">,</span> <span class="mi">6500</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;이름: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, 직책: </span><span class="si">{</span><span class="n">role</span><span class="si">}</span><span class="s2">, 연봉: </span><span class="si">{</span><span class="n">salary</span><span class="si">}</span><span class="s2">만원&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 식·조건도 가능</span>
+</span></span><span class="line"><span class="cl"><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">4</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>          <span class="c1"># 15 + 4 = 19</span>
+</span></span><span class="line"><span class="cl"><span class="n">score</span> <span class="o">=</span> <span class="mi">85</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;점수: </span><span class="si">{</span><span class="n">score</span><span class="si">}</span><span class="s2">점 -&gt; </span><span class="si">{</span><span class="s1">&#39;합격&#39;</span> <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">60</span> <span class="k">else</span> <span class="s1">&#39;불합격&#39;</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 숫자 포맷</span>
+</span></span><span class="line"><span class="cl"><span class="n">pi</span><span class="p">,</span> <span class="n">big</span><span class="p">,</span> <span class="n">rate</span> <span class="o">=</span> <span class="mf">3.141592</span><span class="p">,</span> <span class="mi">1234567890</span><span class="p">,</span> <span class="mf">0.12345</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;π = </span><span class="si">{</span><span class="n">pi</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>          <span class="c1"># 3.14</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;큰 숫자: </span><span class="si">{</span><span class="n">big</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>       <span class="c1"># 1,234,567,890</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;달성률: </span><span class="si">{</span><span class="n">rate</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>     <span class="c1"># 12.3%</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;연봉: </span><span class="si">{</span><span class="mi">65000000</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">원&#34;</span><span class="p">)</span>   <span class="c1"># 65,000,000원</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 정렬 (로그 출력)</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">datetime</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="s1">] </span><span class="si">{</span><span class="n">level</span><span class="si">:</span><span class="s1">&gt;7</span><span class="si">}</span><span class="s1"> | </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>      <span class="c1"># 레벨 오른쪽 7칸 정렬</span>
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="p">(</span><span class="s1">&#39;INFO&#39;</span><span class="p">,</span> <span class="s1">&#39;서버 시작&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="p">(</span><span class="s1">&#39;ERROR&#39;</span><span class="p">,</span> <span class="s1">&#39;DB 연결 실패&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><p>출력:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[14:12:51]    INFO | 서버 시작
+</span></span><span class="line"><span class="cl">[14:12:51]   ERROR | DB 연결 실패
+</span></span></code></pre></div><hr>
+<h2 id="2-리스트-컴프리헨션">2. 리스트 컴프리헨션<a hidden class="anchor" aria-hidden="true" href="#2-리스트-컴프리헨션">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># for문 → 컴프리헨션</span>
+</span></span><span class="line"><span class="cl"><span class="n">squares</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">squares</span><span class="p">)</span>   <span class="c1"># [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">members</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="s1">&#39;개발팀&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="mi">6500</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>   <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="s1">&#39;기획팀&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="mi">5200</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Derek&#39;</span><span class="p">,</span> <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="s1">&#39;개발팀&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="mi">4800</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Eve&#39;</span><span class="p">,</span>   <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="s1">&#39;분석팀&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 필터: 연봉 5000+ 이름</span>
+</span></span><span class="line"><span class="cl"><span class="n">high</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">members</span> <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">5000</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">high</span><span class="p">)</span>                       <span class="c1"># [&#39;Alice&#39;, &#39;Bob&#39;]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 개발팀만 + f-string</span>
+</span></span><span class="line"><span class="cl"><span class="n">dev</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">만원)&#34;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">members</span> <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;team&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;개발팀&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>                        <span class="c1"># [&#39;Alice(6,500만원)&#39;, &#39;Derek(4,800만원)&#39;]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># if-else 변환 (순서 주의!)</span>
+</span></span><span class="line"><span class="cl"><span class="n">grade</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: 고연봉&#34;</span> <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">5000</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: 일반&#34;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">members</span><span class="p">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 실무: 데이터 전처리 (공백 제거 + 빈 값 필터)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raw</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39; Python &#39;</span><span class="p">,</span> <span class="s1">&#39;Django &#39;</span><span class="p">,</span> <span class="s1">&#39; React&#39;</span><span class="p">,</span> <span class="s1">&#39;SQL&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">clean</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">raw</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">clean</span><span class="p">)</span>      <span class="c1"># [&#39;Python&#39;, &#39;Django&#39;, &#39;React&#39;, &#39;SQL&#39;]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 딕셔너리 컴프리헨션</span>
+</span></span><span class="line"><span class="cl"><span class="n">salary_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">members</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">salary_dict</span><span class="p">)</span>   <span class="c1"># {&#39;Alice&#39;: 6500, &#39;Bob&#39;: 5200, &#39;Derek&#39;: 4800, &#39;Eve&#39;: 3600}</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ 필터 <code>if</code>는 <strong>뒤</strong>(<code>for x in seq if 조건</code>), <code>if-else</code> 변환은 <strong>앞</strong>(<code>A if 조건 else B for x in seq</code>).</p>
+</blockquote>
+<hr>
+<h2 id="3-sorted--정렬">3. sorted — 정렬<a hidden class="anchor" aria-hidden="true" href="#3-sorted--정렬">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">85</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">88</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>                 <span class="c1"># [73, 78, 85, 88, 92, 96]  원본 유지</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>   <span class="c1"># [96, 92, 88, 85, 78, 73]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">scores</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>      <span class="c1"># 원본 자체를 변경, 반환은 None</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">members</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="s1">&#39;개발팀&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="mi">6500</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="s1">&#39;영업팀&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="mi">6100</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Eve&#39;</span><span class="p">,</span>   <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="s1">&#39;분석팀&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Helen&#39;</span><span class="p">,</span> <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="s1">&#39;분석팀&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="mi">5500</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># key=lambda 로 정렬 기준 지정</span>
+</span></span><span class="line"><span class="cl"><span class="n">by_salary</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">by_salary</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34; </span><span class="si">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">만원&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 다중 기준: 팀명 오름차순 → 같은 팀 연봉 내림차순</span>
+</span></span><span class="line"><span class="cl"><span class="n">multi</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;team&#39;</span><span class="p">],</span> <span class="o">-</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 글자 수 기준</span>
+</span></span><span class="line"><span class="cl"><span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Python&#39;</span><span class="p">,</span> <span class="s1">&#39;AI&#39;</span><span class="p">,</span> <span class="s1">&#39;MachineLearning&#39;</span><span class="p">,</span> <span class="s1">&#39;SQL&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">))</span>   <span class="c1"># [&#39;AI&#39;, &#39;SQL&#39;, &#39;Python&#39;, &#39;MachineLearning&#39;]</span>
+</span></span></code></pre></div><hr>
+<h2 id="4-enumerate--인덱스--값">4. enumerate — 인덱스 + 값<a hidden class="anchor" aria-hidden="true" href="#4-enumerate--인덱스--값">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">season</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;봄&#39;</span><span class="p">,</span> <span class="s1">&#39;여름&#39;</span><span class="p">,</span> <span class="s1">&#39;가을&#39;</span><span class="p">,</span> <span class="s1">&#39;겨울&#39;</span><span class="p">]):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34; </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">season</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># start=1 (1번부터)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">team</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;개발팀&#39;</span><span class="p">,</span> <span class="s1">&#39;기획팀&#39;</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34; </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">번 팀: </span><span class="si">{</span><span class="n">team</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 실무: 정렬 후 순위 매기기</span>
+</span></span><span class="line"><span class="cl"><span class="n">scores</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span><span class="s1">&#39;score&#39;</span><span class="p">:</span><span class="mi">95</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span><span class="s1">&#39;score&#39;</span><span class="p">:</span><span class="mi">82</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Derek&#39;</span><span class="p">,</span><span class="s1">&#39;score&#39;</span><span class="p">:</span><span class="mi">91</span><span class="p">}]</span>
+</span></span><span class="line"><span class="cl"><span class="n">ranked</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">medals</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="s1">&#39;🥇&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="s1">&#39;🥈&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="s1">&#39;🥉&#39;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">rank</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ranked</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;  </span><span class="si">{</span><span class="n">medals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;위&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">점&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>출력:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  🥇 Alice    95점
+</span></span><span class="line"><span class="cl">  🥈 Derek    91점
+</span></span><span class="line"><span class="cl">  🥉 Bob      82점
+</span></span></code></pre></div><hr>
+<h2 id="5-lambda--map--filter">5. lambda · map · filter<a hidden class="anchor" aria-hidden="true" href="#5-lambda--map--filter">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">square</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>        <span class="c1"># 이름 없는 한 줄 함수</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">square</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>                 <span class="c1"># 25</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">nums</span><span class="p">)))</span>         <span class="c1"># [2, 4, 6, 8, 10]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">,</span> <span class="n">nums</span><span class="p">)))</span>   <span class="c1"># [2, 4]  (짝수만)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 실무: 연봉 원 단위 → 만원 단위</span>
+</span></span><span class="line"><span class="cl"><span class="n">salaries</span> <span class="o">=</span> <span class="p">[</span><span class="mi">65000000</span><span class="p">,</span> <span class="mi">52000000</span><span class="p">,</span> <span class="mi">48000000</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">man</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">w</span> <span class="o">//</span> <span class="mi">10000</span><span class="p">,</span> <span class="n">salaries</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">man</span><span class="p">)</span>     <span class="c1"># [6500, 5200, 4800]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 복잡한 로직은 일반 함수로 (lambda 한계)</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">calculate_bonus</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">base</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;years&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span> <span class="n">base</span> <span class="o">*=</span> <span class="mf">1.05</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">90</span><span class="p">:</span> <span class="n">base</span> <span class="o">*=</span> <span class="mf">1.1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <code>map</code>/<code>filter</code>는 <code>list()</code>로 감싸야 결과가 보입니다. 간단하면 lambda, 복잡하면 <code>def</code>.</p>
+</blockquote>
+<hr>
+<h2 id="6-if-__name__--__main__">6. <code>if __name__ == &quot;__main__&quot;:</code><a hidden class="anchor" aria-hidden="true" href="#6-if-__name__--__main__">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">greet</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;안녕하세요, </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">님!&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>       <span class="c1"># 직접 실행할 때만 동작</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">greet</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">))</span>        <span class="c1"># import로 불러오면 실행 안 됨</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;메인 실행 완료!&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 함수·클래스는 어디서 import해도 쓰되, &ldquo;직접 실행 코드&quot;는 이 블록 안에 둬서 분리합니다.</p>
+</blockquote>
+<hr>
+<h2 id="-보충">📚 보충<a hidden class="anchor" aria-hidden="true" href="#-보충">#</a></h2>
+<blockquote>
+<p><a href="https://docs.python.org/ko/3/">Python 공식 문서</a> 기반.</p>
+</blockquote>
+<ul>
+<li><strong>map vs 컴프리헨션</strong>: 같은 일 → 보통 <code>[x*2 for x in nums]</code>(컴프리헨션)이 더 읽기 쉬워 선호.</li>
+<li><strong><code>sys.exit(main())</code> 패턴</strong>: <code>.py</code> 진입점에서 <code>main()</code> 결과를 종료코드로 반환(0=정상). 주피터에선 커널이 죽으니 주의.</li>
+<li><strong>정렬 안정성</strong>: <code>sorted</code>는 같은 key값의 원래 순서를 보존(stable). 다중 정렬에 활용.</li>
+</ul>
+<hr>
+<h2 id="핵심-정리">핵심 정리<a hidden class="anchor" aria-hidden="true" href="#핵심-정리">#</a></h2>
+<table>
+	<thead>
+			<tr>
+					<th style="text-align: left">문법</th>
+					<th style="text-align: left">형식</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: left">f-string</td>
+					<td style="text-align: left"><code>f&quot;{값:.2f}&quot;</code> <code>{값:,}</code> <code>{값:&gt;7}</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left">컴프리헨션</td>
+					<td style="text-align: left"><code>[식 for x in seq if 조건]</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left">sorted</td>
+					<td style="text-align: left"><code>sorted(list, key=lambda, reverse=True)</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left">enumerate</td>
+					<td style="text-align: left"><code>for i, v in enumerate(list, start=1)</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left">lambda/map</td>
+					<td style="text-align: left"><code>list(map(lambda x: ..., list))</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><code>__name__</code></td>
+					<td style="text-align: left"><code>if __name__ == &quot;__main__&quot;:</code></td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
+<ul>
+<li><a href="/posts/%EA%B0%95%EC%9D%98/6-02-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/">6/2 파이썬 중급 문법2 — 실무 문법 패턴</a> — 오늘 강의 이론 정리</li>
+<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)</a> — 같은 커리큘럼 실습</li>
+<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B82/">6/1 파이썬 기초2 — 실습 (코드 노트)</a> — 반복문·함수 실습</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yw8837.github.io/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/">파이썬</a></li>
+      <li><a href="https://yw8837.github.io/tags/python/">Python</a></li>
+      <li><a href="https://yw8837.github.io/tags/f-string/">F-String</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%BB%B4%ED%94%84%EB%A6%AC%ED%97%A8%EC%85%98/">컴프리헨션</a></li>
+      <li><a href="https://yw8837.github.io/tags/sorted/">Sorted</a></li>
+      <li><a href="https://yw8837.github.io/tags/lambda/">Lambda</a></li>
+      <li><a href="https://yw8837.github.io/tags/map/">Map</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%BD%94%EB%93%9C%EB%85%B8%ED%8A%B8/">코드노트</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/">실습</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%ED%99%9C%EC%9A%A9/">
+    <span class="title">« 이전 페이지</span>
+    <span>6/4 파이썬 라이브러리 활용</span>
+  </a>
+  <a class="next" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-02-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/">
+    <span class="title">다음 페이지 »</span>
+    <span>6/2 파이썬 중급 문법2 — 실무 문법 패턴</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
+        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '복사';
+
+        function copyingDone() {
+            copybutton.innerHTML = '복사 완료!';
+            setTimeout(() => {
+                copybutton.innerHTML = '복사';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
