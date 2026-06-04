@@ -85,8 +85,8 @@
   <meta property="og:locale" content="ko">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2026-06-04T11:00:00+09:00">
-    <meta property="article:modified_time" content="2026-06-04T11:00:00+09:00">
+    <meta property="article:published_time" content="2026-06-04T09:00:00+09:00">
+    <meta property="article:modified_time" content="2026-06-04T09:00:00+09:00">
     <meta property="article:tag" content="파이썬">
     <meta property="article:tag" content="Python">
     <meta property="article:tag" content="F-String">
@@ -132,8 +132,8 @@
   "articleBody": " 이어드림스쿨 AI 과정 파이썬 중급 문법2 — 실무 문법 패턴 정리입니다. 기초 문법 위에, 실무에서 코드를 짧고 깔끔하게 쓰는 6가지 패턴을 배웁니다. 🧩\n📖 수업 내용 01 · f-string 포매팅 문자열 앞에 f를 붙이고 { } 안에 변수·식을 넣습니다. (Python 3.6+)\nname, salary = \"Alice\", 6500 print(f\"{name}님 연봉: {salary}만원\") # Alice님 연봉: 6500만원 print(f\"{15} + {4} = {15 + 4}\") # 식도 가능 → 15 + 4 = 19 숫자 포맷 (자주 씀):\npi = 3.14159 print(f\"{pi:.2f}\") # 3.14 소수점 2자리 print(f\"{1234567:,}\") # 1,234,567 천 단위 콤마 print(f\"{0.123:.1%}\") # 12.3% 퍼센트 print(f\"{'INFO':\u003e7}\") # 오른쪽 정렬 7칸 💡 :.2f(소수자리), :,(콤마), :%(퍼센트), :\u003e7(정렬) — 표·로그 출력에 유용.\n02 · 리스트 컴프리헨션 (List Comprehension) for 반복문으로 리스트 만드는 걸 한 줄로 압축합니다.\n# 기본: [표현식 for 변수 in 시퀀스] squares = [i**2 for i in range(1, 6)] # [1, 4, 9, 16, 25] # 필터: [표현식 for 변수 in 시퀀스 if 조건] evens = [i for i in range(10) if i % 2 == 0] # [0, 2, 4, 6, 8] # if-else (순서 주의!): [A if 조건 else B for 변수 in 시퀀스] grades = [\"합격\" if s \u003e= 60 else \"불합격\" for s in [80, 50, 90]] 실무 예 — 데이터 전처리:\nraw = [' Python ', 'SQL', ' ', 'Docker ', ''] clean = [s.strip() for s in raw if s.strip()] # ['Python', 'SQL', 'Docker'] ⚠️ 필터 if는 뒤에(for ... if 조건), if-else는 앞에(A if 조건 else B for ...). 위치가 다릅니다!\n03 · sorted — 정렬 scores = [85, 92, 78, 96] sorted(scores) # [78, 85, 92, 96] 원본 유지, 새 리스트 sorted(scores, reverse=True) # [96, 92, 85, 78] 내림차순 원본 반환 list.sort() 변경됨 None sorted(list) 유지 정렬된 새 리스트 key로 정렬 기준 지정 (실무 핵심):\nmembers = [{\"name\":\"A\",\"salary\":6500}, {\"name\":\"B\",\"salary\":4800}] sorted(members, key=lambda m: m[\"salary\"], reverse=True) # 연봉 높은 순 sorted(words, key=len) # 글자 수 순 sorted(members, key=lambda m: (m[\"team\"], -m[\"salary\"])) # 다중 기준 💡 key=lambda ... → “무엇을 기준으로 정렬할지\"를 함수로 지정. 튜플 (기준1, 기준2)로 다중 정렬.\n04 · enumerate — 인덱스 + 값 동시에 for i, season in enumerate([\"봄\", \"여름\", \"가을\"]): print(i, season) # 0 봄 / 1 여름 / 2 가을 for rank, team in enumerate([\"개발팀\", \"기획팀\"], start=1): print(f\"{rank}번: {team}\") # 1번: 개발팀 / 2번: 기획팀 💡 range(len(...)) 대신 enumerate가 훨씬 깔끔. start=1로 1번부터 셀 수 있어요(순위 매기기).\n05 · lambda · map · filter lambda = 이름 없는 한 줄 함수.\nsquare = lambda x: x ** 2 # def square(x): return x**2 와 동일 square(5) # 25 map = 각 요소에 함수 적용 / filter = 조건 맞는 것만:\nnums = [1, 2, 3, 4, 5] list(map(lambda x: x*2, nums)) # [2, 4, 6, 8, 10] list(filter(lambda x: x%2==0, nums)) # [2, 4] (짝수만) 💡 map/filter 결과는 list()로 감싸야 보입니다. 복잡한 로직은 lambda 말고 일반 def 함수가 가독성↑.\n06 · if __name__ == \"__main__\": 파이썬 파일을 직접 실행할 때만 동작하는 블록. import로 불러오면 실행 안 됨.\ndef add(a, b): return a + b if __name__ == \"__main__\": # 이 파일을 직접 실행할 때만 print(add(3, 4)) # import 시엔 실행 안 됨 💡 “함수·클래스 정의\"와 “직접 실행 코드\"를 분리하는 장치. 모듈로 재사용하면서 테스트 코드도 넣을 수 있어요.\n📚 참고자료 수업에 더해 Python 공식 문서에서 보충.\n딕셔너리 컴프리헨션 리스트뿐 아니라 딕셔너리도 한 줄로:\nmembers = [{\"name\":\"A\",\"salary\":6500}, {\"name\":\"B\",\"salary\":5200}] {m[\"name\"]: m[\"salary\"] for m in members} # {'A': 6500, 'B': 5200} map vs 컴프리헨션 같은 일을 둘 다 할 수 있어요. 보통 컴프리헨션이 더 읽기 쉬워 선호됩니다.\nlist(map(lambda x: x*2, nums)) # map [x*2 for x in nums] # 컴프리헨션 (권장) sys.exit() 프로그램 종료 함수. sys.exit(0)=정상, 그 외=오류. (주피터에선 커널이 죽으니 .py에서만)\n마무리 f-string으로 깔끔하게 출력하고, 컴프리헨션으로 반복을 한 줄로 줄이고, sorted·enumerate·lambda로 데이터를 자유롭게 다룬다. 이 패턴들은 “되는 코드\"를 “읽기 좋고 짧은 코드\"로 바꿔줍니다 — 실무에서 매일 씁니다.\n처음엔 한 줄 압축이 어색하지만, for문으로 풀어 써본 뒤 컴프리헨션으로 바꿔보면 금방 익숙해져요. 💪\n작성: AI_6스터디 | 수업 출처: 이어드림스쿨 파이썬 중급(실무 문법 패턴) 수업 자료 (Elice)\n🔗 연관 노트 6/4 실무 문법 패턴 실습 (코드 노트) — 오늘 실습 코드 전체 6/2 파이썬 중급 문법2 — 클래스 (OOP) — 같은 커리큘럼 6/1 파이썬 기초2 — 반복문·함수 (전제) ",
   "wordCount" : "676",
   "inLanguage": "en",
-  "datePublished": "2026-06-04T11:00:00+09:00",
-  "dateModified": "2026-06-04T11:00:00+09:00",
+  "datePublished": "2026-06-04T09:00:00+09:00",
+  "dateModified": "2026-06-04T09:00:00+09:00",
   "author":{
     "@type": "Person",
     "name": "yw8837"
@@ -229,7 +229,7 @@
     </div>
     <div class="post-meta">
 
-<span title='2026-06-04 11:00:00 +0900 KST'>2026년 6월 4일</span>&nbsp;·&nbsp;<span>4 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+<span title='2026-06-04 09:00:00 +0900 KST'>2026년 6월 4일</span>&nbsp;·&nbsp;<span>4 분</span>&nbsp;·&nbsp;<span>yw8837</span>
 
 </div>
   </header> <details class="toc" >
@@ -427,13 +427,13 @@
       <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+  <a class="prev" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%ED%99%9C%EC%9A%A9/">
     <span class="title">« 이전 페이지</span>
-    <span>6/4 파이썬 중급 문법2 — 실무 문법 패턴 실습 (코드 노트)</span>
-  </a>
-  <a class="next" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%ED%99%9C%EC%9A%A9/">
-    <span class="title">다음 페이지 »</span>
     <span>6/4 파이썬 라이브러리 활용</span>
+  </a>
+  <a class="next" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+    <span class="title">다음 페이지 »</span>
+    <span>6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)</span>
   </a>
 </nav>
 

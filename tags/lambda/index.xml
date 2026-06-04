@@ -18,7 +18,7 @@
     <item>
       <title>6/4 파이썬 중급 문법2 — 실무 문법 패턴</title>
       <link>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/</link>
-      <pubDate>Thu, 04 Jun 2026 11:00:00 +0900</pubDate>
+      <pubDate>Thu, 04 Jun 2026 09:00:00 +0900</pubDate>
       <guid>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/</guid>
       <description>실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리</description>
     </item>
