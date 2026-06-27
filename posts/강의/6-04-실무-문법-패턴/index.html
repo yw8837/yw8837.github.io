@@ -1,59 +1,617 @@
-<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>6/4 파이썬 중급 문법2 — 실무 문법 패턴 | AI_6스터디</title><meta name=keywords content="파이썬,Python,f-string,컴프리헨션,sorted,enumerate,lambda,map,코딩기초,초보자"><meta name=description content="실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리"><meta name=author content="yw8837"><link rel=canonical href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/><link crossorigin=anonymous href=/assets/css/stylesheet.css rel="preload stylesheet" as=style><link rel=icon href=https://yw8837.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://yw8837.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://yw8837.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://yw8837.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yw8837.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script><script>var doNotTrack=!1,dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes";if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-EQR4094Q13")}</script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/"><meta property="og:site_name" content="AI_6스터디"><meta property="og:title" content="6/4 파이썬 중급 문법2 — 실무 문법 패턴"><meta property="og:description" content="실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리"><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-06-04T09:00:00+09:00"><meta property="article:modified_time" content="2026-06-04T09:00:00+09:00"><meta property="article:tag" content="파이썬"><meta property="article:tag" content="Python"><meta property="article:tag" content="F-String"><meta property="article:tag" content="컴프리헨션"><meta property="article:tag" content="Sorted"><meta property="article:tag" content="Enumerate"><meta name=twitter:card content="summary"><meta name=twitter:title content="6/4 파이썬 중급 문법2 — 실무 문법 패턴"><meta name=twitter:description content="실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yw8837.github.io/posts/"},{"@type":"ListItem","position":2,"name":"6/4 파이썬 중급 문법2 — 실무 문법 패턴","item":"https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"6/4 파이썬 중급 문법2 — 실무 문법 패턴","name":"6\/4 파이썬 중급 문법2 — 실무 문법 패턴","description":"실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리","keywords":["파이썬","Python","f-string","컴프리헨션","sorted","enumerate","lambda","map","코딩기초","초보자"],"articleBody":" 이어드림스쿨 AI 과정 파이썬 중급 문법2 — 실무 문법 패턴 정리입니다. 기초 문법 위에, 실무에서 코드를 짧고 깔끔하게 쓰는 6가지 패턴을 배웁니다. 🧩\n📖 수업 내용 01 · f-string 포매팅 문자열 앞에 f를 붙이고 { } 안에 변수·식을 넣습니다. (Python 3.6+)\nname, salary = \"Alice\", 6500 print(f\"{name}님 연봉: {salary}만원\") # Alice님 연봉: 6500만원 print(f\"{15} + {4} = {15 + 4}\") # 식도 가능 → 15 + 4 = 19 숫자 포맷 (자주 씀):\npi = 3.14159 print(f\"{pi:.2f}\") # 3.14 소수점 2자리 print(f\"{1234567:,}\") # 1,234,567 천 단위 콤마 print(f\"{0.123:.1%}\") # 12.3% 퍼센트 print(f\"{'INFO':\u003e7}\") # 오른쪽 정렬 7칸 💡 :.2f(소수자리), :,(콤마), :%(퍼센트), :\u003e7(정렬) — 표·로그 출력에 유용.\n02 · 리스트 컴프리헨션 (List Comprehension) for 반복문으로 리스트 만드는 걸 한 줄로 압축합니다.\n# 기본: [표현식 for 변수 in 시퀀스] squares = [i**2 for i in range(1, 6)] # [1, 4, 9, 16, 25] # 필터: [표현식 for 변수 in 시퀀스 if 조건] evens = [i for i in range(10) if i % 2 == 0] # [0, 2, 4, 6, 8] # if-else (순서 주의!): [A if 조건 else B for 변수 in 시퀀스] grades = [\"합격\" if s \u003e= 60 else \"불합격\" for s in [80, 50, 90]] 실무 예 — 데이터 전처리:\nraw = [' Python ', 'SQL', ' ', 'Docker ', ''] clean = [s.strip() for s in raw if s.strip()] # ['Python', 'SQL', 'Docker'] ⚠️ 필터 if는 뒤에(for ... if 조건), if-else는 앞에(A if 조건 else B for ...). 위치가 다릅니다!\n03 · sorted — 정렬 scores = [85, 92, 78, 96] sorted(scores) # [78, 85, 92, 96] 원본 유지, 새 리스트 sorted(scores, reverse=True) # [96, 92, 85, 78] 내림차순 원본 반환 list.sort() 변경됨 None sorted(list) 유지 정렬된 새 리스트 key로 정렬 기준 지정 (실무 핵심):\nmembers = [{\"name\":\"A\",\"salary\":6500}, {\"name\":\"B\",\"salary\":4800}] sorted(members, key=lambda m: m[\"salary\"], reverse=True) # 연봉 높은 순 sorted(words, key=len) # 글자 수 순 sorted(members, key=lambda m: (m[\"team\"], -m[\"salary\"])) # 다중 기준 💡 key=lambda ... → “무엇을 기준으로 정렬할지\"를 함수로 지정. 튜플 (기준1, 기준2)로 다중 정렬.\n04 · enumerate — 인덱스 + 값 동시에 for i, season in enumerate([\"봄\", \"여름\", \"가을\"]): print(i, season) # 0 봄 / 1 여름 / 2 가을 for rank, team in enumerate([\"개발팀\", \"기획팀\"], start=1): print(f\"{rank}번: {team}\") # 1번: 개발팀 / 2번: 기획팀 💡 range(len(...)) 대신 enumerate가 훨씬 깔끔. start=1로 1번부터 셀 수 있어요(순위 매기기).\n05 · lambda · map · filter lambda = 이름 없는 한 줄 함수.\nsquare = lambda x: x ** 2 # def square(x): return x**2 와 동일 square(5) # 25 map = 각 요소에 함수 적용 / filter = 조건 맞는 것만:\nnums = [1, 2, 3, 4, 5] list(map(lambda x: x*2, nums)) # [2, 4, 6, 8, 10] list(filter(lambda x: x%2==0, nums)) # [2, 4] (짝수만) 💡 map/filter 결과는 list()로 감싸야 보입니다. 복잡한 로직은 lambda 말고 일반 def 함수가 가독성↑.\n06 · if __name__ == \"__main__\": 파이썬 파일을 직접 실행할 때만 동작하는 블록. import로 불러오면 실행 안 됨.\ndef add(a, b): return a + b if __name__ == \"__main__\": # 이 파일을 직접 실행할 때만 print(add(3, 4)) # import 시엔 실행 안 됨 💡 “함수·클래스 정의\"와 “직접 실행 코드\"를 분리하는 장치. 모듈로 재사용하면서 테스트 코드도 넣을 수 있어요.\n07 · 한눈에 정리 (6가지 패턴) 패턴 핵심 예시 f-string 출력 포매팅 f\"{x:.2f}\" · f\"{n:,}\" 컴프리헨션 반복을 한 줄로 [i*2 for i in xs if i\u003e0] sorted 정렬(원본 유지) sorted(xs, key=..., reverse=True) enumerate 인덱스+값 동시 for i, x in enumerate(xs, start=1) lambda·map·filter 익명함수·변환·필터 list(map(lambda x: x*2, xs)) __name__ 직접 실행 시에만 if __name__ == \"__main__\": 📚 참고자료 수업에 더해 Python 공식 문서에서 보충.\n딕셔너리 컴프리헨션 리스트뿐 아니라 딕셔너리도 한 줄로:\nmembers = [{\"name\":\"A\",\"salary\":6500}, {\"name\":\"B\",\"salary\":5200}] {m[\"name\"]: m[\"salary\"] for m in members} # {'A': 6500, 'B': 5200} map vs 컴프리헨션 같은 일을 둘 다 할 수 있어요. 보통 컴프리헨션이 더 읽기 쉬워 선호됩니다.\nlist(map(lambda x: x*2, nums)) # map [x*2 for x in nums] # 컴프리헨션 (권장) sys.exit() 프로그램 종료 함수. sys.exit(0)=정상, 그 외=오류. (주피터에선 커널이 죽으니 .py에서만)\n마무리 f-string으로 깔끔하게 출력하고, 컴프리헨션으로 반복을 한 줄로 줄이고, sorted·enumerate·lambda로 데이터를 자유롭게 다룬다. 이 패턴들은 “되는 코드\"를 “읽기 좋고 짧은 코드\"로 바꿔줍니다 — 실무에서 매일 씁니다.\n처음엔 한 줄 압축이 어색하지만, for문으로 풀어 써본 뒤 컴프리헨션으로 바꿔보면 금방 익숙해져요. 💪\n작성: AI_6스터디 | 수업 출처: 이어드림스쿨 파이썬 중급(실무 문법 패턴) 수업 자료 (Elice)\n🔗 연관 노트 6/4 실무 문법 패턴 실습 (코드 노트) — 오늘 실습 코드 전체 6/2 파이썬 중급 문법2 — 클래스 (OOP) — 같은 커리큘럼 6/1 파이썬 기초2 — 반복문·함수 (전제) ","wordCount":"731","inLanguage":"en","datePublished":"2026-06-04T09:00:00+09:00","dateModified":"2026-06-04T09:00:00+09:00","author":{"@type":"Person","name":"yw8837"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/"},"publisher":{"@type":"Organization","name":"AI_6스터디","logo":{"@type":"ImageObject","url":"https://yw8837.github.io/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=header-nav><div class=logo><a href=https://yw8837.github.io/ accesskey=h title="AI_6스터디 (Alt + H)">AI_6스터디</a><div class=logo-switches><button id=theme-toggle class=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
-<svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-<svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu class=menu><li><a href=https://yw8837.github.io/categories/year-study/ title="📚 Year Study"><span>📚 Year Study</span></a></li><li><a href=https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/ title="강의 정리"><span>강의 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/ title="실습 정리"><span>실습 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/ title=프로젝트><span>프로젝트</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><nav class=breadcrumbs role=navigation aria-label=Breadcrumb><a href=/>홈</a>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg>
-<a href=/posts/>Posts</a>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg></nav><h1 class="post-title entry-hint-parent">6/4 파이썬 중급 문법2 — 실무 문법 패턴</h1><div class=post-description>실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리</div><div class=post-meta><span title='2026-06-04 09:00:00 +0900 KST'>2026년 6월 4일</span>&nbsp;·&nbsp;<span>4 분</span>&nbsp;·&nbsp;<span>yw8837</span></div></header><details class=toc><summary accesskey=c title="(Alt + C)"><span class=title>목차</span></summary><div class=inner><ul><li><a href=#-%ec%88%98%ec%97%85-%eb%82%b4%ec%9a%a9 aria-label="📖 수업 내용">📖 수업 내용</a><ul><li><a href=#01--f-string-%ed%8f%ac%eb%a7%a4%ed%8c%85 aria-label="01 · f-string 포매팅">01 · f-string 포매팅</a></li><li><a href=#02--%eb%a6%ac%ec%8a%a4%ed%8a%b8-%ec%bb%b4%ed%94%84%eb%a6%ac%ed%97%a8%ec%85%98-list-comprehension aria-label="02 · 리스트 컴프리헨션 (List Comprehension)">02 · 리스트 컴프리헨션 (List Comprehension)</a></li><li><a href=#03--sorted--%ec%a0%95%eb%a0%ac aria-label="03 · sorted — 정렬">03 · sorted — 정렬</a></li><li><a href=#04--enumerate--%ec%9d%b8%eb%8d%b1%ec%8a%a4--%ea%b0%92-%eb%8f%99%ec%8b%9c%ec%97%90 aria-label="04 · enumerate — 인덱스 + 값 동시에">04 · enumerate — 인덱스 + 값 동시에</a></li><li><a href=#05--lambda--map--filter aria-label="05 · lambda · map · filter">05 · lambda · map · filter</a></li><li><a href=#06--if-__name__--__main__ aria-label='06 · if __name__ == "__main__":'>06 · if __name__ == "__main__":</a></li><li><a href=#07--%ed%95%9c%eb%88%88%ec%97%90-%ec%a0%95%eb%a6%ac-6%ea%b0%80%ec%a7%80-%ed%8c%a8%ed%84%b4 aria-label="07 · 한눈에 정리 (6가지 패턴)">07 · 한눈에 정리 (6가지 패턴)</a></li></ul></li><li><a href=#-%ec%b0%b8%ea%b3%a0%ec%9e%90%eb%a3%8c aria-label="📚 참고자료">📚 참고자료</a><ul><li><a href=#%eb%94%95%ec%85%94%eb%84%88%eb%a6%ac-%ec%bb%b4%ed%94%84%eb%a6%ac%ed%97%a8%ec%85%98 aria-label="딕셔너리 컴프리헨션">딕셔너리 컴프리헨션</a></li><li><a href=#map-vs-%ec%bb%b4%ed%94%84%eb%a6%ac%ed%97%a8%ec%85%98 aria-label="map vs 컴프리헨션">map vs 컴프리헨션</a></li><li><a href=#sysexit aria-label=sys.exit()>sys.exit()</a></li><li><a href=#%eb%a7%88%eb%ac%b4%eb%a6%ac aria-label=마무리>마무리</a></li><li><a href=#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8 aria-label="🔗 연관 노트">🔗 연관 노트</a></li></ul></li></ul></div></details><div class="post-content md-content"><blockquote><p>이어드림스쿨 AI 과정 <strong>파이썬 중급 문법2 — 실무 문법 패턴</strong> 정리입니다.
-기초 문법 위에, 실무에서 코드를 <strong>짧고 깔끔하게</strong> 쓰는 6가지 패턴을 배웁니다. 🧩</p></blockquote><hr><h1 id=-수업-내용>📖 수업 내용<a hidden class=anchor aria-hidden=true href=#-수업-내용>#</a></h1><h2 id=01--f-string-포매팅>01 · f-string 포매팅<a hidden class=anchor aria-hidden=true href=#01--f-string-포매팅>#</a></h2><p>문자열 앞에 <code>f</code>를 붙이고 <code>{ }</code> 안에 변수·식을 넣습니다. (Python 3.6+)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>name</span><span class=p>,</span> <span class=n>salary</span> <span class=o>=</span> <span class=s2>&#34;Alice&#34;</span><span class=p>,</span> <span class=mi>6500</span>
-</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s2>님 연봉: </span><span class=si>{</span><span class=n>salary</span><span class=si>}</span><span class=s2>만원&#34;</span><span class=p>)</span>     <span class=c1># Alice님 연봉: 6500만원</span>
-</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=mi>15</span><span class=si>}</span><span class=s2> + </span><span class=si>{</span><span class=mi>4</span><span class=si>}</span><span class=s2> = </span><span class=si>{</span><span class=mi>15</span> <span class=o>+</span> <span class=mi>4</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>           <span class=c1># 식도 가능 → 15 + 4 = 19</span>
-</span></span></code></pre></div><p><strong>숫자 포맷</strong> (자주 씀):</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>pi</span> <span class=o>=</span> <span class=mf>3.14159</span>
-</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>pi</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>        <span class=c1># 3.14      소수점 2자리</span>
-</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=mi>1234567</span><span class=si>:</span><span class=s2>,</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>     <span class=c1># 1,234,567 천 단위 콤마</span>
-</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=mf>0.123</span><span class=si>:</span><span class=s2>.1%</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>     <span class=c1># 12.3%     퍼센트</span>
-</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=s1>&#39;INFO&#39;</span><span class=si>:</span><span class=s2>&gt;7</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>     <span class=c1># 오른쪽 정렬 7칸</span>
-</span></span></code></pre></div><blockquote><p>💡 <code>:.2f</code>(소수자리), <code>:,</code>(콤마), <code>:%</code>(퍼센트), <code>:>7</code>(정렬) — 표·로그 출력에 유용.</p></blockquote><hr><h2 id=02--리스트-컴프리헨션-list-comprehension>02 · 리스트 컴프리헨션 (List Comprehension)<a hidden class=anchor aria-hidden=true href=#02--리스트-컴프리헨션-list-comprehension>#</a></h2><p><code>for</code> 반복문으로 리스트 만드는 걸 <strong>한 줄로</strong> 압축합니다.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=c1># 기본: [표현식 for 변수 in 시퀀스]</span>
-</span></span><span class=line><span class=cl><span class=n>squares</span> <span class=o>=</span> <span class=p>[</span><span class=n>i</span><span class=o>**</span><span class=mi>2</span> <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>6</span><span class=p>)]</span>        <span class=c1># [1, 4, 9, 16, 25]</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># 필터: [표현식 for 변수 in 시퀀스 if 조건]</span>
-</span></span><span class=line><span class=cl><span class=n>evens</span> <span class=o>=</span> <span class=p>[</span><span class=n>i</span> <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span> <span class=k>if</span> <span class=n>i</span> <span class=o>%</span> <span class=mi>2</span> <span class=o>==</span> <span class=mi>0</span><span class=p>]</span> <span class=c1># [0, 2, 4, 6, 8]</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># if-else (순서 주의!): [A if 조건 else B for 변수 in 시퀀스]</span>
-</span></span><span class=line><span class=cl><span class=n>grades</span> <span class=o>=</span> <span class=p>[</span><span class=s2>&#34;합격&#34;</span> <span class=k>if</span> <span class=n>s</span> <span class=o>&gt;=</span> <span class=mi>60</span> <span class=k>else</span> <span class=s2>&#34;불합격&#34;</span> <span class=k>for</span> <span class=n>s</span> <span class=ow>in</span> <span class=p>[</span><span class=mi>80</span><span class=p>,</span> <span class=mi>50</span><span class=p>,</span> <span class=mi>90</span><span class=p>]]</span>
-</span></span></code></pre></div><p>실무 예 — 데이터 전처리:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>raw</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39; Python &#39;</span><span class=p>,</span> <span class=s1>&#39;SQL&#39;</span><span class=p>,</span> <span class=s1>&#39; &#39;</span><span class=p>,</span> <span class=s1>&#39;Docker &#39;</span><span class=p>,</span> <span class=s1>&#39;&#39;</span><span class=p>]</span>
-</span></span><span class=line><span class=cl><span class=n>clean</span> <span class=o>=</span> <span class=p>[</span><span class=n>s</span><span class=o>.</span><span class=n>strip</span><span class=p>()</span> <span class=k>for</span> <span class=n>s</span> <span class=ow>in</span> <span class=n>raw</span> <span class=k>if</span> <span class=n>s</span><span class=o>.</span><span class=n>strip</span><span class=p>()]</span>   <span class=c1># [&#39;Python&#39;, &#39;SQL&#39;, &#39;Docker&#39;]</span>
-</span></span></code></pre></div><blockquote><p>⚠️ <strong>필터 if는 뒤에</strong>(<code>for ... if 조건</code>), <strong>if-else는 앞에</strong>(<code>A if 조건 else B for ...</code>). 위치가 다릅니다!</p></blockquote><hr><h2 id=03--sorted--정렬>03 · sorted — 정렬<a hidden class=anchor aria-hidden=true href=#03--sorted--정렬>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>scores</span> <span class=o>=</span> <span class=p>[</span><span class=mi>85</span><span class=p>,</span> <span class=mi>92</span><span class=p>,</span> <span class=mi>78</span><span class=p>,</span> <span class=mi>96</span><span class=p>]</span>
-</span></span><span class=line><span class=cl><span class=nb>sorted</span><span class=p>(</span><span class=n>scores</span><span class=p>)</span>                 <span class=c1># [78, 85, 92, 96]  원본 유지, 새 리스트</span>
-</span></span><span class=line><span class=cl><span class=nb>sorted</span><span class=p>(</span><span class=n>scores</span><span class=p>,</span> <span class=n>reverse</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>   <span class=c1># [96, 92, 85, 78]  내림차순</span>
-</span></span></code></pre></div><table><thead><tr><th style=text-align:left></th><th style=text-align:left>원본</th><th style=text-align:left>반환</th></tr></thead><tbody><tr><td style=text-align:left><code>list.sort()</code></td><td style=text-align:left>변경됨</td><td style=text-align:left>None</td></tr><tr><td style=text-align:left><code>sorted(list)</code></td><td style=text-align:left>유지</td><td style=text-align:left>정렬된 새 리스트</td></tr></tbody></table><p><strong><code>key</code>로 정렬 기준 지정</strong> (실무 핵심):</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>members</span> <span class=o>=</span> <span class=p>[{</span><span class=s2>&#34;name&#34;</span><span class=p>:</span><span class=s2>&#34;A&#34;</span><span class=p>,</span><span class=s2>&#34;salary&#34;</span><span class=p>:</span><span class=mi>6500</span><span class=p>},</span> <span class=p>{</span><span class=s2>&#34;name&#34;</span><span class=p>:</span><span class=s2>&#34;B&#34;</span><span class=p>,</span><span class=s2>&#34;salary&#34;</span><span class=p>:</span><span class=mi>4800</span><span class=p>}]</span>
-</span></span><span class=line><span class=cl><span class=nb>sorted</span><span class=p>(</span><span class=n>members</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>m</span><span class=p>:</span> <span class=n>m</span><span class=p>[</span><span class=s2>&#34;salary&#34;</span><span class=p>],</span> <span class=n>reverse</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>   <span class=c1># 연봉 높은 순</span>
-</span></span><span class=line><span class=cl><span class=nb>sorted</span><span class=p>(</span><span class=n>words</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=nb>len</span><span class=p>)</span>                                     <span class=c1># 글자 수 순</span>
-</span></span><span class=line><span class=cl><span class=nb>sorted</span><span class=p>(</span><span class=n>members</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>m</span><span class=p>:</span> <span class=p>(</span><span class=n>m</span><span class=p>[</span><span class=s2>&#34;team&#34;</span><span class=p>],</span> <span class=o>-</span><span class=n>m</span><span class=p>[</span><span class=s2>&#34;salary&#34;</span><span class=p>]))</span>   <span class=c1># 다중 기준</span>
-</span></span></code></pre></div><blockquote><p>💡 <code>key=lambda ...</code> → &ldquo;무엇을 기준으로 정렬할지"를 함수로 지정. 튜플 <code>(기준1, 기준2)</code>로 다중 정렬.</p></blockquote><hr><h2 id=04--enumerate--인덱스--값-동시에>04 · enumerate — 인덱스 + 값 동시에<a hidden class=anchor aria-hidden=true href=#04--enumerate--인덱스--값-동시에>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>season</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>([</span><span class=s2>&#34;봄&#34;</span><span class=p>,</span> <span class=s2>&#34;여름&#34;</span><span class=p>,</span> <span class=s2>&#34;가을&#34;</span><span class=p>]):</span>
-</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>,</span> <span class=n>season</span><span class=p>)</span>          <span class=c1># 0 봄 / 1 여름 / 2 가을</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>rank</span><span class=p>,</span> <span class=n>team</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>([</span><span class=s2>&#34;개발팀&#34;</span><span class=p>,</span> <span class=s2>&#34;기획팀&#34;</span><span class=p>],</span> <span class=n>start</span><span class=o>=</span><span class=mi>1</span><span class=p>):</span>
-</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>rank</span><span class=si>}</span><span class=s2>번: </span><span class=si>{</span><span class=n>team</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>  <span class=c1># 1번: 개발팀 / 2번: 기획팀</span>
-</span></span></code></pre></div><blockquote><p>💡 <code>range(len(...))</code> 대신 <code>enumerate</code>가 훨씬 깔끔. <code>start=1</code>로 1번부터 셀 수 있어요(순위 매기기).</p></blockquote><hr><h2 id=05--lambda--map--filter>05 · lambda · map · filter<a hidden class=anchor aria-hidden=true href=#05--lambda--map--filter>#</a></h2><p><strong>lambda</strong> = 이름 없는 한 줄 함수.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>square</span> <span class=o>=</span> <span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span> <span class=o>**</span> <span class=mi>2</span>     <span class=c1># def square(x): return x**2 와 동일</span>
-</span></span><span class=line><span class=cl><span class=n>square</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span>                     <span class=c1># 25</span>
-</span></span></code></pre></div><p><strong>map</strong> = 각 요소에 함수 적용 / <strong>filter</strong> = 조건 맞는 것만:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>nums</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>]</span>
-</span></span><span class=line><span class=cl><span class=nb>list</span><span class=p>(</span><span class=nb>map</span><span class=p>(</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=o>*</span><span class=mi>2</span><span class=p>,</span> <span class=n>nums</span><span class=p>))</span>        <span class=c1># [2, 4, 6, 8, 10]</span>
-</span></span><span class=line><span class=cl><span class=nb>list</span><span class=p>(</span><span class=nb>filter</span><span class=p>(</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=o>%</span><span class=mi>2</span><span class=o>==</span><span class=mi>0</span><span class=p>,</span> <span class=n>nums</span><span class=p>))</span>  <span class=c1># [2, 4]   (짝수만)</span>
-</span></span></code></pre></div><blockquote><p>💡 <code>map</code>/<code>filter</code> 결과는 <code>list()</code>로 감싸야 보입니다. 복잡한 로직은 lambda 말고 일반 <code>def</code> 함수가 가독성↑.</p></blockquote><hr><h2 id=06--if-__name__--__main__>06 · <code>if __name__ == "__main__":</code><a hidden class=anchor aria-hidden=true href=#06--if-__name__--__main__>#</a></h2><p>파이썬 파일을 <strong>직접 실행할 때만</strong> 동작하는 블록. <code>import</code>로 불러오면 실행 안 됨.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>add</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>):</span>
-</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>a</span> <span class=o>+</span> <span class=n>b</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>     <span class=c1># 이 파일을 직접 실행할 때만</span>
-</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>add</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>))</span>           <span class=c1># import 시엔 실행 안 됨</span>
-</span></span></code></pre></div><blockquote><p>💡 &ldquo;함수·클래스 정의"와 &ldquo;직접 실행 코드"를 분리하는 장치. 모듈로 재사용하면서 테스트 코드도 넣을 수 있어요.</p></blockquote><hr><h2 id=07--한눈에-정리-6가지-패턴>07 · 한눈에 정리 (6가지 패턴)<a hidden class=anchor aria-hidden=true href=#07--한눈에-정리-6가지-패턴>#</a></h2><table><thead><tr><th style=text-align:left>패턴</th><th style=text-align:left>핵심</th><th style=text-align:left>예시</th></tr></thead><tbody><tr><td style=text-align:left><strong>f-string</strong></td><td style=text-align:left>출력 포매팅</td><td style=text-align:left><code>f"{x:.2f}"</code> · <code>f"{n:,}"</code></td></tr><tr><td style=text-align:left><strong>컴프리헨션</strong></td><td style=text-align:left>반복을 한 줄로</td><td style=text-align:left><code>[i*2 for i in xs if i>0]</code></td></tr><tr><td style=text-align:left><strong>sorted</strong></td><td style=text-align:left>정렬(원본 유지)</td><td style=text-align:left><code>sorted(xs, key=..., reverse=True)</code></td></tr><tr><td style=text-align:left><strong>enumerate</strong></td><td style=text-align:left>인덱스+값 동시</td><td style=text-align:left><code>for i, x in enumerate(xs, start=1)</code></td></tr><tr><td style=text-align:left><strong>lambda·map·filter</strong></td><td style=text-align:left>익명함수·변환·필터</td><td style=text-align:left><code>list(map(lambda x: x*2, xs))</code></td></tr><tr><td style=text-align:left><strong><code>__name__</code></strong></td><td style=text-align:left>직접 실행 시에만</td><td style=text-align:left><code>if __name__ == "__main__":</code></td></tr></tbody></table><hr><h1 id=-참고자료>📚 참고자료<a hidden class=anchor aria-hidden=true href=#-참고자료>#</a></h1><blockquote><p>수업에 더해 <a href=https://docs.python.org/ko/3/>Python 공식 문서</a>에서 보충.</p></blockquote><h2 id=딕셔너리-컴프리헨션>딕셔너리 컴프리헨션<a hidden class=anchor aria-hidden=true href=#딕셔너리-컴프리헨션>#</a></h2><p>리스트뿐 아니라 딕셔너리도 한 줄로:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>members</span> <span class=o>=</span> <span class=p>[{</span><span class=s2>&#34;name&#34;</span><span class=p>:</span><span class=s2>&#34;A&#34;</span><span class=p>,</span><span class=s2>&#34;salary&#34;</span><span class=p>:</span><span class=mi>6500</span><span class=p>},</span> <span class=p>{</span><span class=s2>&#34;name&#34;</span><span class=p>:</span><span class=s2>&#34;B&#34;</span><span class=p>,</span><span class=s2>&#34;salary&#34;</span><span class=p>:</span><span class=mi>5200</span><span class=p>}]</span>
-</span></span><span class=line><span class=cl><span class=p>{</span><span class=n>m</span><span class=p>[</span><span class=s2>&#34;name&#34;</span><span class=p>]:</span> <span class=n>m</span><span class=p>[</span><span class=s2>&#34;salary&#34;</span><span class=p>]</span> <span class=k>for</span> <span class=n>m</span> <span class=ow>in</span> <span class=n>members</span><span class=p>}</span>   <span class=c1># {&#39;A&#39;: 6500, &#39;B&#39;: 5200}</span>
-</span></span></code></pre></div><h2 id=map-vs-컴프리헨션>map vs 컴프리헨션<a hidden class=anchor aria-hidden=true href=#map-vs-컴프리헨션>#</a></h2><p>같은 일을 둘 다 할 수 있어요. 보통 <strong>컴프리헨션이 더 읽기 쉬워</strong> 선호됩니다.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=nb>list</span><span class=p>(</span><span class=nb>map</span><span class=p>(</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=o>*</span><span class=mi>2</span><span class=p>,</span> <span class=n>nums</span><span class=p>))</span>   <span class=c1># map</span>
-</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>x</span><span class=o>*</span><span class=mi>2</span> <span class=k>for</span> <span class=n>x</span> <span class=ow>in</span> <span class=n>nums</span><span class=p>]</span>              <span class=c1># 컴프리헨션 (권장)</span>
-</span></span></code></pre></div><h2 id=sysexit><code>sys.exit()</code><a hidden class=anchor aria-hidden=true href=#sysexit>#</a></h2><p>프로그램 종료 함수. <code>sys.exit(0)</code>=정상, 그 외=오류. (주피터에선 커널이 죽으니 <code>.py</code>에서만)</p><hr><h2 id=마무리>마무리<a hidden class=anchor aria-hidden=true href=#마무리>#</a></h2><blockquote><p><strong>f-string으로 깔끔하게 출력하고, 컴프리헨션으로 반복을 한 줄로 줄이고, sorted·enumerate·lambda로 데이터를 자유롭게 다룬다.</strong>
-이 패턴들은 &ldquo;되는 코드"를 &ldquo;읽기 좋고 짧은 코드"로 바꿔줍니다 — 실무에서 매일 씁니다.</p></blockquote><p>처음엔 한 줄 압축이 어색하지만, <code>for</code>문으로 풀어 써본 뒤 컴프리헨션으로 바꿔보면 금방 익숙해져요. 💪</p><hr><p><em>작성: AI_6스터디 | 수업 출처: 이어드림스쿨 파이썬 중급(실무 문법 패턴) 수업 자료 (Elice)</em></p><hr><h2 id=-연관-노트>🔗 연관 노트<a hidden class=anchor aria-hidden=true href=#-연관-노트>#</a></h2><ul><li><a href=/posts/%EC%8B%A4%EC%8A%B5/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/>6/4 실무 문법 패턴 실습 (코드 노트)</a> — 오늘 실습 코드 전체</li><li><a href=/posts/%EA%B0%95%EC%9D%98/6-02-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%ED%81%B4%EB%9E%98%EC%8A%A4/>6/2 파이썬 중급 문법2 — 클래스 (OOP)</a> — 같은 커리큘럼</li><li><a href=/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/>6/1 파이썬 기초2</a> — 반복문·함수 (전제)</li></ul></div><footer class=post-footer><ul class=post-tags><li><a href=https://yw8837.github.io/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/>파이썬</a></li><li><a href=https://yw8837.github.io/tags/python/>Python</a></li><li><a href=https://yw8837.github.io/tags/f-string/>F-String</a></li><li><a href=https://yw8837.github.io/tags/%EC%BB%B4%ED%94%84%EB%A6%AC%ED%97%A8%EC%85%98/>컴프리헨션</a></li><li><a href=https://yw8837.github.io/tags/sorted/>Sorted</a></li><li><a href=https://yw8837.github.io/tags/enumerate/>Enumerate</a></li><li><a href=https://yw8837.github.io/tags/lambda/>Lambda</a></li><li><a href=https://yw8837.github.io/tags/map/>Map</a></li><li><a href=https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/>코딩기초</a></li><li><a href=https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/>초보자</a></li></ul><nav class=paginav><a class=prev href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%ED%99%9C%EC%9A%A9/><span class=title>« 이전 페이지</span>
-<span>6/4 파이썬 라이브러리 활용 — 가져다 쓰기부터 PyPI 배포까지</span>
-</a><a class=next href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><span class=title>다음 페이지 »</span>
-<span>6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2026 <a href=https://yw8837.github.io/>AI_6스터디</a></span> ·
-<a href=/posts/privacy-policy/>개인정보처리방침</a> · <a href=/posts/disclaimer/>서비스 이용 안내</a> ·
-<span>Powered by
-<a href="https://gohugo.io/?utm_source=papermod" rel=noopener target=_blank>Hugo</a> &
-<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top id=top-link class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey=g><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></a><div style=text-align:center;margin-top:8px;font-size:13px;color:#888><a href=/posts/privacy-policy/ style=color:#888>개인정보처리방침</a> · <a href=/posts/disclaimer/ style=color:#888>서비스 이용 안내</a></div><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var toplink=document.getElementById("top-link");window.onscroll=function(){const e=window.innerHeight;document.body.scrollTop>e||document.documentElement.scrollTop>e?toplink.classList.remove("hidden"):toplink.classList.add("hidden")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="복사";function s(){t.innerHTML="복사 완료!",setTimeout(()=>{t.innerHTML="복사"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>6/4 파이썬 중급 문법2 — 실무 문법 패턴 | AI_6스터디</title>
+<meta name="keywords" content="파이썬, Python, f-string, 컴프리헨션, sorted, enumerate, lambda, map, 코딩기초, 초보자">
+<meta name="description" content="실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리">
+<meta name="author" content="yw8837">
+<link rel="canonical" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yw8837.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-EQR4094Q13');
+        }
+      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/">
+  <meta property="og:site_name" content="AI_6스터디">
+  <meta property="og:title" content="6/4 파이썬 중급 문법2 — 실무 문법 패턴">
+  <meta property="og:description" content="실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리">
+  <meta property="og:locale" content="ko">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-04T09:00:00+09:00">
+    <meta property="article:modified_time" content="2026-06-04T09:00:00+09:00">
+    <meta property="article:tag" content="파이썬">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="F-String">
+    <meta property="article:tag" content="컴프리헨션">
+    <meta property="article:tag" content="Sorted">
+    <meta property="article:tag" content="Enumerate">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="6/4 파이썬 중급 문법2 — 실무 문법 패턴">
+  <meta name="twitter:description" content="실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yw8837.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "6/4 파이썬 중급 문법2 — 실무 문법 패턴",
+      "item": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "6/4 파이썬 중급 문법2 — 실무 문법 패턴",
+  "name": "6\/4 파이썬 중급 문법2 — 실무 문법 패턴",
+  "description": "실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리",
+  "keywords": [
+    "파이썬", "Python", "f-string", "컴프리헨션", "sorted", "enumerate", "lambda", "map", "코딩기초", "초보자"
+  ],
+  "articleBody": " 이어드림스쿨 AI 과정 파이썬 중급 문법2 — 실무 문법 패턴 정리입니다. 기초 문법 위에, 실무에서 코드를 짧고 깔끔하게 쓰는 6가지 패턴을 배웁니다. 🧩\n📖 수업 내용 01 · f-string 포매팅 문자열 앞에 f를 붙이고 { } 안에 변수·식을 넣습니다. (Python 3.6+)\nname, salary = \"Alice\", 6500 print(f\"{name}님 연봉: {salary}만원\") # Alice님 연봉: 6500만원 print(f\"{15} + {4} = {15 + 4}\") # 식도 가능 → 15 + 4 = 19 숫자 포맷 (자주 씀):\npi = 3.14159 print(f\"{pi:.2f}\") # 3.14 소수점 2자리 print(f\"{1234567:,}\") # 1,234,567 천 단위 콤마 print(f\"{0.123:.1%}\") # 12.3% 퍼센트 print(f\"{'INFO':\u003e7}\") # 오른쪽 정렬 7칸 💡 :.2f(소수자리), :,(콤마), :%(퍼센트), :\u003e7(정렬) — 표·로그 출력에 유용.\n02 · 리스트 컴프리헨션 (List Comprehension) for 반복문으로 리스트 만드는 걸 한 줄로 압축합니다.\n# 기본: [표현식 for 변수 in 시퀀스] squares = [i**2 for i in range(1, 6)] # [1, 4, 9, 16, 25] # 필터: [표현식 for 변수 in 시퀀스 if 조건] evens = [i for i in range(10) if i % 2 == 0] # [0, 2, 4, 6, 8] # if-else (순서 주의!): [A if 조건 else B for 변수 in 시퀀스] grades = [\"합격\" if s \u003e= 60 else \"불합격\" for s in [80, 50, 90]] 실무 예 — 데이터 전처리:\nraw = [' Python ', 'SQL', ' ', 'Docker ', ''] clean = [s.strip() for s in raw if s.strip()] # ['Python', 'SQL', 'Docker'] ⚠️ 필터 if는 뒤에(for ... if 조건), if-else는 앞에(A if 조건 else B for ...). 위치가 다릅니다!\n03 · sorted — 정렬 scores = [85, 92, 78, 96] sorted(scores) # [78, 85, 92, 96] 원본 유지, 새 리스트 sorted(scores, reverse=True) # [96, 92, 85, 78] 내림차순 원본 반환 list.sort() 변경됨 None sorted(list) 유지 정렬된 새 리스트 key로 정렬 기준 지정 (실무 핵심):\nmembers = [{\"name\":\"A\",\"salary\":6500}, {\"name\":\"B\",\"salary\":4800}] sorted(members, key=lambda m: m[\"salary\"], reverse=True) # 연봉 높은 순 sorted(words, key=len) # 글자 수 순 sorted(members, key=lambda m: (m[\"team\"], -m[\"salary\"])) # 다중 기준 💡 key=lambda ... → “무엇을 기준으로 정렬할지\"를 함수로 지정. 튜플 (기준1, 기준2)로 다중 정렬.\n04 · enumerate — 인덱스 + 값 동시에 for i, season in enumerate([\"봄\", \"여름\", \"가을\"]): print(i, season) # 0 봄 / 1 여름 / 2 가을 for rank, team in enumerate([\"개발팀\", \"기획팀\"], start=1): print(f\"{rank}번: {team}\") # 1번: 개발팀 / 2번: 기획팀 💡 range(len(...)) 대신 enumerate가 훨씬 깔끔. start=1로 1번부터 셀 수 있어요(순위 매기기).\n05 · lambda · map · filter lambda = 이름 없는 한 줄 함수.\nsquare = lambda x: x ** 2 # def square(x): return x**2 와 동일 square(5) # 25 map = 각 요소에 함수 적용 / filter = 조건 맞는 것만:\nnums = [1, 2, 3, 4, 5] list(map(lambda x: x*2, nums)) # [2, 4, 6, 8, 10] list(filter(lambda x: x%2==0, nums)) # [2, 4] (짝수만) 💡 map/filter 결과는 list()로 감싸야 보입니다. 복잡한 로직은 lambda 말고 일반 def 함수가 가독성↑.\n06 · if __name__ == \"__main__\": 파이썬 파일을 직접 실행할 때만 동작하는 블록. import로 불러오면 실행 안 됨.\ndef add(a, b): return a + b if __name__ == \"__main__\": # 이 파일을 직접 실행할 때만 print(add(3, 4)) # import 시엔 실행 안 됨 💡 “함수·클래스 정의\"와 “직접 실행 코드\"를 분리하는 장치. 모듈로 재사용하면서 테스트 코드도 넣을 수 있어요.\n07 · 한눈에 정리 (6가지 패턴) 패턴 핵심 예시 f-string 출력 포매팅 f\"{x:.2f}\" · f\"{n:,}\" 컴프리헨션 반복을 한 줄로 [i*2 for i in xs if i\u003e0] sorted 정렬(원본 유지) sorted(xs, key=..., reverse=True) enumerate 인덱스+값 동시 for i, x in enumerate(xs, start=1) lambda·map·filter 익명함수·변환·필터 list(map(lambda x: x*2, xs)) __name__ 직접 실행 시에만 if __name__ == \"__main__\": 📚 참고자료 수업에 더해 Python 공식 문서에서 보충.\n딕셔너리 컴프리헨션 리스트뿐 아니라 딕셔너리도 한 줄로:\nmembers = [{\"name\":\"A\",\"salary\":6500}, {\"name\":\"B\",\"salary\":5200}] {m[\"name\"]: m[\"salary\"] for m in members} # {'A': 6500, 'B': 5200} map vs 컴프리헨션 같은 일을 둘 다 할 수 있어요. 보통 컴프리헨션이 더 읽기 쉬워 선호됩니다.\nlist(map(lambda x: x*2, nums)) # map [x*2 for x in nums] # 컴프리헨션 (권장) sys.exit() 프로그램 종료 함수. sys.exit(0)=정상, 그 외=오류. (주피터에선 커널이 죽으니 .py에서만)\n마무리 f-string으로 깔끔하게 출력하고, 컴프리헨션으로 반복을 한 줄로 줄이고, sorted·enumerate·lambda로 데이터를 자유롭게 다룬다. 이 패턴들은 “되는 코드\"를 “읽기 좋고 짧은 코드\"로 바꿔줍니다 — 실무에서 매일 씁니다.\n처음엔 한 줄 압축이 어색하지만, for문으로 풀어 써본 뒤 컴프리헨션으로 바꿔보면 금방 익숙해져요. 💪\n작성: AI_6스터디 | 수업 출처: 이어드림스쿨 파이썬 중급(실무 문법 패턴) 수업 자료 (Elice)\n🔗 연관 노트 6/4 실무 문법 패턴 실습 (코드 노트) — 오늘 실습 코드 전체 6/2 파이썬 중급 문법2 — 클래스 (OOP) — 같은 커리큘럼 6/1 파이썬 기초2 — 반복문·함수 (전제) ",
+  "wordCount" : "731",
+  "inLanguage": "en",
+  "datePublished": "2026-06-04T09:00:00+09:00",
+  "dateModified": "2026-06-04T09:00:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "yw8837"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI_6스터디",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yw8837.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
+                    <span>📚 Year Study</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
+                    <span>강의 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
+                    <span>실습 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
+                    <span>프로젝트</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+            <a href="/">홈</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="/posts/">Posts</a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+</nav>
+    <h1 class="post-title entry-hint-parent">
+      6/4 파이썬 중급 문법2 — 실무 문법 패턴
+    </h1>
+    <div class="post-description">
+      실무에서 자주 쓰는 파이썬 심화 문법 6가지 — f-string, 리스트 컴프리헨션, sorted, enumerate, lambda·map, __name__ 패턴을 초보자도 이해하게 정리
+    </div>
+    <div class="post-meta">
+
+<span title='2026-06-04 09:00:00 +0900 KST'>2026년 6월 4일</span>&nbsp;·&nbsp;<span>4 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+
+</div>
+  </header> <details class="toc" >
+    <summary accesskey="c" title="(Alt + C)">
+        <span class="title">목차</span>
+    </summary>
+
+    <div class="inner"><ul>
+            <li>
+                <a href="#-%ec%88%98%ec%97%85-%eb%82%b4%ec%9a%a9" aria-label="📖 수업 내용">📖 수업 내용</a><ul>
+                    
+            <li>
+                <a href="#01--f-string-%ed%8f%ac%eb%a7%a4%ed%8c%85" aria-label="01 · f-string 포매팅">01 · f-string 포매팅</a></li>
+            <li>
+                <a href="#02--%eb%a6%ac%ec%8a%a4%ed%8a%b8-%ec%bb%b4%ed%94%84%eb%a6%ac%ed%97%a8%ec%85%98-list-comprehension" aria-label="02 · 리스트 컴프리헨션 (List Comprehension)">02 · 리스트 컴프리헨션 (List Comprehension)</a></li>
+            <li>
+                <a href="#03--sorted--%ec%a0%95%eb%a0%ac" aria-label="03 · sorted — 정렬">03 · sorted — 정렬</a></li>
+            <li>
+                <a href="#04--enumerate--%ec%9d%b8%eb%8d%b1%ec%8a%a4--%ea%b0%92-%eb%8f%99%ec%8b%9c%ec%97%90" aria-label="04 · enumerate — 인덱스 &#43; 값 동시에">04 · enumerate — 인덱스 + 값 동시에</a></li>
+            <li>
+                <a href="#05--lambda--map--filter" aria-label="05 · lambda · map · filter">05 · lambda · map · filter</a></li>
+            <li>
+                <a href="#06--if-__name__--__main__" aria-label="06 · if __name__ == &quot;__main__&quot;:">06 · if __name__ == &quot;__main__&quot;:</a></li>
+            <li>
+                <a href="#07--%ed%95%9c%eb%88%88%ec%97%90-%ec%a0%95%eb%a6%ac-6%ea%b0%80%ec%a7%80-%ed%8c%a8%ed%84%b4" aria-label="07 · 한눈에 정리 (6가지 패턴)">07 · 한눈에 정리 (6가지 패턴)</a></li></ul>
+            </li>
+            <li>
+                <a href="#-%ec%b0%b8%ea%b3%a0%ec%9e%90%eb%a3%8c" aria-label="📚 참고자료">📚 참고자료</a><ul>
+                    
+            <li>
+                <a href="#%eb%94%95%ec%85%94%eb%84%88%eb%a6%ac-%ec%bb%b4%ed%94%84%eb%a6%ac%ed%97%a8%ec%85%98" aria-label="딕셔너리 컴프리헨션">딕셔너리 컴프리헨션</a></li>
+            <li>
+                <a href="#map-vs-%ec%bb%b4%ed%94%84%eb%a6%ac%ed%97%a8%ec%85%98" aria-label="map vs 컴프리헨션">map vs 컴프리헨션</a></li>
+            <li>
+                <a href="#sysexit" aria-label="sys.exit()">sys.exit()</a></li>
+            <li>
+                <a href="#%eb%a7%88%eb%ac%b4%eb%a6%ac" aria-label="마무리">마무리</a></li>
+            <li>
+                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
+            </li>
+        </ul>
+        </li>
+        </ul>
+    </div>
+</details>
+
+  <div class="post-content md-content"><blockquote>
+<p>이어드림스쿨 AI 과정 <strong>파이썬 중급 문법2 — 실무 문법 패턴</strong> 정리입니다.
+기초 문법 위에, 실무에서 코드를 <strong>짧고 깔끔하게</strong> 쓰는 6가지 패턴을 배웁니다. 🧩</p>
+</blockquote>
+<hr>
+<h1 id="-수업-내용">📖 수업 내용<a hidden class="anchor" aria-hidden="true" href="#-수업-내용">#</a></h1>
+<h2 id="01--f-string-포매팅">01 · f-string 포매팅<a hidden class="anchor" aria-hidden="true" href="#01--f-string-포매팅">#</a></h2>
+<p>문자열 앞에 <code>f</code>를 붙이고 <code>{ }</code> 안에 변수·식을 넣습니다. (Python 3.6+)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">name</span><span class="p">,</span> <span class="n">salary</span> <span class="o">=</span> <span class="s2">&#34;Alice&#34;</span><span class="p">,</span> <span class="mi">6500</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">님 연봉: </span><span class="si">{</span><span class="n">salary</span><span class="si">}</span><span class="s2">만원&#34;</span><span class="p">)</span>     <span class="c1"># Alice님 연봉: 6500만원</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="mi">15</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="mi">4</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="mi">15</span> <span class="o">+</span> <span class="mi">4</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>           <span class="c1"># 식도 가능 → 15 + 4 = 19</span>
+</span></span></code></pre></div><p><strong>숫자 포맷</strong> (자주 씀):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">pi</span> <span class="o">=</span> <span class="mf">3.14159</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">pi</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>        <span class="c1"># 3.14      소수점 2자리</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="mi">1234567</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>     <span class="c1"># 1,234,567 천 단위 콤마</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="mf">0.123</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>     <span class="c1"># 12.3%     퍼센트</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="s1">&#39;INFO&#39;</span><span class="si">:</span><span class="s2">&gt;7</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>     <span class="c1"># 오른쪽 정렬 7칸</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <code>:.2f</code>(소수자리), <code>:,</code>(콤마), <code>:%</code>(퍼센트), <code>:&gt;7</code>(정렬) — 표·로그 출력에 유용.</p>
+</blockquote>
+<hr>
+<h2 id="02--리스트-컴프리헨션-list-comprehension">02 · 리스트 컴프리헨션 (List Comprehension)<a hidden class="anchor" aria-hidden="true" href="#02--리스트-컴프리헨션-list-comprehension">#</a></h2>
+<p><code>for</code> 반복문으로 리스트 만드는 걸 <strong>한 줄로</strong> 압축합니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 기본: [표현식 for 변수 in 시퀀스]</span>
+</span></span><span class="line"><span class="cl"><span class="n">squares</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)]</span>        <span class="c1"># [1, 4, 9, 16, 25]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 필터: [표현식 for 변수 in 시퀀스 if 조건]</span>
+</span></span><span class="line"><span class="cl"><span class="n">evens</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="c1"># [0, 2, 4, 6, 8]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># if-else (순서 주의!): [A if 조건 else B for 변수 in 시퀀스]</span>
+</span></span><span class="line"><span class="cl"><span class="n">grades</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;합격&#34;</span> <span class="k">if</span> <span class="n">s</span> <span class="o">&gt;=</span> <span class="mi">60</span> <span class="k">else</span> <span class="s2">&#34;불합격&#34;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">80</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">]]</span>
+</span></span></code></pre></div><p>실무 예 — 데이터 전처리:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">raw</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39; Python &#39;</span><span class="p">,</span> <span class="s1">&#39;SQL&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;Docker &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">clean</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">raw</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>   <span class="c1"># [&#39;Python&#39;, &#39;SQL&#39;, &#39;Docker&#39;]</span>
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>필터 if는 뒤에</strong>(<code>for ... if 조건</code>), <strong>if-else는 앞에</strong>(<code>A if 조건 else B for ...</code>). 위치가 다릅니다!</p>
+</blockquote>
+<hr>
+<h2 id="03--sorted--정렬">03 · sorted — 정렬<a hidden class="anchor" aria-hidden="true" href="#03--sorted--정렬">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">85</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">96</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>                 <span class="c1"># [78, 85, 92, 96]  원본 유지, 새 리스트</span>
+</span></span><span class="line"><span class="cl"><span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1"># [96, 92, 85, 78]  내림차순</span>
+</span></span></code></pre></div><table>
+	<thead>
+			<tr>
+					<th style="text-align: left"></th>
+					<th style="text-align: left">원본</th>
+					<th style="text-align: left">반환</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: left"><code>list.sort()</code></td>
+					<td style="text-align: left">변경됨</td>
+					<td style="text-align: left">None</td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><code>sorted(list)</code></td>
+					<td style="text-align: left">유지</td>
+					<td style="text-align: left">정렬된 새 리스트</td>
+			</tr>
+	</tbody>
+</table>
+<p><strong><code>key</code>로 정렬 기준 지정</strong> (실무 핵심):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">members</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;A&#34;</span><span class="p">,</span><span class="s2">&#34;salary&#34;</span><span class="p">:</span><span class="mi">6500</span><span class="p">},</span> <span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;B&#34;</span><span class="p">,</span><span class="s2">&#34;salary&#34;</span><span class="p">:</span><span class="mi">4800</span><span class="p">}]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">sorted</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="s2">&#34;salary&#34;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1"># 연봉 높은 순</span>
+</span></span><span class="line"><span class="cl"><span class="nb">sorted</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>                                     <span class="c1"># 글자 수 순</span>
+</span></span><span class="line"><span class="cl"><span class="nb">sorted</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">&#34;team&#34;</span><span class="p">],</span> <span class="o">-</span><span class="n">m</span><span class="p">[</span><span class="s2">&#34;salary&#34;</span><span class="p">]))</span>   <span class="c1"># 다중 기준</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <code>key=lambda ...</code> → &ldquo;무엇을 기준으로 정렬할지&quot;를 함수로 지정. 튜플 <code>(기준1, 기준2)</code>로 다중 정렬.</p>
+</blockquote>
+<hr>
+<h2 id="04--enumerate--인덱스--값-동시에">04 · enumerate — 인덱스 + 값 동시에<a hidden class="anchor" aria-hidden="true" href="#04--enumerate--인덱스--값-동시에">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">season</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&#34;봄&#34;</span><span class="p">,</span> <span class="s2">&#34;여름&#34;</span><span class="p">,</span> <span class="s2">&#34;가을&#34;</span><span class="p">]):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">season</span><span class="p">)</span>          <span class="c1"># 0 봄 / 1 여름 / 2 가을</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">rank</span><span class="p">,</span> <span class="n">team</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&#34;개발팀&#34;</span><span class="p">,</span> <span class="s2">&#34;기획팀&#34;</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">번: </span><span class="si">{</span><span class="n">team</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>  <span class="c1"># 1번: 개발팀 / 2번: 기획팀</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <code>range(len(...))</code> 대신 <code>enumerate</code>가 훨씬 깔끔. <code>start=1</code>로 1번부터 셀 수 있어요(순위 매기기).</p>
+</blockquote>
+<hr>
+<h2 id="05--lambda--map--filter">05 · lambda · map · filter<a hidden class="anchor" aria-hidden="true" href="#05--lambda--map--filter">#</a></h2>
+<p><strong>lambda</strong> = 이름 없는 한 줄 함수.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">square</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>     <span class="c1"># def square(x): return x**2 와 동일</span>
+</span></span><span class="line"><span class="cl"><span class="n">square</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>                     <span class="c1"># 25</span>
+</span></span></code></pre></div><p><strong>map</strong> = 각 요소에 함수 적용 / <strong>filter</strong> = 조건 맞는 것만:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">nums</span><span class="p">))</span>        <span class="c1"># [2, 4, 6, 8, 10]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">,</span> <span class="n">nums</span><span class="p">))</span>  <span class="c1"># [2, 4]   (짝수만)</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 <code>map</code>/<code>filter</code> 결과는 <code>list()</code>로 감싸야 보입니다. 복잡한 로직은 lambda 말고 일반 <code>def</code> 함수가 가독성↑.</p>
+</blockquote>
+<hr>
+<h2 id="06--if-__name__--__main__">06 · <code>if __name__ == &quot;__main__&quot;:</code><a hidden class="anchor" aria-hidden="true" href="#06--if-__name__--__main__">#</a></h2>
+<p>파이썬 파일을 <strong>직접 실행할 때만</strong> 동작하는 블록. <code>import</code>로 불러오면 실행 안 됨.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>     <span class="c1"># 이 파일을 직접 실행할 때만</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">add</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>           <span class="c1"># import 시엔 실행 안 됨</span>
+</span></span></code></pre></div><blockquote>
+<p>💡 &ldquo;함수·클래스 정의&quot;와 &ldquo;직접 실행 코드&quot;를 분리하는 장치. 모듈로 재사용하면서 테스트 코드도 넣을 수 있어요.</p>
+</blockquote>
+<hr>
+<h2 id="07--한눈에-정리-6가지-패턴">07 · 한눈에 정리 (6가지 패턴)<a hidden class="anchor" aria-hidden="true" href="#07--한눈에-정리-6가지-패턴">#</a></h2>
+<table>
+	<thead>
+			<tr>
+					<th style="text-align: left">패턴</th>
+					<th style="text-align: left">핵심</th>
+					<th style="text-align: left">예시</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td style="text-align: left"><strong>f-string</strong></td>
+					<td style="text-align: left">출력 포매팅</td>
+					<td style="text-align: left"><code>f&quot;{x:.2f}&quot;</code> · <code>f&quot;{n:,}&quot;</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong>컴프리헨션</strong></td>
+					<td style="text-align: left">반복을 한 줄로</td>
+					<td style="text-align: left"><code>[i*2 for i in xs if i&gt;0]</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong>sorted</strong></td>
+					<td style="text-align: left">정렬(원본 유지)</td>
+					<td style="text-align: left"><code>sorted(xs, key=..., reverse=True)</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong>enumerate</strong></td>
+					<td style="text-align: left">인덱스+값 동시</td>
+					<td style="text-align: left"><code>for i, x in enumerate(xs, start=1)</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong>lambda·map·filter</strong></td>
+					<td style="text-align: left">익명함수·변환·필터</td>
+					<td style="text-align: left"><code>list(map(lambda x: x*2, xs))</code></td>
+			</tr>
+			<tr>
+					<td style="text-align: left"><strong><code>__name__</code></strong></td>
+					<td style="text-align: left">직접 실행 시에만</td>
+					<td style="text-align: left"><code>if __name__ == &quot;__main__&quot;:</code></td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h1 id="-참고자료">📚 참고자료<a hidden class="anchor" aria-hidden="true" href="#-참고자료">#</a></h1>
+<blockquote>
+<p>수업에 더해 <a href="https://docs.python.org/ko/3/">Python 공식 문서</a>에서 보충.</p>
+</blockquote>
+<h2 id="딕셔너리-컴프리헨션">딕셔너리 컴프리헨션<a hidden class="anchor" aria-hidden="true" href="#딕셔너리-컴프리헨션">#</a></h2>
+<p>리스트뿐 아니라 딕셔너리도 한 줄로:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">members</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;A&#34;</span><span class="p">,</span><span class="s2">&#34;salary&#34;</span><span class="p">:</span><span class="mi">6500</span><span class="p">},</span> <span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;B&#34;</span><span class="p">,</span><span class="s2">&#34;salary&#34;</span><span class="p">:</span><span class="mi">5200</span><span class="p">}]</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="n">m</span><span class="p">[</span><span class="s2">&#34;name&#34;</span><span class="p">]:</span> <span class="n">m</span><span class="p">[</span><span class="s2">&#34;salary&#34;</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">members</span><span class="p">}</span>   <span class="c1"># {&#39;A&#39;: 6500, &#39;B&#39;: 5200}</span>
+</span></span></code></pre></div><h2 id="map-vs-컴프리헨션">map vs 컴프리헨션<a hidden class="anchor" aria-hidden="true" href="#map-vs-컴프리헨션">#</a></h2>
+<p>같은 일을 둘 다 할 수 있어요. 보통 <strong>컴프리헨션이 더 읽기 쉬워</strong> 선호됩니다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">nums</span><span class="p">))</span>   <span class="c1"># map</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="n">x</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">]</span>              <span class="c1"># 컴프리헨션 (권장)</span>
+</span></span></code></pre></div><h2 id="sysexit"><code>sys.exit()</code><a hidden class="anchor" aria-hidden="true" href="#sysexit">#</a></h2>
+<p>프로그램 종료 함수. <code>sys.exit(0)</code>=정상, 그 외=오류. (주피터에선 커널이 죽으니 <code>.py</code>에서만)</p>
+<hr>
+<h2 id="마무리">마무리<a hidden class="anchor" aria-hidden="true" href="#마무리">#</a></h2>
+<blockquote>
+<p><strong>f-string으로 깔끔하게 출력하고, 컴프리헨션으로 반복을 한 줄로 줄이고, sorted·enumerate·lambda로 데이터를 자유롭게 다룬다.</strong>
+이 패턴들은 &ldquo;되는 코드&quot;를 &ldquo;읽기 좋고 짧은 코드&quot;로 바꿔줍니다 — 실무에서 매일 씁니다.</p>
+</blockquote>
+<p>처음엔 한 줄 압축이 어색하지만, <code>for</code>문으로 풀어 써본 뒤 컴프리헨션으로 바꿔보면 금방 익숙해져요. 💪</p>
+<hr>
+<p><em>작성: AI_6스터디 | 수업 출처: 이어드림스쿨 파이썬 중급(실무 문법 패턴) 수업 자료 (Elice)</em></p>
+<hr>
+<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
+<ul>
+<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-04-%EC%8B%A4%EB%AC%B4-%EB%AC%B8%EB%B2%95-%ED%8C%A8%ED%84%B4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">6/4 실무 문법 패턴 실습 (코드 노트)</a> — 오늘 실습 코드 전체</li>
+<li><a href="/posts/%EA%B0%95%EC%9D%98/6-02-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%ED%81%B4%EB%9E%98%EC%8A%A4/">6/2 파이썬 중급 문법2 — 클래스 (OOP)</a> — 같은 커리큘럼</li>
+<li><a href="/posts/%EA%B0%95%EC%9D%98/6-01-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B8%B0%EC%B4%882/">6/1 파이썬 기초2</a> — 반복문·함수 (전제)</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yw8837.github.io/tags/%ED%8C%8C%EC%9D%B4%EC%8D%AC/">파이썬</a></li>
+      <li><a href="https://yw8837.github.io/tags/python/">Python</a></li>
+      <li><a href="https://yw8837.github.io/tags/f-string/">F-String</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%BB%B4%ED%94%84%EB%A6%AC%ED%97%A8%EC%85%98/">컴프리헨션</a></li>
+      <li><a href="https://yw8837.github.io/tags/sorted/">Sorted</a></li>
+      <li><a href="https://yw8837.github.io/tags/enumerate/">Enumerate</a></li>
+      <li><a href="https://yw8837.github.io/tags/lambda/">Lambda</a></li>
+      <li><a href="https://yw8837.github.io/tags/map/">Map</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/">코딩기초</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-04-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%ED%99%9C%EC%9A%A9/">
+    <span class="title">« 이전 페이지</span>
+    <span>6/4 파이썬 라이브러리 활용 — 가져다 쓰기부터 PyPI 배포까지</span>
+  </a>
+  <a class="next" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-02-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+    <span class="title">다음 페이지 »</span>
+    <span>6/2 파이썬 중급 문법2 — 클래스 실습 (코드 노트)</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
+        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '복사';
+
+        function copyingDone() {
+            copybutton.innerHTML = '복사 완료!';
+            setTimeout(() => {
+                copybutton.innerHTML = '복사';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

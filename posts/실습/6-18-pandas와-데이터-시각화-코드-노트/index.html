@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>6/18 pandas &amp; 데이터 시각화 — 군 데이터셋 70제·실습 코드 노트 | AI_6스터디</title>
+<meta name="keywords" content="pandas, 실습, DataFrame, Series, loc, iloc, Boolean indexing, 조건 필터링, isin, sort_values, groupby, agg, unstack, merge, to_datetime, str 접근자, 벡터화, Vectorization, 한글폰트, drive.mount, FileNotFoundError, NFC, NFD, read_csv, 정형 데이터, 초보자">
+<meta name="description" content="6/18 pandas 기초 실습 코드 노트. pandas_예제.ipynb 70선과 vectorization.ipynb를 원본 코드·실제 출력 그대로 수록. 환경설정(setup_matplotlib_korean_font·한글폰트 Malgun Gothic 적용, drive.mount, 헤더 시그니처로 CSV 자동 구분, FileNotFoundError·NFC/NFD 디버깅), 데이터 로드·점검(shape (11000,15)/info/describe), DataFrame vs Series, loc/iloc, 조건 필터링(단일·복합 &amp;·|·isin·컬럼 간 비교 stock_level&lt;reorder_threshold), 정렬, groupby/agg(check_type별 mean·max)/unstack을 한 셀씩 설명. 원본 오류 정정: 문제27 mental_wellbeing_score 60~80 → Empty DataFrame(실분포 1~10, 의도는 6~8), 문제61 df_sup.merge(df_wel, on=unit_code, inner) → (0,33)(unit_code 도메인 불일치). 벡터화 speedup 39.4x.">
+<meta name="author" content="yw8837">
+<link rel="canonical" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-18-pandas%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yw8837.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-18-pandas%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-EQR4094Q13');
+        }
+      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-18-pandas%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+  <meta property="og:site_name" content="AI_6스터디">
+  <meta property="og:title" content="6/18 pandas & 데이터 시각화 — 군 데이터셋 70제·실습 코드 노트">
+  <meta property="og:description" content="6/18 pandas 기초 실습 코드 노트. pandas_예제.ipynb 70선과 vectorization.ipynb를 원본 코드·실제 출력 그대로 수록. 환경설정(setup_matplotlib_korean_font·한글폰트 Malgun Gothic 적용, drive.mount, 헤더 시그니처로 CSV 자동 구분, FileNotFoundError·NFC/NFD 디버깅), 데이터 로드·점검(shape (11000,15)/info/describe), DataFrame vs Series, loc/iloc, 조건 필터링(단일·복합 &amp;·|·isin·컬럼 간 비교 stock_level">
+  <meta property="og:locale" content="ko">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-18T09:00:00+09:00">
+    <meta property="article:modified_time" content="2026-06-18T09:00:00+09:00">
+    <meta property="article:tag" content="Pandas">
+    <meta property="article:tag" content="실습">
+    <meta property="article:tag" content="DataFrame">
+    <meta property="article:tag" content="Series">
+    <meta property="article:tag" content="Loc">
+    <meta property="article:tag" content="Iloc">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="6/18 pandas & 데이터 시각화 — 군 데이터셋 70제·실습 코드 노트">
+  <meta name="twitter:description" content="6/18 pandas 기초 실습 코드 노트. pandas_예제.ipynb 70선과 vectorization.ipynb를 원본 코드·실제 출력 그대로 수록. 환경설정(setup_matplotlib_korean_font·한글폰트 Malgun Gothic 적용, drive.mount, 헤더 시그니처로 CSV 자동 구분, FileNotFoundError·NFC/NFD 디버깅), 데이터 로드·점검(shape (11000,15)/info/describe), DataFrame vs Series, loc/iloc, 조건 필터링(단일·복합 &amp;·|·isin·컬럼 간 비교 stock_level">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yw8837.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "6/18 pandas \u0026 데이터 시각화 — 군 데이터셋 70제·실습 코드 노트",
+      "item": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-18-pandas%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "6/18 pandas \u0026 데이터 시각화 — 군 데이터셋 70제·실습 코드 노트",
+  "name": "6\/18 pandas \u0026 데이터 시각화 — 군 데이터셋 70제·실습 코드 노트",
+  "description": "6/18 pandas 기초 실습 코드 노트. pandas_예제.ipynb 70선과 vectorization.ipynb를 원본 코드·실제 출력 그대로 수록. 환경설정(setup_matplotlib_korean_font·한글폰트 Malgun Gothic 적용, drive.mount, 헤더 시그니처로 CSV 자동 구분, FileNotFoundError·NFC/NFD 디버깅), 데이터 로드·점검(shape (11000,15)/info/describe), DataFrame vs Series, loc/iloc, 조건 필터링(단일·복합 \u0026·|·isin·컬럼 간 비교 stock_level",
+  "keywords": [
+    "pandas", "실습", "DataFrame", "Series", "loc", "iloc", "Boolean indexing", "조건 필터링", "isin", "sort_values", "groupby", "agg", "unstack", "merge", "to_datetime", "str 접근자", "벡터화", "Vectorization", "한글폰트", "drive.mount", "FileNotFoundError", "NFC", "NFD", "read_csv", "정형 데이터", "초보자"
+  ],
+  "articleBody": " 📌 코드 출처 안내. 아래 코드는 강사 배포 노트북 pandas_예제.ipynb(예제 70선) 과 vectorization.ipynb 에서 그대로 가져왔고, 출력도 실제 실행 결과다. 원본 코드는 변경하지 않았으며, 보완이 필요한 곳은 주석/메모로 명시했다. 문제 번호는 노트북의 실습 문항 번호다.\n🗂️ 데이터 경로(dataset/정형/...)와 출력에 보이는 가상환경 경로(C:\\2026\\...)는 원본 출력이라 그대로 둔다. 데이터는 서버·군수품·복지 각 11,000행 CSV 3종 + 엑셀 1종.\n🧪 실습 노트 00. 실습 환경설정 — 한글폰트 · 경로/파일명 디버깅 ★먼저 읽기 01. 데이터 로드 \u0026 구조 점검 (shape · info · describe) 02. 행·열 선택 (loc · [] · iloc) 03. 조건 필터링 (Boolean · \u0026 | · isin · 컬럼 간 비교) └ ⚠ 문제27 정정 — 60~80은 빈 결과 04. 정렬 (sort_values) 05. 🔑 GroupBy 집계 (groupby · agg · unstack) 06. (자료 제공) 결측 · 문자열 · 시계열 · merge └ ⚠ 문제61 정정 — inner merge가 0행 07. ★ 벡터화 — 루프 17.3ms vs 벡터 0.4ms (39.4배) 💡 실행 순서. §00 → §01을 먼저 실행해 폰트를 적용하고 df_srv·df_sup·df_wel을 메모리에 올려야, §02 이후 셀들이 그 변수를 재사용해 동작한다. §07 벡터화는 별도 노트북(vectorization.ipynb)이라 독립 실행된다.\n00 · 실습 환경설정 — 디버깅 포인트 ★먼저 읽기 라이브에서 가장 많은 시간을 잡아먹은 건 분석 코드가 아니라 환경설정이었다. 코랩(리눅스)은 기본으로 한글 폰트가 없고, 데이터 경로/파일명에서 에러가 잦다. 여기를 먼저 통과해야 나머지가 돌아간다.\n한글 폰트 설치 (코랩·리눅스) ① 코랩에서 한글이 깨지면 나눔폰트를 설치한다. 설치 후 반드시 [런타임 \u003e 세션 다시 시작] 해야 적용된다. (로컬 Windows/Mac은 이미 폰트가 있어 생략 가능 — 그래서 주석 처리되어 있다.)\n# ── 환경 설정(선택) ────────────────────────────────────────── # Colab·리눅스 등에서 폰트 설치 셀 — 로컬 Windows는 생략 가능 # !sudo apt-get install -y -qq fonts-nanum # !fc-cache -fv # !rm ~/.cache/matplotlib -rf ④ apt-get으로 나눔폰트 설치 → fc-cache로 폰트 캐시 갱신 → matplotlib 폰트 캐시 삭제. 세 줄이 한 세트다. ⑤ 💡 설치만 하고 세션을 재시작하지 않으면 여전히 깨진다. 강사가 반복 강조한 포인트. 폰트 설치 셀과 drive.mount() 셀은 항상 맨 먼저 실행하는 습관을 들이자.\n② matplotlib에 한글 폰트를 적용한다. 플랫폼별로 try-except로 안전하게 잡는다. (원본 출처: pandas_예제.ipynb cell 2)\nimport platform import matplotlib.pyplot as plt from matplotlib import font_manager def setup_matplotlib_korean_font() -\u003e str | None: \"\"\"Windows / Mac / 기타 순으로 한글 폰트를 try-except로 적용.\"\"\" plt.rcParams[\"axes.unicode_minus\"] = False # 마이너스 기호 깨짐 방지 system = platform.system() if system == \"Windows\": candidates = [\"Malgun Gothic\", \"맑은 고딕\"] elif system == \"Darwin\": candidates = [\"Apple SD Gothic Neo\", \"AppleGothic\"] else: candidates = [\"NanumGothic\", \"Noto Sans CJK KR\", \"Malgun Gothic\"] for family in candidates: try: prop = font_manager.FontProperties(family=family) path = font_manager.findfont(prop, fallback_to_default=False) if path and \"dejavu\" not in path.lower(): plt.rcParams[\"font.family\"] = family print(f\"[한글 폰트] 적용: {family}\") return family except Exception: continue return None setup_matplotlib_korean_font() ③ 출력:\n[한글 폰트] 적용: Malgun Gothic 'Malgun Gothic' ④ platform.system()으로 OS를 감지해 후보 폰트를 정하고, findfont로 실제 설치 여부를 확인한 뒤 첫 성공 폰트를 적용한다. Windows 환경이라 Malgun Gothic이 잡혔다. ⑤ 💡 axes.unicode_minus = False도 잊지 말 것 — 안 하면 음수 축 라벨의 마이너스 기호가 네모로 깨진다.\n데이터 경로·파일명 디버깅 ⑤ 💡 강사가 반복 강조한 실수 4가지 — 코드 노트에 박아둔다.\n경로는 직접 타이핑 금지 → 코랩 파일 메뉴의 “경로 복사” 로 붙여넣기. 경로 끝 슬래시(/) 누락 이 잦다 — pd.read_csv(data_path + 파일명)처럼 문자열을 연결할 때 data_path 끝에 /가 없으면 경로가 깨진다. 파일명 대소문자/오타 → FileNotFoundError. 에러 메시지에 찍힌 경로를 실제 파일과 한 글자씩 대조하라. 압축 해제 시 한글 파일명 깨짐(윈도우) → 파일명을 통일. 공유 폴더는 읽기 전용이라 더블클릭 편집 말고 다운로드 후 사용. (견고한 버전) 헤더 시그니처로 CSV 자동 구분 ① 라이브에선 파일명을 직접 문자열로 이어 붙였지만, 예제 노트북은 파일명 대신 헤더(컬럼)로 어떤 표인지 판별하는 견고한 로더를 쓴다 — 파일명이 깨지거나 달라도 동작한다. (출처: pandas_예제.ipynb cell 5)\nfrom pathlib import Path import numpy as np import pandas as pd def resolve_jeonghyeong_dir() -\u003e Path: cwd = Path.cwd() for c in (cwd / \"소집교육\" / \"dataset\" / \"정형\", cwd / \"dataset\" / \"정형\", cwd.parent / \"dataset\" / \"정형\"): if c.is_dir(): return c.resolve() raise FileNotFoundError(\"dataset/정형 폴더를 찾을 수 없습니다.\") def load_three_tables(data_dir: Path): \"\"\"헤더로 세 종류 CSV를 구분 (파일명 정규화 차이 무시).\"\"\" srv = sup = wel = None path_srv = path_sup = path_wel = None for p in sorted(data_dir.glob(\"*.csv\")): cols = pd.read_csv(p, nrows=0, encoding=\"utf-8\").columns.tolist() if \"log_id\" in cols and \"server_id\" in cols: srv, path_srv = pd.read_csv(p, encoding=\"utf-8\"), p elif \"supply_id\" in cols: sup, path_sup = pd.read_csv(p, encoding=\"utf-8\"), p elif \"soldier_id\" in cols: wel, path_wel = pd.read_csv(p, encoding=\"utf-8\"), p return srv, sup, wel, path_srv, path_sup, path_wel DATA = resolve_jeonghyeong_dir() df_srv, df_sup, df_wel, path_server, path_supply, path_welfare = load_three_tables(DATA) print(\"서버:\", df_srv.shape, path_server.name) print(\"군수품:\", df_sup.shape, path_supply.name) print(\"복지:\", df_wel.shape, path_welfare.name) ③ 출력:\n서버: (11000, 15) 서버유지보수_보정데이터(0512).csv 군수품: (11000, 15) 군수품자동청구_보정데이터(0512).csv 복지: (11000, 19) 장병복지시설이용_보완데이터(0512).csv ④ pd.read_csv(p, nrows=0)로 헤더만 먼저 읽어 컬럼 이름을 보고, log_id/supply_id/soldier_id라는 시그니처 컬럼으로 어떤 표인지 판별해 각각 df_srv·df_sup·df_wel에 담는다. ⑤ 💡 파일명에 의존하지 않는 게 핵심. 한글 파일명이 OS마다 깨질 수 있으니, 내용(헤더)으로 판별하면 환경이 바뀌어도 견고하다. 같은 맥락의 NFC/NFD 대응은 §07 끝에서 다룬다.\n01 · 데이터 로드 \u0026 구조 점검 ① 데이터를 올렸으면 규모·스키마·분포부터 본다. (출처: 문제1~10)\nprint(df_srv.shape) # (11000, 15) df_sup.info() # 스키마 + 메모리 df_wel.describe() # 수치형 요약 df_srv.columns.tolist() # 컬럼명 리스트 df_sup.dtypes # 열별 dtype df_sup.memory_usage(deep=True).sum() # 1729533 (바이트) df_wel.sample(5, random_state=42) # 재현 가능한 무작위 5행 print(len(df_srv), len(df_sup), len(df_wel)) # 11000 11000 11000 ③ 핵심 출력:\n(11000, 15) 1729533 11000 11000 11000 ④ shape는 (행, 열) 튜플 — 세 표 모두 11,000행이다. info()는 열별 타입·비결측·메모리를, describe()는 수치형 요약을 준다. memory_usage(deep=True).sum()은 문자열까지 포함한 실제 메모리(바이트). ⑤ 💡 sample의 random_state=42 로 매번 같은 5행이 나온다(재현성). 어제 NumPy default_rng(42)와 같은 시드 고정 개념이다. 분석 전에 describe()로 각 열의 분포(min·max·사분위) 를 보는 습관이 뒤에서 문제27 같은 함정을 미리 잡아준다.\n02 · 행·열 선택 (loc · [] · iloc) ① loc(라벨)와 iloc(위치)로 행·열을 고른다. 형태는 df.loc[행, 열]. (출처: 문제11~18)\ndf_srv.loc[:, ['server_id','location','cpu_usage']].head() # 모든 행 + 특정 열 (loc) df_sup[['item_name','category','stock_level']].head() # [] 로 열 선택 df_srv.iloc[0, :] # 첫 행 → Series df_sup.iloc[:5, :3] # 앞 5행 · 앞 3열 (끝 미포함) df_srv.loc[df_srv.index[:10], ['log_id','check_type']] # 인덱스 일부 + 열 df_sup.iloc[100:105] # 중간 구간 100~104 ④ loc[:, [...]]는 “모든 행 + 지정한 열”. iloc[0, :]는 첫 행을 Series로 꺼낸다(단일 행=1차원=Series). iloc[:5, :3]은 위치 기반 슬라이싱이라 끝 미포함(04행, 02열). ⑤ 💡 단일 컬럼 df['col']은 Series, 컬럼 리스트 df[['col']]은 DataFrame — 대괄호 개수가 결과 타입을 가른다. iloc 슬라이싱의 “끝 미포함\"은 어제 NumPy 슬라이싱과 동일 규칙이다.\n03 · 조건 필터링 (Boolean · \u0026 | · isin · 컬럼 간 비교) 비교 연산이 만든 True/False Series를 loc에 넣어 행을 필터링한다. 어제 NumPy 불리언 마스킹과 원리가 같다.\n단일 조건 · value_counts 기반 ① ② (출처: 문제19~21, 25)\ndf_srv.loc[df_srv['issue_category'] == '디스크', :].head() # 이슈='디스크' df_srv.loc[df_srv['cpu_usage'] \u003e 40, :].head() # CPU 40 초과 top_r = df_wel['region'].value_counts().index[0] # 최빈 지역 df_wel.loc[df_wel['region'] == top_r, :].head() ④ df_srv['cpu_usage'] \u003e 40은 11,000개짜리 True/False Series를 만들고, loc이 True인 행만 남긴다. value_counts().index[0]은 가장 빈도 높은 값(최빈값)을 꺼내 그걸로 필터링한 것. ⑤ 💡 “가장 많은 지역만 보기\"처럼 데이터에서 동적으로 기준값을 뽑아 필터에 쓰는 패턴이 실무에서 잦다.\n복합 조건 · isin ① (출처: 문제22~24)\n# AND — 두 조건 모두 (각 조건 괄호 + \u0026 ) df_srv.loc[(df_srv['fix_required']==1) \u0026 (df_srv['issue_detected']==1), :].head() # isin — 여러 값 중 하나 df_srv.loc[df_srv['check_type'].isin(['일간','주간']), :].head() df_srv.loc[df_srv['issue_category'].isin(['CPU과부하','디스크']), :].head() ④ 복합 조건은 and/or가 아니라 \u0026/|, 그리고 각 조건을 괄호로 감싼다. isin([...])은 긴 (==A)|(==B)를 한 줄로 줄인다. ⑤ 💡 괄호를 빼면 연산자 우선순위 때문에 에러나 오작동한다 — 어제 NumPy (a\u003e2)\u0026(a\u003c11)에서 강조한 것과 동일. 부정(NOT)은 앞에 ~.\n★ 컬럼 간 비교 ① 상수가 아니라 다른 열과 비교한다. (출처: 문제26)\n# 재고가 재발주 기준보다 낮은 행 df_sup.loc[df_sup['stock_level'] \u003c df_sup['reorder_threshold'], :].head() ④ df_sup['stock_level'] \u003c df_sup['reorder_threshold']는 행마다 두 열 값을 비교해 True/False Series를 만든다. “재고 부족” 같은 실무 조건이 이 형태. ⑤ 💡 강사는 iris로 Sepal.Width \u003e Petal.Length를 시연했다 — 중간 계산 없이 두 열 비교가 한 줄로 축약되는 게 포인트.\n⚠ 문제27 정정 — 60~80은 빈 결과 ① 원본 문제27을 그대로 실행한다. (출처: pandas_예제.ipynb cell 68)\ndf_wel.loc[(df_wel['mental_wellbeing_score'] \u003e= 60) \u0026 (df_wel['mental_wellbeing_score'] \u003c= 80), :].head() ③ 출력 (원본 실행 결과 그대로):\nEmpty DataFrame Columns: [soldier_id, unit_code, region, lat, lon, rank, facility_type, facility_usage, usage_frequency_per_week, satisfaction_score, distance_to_facility, has_private_space, mental_wellbeing_score, date, facility_access_score, expected_mental_score, mental_gap_score, expected_mental_score_adj, expected_mental_score_v4] Index: [] ④ 결과가 Empty DataFrame — 에러가 아니라 조건에 맞는 행이 0개다. mental_wellbeing_score의 실제 분포가 한 자리 수(1~10 수준) 라 60~80 구간엔 해당 행이 없다. ⑤ 💡 원본 예제의 오류로 보이는 부분이라 정직하게 정정한다. 라이브에서도 강사가 “6080 vs 68을 재확인해야 한다” 고 언급했다 — 의도한 구간은 6~8이었을 가능성이 높다. 데이터에 맞춘 버전:\n# 정정 버전 — 데이터 분포(1~10)에 맞는 6~8 구간 df_wel.loc[(df_wel['mental_wellbeing_score'] \u003e= 6) \u0026 (df_wel['mental_wellbeing_score'] \u003c= 8), :].head() ⑤ 💡 분포가 한 자리 수라는 증거는 §05 문제39(rank별 median이 1~2)에서 직접 확인된다. 필터가 비면 “내 조건이 데이터 분포 안에 있나\"를 describe()·value_counts()로 먼저 확인하라 — 빈 결과는 버그가 아니라 데이터에 대한 오해의 신호다.\n필터 후 인덱스 정리 ① (출처: 문제28)\ndf_srv.loc[df_srv['temp_abnormal_flag']==1, :].reset_index(drop=True).head() ④ 필터링하면 인덱스가 듬성듬성 남는데, reset_index(drop=True)로 0부터 다시 매긴다(drop=True라 옛 인덱스는 버림). ⑤ 💡 결과를 이어서 쓸 거면 .copy()로 따로 저장해 원본 오염을 막자.\n04 · 정렬 (sort_values) ① 값 기준으로 정렬한다. 기본 오름차순, ascending=False로 내림차순, 다중 키는 리스트. (출처: 문제29~32)\ndf_srv.sort_values('cpu_usage', ascending=False).head(8) # CPU 높은 순 (최대 100.0) df_sup.sort_values('requested_quantity').head(8) # 요청량 적은 순 df_wel.sort_values('distance_to_facility', ascending=False).head(8) df_srv.sort_values(['location','check_date']).head(8) # 다중 키 (지역→날짜) ④ sort_values('col', ascending=False)로 내림차순, head(8)로 상위 8개. 다중 키 ['location','check_date']는 지역으로 먼저 묶고 같은 지역 안에서 날짜로 정렬한다. ⑤ 💡 다중 키에 방향을 따로 줄 수도 있다 — ascending=[True, False](지역 오름, 날짜 내림). SQL의 ORDER BY a, b DESC와 같다.\n05 · 🔑 GroupBy 집계 (groupby · agg · unstack) 오늘 pandas의 핵심. Split(쪼개기) → Apply(집계) → Combine(합치기). 문법은 df.groupby(그룹컬럼)[수치컬럼].집계().\n기본 집계 ① (출처: 문제3334, 3839)\ndf_srv.groupby('location')['log_id'].count().sort_values(ascending=False).head(10) # 지역별 건수 df_srv.groupby('issue_category')['cpu_usage'].mean() # 이슈별 평균 CPU df_wel.groupby('rank')['mental_wellbeing_score'].median() # 계급별 중앙값 ③ df_wel.groupby('rank')['mental_wellbeing_score'].median() 출력 (cell 96):\nrank 병장 2.0 상병 2.0 이병 2.0 일병 1.0 Name: mental_wellbeing_score, dtype: float64 ④ groupby('rank')로 계급별로 쪼개고, ['mental_wellbeing_score'].median()로 그룹마다 중앙값을 낸다. ⑤ 💡 이 출력이 §03 문제27 정정의 결정적 증거다 — 정신건강 점수의 중앙값이 1~2다. 점수가 한 자리 수이니 60~80 필터가 빈 결과였던 것. 그룹 컬럼은 아무거나가 아니라 범주형(rank·region)이나 값 종류가 제한된 수치가 적합하다.\nagg — 복수 집계 ① 한 번에 여러 통계를 낸다. (출처: 문제35~36)\ndf_srv.groupby('check_type')['fix_duration_hours'].agg(['mean','max']) df_sup.groupby('category')['requested_quantity'].agg(['sum','mean']) ③ 첫 줄 출력:\nmean max check_type 월간 2.983514 11.56 일간 3.016626 11.79 주간 2.998414 11.47 ④ agg(['mean','max'])로 점검 유형별 평균·최대 수리시간을 동시에 낸다. ⑤ 💡 집계가 하나면 결과는 Series, 여럿이면(['mean','max']) 복수 컬럼 → DataFrame이 된다. 가능한 집계: count, sum, min, max, mean, median, std, var, quantile, first, last.\n다중 그룹 + unstack ① 두 컬럼으로 묶으면 인덱스가 다중(MultiIndex)이 된다. (출처: 문제40~41)\ndf_wel.groupby(['region','facility_type'])['satisfaction_score'].mean().head(15) # 다중 그룹 df_wel.groupby(['region','facility_type'])['satisfaction_score'].mean().unstack() # 표로 펼치기 df_sup.groupby('auto_reorder_flag').size() # 그룹별 행 수 ④ 다중 그룹 결과는 세로로 길게 쌓인 MultiIndex Series라 보기 불편하다. unstack()이 둘째 키(facility_type)를 열로 펼쳐 region×facility_type 교차표를 만든다. size()는 그룹별 행 개수. ⑤ 💡 unstack = MultiIndex를 피벗 테이블로. 펼친 뒤 df.loc['A지역', '체육시설']처럼 특정 조합 값을 바로 조회할 수 있다. groupby('x')만 하면 아직 DataFrameGroupBy 객체일 뿐 — 뒤에 집계 함수를 붙여야 결과가 나온다.\n06 · (자료 제공) 결측 · 문자열 · 시계열 · merge 📎 여기부터는 라이브 당일이 아닌 자료 제공/후속 진행분(예제 노트북 후반). 같이 정리해 둔다.\n결측 · 중복 ① (출처: 문제43~46)\ndf_srv.isna().sum() # 열별 결측(이 데이터는 모두 0) df_sup.duplicated().sum() # 중복 행 수(0) df_sup.drop_duplicates(subset=['supply_id']).shape[0] # 키 기준 중복 제거(11000) ④ isna().sum()은 열별 결측 개수(전체는 .sum().sum()). 수치열 결측은 중앙값(fillna(median())), 범주형은 fillna('Unknown')로 채운다. 중복은 duplicated().sum(), 키 기준 제거는 drop_duplicates(subset=[...]). ⑤ 💡 어제 §05의 “결측치 처리엔 정답이 없다, 비교 실험으로 고른다\"가 여기 코드로 이어진다.\n문자열 · 시계열 ① (출처: 문제49~50, 54, 57)\ndf_sup['item_name'].str.upper().head() # 대문자화 df_srv['location'].str.contains('사단', na=False).sum() # '사단' 포함 수(9617) pd.to_datetime(df_srv['check_date']).dt.year.value_counts() # 연도별(2024:11000) pd.to_datetime(df_wel['date']).dt.dayofweek.value_counts() # 요일별(월=0…일=6) ④ str 접근자로 문자열 연산(upper, contains)을 벡터화한다. str.contains('사단', na=False)의 na=False는 결측을 만나도 에러 대신 False로 처리. 날짜는 to_datetime으로 변환해야 .dt.year·.dt.dayofweek 추출이 된다. ⑤ 💡 CSV의 날짜는 보통 문자열(object)로 읽히니 분석 전 to_datetime 변환이 필수다. errors='coerce'를 주면 깨진 값은 NaT로 처리된다.\n⚠ 문제61 정정 — inner merge가 0행 ① 두 테이블을 unit_code로 inner merge한다. (출처: pandas_예제.ipynb cell 149)\nm = df_sup.merge(df_wel, on='unit_code', how='inner', suffixes=('_sup', '_wel')) m.shape ③ 출력 (원본 실행 결과 그대로):\n(0, 33) ④ 열은 33개로 합쳐졌는데 행이 0개다 — 또 에러는 아니다. inner는 양쪽 키가 일치하는 행만 남기는데, unit_code 값의 도메인이 서로 다르다: 군수품은 31A·18A 같은 코드형, 복지는 17사단·14사단 같은 명칭형이라 겹치는 값이 하나도 없다. ⑤ 💡 버그가 아니라 “merge 키 정합성\"의 산 교훈이다. merge 전에 양쪽 키를 찍어 형식이 같은지 확인하라:\nprint(df_sup['unit_code'].unique()[:5]) # 예: ['31A' '18A' ...] 코드형 print(df_wel['unit_code'].unique()[:5]) # 예: ['17사단' '14사단' ...] 명칭형 도메인이 다르면 매핑 테이블로 한쪽을 변환하거나 키 자체를 재검토해야 한다. 참고로 정상 merge는 그룹 평균을 원본에 되붙이는 형태다 (문제63):\nloc_cpu = df_srv.groupby('location', as_index=False)['cpu_usage'].mean() df_srv.merge(loc_cpu, on='location', how='left', suffixes=('', '_locmean')).head() # 정상 동작 merge how 의미 inner 교집합 (양쪽 키 일치 행만) outer 합집합 (없는 쪽은 NaN) left/right 왼쪽/오른쪽 기준 07 · ★ 벡터화 — 루프 vs 배열 연산 📎 별도 노트북 vectorization.ipynb. 어제 NumPy “가장 중요\"라 한 벡터화를 실측한다.\n루프 vs 벡터화 — 속도 측정 ① 같은 계산을 루프와 벡터화로 각각 돌려 시간을 잰다. (출처: vectorization.ipynb cell 12)\nrng = np.random.default_rng(0) n = 50_000 a = rng.random(n).astype(np.float64) b = rng.random(n).astype(np.float64) # 루프 — 파이썬이 5만 번 반복 t0 = time.perf_counter() out_loop = np.empty(n) for i in range(n): out_loop[i] = a[i] * b[i] + np.sqrt(a[i]) t_loop = time.perf_counter() - t0 # 벡터화 — 배열 전체를 한 번에 (내부 C 루프) t0 = time.perf_counter() out_vec = a * b + np.sqrt(a) t_vec = time.perf_counter() - t0 np.testing.assert_allclose(out_loop, out_vec, rtol=1e-12) # 결과 동일 검증 print(f\"loop: {t_loop*1000:.1f} ms\") print(f\"vector: {t_vec*1000:.1f} ms\") print(f\"speedup: {t_loop / t_vec:.1f}x\") ③ 출력:\nloop: 17.3 ms vector: 0.4 ms speedup: 39.4x ④ 두 방식의 결과는 assert_allclose로 동일함을 검증했고, 벡터화가 약 39배 빠르다. 루프는 파이썬 인터프리터가 5만 번 도는 반면, a*b + np.sqrt(a)는 내부 C 루프로 한 번에 처리한다. ⑤ 💡 절대 수치는 환경·난수에 따라 달라진다 — 17.3ms나 0.4ms 자체가 아니라 “수십 배 차이\"라는 자릿수가 핵심이다. 실데이터 파생변수 생성이 전부 이 패턴이다.\n실데이터 파생변수 — 벡터화 패턴 ① 0으로 나누기 방지(clip·eps)와 함께 군수품 파생변수를 만든다. (출처: vectorization.ipynb cell 4, 발췌)\neps = 1e-6 usage = mil[\"avg_daily_usage\"].clip(lower=eps) # 0 나눗셈 방지 mil[\"stock_runway_days\"] = (mil[\"stock_level\"] / usage).replace([np.inf, -np.inf], np.nan) mil[\"expected_demand_in_lead_time\"] = mil[\"avg_daily_usage\"] * mil[\"delivery_lead_time\"] mil[\"weekend_adjusted_daily\"] = mil[\"avg_daily_usage\"] * (1.0 + mil[\"weekend_usage_ratio\"].fillna(0)) mil[\"reorder_gap\"] = mil[\"reorder_threshold\"] - mil[\"stock_level\"] ④ 열 전체에 사칙연산을 한 번에 적용해 파생변수(재고 버티는 일수·예상 수요·재발주 갭 등)를 만든다. 루프 없이 11,000행이 한 줄에 계산된다. ⑤ 💡 0으로 나누기 방지가 실무 단골. 분모가 될 수 있는 값엔 clip(lower=eps)나 np.where(denom\u003c1e-9, 1.0, denom)를 건다. 서버는 mean(axis=1) 자원부하·np.log1p, 복지는 min-max 정규화, 엑셀은 np.nanmean/nanstd z-score로 같은 벡터화 패턴이 반복된다.\nNFC/NFD — 한글 파일명 자모분리 대응 ① macOS(NFD)와 Windows/Linux(NFC)는 한글을 다르게 저장해, 파일명 매칭이 깨질 수 있다. (출처: vectorization.ipynb cell 2)\nimport unicodedata def pick_csv(keyword: str) -\u003e Path: kw = unicodedata.normalize(\"NFC\", keyword) # 키워드를 NFC로 for p in sorted(정형_dir.glob(\"*.csv\")): name = unicodedata.normalize(\"NFC\", p.name) # 파일명도 NFC로 if kw in name: return p raise FileNotFoundError(f\"키워드 {keyword!r}에 해당하는 CSV가 없습니다.\") ④ macOS는 ‘가’를 자모(ㄱ+ㅏ)로 분리 저장(NFD), Windows/Linux는 합쳐서(NFC) 저장한다. 그냥 문자열 비교하면 같은 ‘군수품’도 안 맞을 수 있어, 양쪽을 normalize(\"NFC\")로 통일해 비교한다. ⑤ 💡 §00의 “헤더로 CSV 구분\"과 함께, OS 차이에 강한 데이터 로딩의 양대 기법이다. 한글 파일명을 코드에서 다룰 때 깨짐이 의심되면 이 정규화를 먼저 의심하라.\n📚 보충 자료 실습 노트북: pandas_예제.ipynb(예제 70선) · vectorization.ipynb — 본 노트는 핵심 셀을 verbatim 수록. 데이터는 dataset/정형/의 서버·군수품·복지 CSV(각 11,000행) + soldier 엑셀. pandas — Indexing and selecting data — §02~03 loc/iloc·Boolean indexing pandas — Group by (split-apply-combine) — §05 groupby/agg/unstack pandas — Merge, join, concatenate — §06 문제61 merge how·키 정합성 pandas — Working with text data (str) · Time series / to_datetime — §06 문자열·시계열 Python unicodedata.normalize — §07 NFC/NFD 자모분리 대응 마무리 오늘 실습은 군 데이터셋(서버·군수품·복지 각 11,000행)으로 pandas 기본기를 쌓았다. 핵심 줄기는 — 환경설정(한글폰트·경로/파일명·헤더 시그니처 로딩)을 통과하고, shape·info·describe로 점검한 뒤, loc(라벨)·iloc(위치) 로 행·열을 고르고, 조건 필터링(불리언 마스크 + \u0026/| + 괄호 + isin + 컬럼 간 비교)으로 행을 골라, sort_values 로 정렬하고, 핵심인 groupby+agg+unstack 으로 범주별 요약을 만든 것이다. 자료 제공분으로 결측·문자열·시계열·merge·벡터화까지 이어졌다. 특히 두 함정을 정직하게 정정했다 — 문제27(60~80이 Empty DataFrame, 실분포 1~10이라 의도는 6~8)과 문제61(inner merge가 (0,33), unit_code 도메인 불일치). 둘 다 “에러 없는 빈 결과” 라서 더 위험하다 — 코드를 의심하기 전에 데이터 분포·키 정합성을 먼저 확인하는 습관이 답이다. 한 줄 결론 — 필터·집계·결합 전에 describe()와 unique()로 데이터를 먼저 들여다보면, 빈 결과의 절반은 미리 막을 수 있다.\n🔗 연관 노트 6/18 pandas \u0026 데이터 시각화 — 오늘 코드의 개념 정리(DataFrame/Series·loc/iloc·Boolean indexing·Split-Apply-Combine·벡터화, 그리고 2부 데이터 시각화 이론) 6/17 데이터 리터러시 \u0026 NumPy 기초 코드 노트 — 어제 실습(NumPy 70선·to_numpy로 정형 데이터 가공). 오늘은 그 표를 pandas로 직접 필터·집계하는 단계로 이어진다 ",
+  "wordCount" : "2655",
+  "inLanguage": "en",
+  "datePublished": "2026-06-18T09:00:00+09:00",
+  "dateModified": "2026-06-18T09:00:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "yw8837"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-18-pandas%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI_6스터디",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yw8837.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
+                    <span>📚 Year Study</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
+                    <span>강의 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
+                    <span>실습 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
+                    <span>프로젝트</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+            <a href="/">홈</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="/posts/">Posts</a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+</nav>
+    <h1 class="post-title entry-hint-parent">
+      6/18 pandas &amp; 데이터 시각화 — 군 데이터셋 70제·실습 코드 노트
+    </h1>
+    <div class="post-description">
+      6/18 pandas 기초 실습 코드 노트. pandas_예제.ipynb 70선과 vectorization.ipynb를 원본 코드·실제 출력 그대로 수록. 환경설정(setup_matplotlib_korean_font·한글폰트 Malgun Gothic 적용, drive.mount, 헤더 시그니처로 CSV 자동 구분, FileNotFoundError·NFC/NFD 디버깅), 데이터 로드·점검(shape (11000,15)/info/describe), DataFrame vs Series, loc/iloc, 조건 필터링(단일·복합 &amp;·|·isin·컬럼 간 비교 stock_level&lt;reorder_threshold), 정렬, groupby/agg(check_type별 mean·max)/unstack을 한 셀씩 설명. 원본 오류 정정: 문제27 mental_wellbeing_score 60~80 → Empty DataFrame(실분포 1~10, 의도는 6~8), 문제61 df_sup.merge(df_wel, on=unit_code, inner) → (0,33)(unit_code 도메인 불일치). 벡터화 speedup 39.4x.
+    </div>
+    <div class="post-meta">
+
+<span title='2026-06-18 09:00:00 +0900 KST'>2026년 6월 18일</span>&nbsp;·&nbsp;<span>13 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+
+</div>
+  </header> <details class="toc" >
+    <summary accesskey="c" title="(Alt + C)">
+        <span class="title">목차</span>
+    </summary>
+
+    <div class="inner"><ul>
+            <li>
+                <a href="#-%ec%8b%a4%ec%8a%b5-%eb%85%b8%ed%8a%b8" aria-label="🧪 실습 노트">🧪 실습 노트</a><ul>
+                    
+            <li>
+                <a href="#00--%ec%8b%a4%ec%8a%b5-%ed%99%98%ea%b2%bd%ec%84%a4%ec%a0%95--%eb%94%94%eb%b2%84%ea%b9%85-%ed%8f%ac%ec%9d%b8%ed%8a%b8-%eb%a8%bc%ec%a0%80-%ec%9d%bd%ea%b8%b0" aria-label="00 · 실습 환경설정 — 디버깅 포인트 ★먼저 읽기">00 · 실습 환경설정 — 디버깅 포인트 ★먼저 읽기</a><ul>
+                    
+            <li>
+                <a href="#%ed%95%9c%ea%b8%80-%ed%8f%b0%ed%8a%b8-%ec%84%a4%ec%b9%98-%ec%bd%94%eb%9e%a9%eb%a6%ac%eb%88%85%ec%8a%a4" aria-label="한글 폰트 설치 (코랩·리눅스)">한글 폰트 설치 (코랩·리눅스)</a></li>
+            <li>
+                <a href="#%eb%8d%b0%ec%9d%b4%ed%84%b0-%ea%b2%bd%eb%a1%9c%ed%8c%8c%ec%9d%bc%eb%aa%85-%eb%94%94%eb%b2%84%ea%b9%85" aria-label="데이터 경로·파일명 디버깅">데이터 경로·파일명 디버깅</a></li>
+            <li>
+                <a href="#%ea%b2%ac%ea%b3%a0%ed%95%9c-%eb%b2%84%ec%a0%84-%ed%97%a4%eb%8d%94-%ec%8b%9c%ea%b7%b8%eb%8b%88%ec%b2%98%eb%a1%9c-csv-%ec%9e%90%eb%8f%99-%ea%b5%ac%eb%b6%84" aria-label="(견고한 버전) 헤더 시그니처로 CSV 자동 구분">(견고한 버전) 헤더 시그니처로 CSV 자동 구분</a></li></ul>
+            </li>
+            <li>
+                <a href="#01--%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%a1%9c%eb%93%9c--%ea%b5%ac%ec%a1%b0-%ec%a0%90%ea%b2%80" aria-label="01 · 데이터 로드 &amp; 구조 점검">01 · 데이터 로드 &amp; 구조 점검</a></li>
+            <li>
+                <a href="#02--%ed%96%89%ec%97%b4-%ec%84%a0%ed%83%9d-loc----iloc" aria-label="02 · 행·열 선택 (loc · [] · iloc)">02 · 행·열 선택 (loc · [] · iloc)</a></li>
+            <li>
+                <a href="#03--%ec%a1%b0%ea%b1%b4-%ed%95%84%ed%84%b0%eb%a7%81-boolean-----isin--%ec%bb%ac%eb%9f%bc-%ea%b0%84-%eb%b9%84%ea%b5%90" aria-label="03 · 조건 필터링 (Boolean · &amp; | · isin · 컬럼 간 비교)">03 · 조건 필터링 (Boolean · &amp; | · isin · 컬럼 간 비교)</a><ul>
+                    
+            <li>
+                <a href="#%eb%8b%a8%ec%9d%bc-%ec%a1%b0%ea%b1%b4--value_counts-%ea%b8%b0%eb%b0%98" aria-label="단일 조건 · value_counts 기반">단일 조건 · value_counts 기반</a></li>
+            <li>
+                <a href="#%eb%b3%b5%ed%95%a9-%ec%a1%b0%ea%b1%b4--isin" aria-label="복합 조건 · isin">복합 조건 · isin</a></li>
+            <li>
+                <a href="#-%ec%bb%ac%eb%9f%bc-%ea%b0%84-%eb%b9%84%ea%b5%90" aria-label="★ 컬럼 간 비교">★ 컬럼 간 비교</a></li>
+            <li>
+                <a href="#-%eb%ac%b8%ec%a0%9c27-%ec%a0%95%ec%a0%95--6080%ec%9d%80-%eb%b9%88-%ea%b2%b0%ea%b3%bc" aria-label="⚠ 문제27 정정 — 60~80은 빈 결과">⚠ 문제27 정정 — 60~80은 빈 결과</a></li>
+            <li>
+                <a href="#%ed%95%84%ed%84%b0-%ed%9b%84-%ec%9d%b8%eb%8d%b1%ec%8a%a4-%ec%a0%95%eb%a6%ac" aria-label="필터 후 인덱스 정리">필터 후 인덱스 정리</a></li></ul>
+            </li>
+            <li>
+                <a href="#04--%ec%a0%95%eb%a0%ac-sort_values" aria-label="04 · 정렬 (sort_values)">04 · 정렬 (sort_values)</a></li>
+            <li>
+                <a href="#05---groupby-%ec%a7%91%ea%b3%84-groupby--agg--unstack" aria-label="05 · 🔑 GroupBy 집계 (groupby · agg · unstack)">05 · 🔑 GroupBy 집계 (groupby · agg · unstack)</a><ul>
+                    
+            <li>
+                <a href="#%ea%b8%b0%eb%b3%b8-%ec%a7%91%ea%b3%84" aria-label="기본 집계">기본 집계</a></li>
+            <li>
+                <a href="#agg--%eb%b3%b5%ec%88%98-%ec%a7%91%ea%b3%84" aria-label="agg — 복수 집계">agg — 복수 집계</a></li>
+            <li>
+                <a href="#%eb%8b%a4%ec%a4%91-%ea%b7%b8%eb%a3%b9--unstack" aria-label="다중 그룹 &#43; unstack">다중 그룹 + unstack</a></li></ul>
+            </li>
+            <li>
+                <a href="#06--%ec%9e%90%eb%a3%8c-%ec%a0%9c%ea%b3%b5-%ea%b2%b0%ec%b8%a1--%eb%ac%b8%ec%9e%90%ec%97%b4--%ec%8b%9c%ea%b3%84%ec%97%b4--merge" aria-label="06 · (자료 제공) 결측 · 문자열 · 시계열 · merge">06 · (자료 제공) 결측 · 문자열 · 시계열 · merge</a><ul>
+                    
+            <li>
+                <a href="#%ea%b2%b0%ec%b8%a1--%ec%a4%91%eb%b3%b5" aria-label="결측 · 중복">결측 · 중복</a></li>
+            <li>
+                <a href="#%eb%ac%b8%ec%9e%90%ec%97%b4--%ec%8b%9c%ea%b3%84%ec%97%b4" aria-label="문자열 · 시계열">문자열 · 시계열</a></li>
+            <li>
+                <a href="#-%eb%ac%b8%ec%a0%9c61-%ec%a0%95%ec%a0%95--inner-merge%ea%b0%80-0%ed%96%89" aria-label="⚠ 문제61 정정 — inner merge가 0행">⚠ 문제61 정정 — inner merge가 0행</a></li></ul>
+            </li>
+            <li>
+                <a href="#07---%eb%b2%a1%ed%84%b0%ed%99%94--%eb%a3%a8%ed%94%84-vs-%eb%b0%b0%ec%97%b4-%ec%97%b0%ec%82%b0" aria-label="07 · ★ 벡터화 — 루프 vs 배열 연산">07 · ★ 벡터화 — 루프 vs 배열 연산</a><ul>
+                    
+            <li>
+                <a href="#%eb%a3%a8%ed%94%84-vs-%eb%b2%a1%ed%84%b0%ed%99%94--%ec%86%8d%eb%8f%84-%ec%b8%a1%ec%a0%95" aria-label="루프 vs 벡터화 — 속도 측정">루프 vs 벡터화 — 속도 측정</a></li>
+            <li>
+                <a href="#%ec%8b%a4%eb%8d%b0%ec%9d%b4%ed%84%b0-%ed%8c%8c%ec%83%9d%eb%b3%80%ec%88%98--%eb%b2%a1%ed%84%b0%ed%99%94-%ed%8c%a8%ed%84%b4" aria-label="실데이터 파생변수 — 벡터화 패턴">실데이터 파생변수 — 벡터화 패턴</a></li>
+            <li>
+                <a href="#nfcnfd--%ed%95%9c%ea%b8%80-%ed%8c%8c%ec%9d%bc%eb%aa%85-%ec%9e%90%eb%aa%a8%eb%b6%84%eb%a6%ac-%eb%8c%80%ec%9d%91" aria-label="NFC/NFD — 한글 파일명 자모분리 대응">NFC/NFD — 한글 파일명 자모분리 대응</a></li></ul>
+            </li></ul>
+            </li>
+            <li>
+                <a href="#-%eb%b3%b4%ec%b6%a9-%ec%9e%90%eb%a3%8c" aria-label="📚 보충 자료">📚 보충 자료</a><ul>
+                    
+            <li>
+                <a href="#%eb%a7%88%eb%ac%b4%eb%a6%ac" aria-label="마무리">마무리</a></li>
+            <li>
+                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
+            </li>
+        </ul>
+        </li>
+        </ul>
+    </div>
+</details>
+
+  <div class="post-content md-content"><blockquote>
+<p>📌 <strong>코드 출처 안내.</strong> 아래 코드는 강사 배포 노트북 <strong><code>pandas_예제.ipynb</code>(예제 70선)</strong> 과 <strong><code>vectorization.ipynb</code></strong> 에서 <strong>그대로</strong> 가져왔고, 출력도 실제 실행 결과다. 원본 코드는 변경하지 않았으며, 보완이 필요한 곳은 주석/메모로 명시했다. 문제 번호는 노트북의 실습 문항 번호다.</p>
+<p>🗂️ 데이터 경로(<code>dataset/정형/...</code>)와 출력에 보이는 가상환경 경로(<code>C:\2026\...</code>)는 원본 출력이라 그대로 둔다. 데이터는 <strong>서버·군수품·복지 각 11,000행</strong> CSV 3종 + 엑셀 1종.</p>
+</blockquote>
+<h1 id="-실습-노트">🧪 실습 노트<a hidden class="anchor" aria-hidden="true" href="#-실습-노트">#</a></h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">00. 실습 환경설정 — 한글폰트 · 경로/파일명 디버깅 ★먼저 읽기
+</span></span><span class="line"><span class="cl">01. 데이터 로드 &amp; 구조 점검 (shape · info · describe)
+</span></span><span class="line"><span class="cl">02. 행·열 선택 (loc · [] · iloc)
+</span></span><span class="line"><span class="cl">03. 조건 필터링 (Boolean · &amp; | · isin · 컬럼 간 비교)
+</span></span><span class="line"><span class="cl">   └ ⚠ 문제27 정정 — 60~80은 빈 결과
+</span></span><span class="line"><span class="cl">04. 정렬 (sort_values)
+</span></span><span class="line"><span class="cl">05. 🔑 GroupBy 집계 (groupby · agg · unstack)
+</span></span><span class="line"><span class="cl">06. (자료 제공) 결측 · 문자열 · 시계열 · merge
+</span></span><span class="line"><span class="cl">   └ ⚠ 문제61 정정 — inner merge가 0행
+</span></span><span class="line"><span class="cl">07. ★ 벡터화 — 루프 17.3ms vs 벡터 0.4ms (39.4배)
+</span></span></code></pre></div><blockquote>
+<p>💡 <strong>실행 순서.</strong> <strong>§00 → §01을 먼저 실행</strong>해 폰트를 적용하고 <code>df_srv</code>·<code>df_sup</code>·<code>df_wel</code>을 메모리에 올려야, §02 이후 셀들이 그 변수를 재사용해 동작한다. §07 벡터화는 별도 노트북(<code>vectorization.ipynb</code>)이라 독립 실행된다.</p>
+</blockquote>
+<hr>
+<h2 id="00--실습-환경설정--디버깅-포인트-먼저-읽기">00 · 실습 환경설정 — 디버깅 포인트 ★먼저 읽기<a hidden class="anchor" aria-hidden="true" href="#00--실습-환경설정--디버깅-포인트-먼저-읽기">#</a></h2>
+<p>라이브에서 가장 많은 시간을 잡아먹은 건 분석 코드가 아니라 <strong>환경설정</strong>이었다. 코랩(리눅스)은 기본으로 한글 폰트가 없고, 데이터 경로/파일명에서 에러가 잦다. 여기를 먼저 통과해야 나머지가 돌아간다.</p>
+<h3 id="한글-폰트-설치-코랩리눅스">한글 폰트 설치 (코랩·리눅스)<a hidden class="anchor" aria-hidden="true" href="#한글-폰트-설치-코랩리눅스">#</a></h3>
+<p>① 코랩에서 한글이 깨지면 나눔폰트를 설치한다. <strong>설치 후 반드시 [런타임 &gt; 세션 다시 시작]</strong> 해야 적용된다. <em>(로컬 Windows/Mac은 이미 폰트가 있어 생략 가능 — 그래서 주석 처리되어 있다.)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># ── 환경 설정(선택) ──────────────────────────────────────────</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Colab·리눅스 등에서 폰트 설치 셀 — 로컬 Windows는 생략 가능</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># !sudo apt-get install -y -qq fonts-nanum</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># !fc-cache -fv</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># !rm ~/.cache/matplotlib -rf</span>
+</span></span></code></pre></div><p>④ <code>apt-get</code>으로 나눔폰트 설치 → <code>fc-cache</code>로 폰트 캐시 갱신 → matplotlib 폰트 캐시 삭제. 세 줄이 한 세트다.
+⑤ 💡 <strong>설치만 하고 세션을 재시작하지 않으면 여전히 깨진다.</strong> 강사가 반복 강조한 포인트. 폰트 설치 셀과 <code>drive.mount()</code> 셀은 <strong>항상 맨 먼저 실행</strong>하는 습관을 들이자.</p>
+<p>② matplotlib에 한글 폰트를 적용한다. 플랫폼별로 try-except로 안전하게 잡는다. <em>(원본 출처: <code>pandas_예제.ipynb</code> cell 2)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">platform</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">font_manager</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">setup_matplotlib_korean_font</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Windows / Mac / 기타 순으로 한글 폰트를 try-except로 적용.&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&#34;axes.unicode_minus&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>   <span class="c1"># 마이너스 기호 깨짐 방지</span>
+</span></span><span class="line"><span class="cl">    <span class="n">system</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">system</span> <span class="o">==</span> <span class="s2">&#34;Windows&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;Malgun Gothic&#34;</span><span class="p">,</span> <span class="s2">&#34;맑은 고딕&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">elif</span> <span class="n">system</span> <span class="o">==</span> <span class="s2">&#34;Darwin&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;Apple SD Gothic Neo&#34;</span><span class="p">,</span> <span class="s2">&#34;AppleGothic&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;NanumGothic&#34;</span><span class="p">,</span> <span class="s2">&#34;Noto Sans CJK KR&#34;</span><span class="p">,</span> <span class="s2">&#34;Malgun Gothic&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">family</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">prop</span> <span class="o">=</span> <span class="n">font_manager</span><span class="o">.</span><span class="n">FontProperties</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="n">family</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">path</span> <span class="o">=</span> <span class="n">font_manager</span><span class="o">.</span><span class="n">findfont</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">fallback_to_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">path</span> <span class="ow">and</span> <span class="s2">&#34;dejavu&#34;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">                <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&#34;font.family&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">family</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[한글 폰트] 적용: </span><span class="si">{</span><span class="n">family</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="n">family</span>
+</span></span><span class="line"><span class="cl">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">None</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">setup_matplotlib_korean_font</span><span class="p">()</span>
+</span></span></code></pre></div><p>③ 출력:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">[한글 폰트] 적용: Malgun Gothic
+</span></span><span class="line"><span class="cl">&#39;Malgun Gothic&#39;
+</span></span></code></pre></div><p>④ <code>platform.system()</code>으로 OS를 감지해 후보 폰트를 정하고, <code>findfont</code>로 실제 설치 여부를 확인한 뒤 첫 성공 폰트를 적용한다. Windows 환경이라 <code>Malgun Gothic</code>이 잡혔다.
+⑤ 💡 <code>axes.unicode_minus = False</code>도 잊지 말 것 — 안 하면 음수 축 라벨의 마이너스 기호가 네모로 깨진다.</p>
+<h3 id="데이터-경로파일명-디버깅">데이터 경로·파일명 디버깅<a hidden class="anchor" aria-hidden="true" href="#데이터-경로파일명-디버깅">#</a></h3>
+<p>⑤ 💡 <strong>강사가 반복 강조한 실수 4가지</strong> — 코드 노트에 박아둔다.</p>
+<blockquote>
+<ol>
+<li><strong>경로는 직접 타이핑 금지</strong> → 코랩 파일 메뉴의 <strong>&ldquo;경로 복사&rdquo;</strong> 로 붙여넣기.</li>
+<li><strong>경로 끝 슬래시(<code>/</code>) 누락</strong> 이 잦다 — <code>pd.read_csv(data_path + 파일명)</code>처럼 문자열을 연결할 때 <code>data_path</code> 끝에 <code>/</code>가 없으면 경로가 깨진다.</li>
+<li><strong>파일명 대소문자/오타</strong> → <code>FileNotFoundError</code>. 에러 메시지에 찍힌 경로를 실제 파일과 한 글자씩 대조하라.</li>
+<li><strong>압축 해제 시 한글 파일명 깨짐</strong>(윈도우) → 파일명을 통일. <strong>공유 폴더는 읽기 전용</strong>이라 더블클릭 편집 말고 다운로드 후 사용.</li>
+</ol>
+</blockquote>
+<h3 id="견고한-버전-헤더-시그니처로-csv-자동-구분">(견고한 버전) 헤더 시그니처로 CSV 자동 구분<a hidden class="anchor" aria-hidden="true" href="#견고한-버전-헤더-시그니처로-csv-자동-구분">#</a></h3>
+<p>① 라이브에선 파일명을 직접 문자열로 이어 붙였지만, 예제 노트북은 <strong>파일명 대신 헤더(컬럼)로 어떤 표인지 판별</strong>하는 견고한 로더를 쓴다 — 파일명이 깨지거나 달라도 동작한다. <em>(출처: <code>pandas_예제.ipynb</code> cell 5)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">resolve_jeonghyeong_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cwd</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cwd</span> <span class="o">/</span> <span class="s2">&#34;소집교육&#34;</span> <span class="o">/</span> <span class="s2">&#34;dataset&#34;</span> <span class="o">/</span> <span class="s2">&#34;정형&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="n">cwd</span> <span class="o">/</span> <span class="s2">&#34;dataset&#34;</span> <span class="o">/</span> <span class="s2">&#34;정형&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="n">cwd</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&#34;dataset&#34;</span> <span class="o">/</span> <span class="s2">&#34;정형&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&#34;dataset/정형 폴더를 찾을 수 없습니다.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">load_three_tables</span><span class="p">(</span><span class="n">data_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;헤더로 세 종류 CSV를 구분 (파일명 정규화 차이 무시).&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">srv</span> <span class="o">=</span> <span class="n">sup</span> <span class="o">=</span> <span class="n">wel</span> <span class="o">=</span> <span class="kc">None</span>
+</span></span><span class="line"><span class="cl">    <span class="n">path_srv</span> <span class="o">=</span> <span class="n">path_sup</span> <span class="o">=</span> <span class="n">path_wel</span> <span class="o">=</span> <span class="kc">None</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&#34;*.csv&#34;</span><span class="p">)):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cols</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&#34;utf-8&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="s2">&#34;log_id&#34;</span> <span class="ow">in</span> <span class="n">cols</span> <span class="ow">and</span> <span class="s2">&#34;server_id&#34;</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">srv</span><span class="p">,</span> <span class="n">path_srv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&#34;utf-8&#34;</span><span class="p">),</span> <span class="n">p</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="s2">&#34;supply_id&#34;</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">sup</span><span class="p">,</span> <span class="n">path_sup</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&#34;utf-8&#34;</span><span class="p">),</span> <span class="n">p</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="s2">&#34;soldier_id&#34;</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wel</span><span class="p">,</span> <span class="n">path_wel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&#34;utf-8&#34;</span><span class="p">),</span> <span class="n">p</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">srv</span><span class="p">,</span> <span class="n">sup</span><span class="p">,</span> <span class="n">wel</span><span class="p">,</span> <span class="n">path_srv</span><span class="p">,</span> <span class="n">path_sup</span><span class="p">,</span> <span class="n">path_wel</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">DATA</span> <span class="o">=</span> <span class="n">resolve_jeonghyeong_dir</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="p">,</span> <span class="n">df_sup</span><span class="p">,</span> <span class="n">df_wel</span><span class="p">,</span> <span class="n">path_server</span><span class="p">,</span> <span class="n">path_supply</span><span class="p">,</span> <span class="n">path_welfare</span> <span class="o">=</span> <span class="n">load_three_tables</span><span class="p">(</span><span class="n">DATA</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;서버:&#34;</span><span class="p">,</span> <span class="n">df_srv</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">path_server</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;군수품:&#34;</span><span class="p">,</span> <span class="n">df_sup</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">path_supply</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;복지:&#34;</span><span class="p">,</span> <span class="n">df_wel</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">path_welfare</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span></span></code></pre></div><p>③ 출력:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">서버: (11000, 15) 서버유지보수_보정데이터(0512).csv
+</span></span><span class="line"><span class="cl">군수품: (11000, 15) 군수품자동청구_보정데이터(0512).csv
+</span></span><span class="line"><span class="cl">복지: (11000, 19) 장병복지시설이용_보완데이터(0512).csv
+</span></span></code></pre></div><p>④ <code>pd.read_csv(p, nrows=0)</code>로 <strong>헤더만 먼저 읽어</strong> 컬럼 이름을 보고, <code>log_id</code>/<code>supply_id</code>/<code>soldier_id</code>라는 <strong>시그니처 컬럼</strong>으로 어떤 표인지 판별해 각각 <code>df_srv</code>·<code>df_sup</code>·<code>df_wel</code>에 담는다.
+⑤ 💡 <strong>파일명에 의존하지 않는 게 핵심.</strong> 한글 파일명이 OS마다 깨질 수 있으니, <strong>내용(헤더)으로 판별</strong>하면 환경이 바뀌어도 견고하다. 같은 맥락의 NFC/NFD 대응은 §07 끝에서 다룬다.</p>
+<hr>
+<h2 id="01--데이터-로드--구조-점검">01 · 데이터 로드 &amp; 구조 점검<a hidden class="anchor" aria-hidden="true" href="#01--데이터-로드--구조-점검">#</a></h2>
+<p>① 데이터를 올렸으면 <strong>규모·스키마·분포</strong>부터 본다. <em>(출처: 문제1~10)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">df_srv</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>            <span class="c1"># (11000, 15)</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>                  <span class="c1"># 스키마 + 메모리</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_wel</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>              <span class="c1"># 수치형 요약</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>        <span class="c1"># 컬럼명 리스트</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">dtypes</span>                  <span class="c1"># 열별 dtype</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">memory_usage</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>   <span class="c1"># 1729533 (바이트)</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_wel</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>      <span class="c1"># 재현 가능한 무작위 5행</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_srv</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_sup</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_wel</span><span class="p">))</span>   <span class="c1"># 11000 11000 11000</span>
+</span></span></code></pre></div><p>③ 핵심 출력:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">(11000, 15)
+</span></span><span class="line"><span class="cl">1729533
+</span></span><span class="line"><span class="cl">11000 11000 11000
+</span></span></code></pre></div><p>④ <code>shape</code>는 (행, 열) 튜플 — 세 표 모두 11,000행이다. <code>info()</code>는 열별 타입·비결측·메모리를, <code>describe()</code>는 수치형 요약을 준다. <code>memory_usage(deep=True).sum()</code>은 문자열까지 포함한 실제 메모리(바이트).
+⑤ 💡 <strong><code>sample</code>의 <code>random_state=42</code></strong> 로 매번 같은 5행이 나온다(재현성). 어제 NumPy <code>default_rng(42)</code>와 같은 시드 고정 개념이다. 분석 전에 <code>describe()</code>로 <strong>각 열의 분포(min·max·사분위)</strong> 를 보는 습관이 뒤에서 문제27 같은 함정을 미리 잡아준다.</p>
+<hr>
+<h2 id="02--행열-선택-loc----iloc">02 · 행·열 선택 (loc · [] · iloc)<a hidden class="anchor" aria-hidden="true" href="#02--행열-선택-loc----iloc">#</a></h2>
+<p>① <code>loc</code>(라벨)와 <code>iloc</code>(위치)로 행·열을 고른다. 형태는 <code>df.loc[행, 열]</code>. <em>(출처: 문제11~18)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;server_id&#39;</span><span class="p">,</span><span class="s1">&#39;location&#39;</span><span class="p">,</span><span class="s1">&#39;cpu_usage&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>   <span class="c1"># 모든 행 + 특정 열 (loc)</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="p">[[</span><span class="s1">&#39;item_name&#39;</span><span class="p">,</span><span class="s1">&#39;category&#39;</span><span class="p">,</span><span class="s1">&#39;stock_level&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>        <span class="c1"># [] 로 열 선택</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>                  <span class="c1"># 첫 행 → Series</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>                <span class="c1"># 앞 5행 · 앞 3열 (끝 미포함)</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_srv</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;log_id&#39;</span><span class="p">,</span><span class="s1">&#39;check_type&#39;</span><span class="p">]]</span>       <span class="c1"># 인덱스 일부 + 열</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">100</span><span class="p">:</span><span class="mi">105</span><span class="p">]</span>               <span class="c1"># 중간 구간 100~104</span>
+</span></span></code></pre></div><p>④ <code>loc[:, [...]]</code>는 &ldquo;모든 행 + 지정한 열&rdquo;. <code>iloc[0, :]</code>는 <strong>첫 행을 Series로</strong> 꺼낸다(단일 행=1차원=Series). <code>iloc[:5, :3]</code>은 위치 기반 슬라이싱이라 <strong>끝 미포함</strong>(0<del>4행, 0</del>2열).
+⑤ 💡 단일 컬럼 <code>df['col']</code>은 <strong>Series</strong>, 컬럼 리스트 <code>df[['col']]</code>은 <strong>DataFrame</strong> — 대괄호 개수가 결과 타입을 가른다. iloc 슬라이싱의 &ldquo;끝 미포함&quot;은 어제 NumPy 슬라이싱과 동일 규칙이다.</p>
+<hr>
+<h2 id="03--조건-필터링-boolean-----isin--컬럼-간-비교">03 · 조건 필터링 (Boolean · &amp; | · isin · 컬럼 간 비교)<a hidden class="anchor" aria-hidden="true" href="#03--조건-필터링-boolean-----isin--컬럼-간-비교">#</a></h2>
+<p>비교 연산이 만든 <strong>True/False Series</strong>를 <code>loc</code>에 넣어 행을 필터링한다. 어제 NumPy 불리언 마스킹과 원리가 같다.</p>
+<h3 id="단일-조건--value_counts-기반">단일 조건 · value_counts 기반<a hidden class="anchor" aria-hidden="true" href="#단일-조건--value_counts-기반">#</a></h3>
+<p>① ② <em>(출처: 문제19~21, 25)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_srv</span><span class="p">[</span><span class="s1">&#39;issue_category&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;디스크&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>    <span class="c1"># 이슈=&#39;디스크&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_srv</span><span class="p">[</span><span class="s1">&#39;cpu_usage&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>                <span class="c1"># CPU 40 초과</span>
+</span></span><span class="line"><span class="cl"><span class="n">top_r</span> <span class="o">=</span> <span class="n">df_wel</span><span class="p">[</span><span class="s1">&#39;region&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>              <span class="c1"># 최빈 지역</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_wel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_wel</span><span class="p">[</span><span class="s1">&#39;region&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">top_r</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></span></code></pre></div><p>④ <code>df_srv['cpu_usage'] &gt; 40</code>은 11,000개짜리 True/False Series를 만들고, <code>loc</code>이 True인 행만 남긴다. <code>value_counts().index[0]</code>은 <strong>가장 빈도 높은 값</strong>(최빈값)을 꺼내 그걸로 필터링한 것.
+⑤ 💡 &ldquo;가장 많은 지역만 보기&quot;처럼 <strong>데이터에서 동적으로 기준값을 뽑아</strong> 필터에 쓰는 패턴이 실무에서 잦다.</p>
+<h3 id="복합-조건--isin">복합 조건 · isin<a hidden class="anchor" aria-hidden="true" href="#복합-조건--isin">#</a></h3>
+<p>① <em>(출처: 문제22~24)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># AND — 두 조건 모두 (각 조건 괄호 + &amp; )</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_srv</span><span class="p">[</span><span class="s1">&#39;fix_required&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_srv</span><span class="p">[</span><span class="s1">&#39;issue_detected&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">),</span> <span class="p">:]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># isin — 여러 값 중 하나</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_srv</span><span class="p">[</span><span class="s1">&#39;check_type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;일간&#39;</span><span class="p">,</span><span class="s1">&#39;주간&#39;</span><span class="p">]),</span> <span class="p">:]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_srv</span><span class="p">[</span><span class="s1">&#39;issue_category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;CPU과부하&#39;</span><span class="p">,</span><span class="s1">&#39;디스크&#39;</span><span class="p">]),</span> <span class="p">:]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></span></code></pre></div><p>④ 복합 조건은 <code>and</code>/<code>or</code>가 아니라 <strong><code>&amp;</code>/<code>|</code></strong>, 그리고 <strong>각 조건을 괄호로</strong> 감싼다. <code>isin([...])</code>은 긴 <code>(==A)|(==B)</code>를 한 줄로 줄인다.
+⑤ 💡 괄호를 빼면 연산자 우선순위 때문에 에러나 오작동한다 — 어제 NumPy <code>(a&gt;2)&amp;(a&lt;11)</code>에서 강조한 것과 동일. 부정(NOT)은 앞에 <code>~</code>.</p>
+<h3 id="-컬럼-간-비교">★ 컬럼 간 비교<a hidden class="anchor" aria-hidden="true" href="#-컬럼-간-비교">#</a></h3>
+<p>① 상수가 아니라 <strong>다른 열과 비교</strong>한다. <em>(출처: 문제26)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 재고가 재발주 기준보다 낮은 행</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_sup</span><span class="p">[</span><span class="s1">&#39;stock_level&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">df_sup</span><span class="p">[</span><span class="s1">&#39;reorder_threshold&#39;</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></span></code></pre></div><p>④ <code>df_sup['stock_level'] &lt; df_sup['reorder_threshold']</code>는 <strong>행마다 두 열 값을 비교</strong>해 True/False Series를 만든다. &ldquo;재고 부족&rdquo; 같은 실무 조건이 이 형태.
+⑤ 💡 강사는 iris로 <code>Sepal.Width &gt; Petal.Length</code>를 시연했다 — 중간 계산 없이 <strong>두 열 비교가 한 줄로 축약</strong>되는 게 포인트.</p>
+<h3 id="-문제27-정정--6080은-빈-결과">⚠ 문제27 정정 — 60~80은 빈 결과<a hidden class="anchor" aria-hidden="true" href="#-문제27-정정--6080은-빈-결과">#</a></h3>
+<p>① 원본 문제27을 그대로 실행한다. <em>(출처: <code>pandas_예제.ipynb</code> cell 68)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_wel</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_wel</span><span class="p">[</span><span class="s1">&#39;mental_wellbeing_score&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_wel</span><span class="p">[</span><span class="s1">&#39;mental_wellbeing_score&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">80</span><span class="p">),</span> <span class="p">:]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></span></code></pre></div><p>③ 출력 (원본 실행 결과 그대로):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Empty DataFrame
+</span></span><span class="line"><span class="cl">Columns: [soldier_id, unit_code, region, lat, lon, rank, facility_type, facility_usage,
+</span></span><span class="line"><span class="cl">          usage_frequency_per_week, satisfaction_score, distance_to_facility, has_private_space,
+</span></span><span class="line"><span class="cl">          mental_wellbeing_score, date, facility_access_score, expected_mental_score,
+</span></span><span class="line"><span class="cl">          mental_gap_score, expected_mental_score_adj, expected_mental_score_v4]
+</span></span><span class="line"><span class="cl">Index: []
+</span></span></code></pre></div><p>④ 결과가 <strong>Empty DataFrame</strong> — 에러가 아니라 <strong>조건에 맞는 행이 0개</strong>다. <code>mental_wellbeing_score</code>의 실제 분포가 <strong>한 자리 수(1~10 수준)</strong> 라 <code>60~80</code> 구간엔 해당 행이 없다.
+⑤ 💡 <strong>원본 예제의 오류로 보이는 부분이라 정직하게 정정한다.</strong> 라이브에서도 강사가 <strong>&ldquo;60<del>80 vs 6</del>8을 재확인해야 한다&rdquo;</strong> 고 언급했다 — 의도한 구간은 <code>6~8</code>이었을 가능성이 높다. 데이터에 맞춘 버전:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 정정 버전 — 데이터 분포(1~10)에 맞는 6~8 구간</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_wel</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_wel</span><span class="p">[</span><span class="s1">&#39;mental_wellbeing_score&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_wel</span><span class="p">[</span><span class="s1">&#39;mental_wellbeing_score&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">8</span><span class="p">),</span> <span class="p">:]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></span></code></pre></div><p>⑤ 💡 분포가 한 자리 수라는 증거는 §05 문제39(<code>rank</code>별 median이 1~2)에서 직접 확인된다. <strong>필터가 비면 &ldquo;내 조건이 데이터 분포 안에 있나&quot;를 <code>describe()</code>·<code>value_counts()</code>로 먼저 확인</strong>하라 — 빈 결과는 버그가 아니라 데이터에 대한 오해의 신호다.</p>
+<h3 id="필터-후-인덱스-정리">필터 후 인덱스 정리<a hidden class="anchor" aria-hidden="true" href="#필터-후-인덱스-정리">#</a></h3>
+<p>① <em>(출처: 문제28)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_srv</span><span class="p">[</span><span class="s1">&#39;temp_abnormal_flag&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</span></span></code></pre></div><p>④ 필터링하면 인덱스가 듬성듬성 남는데, <code>reset_index(drop=True)</code>로 0부터 다시 매긴다(<code>drop=True</code>라 옛 인덱스는 버림).
+⑤ 💡 결과를 이어서 쓸 거면 <code>.copy()</code>로 따로 저장해 원본 오염을 막자.</p>
+<hr>
+<h2 id="04--정렬-sort_values">04 · 정렬 (sort_values)<a hidden class="anchor" aria-hidden="true" href="#04--정렬-sort_values">#</a></h2>
+<p>① 값 기준으로 정렬한다. 기본 오름차순, <code>ascending=False</code>로 내림차순, 다중 키는 리스트. <em>(출처: 문제29~32)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;cpu_usage&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>         <span class="c1"># CPU 높은 순 (최대 100.0)</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;requested_quantity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>                 <span class="c1"># 요청량 적은 순</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_wel</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;distance_to_facility&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;location&#39;</span><span class="p">,</span><span class="s1">&#39;check_date&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>            <span class="c1"># 다중 키 (지역→날짜)</span>
+</span></span></code></pre></div><p>④ <code>sort_values('col', ascending=False)</code>로 내림차순, <code>head(8)</code>로 상위 8개. 다중 키 <code>['location','check_date']</code>는 지역으로 먼저 묶고 같은 지역 안에서 날짜로 정렬한다.
+⑤ 💡 다중 키에 방향을 따로 줄 수도 있다 — <code>ascending=[True, False]</code>(지역 오름, 날짜 내림). SQL의 <code>ORDER BY a, b DESC</code>와 같다.</p>
+<hr>
+<h2 id="05---groupby-집계-groupby--agg--unstack">05 · 🔑 GroupBy 집계 (groupby · agg · unstack)<a hidden class="anchor" aria-hidden="true" href="#05---groupby-집계-groupby--agg--unstack">#</a></h2>
+<p>오늘 pandas의 핵심. <strong>Split(쪼개기) → Apply(집계) → Combine(합치기)</strong>. 문법은 <code>df.groupby(그룹컬럼)[수치컬럼].집계()</code>.</p>
+<h3 id="기본-집계">기본 집계<a hidden class="anchor" aria-hidden="true" href="#기본-집계">#</a></h3>
+<p>① <em>(출처: 문제33<del>34, 38</del>39)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">)[</span><span class="s1">&#39;log_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># 지역별 건수</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;issue_category&#39;</span><span class="p">)[</span><span class="s1">&#39;cpu_usage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>                  <span class="c1"># 이슈별 평균 CPU</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_wel</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;rank&#39;</span><span class="p">)[</span><span class="s1">&#39;mental_wellbeing_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>             <span class="c1"># 계급별 중앙값</span>
+</span></span></code></pre></div><p>③ <code>df_wel.groupby('rank')['mental_wellbeing_score'].median()</code> 출력 <em>(cell 96)</em>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">rank
+</span></span><span class="line"><span class="cl">병장    2.0
+</span></span><span class="line"><span class="cl">상병    2.0
+</span></span><span class="line"><span class="cl">이병    2.0
+</span></span><span class="line"><span class="cl">일병    1.0
+</span></span><span class="line"><span class="cl">Name: mental_wellbeing_score, dtype: float64
+</span></span></code></pre></div><p>④ <code>groupby('rank')</code>로 계급별로 쪼개고, <code>['mental_wellbeing_score'].median()</code>로 그룹마다 중앙값을 낸다.
+⑤ 💡 <strong>이 출력이 §03 문제27 정정의 결정적 증거다</strong> — 정신건강 점수의 중앙값이 1~2다. 점수가 한 자리 수이니 <code>60~80</code> 필터가 빈 결과였던 것. 그룹 컬럼은 아무거나가 아니라 <strong>범주형(rank·region)이나 값 종류가 제한된 수치</strong>가 적합하다.</p>
+<h3 id="agg--복수-집계">agg — 복수 집계<a hidden class="anchor" aria-hidden="true" href="#agg--복수-집계">#</a></h3>
+<p>① 한 번에 여러 통계를 낸다. <em>(출처: 문제35~36)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;check_type&#39;</span><span class="p">)[</span><span class="s1">&#39;fix_duration_hours&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;max&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)[</span><span class="s1">&#39;requested_quantity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span><span class="s1">&#39;mean&#39;</span><span class="p">])</span>
+</span></span></code></pre></div><p>③ 첫 줄 출력:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">                mean    max
+</span></span><span class="line"><span class="cl">check_type
+</span></span><span class="line"><span class="cl">월간          2.983514  11.56
+</span></span><span class="line"><span class="cl">일간          3.016626  11.79
+</span></span><span class="line"><span class="cl">주간          2.998414  11.47
+</span></span></code></pre></div><p>④ <code>agg(['mean','max'])</code>로 점검 유형별 평균·최대 수리시간을 동시에 낸다.
+⑤ 💡 <strong>집계가 하나면 결과는 Series, 여럿이면(<code>['mean','max']</code>) 복수 컬럼 → DataFrame</strong>이 된다. 가능한 집계: <code>count, sum, min, max, mean, median, std, var, quantile, first, last</code>.</p>
+<h3 id="다중-그룹--unstack">다중 그룹 + unstack<a hidden class="anchor" aria-hidden="true" href="#다중-그룹--unstack">#</a></h3>
+<p>① 두 컬럼으로 묶으면 인덱스가 다중(MultiIndex)이 된다. <em>(출처: 문제40~41)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_wel</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;region&#39;</span><span class="p">,</span><span class="s1">&#39;facility_type&#39;</span><span class="p">])[</span><span class="s1">&#39;satisfaction_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>   <span class="c1"># 다중 그룹</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_wel</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;region&#39;</span><span class="p">,</span><span class="s1">&#39;facility_type&#39;</span><span class="p">])[</span><span class="s1">&#39;satisfaction_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>  <span class="c1"># 표로 펼치기</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;auto_reorder_flag&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>                                         <span class="c1"># 그룹별 행 수</span>
+</span></span></code></pre></div><p>④ 다중 그룹 결과는 세로로 길게 쌓인 MultiIndex Series라 보기 불편하다. <code>unstack()</code>이 <strong>둘째 키(facility_type)를 열로 펼쳐</strong> region×facility_type 교차표를 만든다. <code>size()</code>는 그룹별 행 개수.
+⑤ 💡 <strong>unstack = MultiIndex를 피벗 테이블로.</strong> 펼친 뒤 <code>df.loc['A지역', '체육시설']</code>처럼 특정 조합 값을 바로 조회할 수 있다. <code>groupby('x')</code>만 하면 아직 <code>DataFrameGroupBy</code> 객체일 뿐 — 뒤에 집계 함수를 붙여야 결과가 나온다.</p>
+<hr>
+<h2 id="06--자료-제공-결측--문자열--시계열--merge">06 · (자료 제공) 결측 · 문자열 · 시계열 · merge<a hidden class="anchor" aria-hidden="true" href="#06--자료-제공-결측--문자열--시계열--merge">#</a></h2>
+<blockquote>
+<p>📎 여기부터는 라이브 당일이 아닌 <strong>자료 제공/후속 진행분</strong>(예제 노트북 후반). 같이 정리해 둔다.</p>
+</blockquote>
+<h3 id="결측--중복">결측 · 중복<a hidden class="anchor" aria-hidden="true" href="#결측--중복">#</a></h3>
+<p>① <em>(출처: 문제43~46)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>                              <span class="c1"># 열별 결측(이 데이터는 모두 0)</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>                        <span class="c1"># 중복 행 수(0)</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_sup</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;supply_id&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>   <span class="c1"># 키 기준 중복 제거(11000)</span>
+</span></span></code></pre></div><p>④ <code>isna().sum()</code>은 열별 결측 개수(전체는 <code>.sum().sum()</code>). 수치열 결측은 중앙값(<code>fillna(median())</code>), 범주형은 <code>fillna('Unknown')</code>로 채운다. 중복은 <code>duplicated().sum()</code>, 키 기준 제거는 <code>drop_duplicates(subset=[...])</code>.
+⑤ 💡 어제 §05의 &ldquo;결측치 처리엔 정답이 없다, 비교 실험으로 고른다&quot;가 여기 코드로 이어진다.</p>
+<h3 id="문자열--시계열">문자열 · 시계열<a hidden class="anchor" aria-hidden="true" href="#문자열--시계열">#</a></h3>
+<p>① <em>(출처: 문제49~50, 54, 57)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">df_sup</span><span class="p">[</span><span class="s1">&#39;item_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>                            <span class="c1"># 대문자화</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;사단&#39;</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>   <span class="c1"># &#39;사단&#39; 포함 수(9617)</span>
+</span></span><span class="line"><span class="cl"><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df_srv</span><span class="p">[</span><span class="s1">&#39;check_date&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>       <span class="c1"># 연도별(2024:11000)</span>
+</span></span><span class="line"><span class="cl"><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df_wel</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">dayofweek</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>        <span class="c1"># 요일별(월=0…일=6)</span>
+</span></span></code></pre></div><p>④ <code>str</code> 접근자로 문자열 연산(<code>upper</code>, <code>contains</code>)을 벡터화한다. <code>str.contains('사단', na=False)</code>의 <code>na=False</code>는 결측을 만나도 에러 대신 False로 처리. 날짜는 <code>to_datetime</code>으로 변환해야 <code>.dt.year</code>·<code>.dt.dayofweek</code> 추출이 된다.
+⑤ 💡 CSV의 날짜는 보통 문자열(object)로 읽히니 <strong>분석 전 <code>to_datetime</code> 변환</strong>이 필수다. <code>errors='coerce'</code>를 주면 깨진 값은 <code>NaT</code>로 처리된다.</p>
+<h3 id="-문제61-정정--inner-merge가-0행">⚠ 문제61 정정 — inner merge가 0행<a hidden class="anchor" aria-hidden="true" href="#-문제61-정정--inner-merge가-0행">#</a></h3>
+<p>① 두 테이블을 <code>unit_code</code>로 inner merge한다. <em>(출처: <code>pandas_예제.ipynb</code> cell 149)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">m</span> <span class="o">=</span> <span class="n">df_sup</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_wel</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;unit_code&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;_sup&#39;</span><span class="p">,</span> <span class="s1">&#39;_wel&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">shape</span>
+</span></span></code></pre></div><p>③ 출력 (원본 실행 결과 그대로):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">(0, 33)
+</span></span></code></pre></div><p>④ 열은 33개로 합쳐졌는데 <strong>행이 0개</strong>다 — 또 에러는 아니다. inner는 <strong>양쪽 키가 일치하는 행만</strong> 남기는데, <code>unit_code</code> 값의 도메인이 서로 다르다: 군수품은 <code>31A</code>·<code>18A</code> 같은 <strong>코드형</strong>, 복지는 <code>17사단</code>·<code>14사단</code> 같은 <strong>명칭형</strong>이라 <strong>겹치는 값이 하나도 없다</strong>.
+⑤ 💡 <strong>버그가 아니라 &ldquo;merge 키 정합성&quot;의 산 교훈이다.</strong> merge 전에 양쪽 키를 찍어 형식이 같은지 확인하라:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">df_sup</span><span class="p">[</span><span class="s1">&#39;unit_code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[:</span><span class="mi">5</span><span class="p">])</span>   <span class="c1"># 예: [&#39;31A&#39; &#39;18A&#39; ...]  코드형</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">df_wel</span><span class="p">[</span><span class="s1">&#39;unit_code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[:</span><span class="mi">5</span><span class="p">])</span>   <span class="c1"># 예: [&#39;17사단&#39; &#39;14사단&#39; ...]  명칭형</span>
+</span></span></code></pre></div><p>도메인이 다르면 매핑 테이블로 한쪽을 변환하거나 키 자체를 재검토해야 한다. 참고로 <strong>정상 merge</strong>는 그룹 평균을 원본에 되붙이는 형태다 <em>(문제63)</em>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">loc_cpu</span> <span class="o">=</span> <span class="n">df_srv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="s1">&#39;cpu_usage&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">df_srv</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">loc_cpu</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;_locmean&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>  <span class="c1"># 정상 동작</span>
+</span></span></code></pre></div><table>
+	<thead>
+			<tr>
+					<th>merge how</th>
+					<th>의미</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>inner</code></td>
+					<td>교집합 (양쪽 키 일치 행만)</td>
+			</tr>
+			<tr>
+					<td><code>outer</code></td>
+					<td>합집합 (없는 쪽은 NaN)</td>
+			</tr>
+			<tr>
+					<td><code>left</code>/<code>right</code></td>
+					<td>왼쪽/오른쪽 기준</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h2 id="07---벡터화--루프-vs-배열-연산">07 · ★ 벡터화 — 루프 vs 배열 연산<a hidden class="anchor" aria-hidden="true" href="#07---벡터화--루프-vs-배열-연산">#</a></h2>
+<blockquote>
+<p>📎 별도 노트북 <code>vectorization.ipynb</code>. 어제 NumPy &ldquo;가장 중요&quot;라 한 벡터화를 실측한다.</p>
+</blockquote>
+<h3 id="루프-vs-벡터화--속도-측정">루프 vs 벡터화 — 속도 측정<a hidden class="anchor" aria-hidden="true" href="#루프-vs-벡터화--속도-측정">#</a></h3>
+<p>① 같은 계산을 루프와 벡터화로 각각 돌려 시간을 잰다. <em>(출처: <code>vectorization.ipynb</code> cell 12)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">n</span> <span class="o">=</span> <span class="mi">50_000</span>
+</span></span><span class="line"><span class="cl"><span class="n">a</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">b</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 루프 — 파이썬이 5만 번 반복</span>
+</span></span><span class="line"><span class="cl"><span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">out_loop</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">out_loop</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="n">t_loop</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 벡터화 — 배열 전체를 한 번에 (내부 C 루프)</span>
+</span></span><span class="line"><span class="cl"><span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">out_vec</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">t_vec</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">out_loop</span><span class="p">,</span> <span class="n">out_vec</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>   <span class="c1"># 결과 동일 검증</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;loop:   </span><span class="si">{</span><span class="n">t_loop</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> ms&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;vector: </span><span class="si">{</span><span class="n">t_vec</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> ms&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;speedup: </span><span class="si">{</span><span class="n">t_loop</span> <span class="o">/</span> <span class="n">t_vec</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>③ 출력:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">loop:    17.3 ms
+</span></span><span class="line"><span class="cl">vector: 0.4 ms
+</span></span><span class="line"><span class="cl">speedup: 39.4x
+</span></span></code></pre></div><p>④ 두 방식의 결과는 <code>assert_allclose</code>로 동일함을 검증했고, <strong>벡터화가 약 39배 빠르다</strong>. 루프는 파이썬 인터프리터가 5만 번 도는 반면, <code>a*b + np.sqrt(a)</code>는 내부 C 루프로 한 번에 처리한다.
+⑤ 💡 <strong>절대 수치는 환경·난수에 따라 달라진다</strong> — 17.3ms나 0.4ms 자체가 아니라 <strong>&ldquo;수십 배 차이&quot;라는 자릿수</strong>가 핵심이다. 실데이터 파생변수 생성이 전부 이 패턴이다.</p>
+<h3 id="실데이터-파생변수--벡터화-패턴">실데이터 파생변수 — 벡터화 패턴<a hidden class="anchor" aria-hidden="true" href="#실데이터-파생변수--벡터화-패턴">#</a></h3>
+<p>① 0으로 나누기 방지(<code>clip</code>·<code>eps</code>)와 함께 군수품 파생변수를 만든다. <em>(출처: <code>vectorization.ipynb</code> cell 4, 발췌)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-6</span>
+</span></span><span class="line"><span class="cl"><span class="n">usage</span> <span class="o">=</span> <span class="n">mil</span><span class="p">[</span><span class="s2">&#34;avg_daily_usage&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">lower</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>   <span class="c1"># 0 나눗셈 방지</span>
+</span></span><span class="line"><span class="cl"><span class="n">mil</span><span class="p">[</span><span class="s2">&#34;stock_runway_days&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mil</span><span class="p">[</span><span class="s2">&#34;stock_level&#34;</span><span class="p">]</span> <span class="o">/</span> <span class="n">usage</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">mil</span><span class="p">[</span><span class="s2">&#34;expected_demand_in_lead_time&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mil</span><span class="p">[</span><span class="s2">&#34;avg_daily_usage&#34;</span><span class="p">]</span> <span class="o">*</span> <span class="n">mil</span><span class="p">[</span><span class="s2">&#34;delivery_lead_time&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">mil</span><span class="p">[</span><span class="s2">&#34;weekend_adjusted_daily&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mil</span><span class="p">[</span><span class="s2">&#34;avg_daily_usage&#34;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">mil</span><span class="p">[</span><span class="s2">&#34;weekend_usage_ratio&#34;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">mil</span><span class="p">[</span><span class="s2">&#34;reorder_gap&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mil</span><span class="p">[</span><span class="s2">&#34;reorder_threshold&#34;</span><span class="p">]</span> <span class="o">-</span> <span class="n">mil</span><span class="p">[</span><span class="s2">&#34;stock_level&#34;</span><span class="p">]</span>
+</span></span></code></pre></div><p>④ 열 전체에 사칙연산을 한 번에 적용해 파생변수(재고 버티는 일수·예상 수요·재발주 갭 등)를 만든다. <strong>루프 없이</strong> 11,000행이 한 줄에 계산된다.
+⑤ 💡 <strong>0으로 나누기 방지가 실무 단골.</strong> 분모가 될 수 있는 값엔 <code>clip(lower=eps)</code>나 <code>np.where(denom&lt;1e-9, 1.0, denom)</code>를 건다. 서버는 <code>mean(axis=1)</code> 자원부하·<code>np.log1p</code>, 복지는 min-max 정규화, 엑셀은 <code>np.nanmean/nanstd</code> z-score로 같은 벡터화 패턴이 반복된다.</p>
+<h3 id="nfcnfd--한글-파일명-자모분리-대응">NFC/NFD — 한글 파일명 자모분리 대응<a hidden class="anchor" aria-hidden="true" href="#nfcnfd--한글-파일명-자모분리-대응">#</a></h3>
+<p>① macOS(NFD)와 Windows/Linux(NFC)는 한글을 다르게 저장해, 파일명 매칭이 깨질 수 있다. <em>(출처: <code>vectorization.ipynb</code> cell 2)</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">unicodedata</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">pick_csv</span><span class="p">(</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">kw</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">&#34;NFC&#34;</span><span class="p">,</span> <span class="n">keyword</span><span class="p">)</span>           <span class="c1"># 키워드를 NFC로</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">정형_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&#34;*.csv&#34;</span><span class="p">)):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">name</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">&#34;NFC&#34;</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>      <span class="c1"># 파일명도 NFC로</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">p</span>
+</span></span><span class="line"><span class="cl">    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;키워드 </span><span class="si">{</span><span class="n">keyword</span><span class="si">!r}</span><span class="s2">에 해당하는 CSV가 없습니다.&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>④ macOS는 &lsquo;가&rsquo;를 자모(ㄱ+ㅏ)로 분리 저장(NFD), Windows/Linux는 합쳐서(NFC) 저장한다. 그냥 문자열 비교하면 같은 &lsquo;군수품&rsquo;도 안 맞을 수 있어, <strong>양쪽을 <code>normalize(&quot;NFC&quot;)</code>로 통일</strong>해 비교한다.
+⑤ 💡 §00의 &ldquo;헤더로 CSV 구분&quot;과 함께, <strong>OS 차이에 강한 데이터 로딩</strong>의 양대 기법이다. 한글 파일명을 코드에서 다룰 때 깨짐이 의심되면 이 정규화를 먼저 의심하라.</p>
+<hr>
+<h1 id="-보충-자료">📚 보충 자료<a hidden class="anchor" aria-hidden="true" href="#-보충-자료">#</a></h1>
+<ul>
+<li>실습 노트북: <code>pandas_예제.ipynb</code>(예제 70선) · <code>vectorization.ipynb</code> — 본 노트는 핵심 셀을 verbatim 수록. 데이터는 <code>dataset/정형/</code>의 서버·군수품·복지 CSV(각 11,000행) + soldier 엑셀.</li>
+<li><a href="https://pandas.pydata.org/docs/user_guide/indexing.html">pandas — Indexing and selecting data</a> — §02~03 loc/iloc·Boolean indexing</li>
+<li><a href="https://pandas.pydata.org/docs/user_guide/groupby.html">pandas — Group by (split-apply-combine)</a> — §05 groupby/agg/unstack</li>
+<li><a href="https://pandas.pydata.org/docs/user_guide/merging.html">pandas — Merge, join, concatenate</a> — §06 문제61 merge how·키 정합성</li>
+<li><a href="https://pandas.pydata.org/docs/user_guide/text.html">pandas — Working with text data (<code>str</code>)</a> · <a href="https://pandas.pydata.org/docs/user_guide/timeseries.html">Time series / <code>to_datetime</code></a> — §06 문자열·시계열</li>
+<li><a href="https://docs.python.org/3/library/unicodedata.html">Python <code>unicodedata.normalize</code></a> — §07 NFC/NFD 자모분리 대응</li>
+</ul>
+<h2 id="마무리">마무리<a hidden class="anchor" aria-hidden="true" href="#마무리">#</a></h2>
+<p>오늘 실습은 군 데이터셋(서버·군수품·복지 각 11,000행)으로 pandas 기본기를 쌓았다. 핵심 줄기는 — <strong>환경설정</strong>(한글폰트·경로/파일명·헤더 시그니처 로딩)을 통과하고, <strong><code>shape</code>·<code>info</code>·<code>describe</code>로 점검</strong>한 뒤, <strong>loc(라벨)·iloc(위치)</strong> 로 행·열을 고르고, <strong>조건 필터링</strong>(불리언 마스크 + <code>&amp;</code>/<code>|</code> + 괄호 + <code>isin</code> + 컬럼 간 비교)으로 행을 골라, <strong><code>sort_values</code></strong> 로 정렬하고, 핵심인 <strong><code>groupby</code>+<code>agg</code>+<code>unstack</code></strong> 으로 범주별 요약을 만든 것이다. 자료 제공분으로 결측·문자열·시계열·merge·벡터화까지 이어졌다. 특히 두 함정을 <strong>정직하게 정정</strong>했다 — <strong>문제27</strong>(<code>60~80</code>이 Empty DataFrame, 실분포 1~10이라 의도는 <code>6~8</code>)과 <strong>문제61</strong>(inner merge가 <code>(0,33)</code>, <code>unit_code</code> 도메인 불일치). 둘 다 <strong>&ldquo;에러 없는 빈 결과&rdquo;</strong> 라서 더 위험하다 — 코드를 의심하기 전에 <strong>데이터 분포·키 정합성을 먼저 확인</strong>하는 습관이 답이다. 한 줄 결론 — <strong>필터·집계·결합 전에 <code>describe()</code>와 <code>unique()</code>로 데이터를 먼저 들여다보면, 빈 결과의 절반은 미리 막을 수 있다.</strong></p>
+<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
+<ul>
+<li><a href="/posts/%EA%B0%95%EC%9D%98/6-18-pandas%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">6/18 pandas &amp; 데이터 시각화</a> — 오늘 코드의 개념 정리(DataFrame/Series·loc/iloc·Boolean indexing·Split-Apply-Combine·벡터화, 그리고 2부 데이터 시각화 이론)</li>
+<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">6/17 데이터 리터러시 &amp; NumPy 기초 코드 노트</a> — 어제 실습(NumPy 70선·<code>to_numpy</code>로 정형 데이터 가공). 오늘은 그 표를 pandas로 직접 필터·집계하는 단계로 이어진다</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yw8837.github.io/tags/pandas/">Pandas</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/">실습</a></li>
+      <li><a href="https://yw8837.github.io/tags/dataframe/">DataFrame</a></li>
+      <li><a href="https://yw8837.github.io/tags/series/">Series</a></li>
+      <li><a href="https://yw8837.github.io/tags/loc/">Loc</a></li>
+      <li><a href="https://yw8837.github.io/tags/iloc/">Iloc</a></li>
+      <li><a href="https://yw8837.github.io/tags/boolean-indexing/">Boolean Indexing</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%A1%B0%EA%B1%B4-%ED%95%84%ED%84%B0%EB%A7%81/">조건 필터링</a></li>
+      <li><a href="https://yw8837.github.io/tags/isin/">Isin</a></li>
+      <li><a href="https://yw8837.github.io/tags/sort_values/">Sort_values</a></li>
+      <li><a href="https://yw8837.github.io/tags/groupby/">Groupby</a></li>
+      <li><a href="https://yw8837.github.io/tags/agg/">Agg</a></li>
+      <li><a href="https://yw8837.github.io/tags/unstack/">Unstack</a></li>
+      <li><a href="https://yw8837.github.io/tags/merge/">Merge</a></li>
+      <li><a href="https://yw8837.github.io/tags/to_datetime/">To_datetime</a></li>
+      <li><a href="https://yw8837.github.io/tags/str-%EC%A0%91%EA%B7%BC%EC%9E%90/">Str 접근자</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EB%B2%A1%ED%84%B0%ED%99%94/">벡터화</a></li>
+      <li><a href="https://yw8837.github.io/tags/vectorization/">Vectorization</a></li>
+      <li><a href="https://yw8837.github.io/tags/%ED%95%9C%EA%B8%80%ED%8F%B0%ED%8A%B8/">한글폰트</a></li>
+      <li><a href="https://yw8837.github.io/tags/drive.mount/">Drive.mount</a></li>
+      <li><a href="https://yw8837.github.io/tags/filenotfounderror/">FileNotFoundError</a></li>
+      <li><a href="https://yw8837.github.io/tags/nfc/">NFC</a></li>
+      <li><a href="https://yw8837.github.io/tags/nfd/">NFD</a></li>
+      <li><a href="https://yw8837.github.io/tags/read_csv/">Read_csv</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%A0%95%ED%98%95-%EB%8D%B0%EC%9D%B4%ED%84%B0/">정형 데이터</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-18-pandas%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94/">
+    <span class="title">다음 페이지 »</span>
+    <span>6/18 pandas &amp; 데이터 시각화 — 표를 가공하는 손과, 데이터를 보여주는 눈</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
+        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '복사';
+
+        function copyingDone() {
+            copybutton.innerHTML = '복사 완료!';
+            setTimeout(() => {
+                copybutton.innerHTML = '복사';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -1,1 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Constraint_demo on AI_6스터디</title><link>https://yw8837.github.io/tags/constraint_demo/</link><description>Recent content in Constraint_demo on AI_6스터디</description><generator>Hugo</generator><language>ko</language><lastBuildDate>Mon, 15 Jun 2026 09:00:00 +0900</lastBuildDate><atom:link href="https://yw8837.github.io/tags/constraint_demo/index.xml" rel="self" type="application/rss+xml"/><item><title>6/15 데이터베이스 개요 &amp; 구성하기 — school_db 5테이블 CREATE·제약조건·constraint_demo 실습 노트</title><link>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</link><pubDate>Mon, 15 Jun 2026 09:00:00 +0900</pubDate><guid>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</guid><description>6/15 데이터베이스 개요 &amp;amp; 구성하기 실습 코드 노트. SQLite(school_db.db)에서 강사 정답본(Day06_lecture.sql)으로 5테이블 CREATE(복합PK·FK·CHECK), 제약조건별 위반 동작(NOT NULL/UNIQUE/DEFAULT/CHECK/PK/FK), UNIQUE+NULL 중복 허용, PRAGMA로 제약 조회, SQLite ALTER 제약 우회를 다룬다. 핵심 사례 constraint_demo(good_db.py vs bad_db.py)로 동일 UI·동일 INSERT인데 제약 설계 차이로 가입 성공/실패가 갈리는 과정을 시나리오로 실습한다.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Constraint_demo on AI_6스터디</title>
+    <link>https://yw8837.github.io/tags/constraint_demo/</link>
+    <description>Recent content in Constraint_demo on AI_6스터디</description>
+    <generator>Hugo</generator>
+    <language>ko</language>
+    <lastBuildDate>Mon, 15 Jun 2026 09:00:00 +0900</lastBuildDate>
+    <atom:link href="https://yw8837.github.io/tags/constraint_demo/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>6/15 데이터베이스 개요 &amp; 구성하기 — school_db 5테이블 CREATE·제약조건·constraint_demo 실습 노트</title>
+      <link>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</link>
+      <pubDate>Mon, 15 Jun 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</guid>
+      <description>6/15 데이터베이스 개요 &amp;amp; 구성하기 실습 코드 노트. SQLite(school_db.db)에서 강사 정답본(Day06_lecture.sql)으로 5테이블 CREATE(복합PK·FK·CHECK), 제약조건별 위반 동작(NOT NULL/UNIQUE/DEFAULT/CHECK/PK/FK), UNIQUE&#43;NULL 중복 허용, PRAGMA로 제약 조회, SQLite ALTER 제약 우회를 다룬다. 핵심 사례 constraint_demo(good_db.py vs bad_db.py)로 동일 UI·동일 INSERT인데 제약 설계 차이로 가입 성공/실패가 갈리는 과정을 시나리오로 실습한다.</description>
+    </item>
+  </channel>
+</rss>

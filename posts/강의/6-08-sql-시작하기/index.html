@@ -1,56 +1,896 @@
-<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음 | AI_6스터디</title><meta name=keywords content="SQL,데이터베이스,SQLite,CRUD,SELECT,DML,ERD,chinook,코딩기초,초보자"><meta name=description content="이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code + SQLTools + SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다."><meta name=author content="yw8837"><link rel=canonical href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/><link crossorigin=anonymous href=/assets/css/stylesheet.css rel="preload stylesheet" as=style><link rel=icon href=https://yw8837.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://yw8837.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://yw8837.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://yw8837.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yw8837.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script><script>var doNotTrack=!1,dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes";if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-EQR4094Q13")}</script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/"><meta property="og:site_name" content="AI_6스터디"><meta property="og:title" content="6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음"><meta property="og:description" content="이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code + SQLTools + SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다."><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-06-08T09:00:00+09:00"><meta property="article:modified_time" content="2026-06-08T09:00:00+09:00"><meta property="article:tag" content="SQL"><meta property="article:tag" content="데이터베이스"><meta property="article:tag" content="SQLite"><meta property="article:tag" content="CRUD"><meta property="article:tag" content="SELECT"><meta property="article:tag" content="DML"><meta name=twitter:card content="summary"><meta name=twitter:title content="6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음"><meta name=twitter:description content="이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code + SQLTools + SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yw8837.github.io/posts/"},{"@type":"ListItem","position":2,"name":"6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음","item":"https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음","name":"6\/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음","description":"이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code + SQLTools + SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다.","keywords":["SQL","데이터베이스","SQLite","CRUD","SELECT","DML","ERD","chinook","코딩기초","초보자"],"articleBody":" 오늘부터 SQL이다. “데이터베이스가 도대체 뭔데?“부터 시작해, 데이터를 **조회(SELECT)**하고 **추가·수정·삭제(DML)**하는 기본기를 닦았다. 코드를 외우기보다 CRUD라는 큰 틀과 실습 환경 세팅에 집중한 날. 강사님 표현으로는 환경 세팅이 “1차 관문\"이었다.\n📖 수업 내용 오늘의 큰 그림은 이렇다.\nDB/SQL 기초 이론 — 데이터베이스란? SQL이란? 그리고 핵심 키워드 CRUD 실습 환경 세팅(1차 관문) — VS Code + SQLTools + SQLite 연결 chinook 구조 읽기 — ERD와 Crow’s Foot 표기법으로 테이블 관계 파악 SELECT 기초 — chinook DB로 조회 연습 (WHERE·DISTINCT·LIKE·ORDER BY) DML — 직접 만든 book 테이블에 INSERT·UPDATE·DELETE 이론을 빠르게 훑고, 손으로 직접 쳐보는 실습에 가장 많은 시간을 썼다.\n01 · 데이터베이스란? — 그리고 왜 SQLite로 배우나 **데이터베이스(DB)**를 한 마디로 하면 **“여러 사람이 공유해 사용할 목적으로 통합해서 관리하는 데이터의 모음”**이다. 우리가 쓰는 거의 모든 서비스(쇼핑몰, SNS, 은행) 뒤에는 DB가 있다.\nDB는 종류가 정말 많다. MariaDB, Oracle, Amazon Redshift… 하지만 강사님이 분명히 못 박았다 — 세상의 모든 DB를 다 알 필요는 없다. 종류에 따라 사용법이 조금씩 다를 뿐, 검색·분석에 쓰는 기본 사용법은 DB 종류와 상관없이 거의 같기 때문이다. 그 공통분모가 바로 우리가 배울 내용이다.\n그럼 왜 하필 SQLite로 배울까?\nDB 엔진 특징 학습 적합성 Oracle, MySQL 등 강력하지만 설치가 무겁고 환경 충돌 위험 비대면·다양한 PC 환경엔 부담 SQLite 가볍고 설치 부담이 낮음 (파일 하나가 곧 DB) 기초 SQL 학습에 최적 SQL 문법은 DB마다 미세하게 다르지만, 기본 CRUD 개념은 공통이라 어떤 DB로 시작해도 옮겨가기 쉽다.\n💡 팁: 실습 플랫폼(엘리스)의 DB 엔진은 SQLite가 아닐 수 있다(MariaDB 등). 세미콜론 처리 등 일부 문법이 미세하게 다를 수 있으니, “문법은 환경마다 조금씩 다르다\"는 걸 염두에 두자.\n02 · SQL과 CRUD — 데이터를 다루는 4가지 동작 SQL은 Structured Query Language(구조화 질의 언어)의 약자로, **“데이터베이스에 접근하고 조작하기 위한 표준 언어”**다. 쉽게 말해 DB에게 일을 시키는 명령어다.\nSQL로 할 수 있는 일은 많지만, 핵심은 딱 4가지 CRUD로 요약된다.\n약자 영어 하는 일 대표 SQL C Create 데이터를 만든다(삽입) INSERT R Read 데이터를 읽는다(조회) SELECT U Update 데이터를 수정한다 UPDATE D Delete 데이터를 삭제한다 DELETE 강사님이 강조한 포인트: 어려운 건 CRUD 자체가 아니다. CRUD 명령어는 단순하다. 진짜 어려움은 여러 테이블을 조합하거나, 조회 조건을 어떻게 설계하느냐에서 나온다(이건 6/9에 본격적으로 다룬다).\n쿼리(명령문)의 기본 구조는 **“명령 + 대상”**이다.\nDESC Employees; -- 명령(DESC) + 대상(Employees). 테이블 구조 확인용 💡 팁: 여기 나온 DESC(테이블 구조 보기)는 나중에 배울 ORDER BY ... DESC(내림차순 정렬)와 이름만 같고 기능이 완전히 다르다. 헷갈리지 말 것.\n03 · 관계형 데이터베이스 — 테이블 = 컬럼 + 레코드 DB 종류 중 가장 많이 쓰는 게 **관계형 데이터베이스(RDB)**다. “하나 이상의 테이블로 이루어지며, 서로 연결된 데이터를 가진” DB이고, SQL로 제어한다.\n테이블은 컬럼(Column)과 레코드(Record)로 이루어진 표다. 엑셀 시트를 떠올리면 쉽다.\n사번 이름 성별 001 홍길동 남성 002 김철수 남성 003 김영희 여성 컬럼(세로): 사번, 이름, 성별 같은 항목(속성) 레코드(가로): 한 줄 한 줄, 즉 개별 데이터 한 건 모든 테이블은 고유한 이름으로 구분된다.\n💡 팁: 실무에서는 “컬럼\"을 **“필드(field)”**라고도 부른다. 강의자료는 “컬럼\"을 쓰지만 둘은 같은 말이니 혼동하지 말자.\n04 · 실습 환경 세팅 — “1차 관문” 통과하기 오늘 오전의 진짜 미션은 실습 환경을 직접 세팅하는 것이었다. 강사님은 이걸 **“1차 관문”**이라 불렀다. 통과 기준은 명확하다 — SQLite 연결 테스트에서 “Successfully connected” 메시지를 보는 것.\n① VS Code 확장 3종 설치 (Ctrl+Shift+X로 Extensions 열기)\n확장 역할 SQLTools SQL을 VS Code에서 실행하는 핵심 도구 SQLTools SQLite SQLTools가 SQLite와 연결되게 해주는 드라이버 SQLite Viewer DB 파일 내용을 눈으로 확인 ② (Windows) Node.js 설치 권장 — 일부 PC에서 SQLTools/SQLite 연동 시 런타임 요구 메시지가 뜰 수 있어 사전 방지용. 설치 시 Add to PATH 체크, 설치 후 재부팅 권장.\nnode -v # 설치 확인 (버전이 나오면 성공) npm -v ③ 커넥션 생성 — SQLTools 패널 → Add New Connection → 타입 SQLite → 이름 임의 → Database File에 DB 파일 경로 입력 → Test Connection → “Successfully connected” 확인 → Save → Connect.\n경로 주의: Windows는 역슬래시 \\, Mac은 슬래시 / ④ 편의 설정 2가지\n단축키 변경: 선택한 쿼리 실행을 **Ctrl+Enter**로 바꾸면 편하다. 레이아웃: View → Editor Layout → Two Rows로 결과창을 아래에 배치. 💡 팁: 쿼리가 바로 실행 안 되면 실행할 부분을 드래그(선택)한 뒤 실행하자. 전체 실행과 부분 실행이 헷갈려서 생기는 문제가 많다. “table이 없다\"는 메시지는 데이터를 아직 안 넣은 상태일 수 있으니, 스크립트를 위에서부터 순서대로 실행하자.\n05 · chinook 구조 읽기 — ERD와 Crow’s Foot 표기법 쿼리를 치기 전에, 테이블들이 서로 어떻게 연결돼 있는지를 그림으로 읽는 법을 짚었다. 이게 **ERD(개체-관계 다이어그램, Entity-Relationship Diagram)**다. 내일 배울 JOIN의 토대이기도 하다.\nERD는 세 가지로 이루어진다.\n구성요소 ERD에서 모습 의미 개체(Entity) 박스 하나 테이블 (예: tracks, albums) 속성(Attribute) 박스 안 항목 컬럼 + 자료형(INTEGER, NVARCHAR 등) 관계(Relationship) 박스를 잇는 선 테이블 간 연결, 선 끝 기호가 수 관계(카디널리티) Crow’s Foot(까마귀발) 표기법 — 선 끝 기호 읽기 관계선의 양 끝에 붙는 기호로 “몇 대 몇” 관계인지 읽는다. 기호는 **바깥쪽(최대 수)**과 안쪽(최소 수) 두 자리로 본다.\n바깥쪽(테이블 쪽) = 최대: |(막대)=정확히 하나 / \u003c(까마귀발)=다수(many) 안쪽(선 쪽) = 최소: |(막대)=최소 하나(필수) / O(동그라미)=0 가능(선택) 조합하면 이렇게 읽힌다.\n기호 의미 ` `O ` ` \u003c` O\u003c 0 또는 다수 (선택 다중) — 1:N 관계에서 가장 흔함 💡 팁: O\u003c(0 또는 다수)가 실무에서 제일 자주 보인다. “한 앨범에 트랙이 0개일 수도, 여러 개일 수도\"처럼 대부분의 1:N이 이 모양이다.\nchinook DB는 3개 영역으로 오늘 실습할 chinook(음악 판매 샘플 DB)의 구조를 ERD로 보면 크게 세 덩어리다.\n영역 테이블 관계 음악 카탈로그 artists → albums → tracks 1:N (아티스트 1명이 앨범 다수, 앨범 1개에 트랙 다수) 플레이리스트 playlists ↔ playlist_track ↔ tracks N:M — 중간 정션 테이블(playlist_track)로 연결 판매 customers → invoices → invoice_items 계층 구조(고객 1명이 인보이스 다수, 인보이스 1건에 항목 다수) 💡 팁: N:M(다대다)은 직접 못 잇는다. 한 플레이리스트에 여러 트랙이 들고, 한 트랙도 여러 플레이리스트에 들어가니, 그 사이에 playlist_track 같은 정션(중간) 테이블을 둔다. JOIN 실습에서 “왜 중간 테이블을 거치지?“가 바로 이거다.\n참고: ERD·Crow’s Foot·chinook 영역 구분은 강사님 라이브 정리(노션)에 정리된 내용으로 보강했다. SQLite 입문 자료는 SQLite Tutorial 샘플 DB 페이지에 chinook ERD가 그림으로 있으니 함께 보면 좋다.\n06 · SELECT 기초 — 데이터를 골라 보기 (chinook DB) 이제 본격적으로 조회다. 실습 DB는 chinook(음악 판매 샘플 DB — albums, artists, tracks, customers, invoices 등의 테이블).\n기본형은 SELECT 컬럼 FROM 테이블; = “어떤 컬럼을(SELECT) 어느 테이블에서(FROM) 가져와라”.\nSELECT Title FROM albums; -- albums에서 Title 컬럼만 SELECT * FROM artists; -- * = 모든 컬럼 SELECT * FROM tracks LIMIT 10; -- LIMIT 10 = 앞 10건만 *는 “전체 컬럼”, LIMIT n은 “데이터가 많을 때 앞 n개만 보기\"다.\nDISTINCT — 중복 제거 DISTINCT(“뚜렷한\"이라는 뜻)는 뒤에 오는 컬럼의 중복을 없애고 보여준다.\nSELECT DISTINCT Country FROM customers; -- 나라 종류만 (중복 제거) SELECT DISTINCT City, Country FROM customers; -- City+Country 조합 기준 중복 제거 💡 팁: DISTINCT 뒤에 컬럼을 2개 이상 쓰면 조합 기준으로 중복을 판단한다. 한쪽이 같아도 다른 쪽이 다르면 다른 행으로 취급한다.\nWHERE — 조건 걸기 WHERE는 **“검색할 데이터의 조건을 설정”**한다.\n연산자 의미 \u003e \u003c 초과 / 미만 \u003e= \u003c= 이상 / 이하 = 같다 != 같지 않다 SELECT * FROM customers WHERE Country = 'USA'; -- 문자열은 따옴표! SELECT * FROM tracks WHERE UnitPrice \u003e 0.99 LIMIT 10; SELECT * FROM invoices WHERE Total \u003e= 10; 💡 팁: 문자열을 비교할 땐 'USA'처럼 작은따옴표로 감싸야 한다. 숫자는 따옴표 없이 쓴다.\n복합 조건 — AND / OR / NOT 조건을 여러 개 묶을 때 쓴다. AND(둘 다), OR(또는), NOT(아닌 것).\nSELECT * FROM customers WHERE Country = 'USA' AND State = 'CA'; SELECT * FROM customers WHERE Country = 'USA' OR Country = 'Canada'; SELECT * FROM customers WHERE NOT Country = 'USA'; -- = WHERE Country != 'USA' 💡 팁: 강사님은 여러 나라를 OR로 길게 나열하기보다 다음에 배울 IN(...)을 쓰는 게 더 깔끔하다고 안내했다.\n기타 연산자 — BETWEEN / IN / NOT IN SELECT * FROM invoices WHERE Total BETWEEN 5 AND 10; -- 5~10 (경계 포함) SELECT * FROM customers WHERE Country IN ('USA', 'Canada', 'Brazil'); -- 목록 포함 SELECT * FROM customers WHERE Country NOT IN ('USA', 'Canada', 'Brazil'); -- 목록 제외 BETWEEN A AND B는 A와 B를 포함한다는 점에 주의.\nLIKE — 패턴으로 찾기 특정 문자가 포함된 문자열을 찾을 때 쓴다. 와일드카드 %의 위치가 핵심이다.\n패턴 의미 'K%' K로 시작 '%K' K로 끝남 '%K%' K 포함 SELECT * FROM albums WHERE Title LIKE 'Rock%'; -- 'Rock'으로 시작 SELECT * FROM albums WHERE Title LIKE '%Live'; -- 'Live'로 끝남 SELECT * FROM tracks WHERE Name LIKE '%Love%' LIMIT 10; -- 'Love' 포함 ORDER BY — 정렬 ORDER BY는 결과를 정렬한다. ASC=오름차순(작은 값부터), DESC=내림차순(큰 값부터).\nSELECT Name, UnitPrice FROM tracks ORDER BY UnitPrice DESC LIMIT 10; -- 비싼 순 10개 SELECT * FROM invoices ORDER BY Total DESC LIMIT 5; -- 결제액 큰 순 5건 SELECT Title FROM albums ORDER BY Title ASC LIMIT 10; -- 제목 알파벳 순 💡 팁: 앞서 말한 대로 여기 DESC는 내림차순 정렬이고, 1장에서 본 DESC 테이블명(구조 보기)과는 완전히 다른 기능이다.\n07 · DML — 데이터를 추가·수정·삭제하기 (book 테이블) 조회(Read)를 익혔으니 이제 C·U·D다. 이걸 데이터를 다룬다는 뜻에서 **DML(데이터 조작어)**라 부른다.\n중요한 원칙: 실습용 chinook DB를 직접 건드리지 않는다. 대신 book이라는 테이블을 새로 만들어 거기서 INSERT·UPDATE·DELETE를 연습했다(실수로 원본 데이터를 망치지 않기 위함).\n먼저 테이블을 만들고 데이터를 채운다(코드 전문은 실습 노트 참고).\nDROP TABLE IF EXISTS book; -- 이미 있으면 지우고 새로 → 몇 번 실행해도 에러 없음 CREATE TABLE book ( id INTEGER PRIMARY KEY, title TEXT, category TEXT, price REAL, rating INTEGER, stock INTEGER ); DROP TABLE IF EXISTS는 재실행 가능한 스크립트를 만드는 패턴이다. 이미 테이블이 있어도 에러 없이 새로 만든다.\nINSERT — 행 추가 -- 컬럼명 명시 INSERT INTO book (id, title, category, price, rating, stock) VALUES (13, 'It''s Only the Himalayas', 'Travel', 45.17, 2, 19); -- 컬럼명 생략 (테이블 정의 순서대로 값 입력) INSERT INTO book VALUES (14, 'Set Me Free', 'Young Adult', 17.46, 5, 19); 💡 팁: 컬럼명을 생략하면 테이블을 만들 때 정한 순서대로 값이 들어간다. 그리고 문자열 안에 작은따옴표가 있으면(It's) **두 번 연속('')**으로 써서 이스케이프한다. 컬럼 수와 값 개수가 안 맞으면 에러가 난다.\nUPDATE — 값 수정 UPDATE book SET price = 39.99 WHERE title = 'Soumission'; -- 특정 책 가격 변경 UPDATE book SET stock = stock + 5 WHERE category = 'Poetry'; -- 기존 값 기반 연산 SET 컬럼 = 값으로 수정하고, WHERE로 어떤 행을 바꿀지 지정한다. stock = stock + 5처럼 기존 값을 활용한 연산도 가능하다.\nDELETE — 행 삭제 DELETE FROM book WHERE rating = 1; -- 평점 1점인 책 삭제 DELETE FROM book WHERE stock \u003c 16; -- 재고 16권 미만 삭제 ⚠️ 가장 중요한 주의: UPDATE와 DELETE에서 WHERE를 빼먹으면 테이블 전체가 수정·삭제된다. 예를 들어 DELETE FROM book;은 book의 모든 행을 삭제한다. 실무에서 가장 무서운 실수다.\n참고: 판서 기록의 과제 표현(“재고=15 삭제”)과 정답 SQL의 stock \u003c 16(재고 16 미만) 사이에 표현 차이가 있다. 결과적으로는 거의 같으나, 본 정리는 **정답 파일 기준 stock \u003c 16**으로 서술했다 [원문 확인 필요].\n08 · 강사님이 강조한 포인트 (정리) 오늘 반복해서 강조된 내용을 모았다.\nCRUD가 DB 기초의 핵심. 어려움은 CRUD가 아니라 테이블 조합·조건 설계에서 온다. ERD(테이블 관계도) 보는 훈련을 반복하라. “강사 화면 따라 치기” 금지 — ERD를 보고 컬럼·테이블을 확인한 뒤 직접 작성. DML은 별도 DB(book)에서. 원본(chinook) 손상 방지. 동시에 여러 DB를 연결하면 헷갈리니 하나만 연결 유지(나머지 Disconnect). WHERE 누락 = 전체 수정/삭제 위험(UPDATE·DELETE 공통). 직무별 활용도(강사 의견): 데이터 분석 직무는 임의 삭제·수정이 위험해 실무에선 제한적, 개발 직무는 CRUD가 필수. 운영 공지: 화~금 6교시 시험 예고, 답지는 매일 공유, 다음날부터 시험은 classicmodels DB 사용 예고. 📚 참고자료 Elice, 「01 SQL 시작하기」 강의 자료 (슬라이드 39p) Elice, 「02 데이터를 제어하는 DML(데이터 조작어)」 강의 자료 (슬라이드 35p) SQLite Tutorial — 샘플 DB(chinook ERD 그림 수록): https://www.sqlitetutorial.net/sqlite-sample-database/ 타 DBMS 튜토리얼(강사 추천): Oracle · MySQL · PostgreSQL 실습 SQL: Day01_lecture.sql(SELECT 정답), Day01_dml_lecture.sql(DML 정답) 실습 DB: chinook.db(SQLite Tutorial 샘플), book.db(DML 연습용 — 수업 중 생성) 라이브 수업 진행 기록 (1-3교시 / 4-6교시) — 강사: 황지영 마무리 오늘은 데이터를 다루는 첫 삽을 뜬 날이다. 큰 그림은 단순하다 — 데이터베이스는 데이터의 모음이고, 그걸 다루는 표준 언어가 SQL이며, 핵심 동작은 CRUD 네 가지다. SELECT로 원하는 데이터를 조건 걸어 골라내고(WHERE·DISTINCT·LIKE·ORDER BY), DML로 추가·수정·삭제한다. 무엇보다 잊지 말 것 — WHERE 없는 UPDATE·DELETE는 전체를 날린다. 내일은 여기에 **함수와 여러 테이블 결합(JOIN)**이 더해진다.\n🔗 연관 노트 6/8 SQL 시작하기 코드 노트 — 오늘 쿼리를 직접 실행해보는 실습 노트 6/9 SQL 함수와 서브쿼리 — 집계함수·GROUP BY·JOIN·서브쿼리 (다음 강의) ","wordCount":"1949","inLanguage":"en","datePublished":"2026-06-08T09:00:00+09:00","dateModified":"2026-06-08T09:00:00+09:00","author":{"@type":"Person","name":"yw8837"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/"},"publisher":{"@type":"Organization","name":"AI_6스터디","logo":{"@type":"ImageObject","url":"https://yw8837.github.io/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=header-nav><div class=logo><a href=https://yw8837.github.io/ accesskey=h title="AI_6스터디 (Alt + H)">AI_6스터디</a><div class=logo-switches><button id=theme-toggle class=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
-<svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-<svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu class=menu><li><a href=https://yw8837.github.io/categories/year-study/ title="📚 Year Study"><span>📚 Year Study</span></a></li><li><a href=https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/ title="강의 정리"><span>강의 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/ title="실습 정리"><span>실습 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/ title=프로젝트><span>프로젝트</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><nav class=breadcrumbs role=navigation aria-label=Breadcrumb><a href=/>홈</a>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg>
-<a href=/posts/>Posts</a>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg></nav><h1 class="post-title entry-hint-parent">6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음</h1><div class=post-description>이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code + SQLTools + SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다.</div><div class=post-meta><span title='2026-06-08 09:00:00 +0900 KST'>2026년 6월 8일</span>&nbsp;·&nbsp;<span>10 분</span>&nbsp;·&nbsp;<span>yw8837</span></div></header><details class=toc><summary accesskey=c title="(Alt + C)"><span class=title>목차</span></summary><div class=inner><ul><li><a href=#-%ec%88%98%ec%97%85-%eb%82%b4%ec%9a%a9 aria-label="📖 수업 내용">📖 수업 내용</a><ul><li><a href=#01--%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%b2%a0%ec%9d%b4%ec%8a%a4%eb%9e%80--%ea%b7%b8%eb%a6%ac%ea%b3%a0-%ec%99%9c-sqlite%eb%a1%9c-%eb%b0%b0%ec%9a%b0%eb%82%98 aria-label="01 · 데이터베이스란? — 그리고 왜 SQLite로 배우나">01 · 데이터베이스란? — 그리고 왜 SQLite로 배우나</a></li><li><a href=#02--sql%ea%b3%bc-crud--%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%a5%bc-%eb%8b%a4%eb%a3%a8%eb%8a%94-4%ea%b0%80%ec%a7%80-%eb%8f%99%ec%9e%91 aria-label="02 · SQL과 CRUD — 데이터를 다루는 4가지 동작">02 · SQL과 CRUD — 데이터를 다루는 4가지 동작</a></li><li><a href=#03--%ea%b4%80%ea%b3%84%ed%98%95-%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%b2%a0%ec%9d%b4%ec%8a%a4--%ed%85%8c%ec%9d%b4%eb%b8%94--%ec%bb%ac%eb%9f%bc--%eb%a0%88%ec%bd%94%eb%93%9c aria-label="03 · 관계형 데이터베이스 — 테이블 = 컬럼 + 레코드">03 · 관계형 데이터베이스 — 테이블 = 컬럼 + 레코드</a></li><li><a href=#04--%ec%8b%a4%ec%8a%b5-%ed%99%98%ea%b2%bd-%ec%84%b8%ed%8c%85--1%ec%b0%a8-%ea%b4%80%eb%ac%b8-%ed%86%b5%ea%b3%bc%ed%95%98%ea%b8%b0 aria-label="04 · 실습 환경 세팅 — &ldquo;1차 관문&rdquo; 통과하기">04 · 실습 환경 세팅 — &ldquo;1차 관문&rdquo; 통과하기</a></li><li><a href=#05--chinook-%ea%b5%ac%ec%a1%b0-%ec%9d%bd%ea%b8%b0--erd%ec%99%80-crows-foot-%ed%91%9c%ea%b8%b0%eb%b2%95 aria-label="05 · chinook 구조 읽기 — ERD와 Crow&rsquo;s Foot 표기법">05 · chinook 구조 읽기 — ERD와 Crow&rsquo;s Foot 표기법</a><ul><li><a href=#crows-foot%ea%b9%8c%eb%a7%88%ea%b7%80%eb%b0%9c-%ed%91%9c%ea%b8%b0%eb%b2%95--%ec%84%a0-%eb%81%9d-%ea%b8%b0%ed%98%b8-%ec%9d%bd%ea%b8%b0 aria-label="Crow&rsquo;s Foot(까마귀발) 표기법 — 선 끝 기호 읽기">Crow&rsquo;s Foot(까마귀발) 표기법 — 선 끝 기호 읽기</a></li><li><a href=#chinook-db%eb%8a%94-3%ea%b0%9c-%ec%98%81%ec%97%ad%ec%9c%bc%eb%a1%9c aria-label="chinook DB는 3개 영역으로">chinook DB는 3개 영역으로</a></li></ul></li><li><a href=#06--select-%ea%b8%b0%ec%b4%88--%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%a5%bc-%ea%b3%a8%eb%9d%bc-%eb%b3%b4%ea%b8%b0-chinook-db aria-label="06 · SELECT 기초 — 데이터를 골라 보기 (chinook DB)">06 · SELECT 기초 — 데이터를 골라 보기 (chinook DB)</a><ul><li><a href=#distinct--%ec%a4%91%eb%b3%b5-%ec%a0%9c%ea%b1%b0 aria-label="DISTINCT — 중복 제거">DISTINCT — 중복 제거</a></li><li><a href=#where--%ec%a1%b0%ea%b1%b4-%ea%b1%b8%ea%b8%b0 aria-label="WHERE — 조건 걸기">WHERE — 조건 걸기</a></li><li><a href=#%eb%b3%b5%ed%95%a9-%ec%a1%b0%ea%b1%b4--and--or--not aria-label="복합 조건 — AND / OR / NOT">복합 조건 — AND / OR / NOT</a></li><li><a href=#%ea%b8%b0%ed%83%80-%ec%97%b0%ec%82%b0%ec%9e%90--between--in--not-in aria-label="기타 연산자 — BETWEEN / IN / NOT IN">기타 연산자 — BETWEEN / IN / NOT IN</a></li><li><a href=#like--%ed%8c%a8%ed%84%b4%ec%9c%bc%eb%a1%9c-%ec%b0%be%ea%b8%b0 aria-label="LIKE — 패턴으로 찾기">LIKE — 패턴으로 찾기</a></li><li><a href=#order-by--%ec%a0%95%eb%a0%ac aria-label="ORDER BY — 정렬">ORDER BY — 정렬</a></li></ul></li><li><a href=#07--dml--%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%a5%bc-%ec%b6%94%ea%b0%80%ec%88%98%ec%a0%95%ec%82%ad%ec%a0%9c%ed%95%98%ea%b8%b0-book-%ed%85%8c%ec%9d%b4%eb%b8%94 aria-label="07 · DML — 데이터를 추가·수정·삭제하기 (book 테이블)">07 · DML — 데이터를 추가·수정·삭제하기 (book 테이블)</a><ul><li><a href=#insert--%ed%96%89-%ec%b6%94%ea%b0%80 aria-label="INSERT — 행 추가">INSERT — 행 추가</a></li><li><a href=#update--%ea%b0%92-%ec%88%98%ec%a0%95 aria-label="UPDATE — 값 수정">UPDATE — 값 수정</a></li><li><a href=#delete--%ed%96%89-%ec%82%ad%ec%a0%9c aria-label="DELETE — 행 삭제">DELETE — 행 삭제</a></li></ul></li><li><a href=#08--%ea%b0%95%ec%82%ac%eb%8b%98%ec%9d%b4-%ea%b0%95%ec%a1%b0%ed%95%9c-%ed%8f%ac%ec%9d%b8%ed%8a%b8-%ec%a0%95%eb%a6%ac aria-label="08 · 강사님이 강조한 포인트 (정리)">08 · 강사님이 강조한 포인트 (정리)</a></li></ul></li><li><a href=#-%ec%b0%b8%ea%b3%a0%ec%9e%90%eb%a3%8c aria-label="📚 참고자료">📚 참고자료</a><ul><li><a href=#%eb%a7%88%eb%ac%b4%eb%a6%ac aria-label=마무리>마무리</a></li><li><a href=#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8 aria-label="🔗 연관 노트">🔗 연관 노트</a></li></ul></li></ul></div></details><div class="post-content md-content"><blockquote><p>오늘부터 <strong>SQL</strong>이다. &ldquo;데이터베이스가 도대체 뭔데?&ldquo;부터 시작해, 데이터를 **조회(SELECT)**하고 **추가·수정·삭제(DML)**하는 기본기를 닦았다. 코드를 외우기보다 <strong>CRUD라는 큰 틀</strong>과 <strong>실습 환경 세팅</strong>에 집중한 날. 강사님 표현으로는 환경 세팅이 &ldquo;1차 관문"이었다.</p></blockquote><h1 id=-수업-내용>📖 수업 내용<a hidden class=anchor aria-hidden=true href=#-수업-내용>#</a></h1><p>오늘의 큰 그림은 이렇다.</p><ol><li><strong>DB/SQL 기초 이론</strong> — 데이터베이스란? SQL이란? 그리고 핵심 키워드 <strong>CRUD</strong></li><li><strong>실습 환경 세팅(1차 관문)</strong> — VS Code + SQLTools + SQLite 연결</li><li><strong>chinook 구조 읽기</strong> — ERD와 Crow&rsquo;s Foot 표기법으로 테이블 관계 파악</li><li><strong>SELECT 기초</strong> — chinook DB로 조회 연습 (WHERE·DISTINCT·LIKE·ORDER BY)</li><li><strong>DML</strong> — 직접 만든 book 테이블에 INSERT·UPDATE·DELETE</li></ol><p>이론을 빠르게 훑고, 손으로 직접 쳐보는 실습에 가장 많은 시간을 썼다.</p><hr><h2 id=01--데이터베이스란--그리고-왜-sqlite로-배우나>01 · 데이터베이스란? — 그리고 왜 SQLite로 배우나<a hidden class=anchor aria-hidden=true href=#01--데이터베이스란--그리고-왜-sqlite로-배우나>#</a></h2><p>**데이터베이스(DB)**를 한 마디로 하면 **&ldquo;여러 사람이 공유해 사용할 목적으로 통합해서 관리하는 데이터의 모음&rdquo;**이다. 우리가 쓰는 거의 모든 서비스(쇼핑몰, SNS, 은행) 뒤에는 DB가 있다.</p><p>DB는 종류가 정말 많다. MariaDB, Oracle, Amazon Redshift… 하지만 강사님이 분명히 못 박았다 — <strong>세상의 모든 DB를 다 알 필요는 없다.</strong> 종류에 따라 사용법이 조금씩 다를 뿐, <strong>검색·분석에 쓰는 기본 사용법은 DB 종류와 상관없이 거의 같기</strong> 때문이다. 그 공통분모가 바로 우리가 배울 내용이다.</p><p>그럼 왜 하필 <strong>SQLite</strong>로 배울까?</p><table><thead><tr><th>DB 엔진</th><th>특징</th><th>학습 적합성</th></tr></thead><tbody><tr><td>Oracle, MySQL 등</td><td>강력하지만 설치가 무겁고 환경 충돌 위험</td><td>비대면·다양한 PC 환경엔 부담</td></tr><tr><td><strong>SQLite</strong></td><td><strong>가볍고 설치 부담이 낮음</strong> (파일 하나가 곧 DB)</td><td><strong>기초 SQL 학습에 최적</strong></td></tr></tbody></table><p>SQL 문법은 DB마다 미세하게 다르지만, <strong>기본 CRUD 개념은 공통</strong>이라 어떤 DB로 시작해도 옮겨가기 쉽다.</p><blockquote><p>💡 팁: 실습 플랫폼(엘리스)의 DB 엔진은 SQLite가 아닐 수 있다(MariaDB 등). 세미콜론 처리 등 일부 문법이 미세하게 다를 수 있으니, &ldquo;문법은 환경마다 조금씩 다르다"는 걸 염두에 두자.</p></blockquote><hr><h2 id=02--sql과-crud--데이터를-다루는-4가지-동작>02 · SQL과 CRUD — 데이터를 다루는 4가지 동작<a hidden class=anchor aria-hidden=true href=#02--sql과-crud--데이터를-다루는-4가지-동작>#</a></h2><p><strong>SQL</strong>은 <strong>S</strong>tructured <strong>Q</strong>uery <strong>L</strong>anguage(구조화 질의 언어)의 약자로, **&ldquo;데이터베이스에 접근하고 조작하기 위한 표준 언어&rdquo;**다. 쉽게 말해 <strong>DB에게 일을 시키는 명령어</strong>다.</p><p>SQL로 할 수 있는 일은 많지만, 핵심은 딱 4가지 <strong>CRUD</strong>로 요약된다.</p><table><thead><tr><th>약자</th><th>영어</th><th>하는 일</th><th>대표 SQL</th></tr></thead><tbody><tr><td><strong>C</strong></td><td>Create</td><td>데이터를 <strong>만든다(삽입)</strong></td><td><code>INSERT</code></td></tr><tr><td><strong>R</strong></td><td>Read</td><td>데이터를 <strong>읽는다(조회)</strong></td><td><code>SELECT</code></td></tr><tr><td><strong>U</strong></td><td>Update</td><td>데이터를 <strong>수정한다</strong></td><td><code>UPDATE</code></td></tr><tr><td><strong>D</strong></td><td>Delete</td><td>데이터를 <strong>삭제한다</strong></td><td><code>DELETE</code></td></tr></tbody></table><p>강사님이 강조한 포인트: <strong>어려운 건 CRUD 자체가 아니다.</strong> CRUD 명령어는 단순하다. 진짜 어려움은 <strong>여러 테이블을 조합하거나, 조회 조건을 어떻게 설계하느냐</strong>에서 나온다(이건 6/9에 본격적으로 다룬다).</p><p>쿼리(명령문)의 기본 구조는 **&ldquo;명령 + 대상&rdquo;**이다.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>DESC</span><span class=w> </span><span class=n>Employees</span><span class=p>;</span><span class=w>   </span><span class=c1>-- 명령(DESC) + 대상(Employees). 테이블 구조 확인용
-</span></span></span></code></pre></div><blockquote><p>💡 팁: 여기 나온 <code>DESC</code>(테이블 구조 보기)는 나중에 배울 <code>ORDER BY ... DESC</code>(내림차순 정렬)와 <strong>이름만 같고 기능이 완전히 다르다.</strong> 헷갈리지 말 것.</p></blockquote><hr><h2 id=03--관계형-데이터베이스--테이블--컬럼--레코드>03 · 관계형 데이터베이스 — 테이블 = 컬럼 + 레코드<a hidden class=anchor aria-hidden=true href=#03--관계형-데이터베이스--테이블--컬럼--레코드>#</a></h2><p>DB 종류 중 가장 많이 쓰는 게 **관계형 데이터베이스(RDB)**다. <strong>&ldquo;하나 이상의 테이블로 이루어지며, 서로 연결된 데이터를 가진&rdquo;</strong> DB이고, SQL로 제어한다.</p><p>테이블은 <strong>컬럼(Column)과 레코드(Record)로 이루어진 표</strong>다. 엑셀 시트를 떠올리면 쉽다.</p><table><thead><tr><th>사번</th><th>이름</th><th>성별</th></tr></thead><tbody><tr><td>001</td><td>홍길동</td><td>남성</td></tr><tr><td>002</td><td>김철수</td><td>남성</td></tr><tr><td>003</td><td>김영희</td><td>여성</td></tr></tbody></table><ul><li><strong>컬럼(세로)</strong>: 사번, 이름, 성별 같은 <strong>항목(속성)</strong></li><li><strong>레코드(가로)</strong>: 한 줄 한 줄, 즉 <strong>개별 데이터 한 건</strong></li></ul><p>모든 테이블은 고유한 이름으로 구분된다.</p><blockquote><p>💡 팁: 실무에서는 &ldquo;컬럼"을 **&ldquo;필드(field)&rdquo;**라고도 부른다. 강의자료는 &ldquo;컬럼"을 쓰지만 둘은 같은 말이니 혼동하지 말자.</p></blockquote><hr><h2 id=04--실습-환경-세팅--1차-관문-통과하기>04 · 실습 환경 세팅 — &ldquo;1차 관문&rdquo; 통과하기<a hidden class=anchor aria-hidden=true href=#04--실습-환경-세팅--1차-관문-통과하기>#</a></h2><p>오늘 오전의 진짜 미션은 <strong>실습 환경을 직접 세팅하는 것</strong>이었다. 강사님은 이걸 **&ldquo;1차 관문&rdquo;**이라 불렀다. 통과 기준은 명확하다 — <strong>SQLite 연결 테스트에서 &ldquo;Successfully connected&rdquo; 메시지를 보는 것.</strong></p><p><strong>① VS Code 확장 3종 설치</strong> (<code>Ctrl+Shift+X</code>로 Extensions 열기)</p><table><thead><tr><th>확장</th><th>역할</th></tr></thead><tbody><tr><td><strong>SQLTools</strong></td><td>SQL을 VS Code에서 실행하는 핵심 도구</td></tr><tr><td><strong>SQLTools SQLite</strong></td><td>SQLTools가 SQLite와 연결되게 해주는 드라이버</td></tr><tr><td><strong>SQLite Viewer</strong></td><td>DB 파일 내용을 눈으로 확인</td></tr></tbody></table><p><strong>② (Windows) Node.js 설치 권장</strong> — 일부 PC에서 SQLTools/SQLite 연동 시 런타임 요구 메시지가 뜰 수 있어 사전 방지용. 설치 시 <strong>Add to PATH 체크</strong>, 설치 후 재부팅 권장.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>node -v   <span class=c1># 설치 확인 (버전이 나오면 성공)</span>
-</span></span><span class=line><span class=cl>npm -v
-</span></span></code></pre></div><p><strong>③ 커넥션 생성</strong> — SQLTools 패널 → Add New Connection → 타입 <strong>SQLite</strong> → 이름 임의 → Database File에 DB 파일 경로 입력 → <strong>Test Connection</strong> → &ldquo;Successfully connected&rdquo; 확인 → Save → Connect.</p><ul><li>경로 주의: <strong>Windows는 역슬래시 <code>\</code>, Mac은 슬래시 <code>/</code></strong></li></ul><p><strong>④ 편의 설정 2가지</strong></p><ul><li><strong>단축키 변경</strong>: 선택한 쿼리 실행을 **<code>Ctrl+Enter</code>**로 바꾸면 편하다.</li><li><strong>레이아웃</strong>: View → Editor Layout → <strong>Two Rows</strong>로 결과창을 아래에 배치.</li></ul><blockquote><p>💡 팁: 쿼리가 바로 실행 안 되면 <strong>실행할 부분을 드래그(선택)한 뒤 실행</strong>하자. 전체 실행과 부분 실행이 헷갈려서 생기는 문제가 많다. &ldquo;table이 없다"는 메시지는 데이터를 아직 안 넣은 상태일 수 있으니, 스크립트를 <strong>위에서부터 순서대로</strong> 실행하자.</p></blockquote><hr><h2 id=05--chinook-구조-읽기--erd와-crows-foot-표기법>05 · chinook 구조 읽기 — ERD와 Crow&rsquo;s Foot 표기법<a hidden class=anchor aria-hidden=true href=#05--chinook-구조-읽기--erd와-crows-foot-표기법>#</a></h2><p>쿼리를 치기 전에, <strong>테이블들이 서로 어떻게 연결돼 있는지</strong>를 그림으로 읽는 법을 짚었다. 이게 **ERD(개체-관계 다이어그램, Entity-Relationship Diagram)**다. 내일 배울 JOIN의 토대이기도 하다.</p><p>ERD는 세 가지로 이루어진다.</p><table><thead><tr><th>구성요소</th><th>ERD에서 모습</th><th>의미</th></tr></thead><tbody><tr><td><strong>개체(Entity)</strong></td><td>박스 하나</td><td><strong>테이블</strong> (예: <code>tracks</code>, <code>albums</code>)</td></tr><tr><td><strong>속성(Attribute)</strong></td><td>박스 안 항목</td><td><strong>컬럼</strong> + 자료형(INTEGER, NVARCHAR 등)</td></tr><tr><td><strong>관계(Relationship)</strong></td><td>박스를 잇는 <strong>선</strong></td><td>테이블 간 연결, 선 끝 기호가 <strong>수 관계(카디널리티)</strong></td></tr></tbody></table><h3 id=crows-foot까마귀발-표기법--선-끝-기호-읽기>Crow&rsquo;s Foot(까마귀발) 표기법 — 선 끝 기호 읽기<a hidden class=anchor aria-hidden=true href=#crows-foot까마귀발-표기법--선-끝-기호-읽기>#</a></h3><p>관계선의 양 끝에 붙는 기호로 &ldquo;몇 대 몇&rdquo; 관계인지 읽는다. 기호는 **바깥쪽(최대 수)**과 <strong>안쪽(최소 수)</strong> 두 자리로 본다.</p><ul><li>바깥쪽(테이블 쪽) = <strong>최대</strong>: <code>|</code>(막대)=정확히 하나 / <code>&lt;</code>(까마귀발)=다수(many)</li><li>안쪽(선 쪽) = <strong>최소</strong>: <code>|</code>(막대)=최소 하나(필수) / <code>O</code>(동그라미)=0 가능(선택)</li></ul><p>조합하면 이렇게 읽힌다.</p><table><thead><tr><th>기호</th><th>의미</th></tr></thead><tbody><tr><td>`</td><td></td></tr><tr><td>`O</td><td>`</td></tr><tr><td>`</td><td>&lt;`</td></tr><tr><td><code>O&lt;</code></td><td>0 또는 다수 (선택 다중) — <strong>1:N 관계에서 가장 흔함</strong></td></tr></tbody></table><blockquote><p>💡 팁: <code>O&lt;</code>(0 또는 다수)가 실무에서 제일 자주 보인다. &ldquo;한 앨범에 트랙이 0개일 수도, 여러 개일 수도"처럼 대부분의 1:N이 이 모양이다.</p></blockquote><h3 id=chinook-db는-3개-영역으로>chinook DB는 3개 영역으로<a hidden class=anchor aria-hidden=true href=#chinook-db는-3개-영역으로>#</a></h3><p>오늘 실습할 chinook(음악 판매 샘플 DB)의 구조를 ERD로 보면 크게 세 덩어리다.</p><table><thead><tr><th>영역</th><th>테이블</th><th>관계</th></tr></thead><tbody><tr><td><strong>음악 카탈로그</strong></td><td>artists → albums → tracks</td><td><strong>1:N</strong> (아티스트 1명이 앨범 다수, 앨범 1개에 트랙 다수)</td></tr><tr><td><strong>플레이리스트</strong></td><td>playlists ↔ <strong>playlist_track</strong> ↔ tracks</td><td><strong>N:M</strong> — 중간 <strong>정션 테이블</strong>(playlist_track)로 연결</td></tr><tr><td><strong>판매</strong></td><td>customers → invoices → invoice_items</td><td>계층 구조(고객 1명이 인보이스 다수, 인보이스 1건에 항목 다수)</td></tr></tbody></table><blockquote><p>💡 팁: <strong>N:M(다대다)은 직접 못 잇는다.</strong> 한 플레이리스트에 여러 트랙이 들고, 한 트랙도 여러 플레이리스트에 들어가니, 그 사이에 <strong>playlist_track</strong> 같은 <strong>정션(중간) 테이블</strong>을 둔다. JOIN 실습에서 &ldquo;왜 중간 테이블을 거치지?&ldquo;가 바로 이거다.</p></blockquote><blockquote><p>참고: ERD·Crow&rsquo;s Foot·chinook 영역 구분은 강사님 라이브 정리(노션)에 정리된 내용으로 보강했다. SQLite 입문 자료는 <a href=https://www.sqlitetutorial.net/sqlite-sample-database/>SQLite Tutorial 샘플 DB</a> 페이지에 chinook ERD가 그림으로 있으니 함께 보면 좋다.</p></blockquote><hr><h2 id=06--select-기초--데이터를-골라-보기-chinook-db>06 · SELECT 기초 — 데이터를 골라 보기 (chinook DB)<a hidden class=anchor aria-hidden=true href=#06--select-기초--데이터를-골라-보기-chinook-db>#</a></h2><p>이제 본격적으로 조회다. 실습 DB는 <strong>chinook</strong>(음악 판매 샘플 DB — albums, artists, tracks, customers, invoices 등의 테이블).</p><p>기본형은 <strong><code>SELECT 컬럼 FROM 테이블;</code></strong> = &ldquo;어떤 컬럼을(SELECT) 어느 테이블에서(FROM) 가져와라&rdquo;.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>Title</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=p>;</span><span class=w>        </span><span class=c1>-- albums에서 Title 컬럼만
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>artists</span><span class=p>;</span><span class=w>           </span><span class=c1>-- * = 모든 컬럼
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>   </span><span class=c1>-- LIMIT 10 = 앞 10건만
-</span></span></span></code></pre></div><p><code>*</code>는 &ldquo;전체 컬럼&rdquo;, <code>LIMIT n</code>은 &ldquo;데이터가 많을 때 앞 n개만 보기"다.</p><h3 id=distinct--중복-제거>DISTINCT — 중복 제거<a hidden class=anchor aria-hidden=true href=#distinct--중복-제거>#</a></h3><p><code>DISTINCT</code>(&ldquo;뚜렷한"이라는 뜻)는 뒤에 오는 컬럼의 <strong>중복을 없애고</strong> 보여준다.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>DISTINCT</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=p>;</span><span class=w>       </span><span class=c1>-- 나라 종류만 (중복 제거)
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>DISTINCT</span><span class=w> </span><span class=n>City</span><span class=p>,</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=p>;</span><span class=w> </span><span class=c1>-- City+Country 조합 기준 중복 제거
-</span></span></span></code></pre></div><blockquote><p>💡 팁: <code>DISTINCT</code> 뒤에 컬럼을 2개 이상 쓰면 <strong>조합 기준</strong>으로 중복을 판단한다. 한쪽이 같아도 다른 쪽이 다르면 다른 행으로 취급한다.</p></blockquote><h3 id=where--조건-걸기>WHERE — 조건 걸기<a hidden class=anchor aria-hidden=true href=#where--조건-걸기>#</a></h3><p><code>WHERE</code>는 **&ldquo;검색할 데이터의 조건을 설정&rdquo;**한다.</p><table><thead><tr><th>연산자</th><th>의미</th></tr></thead><tbody><tr><td><code>></code> <code>&lt;</code></td><td>초과 / 미만</td></tr><tr><td><code>>=</code> <code>&lt;=</code></td><td>이상 / 이하</td></tr><tr><td><code>=</code></td><td>같다</td></tr><tr><td><code>!=</code></td><td>같지 않다</td></tr></tbody></table><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;USA&#39;</span><span class=p>;</span><span class=w>      </span><span class=c1>-- 문자열은 따옴표!
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>UnitPrice</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>0</span><span class=p>.</span><span class=mi>99</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>invoices</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Total</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
-</span></span></span></code></pre></div><blockquote><p>💡 팁: 문자열을 비교할 땐 <code>'USA'</code>처럼 <strong>작은따옴표</strong>로 감싸야 한다. 숫자는 따옴표 없이 쓴다.</p></blockquote><h3 id=복합-조건--and--or--not>복합 조건 — AND / OR / NOT<a hidden class=anchor aria-hidden=true href=#복합-조건--and--or--not>#</a></h3><p>조건을 여러 개 묶을 때 쓴다. <code>AND</code>(둘 다), <code>OR</code>(또는), <code>NOT</code>(아닌 것).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;USA&#39;</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=k>State</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;CA&#39;</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;USA&#39;</span><span class=w> </span><span class=k>OR</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Canada&#39;</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;USA&#39;</span><span class=p>;</span><span class=w>  </span><span class=c1>-- = WHERE Country != &#39;USA&#39;
-</span></span></span></code></pre></div><blockquote><p>💡 팁: 강사님은 여러 나라를 OR로 길게 나열하기보다 다음에 배울 <strong><code>IN(...)</code>을 쓰는 게 더 깔끔</strong>하다고 안내했다.</p></blockquote><h3 id=기타-연산자--between--in--not-in>기타 연산자 — BETWEEN / IN / NOT IN<a hidden class=anchor aria-hidden=true href=#기타-연산자--between--in--not-in>#</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>invoices</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Total</span><span class=w> </span><span class=k>BETWEEN</span><span class=w> </span><span class=mi>5</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>            </span><span class=c1>-- 5~10 (경계 포함)
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;USA&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Canada&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Brazil&#39;</span><span class=p>);</span><span class=w>     </span><span class=c1>-- 목록 포함
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;USA&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Canada&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Brazil&#39;</span><span class=p>);</span><span class=w> </span><span class=c1>-- 목록 제외
-</span></span></span></code></pre></div><p><code>BETWEEN A AND B</code>는 <strong>A와 B를 포함</strong>한다는 점에 주의.</p><h3 id=like--패턴으로-찾기>LIKE — 패턴으로 찾기<a hidden class=anchor aria-hidden=true href=#like--패턴으로-찾기>#</a></h3><p>특정 문자가 <strong>포함된</strong> 문자열을 찾을 때 쓴다. 와일드카드 <code>%</code>의 위치가 핵심이다.</p><table><thead><tr><th>패턴</th><th>의미</th></tr></thead><tbody><tr><td><code>'K%'</code></td><td>K로 <strong>시작</strong></td></tr><tr><td><code>'%K'</code></td><td>K로 <strong>끝남</strong></td></tr><tr><td><code>'%K%'</code></td><td>K <strong>포함</strong></td></tr></tbody></table><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Title</span><span class=w> </span><span class=k>LIKE</span><span class=w> </span><span class=s1>&#39;Rock%&#39;</span><span class=p>;</span><span class=w>   </span><span class=c1>-- &#39;Rock&#39;으로 시작
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Title</span><span class=w> </span><span class=k>LIKE</span><span class=w> </span><span class=s1>&#39;%Live&#39;</span><span class=p>;</span><span class=w>   </span><span class=c1>-- &#39;Live&#39;로 끝남
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>Name</span><span class=w> </span><span class=k>LIKE</span><span class=w> </span><span class=s1>&#39;%Love%&#39;</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>  </span><span class=c1>-- &#39;Love&#39; 포함
-</span></span></span></code></pre></div><h3 id=order-by--정렬>ORDER BY — 정렬<a hidden class=anchor aria-hidden=true href=#order-by--정렬>#</a></h3><p><code>ORDER BY</code>는 결과를 정렬한다. <code>ASC</code>=오름차순(작은 값부터), <code>DESC</code>=내림차순(큰 값부터).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>Name</span><span class=p>,</span><span class=w> </span><span class=n>UnitPrice</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w> </span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>UnitPrice</span><span class=w> </span><span class=k>DESC</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>  </span><span class=c1>-- 비싼 순 10개
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>invoices</span><span class=w> </span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>Total</span><span class=w> </span><span class=k>DESC</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>5</span><span class=p>;</span><span class=w>                   </span><span class=c1>-- 결제액 큰 순 5건
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>Title</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=w> </span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>Title</span><span class=w> </span><span class=k>ASC</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>                 </span><span class=c1>-- 제목 알파벳 순
-</span></span></span></code></pre></div><blockquote><p>💡 팁: 앞서 말한 대로 여기 <code>DESC</code>는 <strong>내림차순 정렬</strong>이고, 1장에서 본 <code>DESC 테이블명</code>(구조 보기)과는 완전히 다른 기능이다.</p></blockquote><hr><h2 id=07--dml--데이터를-추가수정삭제하기-book-테이블>07 · DML — 데이터를 추가·수정·삭제하기 (book 테이블)<a hidden class=anchor aria-hidden=true href=#07--dml--데이터를-추가수정삭제하기-book-테이블>#</a></h2><p>조회(Read)를 익혔으니 이제 <strong>C·U·D</strong>다. 이걸 데이터를 다룬다는 뜻에서 **DML(데이터 조작어)**라 부른다.</p><p>중요한 원칙: <strong>실습용 chinook DB를 직접 건드리지 않는다.</strong> 대신 <strong><code>book</code>이라는 테이블을 새로 만들어</strong> 거기서 INSERT·UPDATE·DELETE를 연습했다(실수로 원본 데이터를 망치지 않기 위함).</p><p>먼저 테이블을 만들고 데이터를 채운다(코드 전문은 실습 노트 참고).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>DROP</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=k>IF</span><span class=w> </span><span class=k>EXISTS</span><span class=w> </span><span class=n>book</span><span class=p>;</span><span class=w>   </span><span class=c1>-- 이미 있으면 지우고 새로 → 몇 번 실행해도 에러 없음
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=p>(</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>id</span><span class=w>       </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=p>,</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>title</span><span class=w>    </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>category</span><span class=w> </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>price</span><span class=w>    </span><span class=nb>REAL</span><span class=p>,</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>rating</span><span class=w>   </span><span class=nb>INTEGER</span><span class=p>,</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>stock</span><span class=w>    </span><span class=nb>INTEGER</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
-</span></span></span></code></pre></div><p><code>DROP TABLE IF EXISTS</code>는 <strong>재실행 가능한 스크립트</strong>를 만드는 패턴이다. 이미 테이블이 있어도 에러 없이 새로 만든다.</p><h3 id=insert--행-추가>INSERT — 행 추가<a hidden class=anchor aria-hidden=true href=#insert--행-추가>#</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 컬럼명 명시
-</span></span></span><span class=line><span class=cl><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=p>(</span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>title</span><span class=p>,</span><span class=w> </span><span class=n>category</span><span class=p>,</span><span class=w> </span><span class=n>price</span><span class=p>,</span><span class=w> </span><span class=n>rating</span><span class=p>,</span><span class=w> </span><span class=n>stock</span><span class=p>)</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>VALUES</span><span class=w> </span><span class=p>(</span><span class=mi>13</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;It&#39;&#39;s Only the Himalayas&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Travel&#39;</span><span class=p>,</span><span class=w> </span><span class=mi>45</span><span class=p>.</span><span class=mi>17</span><span class=p>,</span><span class=w> </span><span class=mi>2</span><span class=p>,</span><span class=w> </span><span class=mi>19</span><span class=p>);</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=c1>-- 컬럼명 생략 (테이블 정의 순서대로 값 입력)
-</span></span></span><span class=line><span class=cl><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>VALUES</span><span class=w> </span><span class=p>(</span><span class=mi>14</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Set Me Free&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Young Adult&#39;</span><span class=p>,</span><span class=w> </span><span class=mi>17</span><span class=p>.</span><span class=mi>46</span><span class=p>,</span><span class=w> </span><span class=mi>5</span><span class=p>,</span><span class=w> </span><span class=mi>19</span><span class=p>);</span><span class=w>
-</span></span></span></code></pre></div><blockquote><p>💡 팁: 컬럼명을 생략하면 <strong>테이블을 만들 때 정한 순서대로</strong> 값이 들어간다. 그리고 문자열 안에 작은따옴표가 있으면(<code>It's</code>) **두 번 연속(<code>''</code>)**으로 써서 이스케이프한다. 컬럼 수와 값 개수가 안 맞으면 에러가 난다.</p></blockquote><h3 id=update--값-수정>UPDATE — 값 수정<a hidden class=anchor aria-hidden=true href=#update--값-수정>#</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>UPDATE</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>SET</span><span class=w> </span><span class=n>price</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>39</span><span class=p>.</span><span class=mi>99</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>title</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Soumission&#39;</span><span class=p>;</span><span class=w>      </span><span class=c1>-- 특정 책 가격 변경
-</span></span></span><span class=line><span class=cl><span class=k>UPDATE</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>SET</span><span class=w> </span><span class=n>stock</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>stock</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=mi>5</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>category</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Poetry&#39;</span><span class=p>;</span><span class=w>   </span><span class=c1>-- 기존 값 기반 연산
-</span></span></span></code></pre></div><p><code>SET 컬럼 = 값</code>으로 수정하고, <code>WHERE</code>로 <strong>어떤 행을</strong> 바꿀지 지정한다. <code>stock = stock + 5</code>처럼 <strong>기존 값을 활용한 연산</strong>도 가능하다.</p><h3 id=delete--행-삭제>DELETE — 행 삭제<a hidden class=anchor aria-hidden=true href=#delete--행-삭제>#</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>DELETE</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>rating</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>1</span><span class=p>;</span><span class=w>    </span><span class=c1>-- 평점 1점인 책 삭제
-</span></span></span><span class=line><span class=cl><span class=k>DELETE</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>stock</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=mi>16</span><span class=p>;</span><span class=w>    </span><span class=c1>-- 재고 16권 미만 삭제
-</span></span></span></code></pre></div><blockquote><p>⚠️ <strong>가장 중요한 주의:</strong> <code>UPDATE</code>와 <code>DELETE</code>에서 <strong><code>WHERE</code>를 빼먹으면 테이블 전체가 수정·삭제된다.</strong> 예를 들어 <code>DELETE FROM book;</code>은 book의 <strong>모든 행을 삭제</strong>한다. 실무에서 가장 무서운 실수다.</p></blockquote><blockquote><p>참고: 판서 기록의 과제 표현(&ldquo;재고=15 삭제&rdquo;)과 정답 SQL의 <code>stock &lt; 16</code>(재고 16 미만) 사이에 표현 차이가 있다. 결과적으로는 거의 같으나, 본 정리는 **정답 파일 기준 <code>stock &lt; 16</code>**으로 서술했다 <code>[원문 확인 필요]</code>.</p></blockquote><hr><h2 id=08--강사님이-강조한-포인트-정리>08 · 강사님이 강조한 포인트 (정리)<a hidden class=anchor aria-hidden=true href=#08--강사님이-강조한-포인트-정리>#</a></h2><p>오늘 반복해서 강조된 내용을 모았다.</p><ul><li><strong>CRUD가 DB 기초의 핵심.</strong> 어려움은 CRUD가 아니라 <strong>테이블 조합·조건 설계</strong>에서 온다.</li><li><strong>ERD(테이블 관계도) 보는 훈련을 반복하라.</strong> &ldquo;강사 화면 따라 치기&rdquo; 금지 — ERD를 보고 컬럼·테이블을 확인한 뒤 직접 작성.</li><li><strong>DML은 별도 DB(book)에서.</strong> 원본(chinook) 손상 방지. 동시에 여러 DB를 연결하면 헷갈리니 <strong>하나만 연결 유지</strong>(나머지 Disconnect).</li><li><strong><code>WHERE</code> 누락 = 전체 수정/삭제 위험</strong>(UPDATE·DELETE 공통).</li><li><strong>직무별 활용도(강사 의견):</strong> 데이터 분석 직무는 임의 삭제·수정이 위험해 실무에선 제한적, 개발 직무는 CRUD가 필수.</li><li><strong>운영 공지:</strong> 화~금 6교시 시험 예고, 답지는 매일 공유, 다음날부터 시험은 <strong>classicmodels DB</strong> 사용 예고.</li></ul><hr><h1 id=-참고자료>📚 참고자료<a hidden class=anchor aria-hidden=true href=#-참고자료>#</a></h1><ul><li>Elice, 「01 SQL 시작하기」 강의 자료 (슬라이드 39p)</li><li>Elice, 「02 데이터를 제어하는 DML(데이터 조작어)」 강의 자료 (슬라이드 35p)</li><li>SQLite Tutorial — 샘플 DB(chinook ERD 그림 수록): <a href=https://www.sqlitetutorial.net/sqlite-sample-database/>https://www.sqlitetutorial.net/sqlite-sample-database/</a></li><li>타 DBMS 튜토리얼(강사 추천): <a href=https://www.oracletutorial.com/>Oracle</a> · <a href=https://www.mysqltutorial.org/>MySQL</a> · <a href=https://www.pgtutorial.com/>PostgreSQL</a></li><li>실습 SQL: <code>Day01_lecture.sql</code>(SELECT 정답), <code>Day01_dml_lecture.sql</code>(DML 정답)</li><li>실습 DB: <code>chinook.db</code>(SQLite Tutorial 샘플), <code>book.db</code>(DML 연습용 — 수업 중 생성)</li><li>라이브 수업 진행 기록 (1-3교시 / 4-6교시) — 강사: 황지영</li></ul><h2 id=마무리>마무리<a hidden class=anchor aria-hidden=true href=#마무리>#</a></h2><p>오늘은 데이터를 다루는 <strong>첫 삽</strong>을 뜬 날이다. 큰 그림은 단순하다 — <strong>데이터베이스는 데이터의 모음</strong>이고, 그걸 다루는 표준 언어가 <strong>SQL</strong>이며, 핵심 동작은 <strong>CRUD</strong> 네 가지다. SELECT로 원하는 데이터를 <strong>조건 걸어 골라내고</strong>(WHERE·DISTINCT·LIKE·ORDER BY), DML로 <strong>추가·수정·삭제</strong>한다. 무엇보다 잊지 말 것 — <strong><code>WHERE</code> 없는 UPDATE·DELETE는 전체를 날린다.</strong> 내일은 여기에 **함수와 여러 테이블 결합(JOIN)**이 더해진다.</p><h2 id=-연관-노트>🔗 연관 노트<a hidden class=anchor aria-hidden=true href=#-연관-노트>#</a></h2><ul><li><a href=/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/>6/8 SQL 시작하기 코드 노트</a> — 오늘 쿼리를 직접 실행해보는 실습 노트</li><li><a href=/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/>6/9 SQL 함수와 서브쿼리</a> — 집계함수·GROUP BY·JOIN·서브쿼리 (다음 강의)</li></ul></div><footer class=post-footer><ul class=post-tags><li><a href=https://yw8837.github.io/tags/sql/>SQL</a></li><li><a href=https://yw8837.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/>데이터베이스</a></li><li><a href=https://yw8837.github.io/tags/sqlite/>SQLite</a></li><li><a href=https://yw8837.github.io/tags/crud/>CRUD</a></li><li><a href=https://yw8837.github.io/tags/select/>SELECT</a></li><li><a href=https://yw8837.github.io/tags/dml/>DML</a></li><li><a href=https://yw8837.github.io/tags/erd/>ERD</a></li><li><a href=https://yw8837.github.io/tags/chinook/>Chinook</a></li><li><a href=https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/>코딩기초</a></li><li><a href=https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/>초보자</a></li></ul><nav class=paginav><a class=prev href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/><span class=title>« 이전 페이지</span>
-<span>6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기</span>
-</a><a class=next href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><span class=title>다음 페이지 »</span>
-<span>6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2026 <a href=https://yw8837.github.io/>AI_6스터디</a></span> ·
-<a href=/posts/privacy-policy/>개인정보처리방침</a> · <a href=/posts/disclaimer/>서비스 이용 안내</a> ·
-<span>Powered by
-<a href="https://gohugo.io/?utm_source=papermod" rel=noopener target=_blank>Hugo</a> &
-<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top id=top-link class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey=g><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></a><div style=text-align:center;margin-top:8px;font-size:13px;color:#888><a href=/posts/privacy-policy/ style=color:#888>개인정보처리방침</a> · <a href=/posts/disclaimer/ style=color:#888>서비스 이용 안내</a></div><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var toplink=document.getElementById("top-link");window.onscroll=function(){const e=window.innerHeight;document.body.scrollTop>e||document.documentElement.scrollTop>e?toplink.classList.remove("hidden"):toplink.classList.add("hidden")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="복사";function s(){t.innerHTML="복사 완료!",setTimeout(()=>{t.innerHTML="복사"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음 | AI_6스터디</title>
+<meta name="keywords" content="SQL, 데이터베이스, SQLite, CRUD, SELECT, DML, ERD, chinook, 코딩기초, 초보자">
+<meta name="description" content="이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code &#43; SQLTools &#43; SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다.">
+<meta name="author" content="yw8837">
+<link rel="canonical" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yw8837.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-EQR4094Q13');
+        }
+      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/">
+  <meta property="og:site_name" content="AI_6스터디">
+  <meta property="og:title" content="6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음">
+  <meta property="og:description" content="이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code &#43; SQLTools &#43; SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다.">
+  <meta property="og:locale" content="ko">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-08T09:00:00+09:00">
+    <meta property="article:modified_time" content="2026-06-08T09:00:00+09:00">
+    <meta property="article:tag" content="SQL">
+    <meta property="article:tag" content="데이터베이스">
+    <meta property="article:tag" content="SQLite">
+    <meta property="article:tag" content="CRUD">
+    <meta property="article:tag" content="SELECT">
+    <meta property="article:tag" content="DML">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음">
+  <meta name="twitter:description" content="이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code &#43; SQLTools &#43; SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yw8837.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음",
+      "item": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음",
+  "name": "6\/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음",
+  "description": "이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code + SQLTools + SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다.",
+  "keywords": [
+    "SQL", "데이터베이스", "SQLite", "CRUD", "SELECT", "DML", "ERD", "chinook", "코딩기초", "초보자"
+  ],
+  "articleBody": " 오늘부터 SQL이다. “데이터베이스가 도대체 뭔데?“부터 시작해, 데이터를 **조회(SELECT)**하고 **추가·수정·삭제(DML)**하는 기본기를 닦았다. 코드를 외우기보다 CRUD라는 큰 틀과 실습 환경 세팅에 집중한 날. 강사님 표현으로는 환경 세팅이 “1차 관문\"이었다.\n📖 수업 내용 오늘의 큰 그림은 이렇다.\nDB/SQL 기초 이론 — 데이터베이스란? SQL이란? 그리고 핵심 키워드 CRUD 실습 환경 세팅(1차 관문) — VS Code + SQLTools + SQLite 연결 chinook 구조 읽기 — ERD와 Crow’s Foot 표기법으로 테이블 관계 파악 SELECT 기초 — chinook DB로 조회 연습 (WHERE·DISTINCT·LIKE·ORDER BY) DML — 직접 만든 book 테이블에 INSERT·UPDATE·DELETE 이론을 빠르게 훑고, 손으로 직접 쳐보는 실습에 가장 많은 시간을 썼다.\n01 · 데이터베이스란? — 그리고 왜 SQLite로 배우나 **데이터베이스(DB)**를 한 마디로 하면 **“여러 사람이 공유해 사용할 목적으로 통합해서 관리하는 데이터의 모음”**이다. 우리가 쓰는 거의 모든 서비스(쇼핑몰, SNS, 은행) 뒤에는 DB가 있다.\nDB는 종류가 정말 많다. MariaDB, Oracle, Amazon Redshift… 하지만 강사님이 분명히 못 박았다 — 세상의 모든 DB를 다 알 필요는 없다. 종류에 따라 사용법이 조금씩 다를 뿐, 검색·분석에 쓰는 기본 사용법은 DB 종류와 상관없이 거의 같기 때문이다. 그 공통분모가 바로 우리가 배울 내용이다.\n그럼 왜 하필 SQLite로 배울까?\nDB 엔진 특징 학습 적합성 Oracle, MySQL 등 강력하지만 설치가 무겁고 환경 충돌 위험 비대면·다양한 PC 환경엔 부담 SQLite 가볍고 설치 부담이 낮음 (파일 하나가 곧 DB) 기초 SQL 학습에 최적 SQL 문법은 DB마다 미세하게 다르지만, 기본 CRUD 개념은 공통이라 어떤 DB로 시작해도 옮겨가기 쉽다.\n💡 팁: 실습 플랫폼(엘리스)의 DB 엔진은 SQLite가 아닐 수 있다(MariaDB 등). 세미콜론 처리 등 일부 문법이 미세하게 다를 수 있으니, “문법은 환경마다 조금씩 다르다\"는 걸 염두에 두자.\n02 · SQL과 CRUD — 데이터를 다루는 4가지 동작 SQL은 Structured Query Language(구조화 질의 언어)의 약자로, **“데이터베이스에 접근하고 조작하기 위한 표준 언어”**다. 쉽게 말해 DB에게 일을 시키는 명령어다.\nSQL로 할 수 있는 일은 많지만, 핵심은 딱 4가지 CRUD로 요약된다.\n약자 영어 하는 일 대표 SQL C Create 데이터를 만든다(삽입) INSERT R Read 데이터를 읽는다(조회) SELECT U Update 데이터를 수정한다 UPDATE D Delete 데이터를 삭제한다 DELETE 강사님이 강조한 포인트: 어려운 건 CRUD 자체가 아니다. CRUD 명령어는 단순하다. 진짜 어려움은 여러 테이블을 조합하거나, 조회 조건을 어떻게 설계하느냐에서 나온다(이건 6/9에 본격적으로 다룬다).\n쿼리(명령문)의 기본 구조는 **“명령 + 대상”**이다.\nDESC Employees; -- 명령(DESC) + 대상(Employees). 테이블 구조 확인용 💡 팁: 여기 나온 DESC(테이블 구조 보기)는 나중에 배울 ORDER BY ... DESC(내림차순 정렬)와 이름만 같고 기능이 완전히 다르다. 헷갈리지 말 것.\n03 · 관계형 데이터베이스 — 테이블 = 컬럼 + 레코드 DB 종류 중 가장 많이 쓰는 게 **관계형 데이터베이스(RDB)**다. “하나 이상의 테이블로 이루어지며, 서로 연결된 데이터를 가진” DB이고, SQL로 제어한다.\n테이블은 컬럼(Column)과 레코드(Record)로 이루어진 표다. 엑셀 시트를 떠올리면 쉽다.\n사번 이름 성별 001 홍길동 남성 002 김철수 남성 003 김영희 여성 컬럼(세로): 사번, 이름, 성별 같은 항목(속성) 레코드(가로): 한 줄 한 줄, 즉 개별 데이터 한 건 모든 테이블은 고유한 이름으로 구분된다.\n💡 팁: 실무에서는 “컬럼\"을 **“필드(field)”**라고도 부른다. 강의자료는 “컬럼\"을 쓰지만 둘은 같은 말이니 혼동하지 말자.\n04 · 실습 환경 세팅 — “1차 관문” 통과하기 오늘 오전의 진짜 미션은 실습 환경을 직접 세팅하는 것이었다. 강사님은 이걸 **“1차 관문”**이라 불렀다. 통과 기준은 명확하다 — SQLite 연결 테스트에서 “Successfully connected” 메시지를 보는 것.\n① VS Code 확장 3종 설치 (Ctrl+Shift+X로 Extensions 열기)\n확장 역할 SQLTools SQL을 VS Code에서 실행하는 핵심 도구 SQLTools SQLite SQLTools가 SQLite와 연결되게 해주는 드라이버 SQLite Viewer DB 파일 내용을 눈으로 확인 ② (Windows) Node.js 설치 권장 — 일부 PC에서 SQLTools/SQLite 연동 시 런타임 요구 메시지가 뜰 수 있어 사전 방지용. 설치 시 Add to PATH 체크, 설치 후 재부팅 권장.\nnode -v # 설치 확인 (버전이 나오면 성공) npm -v ③ 커넥션 생성 — SQLTools 패널 → Add New Connection → 타입 SQLite → 이름 임의 → Database File에 DB 파일 경로 입력 → Test Connection → “Successfully connected” 확인 → Save → Connect.\n경로 주의: Windows는 역슬래시 \\, Mac은 슬래시 / ④ 편의 설정 2가지\n단축키 변경: 선택한 쿼리 실행을 **Ctrl+Enter**로 바꾸면 편하다. 레이아웃: View → Editor Layout → Two Rows로 결과창을 아래에 배치. 💡 팁: 쿼리가 바로 실행 안 되면 실행할 부분을 드래그(선택)한 뒤 실행하자. 전체 실행과 부분 실행이 헷갈려서 생기는 문제가 많다. “table이 없다\"는 메시지는 데이터를 아직 안 넣은 상태일 수 있으니, 스크립트를 위에서부터 순서대로 실행하자.\n05 · chinook 구조 읽기 — ERD와 Crow’s Foot 표기법 쿼리를 치기 전에, 테이블들이 서로 어떻게 연결돼 있는지를 그림으로 읽는 법을 짚었다. 이게 **ERD(개체-관계 다이어그램, Entity-Relationship Diagram)**다. 내일 배울 JOIN의 토대이기도 하다.\nERD는 세 가지로 이루어진다.\n구성요소 ERD에서 모습 의미 개체(Entity) 박스 하나 테이블 (예: tracks, albums) 속성(Attribute) 박스 안 항목 컬럼 + 자료형(INTEGER, NVARCHAR 등) 관계(Relationship) 박스를 잇는 선 테이블 간 연결, 선 끝 기호가 수 관계(카디널리티) Crow’s Foot(까마귀발) 표기법 — 선 끝 기호 읽기 관계선의 양 끝에 붙는 기호로 “몇 대 몇” 관계인지 읽는다. 기호는 **바깥쪽(최대 수)**과 안쪽(최소 수) 두 자리로 본다.\n바깥쪽(테이블 쪽) = 최대: |(막대)=정확히 하나 / \u003c(까마귀발)=다수(many) 안쪽(선 쪽) = 최소: |(막대)=최소 하나(필수) / O(동그라미)=0 가능(선택) 조합하면 이렇게 읽힌다.\n기호 의미 ` `O ` ` \u003c` O\u003c 0 또는 다수 (선택 다중) — 1:N 관계에서 가장 흔함 💡 팁: O\u003c(0 또는 다수)가 실무에서 제일 자주 보인다. “한 앨범에 트랙이 0개일 수도, 여러 개일 수도\"처럼 대부분의 1:N이 이 모양이다.\nchinook DB는 3개 영역으로 오늘 실습할 chinook(음악 판매 샘플 DB)의 구조를 ERD로 보면 크게 세 덩어리다.\n영역 테이블 관계 음악 카탈로그 artists → albums → tracks 1:N (아티스트 1명이 앨범 다수, 앨범 1개에 트랙 다수) 플레이리스트 playlists ↔ playlist_track ↔ tracks N:M — 중간 정션 테이블(playlist_track)로 연결 판매 customers → invoices → invoice_items 계층 구조(고객 1명이 인보이스 다수, 인보이스 1건에 항목 다수) 💡 팁: N:M(다대다)은 직접 못 잇는다. 한 플레이리스트에 여러 트랙이 들고, 한 트랙도 여러 플레이리스트에 들어가니, 그 사이에 playlist_track 같은 정션(중간) 테이블을 둔다. JOIN 실습에서 “왜 중간 테이블을 거치지?“가 바로 이거다.\n참고: ERD·Crow’s Foot·chinook 영역 구분은 강사님 라이브 정리(노션)에 정리된 내용으로 보강했다. SQLite 입문 자료는 SQLite Tutorial 샘플 DB 페이지에 chinook ERD가 그림으로 있으니 함께 보면 좋다.\n06 · SELECT 기초 — 데이터를 골라 보기 (chinook DB) 이제 본격적으로 조회다. 실습 DB는 chinook(음악 판매 샘플 DB — albums, artists, tracks, customers, invoices 등의 테이블).\n기본형은 SELECT 컬럼 FROM 테이블; = “어떤 컬럼을(SELECT) 어느 테이블에서(FROM) 가져와라”.\nSELECT Title FROM albums; -- albums에서 Title 컬럼만 SELECT * FROM artists; -- * = 모든 컬럼 SELECT * FROM tracks LIMIT 10; -- LIMIT 10 = 앞 10건만 *는 “전체 컬럼”, LIMIT n은 “데이터가 많을 때 앞 n개만 보기\"다.\nDISTINCT — 중복 제거 DISTINCT(“뚜렷한\"이라는 뜻)는 뒤에 오는 컬럼의 중복을 없애고 보여준다.\nSELECT DISTINCT Country FROM customers; -- 나라 종류만 (중복 제거) SELECT DISTINCT City, Country FROM customers; -- City+Country 조합 기준 중복 제거 💡 팁: DISTINCT 뒤에 컬럼을 2개 이상 쓰면 조합 기준으로 중복을 판단한다. 한쪽이 같아도 다른 쪽이 다르면 다른 행으로 취급한다.\nWHERE — 조건 걸기 WHERE는 **“검색할 데이터의 조건을 설정”**한다.\n연산자 의미 \u003e \u003c 초과 / 미만 \u003e= \u003c= 이상 / 이하 = 같다 != 같지 않다 SELECT * FROM customers WHERE Country = 'USA'; -- 문자열은 따옴표! SELECT * FROM tracks WHERE UnitPrice \u003e 0.99 LIMIT 10; SELECT * FROM invoices WHERE Total \u003e= 10; 💡 팁: 문자열을 비교할 땐 'USA'처럼 작은따옴표로 감싸야 한다. 숫자는 따옴표 없이 쓴다.\n복합 조건 — AND / OR / NOT 조건을 여러 개 묶을 때 쓴다. AND(둘 다), OR(또는), NOT(아닌 것).\nSELECT * FROM customers WHERE Country = 'USA' AND State = 'CA'; SELECT * FROM customers WHERE Country = 'USA' OR Country = 'Canada'; SELECT * FROM customers WHERE NOT Country = 'USA'; -- = WHERE Country != 'USA' 💡 팁: 강사님은 여러 나라를 OR로 길게 나열하기보다 다음에 배울 IN(...)을 쓰는 게 더 깔끔하다고 안내했다.\n기타 연산자 — BETWEEN / IN / NOT IN SELECT * FROM invoices WHERE Total BETWEEN 5 AND 10; -- 5~10 (경계 포함) SELECT * FROM customers WHERE Country IN ('USA', 'Canada', 'Brazil'); -- 목록 포함 SELECT * FROM customers WHERE Country NOT IN ('USA', 'Canada', 'Brazil'); -- 목록 제외 BETWEEN A AND B는 A와 B를 포함한다는 점에 주의.\nLIKE — 패턴으로 찾기 특정 문자가 포함된 문자열을 찾을 때 쓴다. 와일드카드 %의 위치가 핵심이다.\n패턴 의미 'K%' K로 시작 '%K' K로 끝남 '%K%' K 포함 SELECT * FROM albums WHERE Title LIKE 'Rock%'; -- 'Rock'으로 시작 SELECT * FROM albums WHERE Title LIKE '%Live'; -- 'Live'로 끝남 SELECT * FROM tracks WHERE Name LIKE '%Love%' LIMIT 10; -- 'Love' 포함 ORDER BY — 정렬 ORDER BY는 결과를 정렬한다. ASC=오름차순(작은 값부터), DESC=내림차순(큰 값부터).\nSELECT Name, UnitPrice FROM tracks ORDER BY UnitPrice DESC LIMIT 10; -- 비싼 순 10개 SELECT * FROM invoices ORDER BY Total DESC LIMIT 5; -- 결제액 큰 순 5건 SELECT Title FROM albums ORDER BY Title ASC LIMIT 10; -- 제목 알파벳 순 💡 팁: 앞서 말한 대로 여기 DESC는 내림차순 정렬이고, 1장에서 본 DESC 테이블명(구조 보기)과는 완전히 다른 기능이다.\n07 · DML — 데이터를 추가·수정·삭제하기 (book 테이블) 조회(Read)를 익혔으니 이제 C·U·D다. 이걸 데이터를 다룬다는 뜻에서 **DML(데이터 조작어)**라 부른다.\n중요한 원칙: 실습용 chinook DB를 직접 건드리지 않는다. 대신 book이라는 테이블을 새로 만들어 거기서 INSERT·UPDATE·DELETE를 연습했다(실수로 원본 데이터를 망치지 않기 위함).\n먼저 테이블을 만들고 데이터를 채운다(코드 전문은 실습 노트 참고).\nDROP TABLE IF EXISTS book; -- 이미 있으면 지우고 새로 → 몇 번 실행해도 에러 없음 CREATE TABLE book ( id INTEGER PRIMARY KEY, title TEXT, category TEXT, price REAL, rating INTEGER, stock INTEGER ); DROP TABLE IF EXISTS는 재실행 가능한 스크립트를 만드는 패턴이다. 이미 테이블이 있어도 에러 없이 새로 만든다.\nINSERT — 행 추가 -- 컬럼명 명시 INSERT INTO book (id, title, category, price, rating, stock) VALUES (13, 'It''s Only the Himalayas', 'Travel', 45.17, 2, 19); -- 컬럼명 생략 (테이블 정의 순서대로 값 입력) INSERT INTO book VALUES (14, 'Set Me Free', 'Young Adult', 17.46, 5, 19); 💡 팁: 컬럼명을 생략하면 테이블을 만들 때 정한 순서대로 값이 들어간다. 그리고 문자열 안에 작은따옴표가 있으면(It's) **두 번 연속('')**으로 써서 이스케이프한다. 컬럼 수와 값 개수가 안 맞으면 에러가 난다.\nUPDATE — 값 수정 UPDATE book SET price = 39.99 WHERE title = 'Soumission'; -- 특정 책 가격 변경 UPDATE book SET stock = stock + 5 WHERE category = 'Poetry'; -- 기존 값 기반 연산 SET 컬럼 = 값으로 수정하고, WHERE로 어떤 행을 바꿀지 지정한다. stock = stock + 5처럼 기존 값을 활용한 연산도 가능하다.\nDELETE — 행 삭제 DELETE FROM book WHERE rating = 1; -- 평점 1점인 책 삭제 DELETE FROM book WHERE stock \u003c 16; -- 재고 16권 미만 삭제 ⚠️ 가장 중요한 주의: UPDATE와 DELETE에서 WHERE를 빼먹으면 테이블 전체가 수정·삭제된다. 예를 들어 DELETE FROM book;은 book의 모든 행을 삭제한다. 실무에서 가장 무서운 실수다.\n참고: 판서 기록의 과제 표현(“재고=15 삭제”)과 정답 SQL의 stock \u003c 16(재고 16 미만) 사이에 표현 차이가 있다. 결과적으로는 거의 같으나, 본 정리는 **정답 파일 기준 stock \u003c 16**으로 서술했다 [원문 확인 필요].\n08 · 강사님이 강조한 포인트 (정리) 오늘 반복해서 강조된 내용을 모았다.\nCRUD가 DB 기초의 핵심. 어려움은 CRUD가 아니라 테이블 조합·조건 설계에서 온다. ERD(테이블 관계도) 보는 훈련을 반복하라. “강사 화면 따라 치기” 금지 — ERD를 보고 컬럼·테이블을 확인한 뒤 직접 작성. DML은 별도 DB(book)에서. 원본(chinook) 손상 방지. 동시에 여러 DB를 연결하면 헷갈리니 하나만 연결 유지(나머지 Disconnect). WHERE 누락 = 전체 수정/삭제 위험(UPDATE·DELETE 공통). 직무별 활용도(강사 의견): 데이터 분석 직무는 임의 삭제·수정이 위험해 실무에선 제한적, 개발 직무는 CRUD가 필수. 운영 공지: 화~금 6교시 시험 예고, 답지는 매일 공유, 다음날부터 시험은 classicmodels DB 사용 예고. 📚 참고자료 Elice, 「01 SQL 시작하기」 강의 자료 (슬라이드 39p) Elice, 「02 데이터를 제어하는 DML(데이터 조작어)」 강의 자료 (슬라이드 35p) SQLite Tutorial — 샘플 DB(chinook ERD 그림 수록): https://www.sqlitetutorial.net/sqlite-sample-database/ 타 DBMS 튜토리얼(강사 추천): Oracle · MySQL · PostgreSQL 실습 SQL: Day01_lecture.sql(SELECT 정답), Day01_dml_lecture.sql(DML 정답) 실습 DB: chinook.db(SQLite Tutorial 샘플), book.db(DML 연습용 — 수업 중 생성) 라이브 수업 진행 기록 (1-3교시 / 4-6교시) — 강사: 황지영 마무리 오늘은 데이터를 다루는 첫 삽을 뜬 날이다. 큰 그림은 단순하다 — 데이터베이스는 데이터의 모음이고, 그걸 다루는 표준 언어가 SQL이며, 핵심 동작은 CRUD 네 가지다. SELECT로 원하는 데이터를 조건 걸어 골라내고(WHERE·DISTINCT·LIKE·ORDER BY), DML로 추가·수정·삭제한다. 무엇보다 잊지 말 것 — WHERE 없는 UPDATE·DELETE는 전체를 날린다. 내일은 여기에 **함수와 여러 테이블 결합(JOIN)**이 더해진다.\n🔗 연관 노트 6/8 SQL 시작하기 코드 노트 — 오늘 쿼리를 직접 실행해보는 실습 노트 6/9 SQL 함수와 서브쿼리 — 집계함수·GROUP BY·JOIN·서브쿼리 (다음 강의) ",
+  "wordCount" : "1949",
+  "inLanguage": "en",
+  "datePublished": "2026-06-08T09:00:00+09:00",
+  "dateModified": "2026-06-08T09:00:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "yw8837"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI_6스터디",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yw8837.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
+                    <span>📚 Year Study</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
+                    <span>강의 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
+                    <span>실습 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
+                    <span>프로젝트</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+            <a href="/">홈</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="/posts/">Posts</a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+</nav>
+    <h1 class="post-title entry-hint-parent">
+      6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음
+    </h1>
+    <div class="post-description">
+      이어드림 6기 SQL 시작하기 강의 정리. 데이터베이스·관계형 DB 개념, SQL과 CRUD, VS Code &#43; SQLTools &#43; SQLite 실습 환경 구축, chinook DB로 SELECT 기초(WHERE·DISTINCT·LIKE·ORDER BY), book 테이블로 DML(INSERT·UPDATE·DELETE)까지 비전공자 눈높이로 정리한다.
+    </div>
+    <div class="post-meta">
+
+<span title='2026-06-08 09:00:00 +0900 KST'>2026년 6월 8일</span>&nbsp;·&nbsp;<span>10 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+
+</div>
+  </header> <details class="toc" >
+    <summary accesskey="c" title="(Alt + C)">
+        <span class="title">목차</span>
+    </summary>
+
+    <div class="inner"><ul>
+            <li>
+                <a href="#-%ec%88%98%ec%97%85-%eb%82%b4%ec%9a%a9" aria-label="📖 수업 내용">📖 수업 내용</a><ul>
+                    
+            <li>
+                <a href="#01--%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%b2%a0%ec%9d%b4%ec%8a%a4%eb%9e%80--%ea%b7%b8%eb%a6%ac%ea%b3%a0-%ec%99%9c-sqlite%eb%a1%9c-%eb%b0%b0%ec%9a%b0%eb%82%98" aria-label="01 · 데이터베이스란? — 그리고 왜 SQLite로 배우나">01 · 데이터베이스란? — 그리고 왜 SQLite로 배우나</a></li>
+            <li>
+                <a href="#02--sql%ea%b3%bc-crud--%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%a5%bc-%eb%8b%a4%eb%a3%a8%eb%8a%94-4%ea%b0%80%ec%a7%80-%eb%8f%99%ec%9e%91" aria-label="02 · SQL과 CRUD — 데이터를 다루는 4가지 동작">02 · SQL과 CRUD — 데이터를 다루는 4가지 동작</a></li>
+            <li>
+                <a href="#03--%ea%b4%80%ea%b3%84%ed%98%95-%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%b2%a0%ec%9d%b4%ec%8a%a4--%ed%85%8c%ec%9d%b4%eb%b8%94--%ec%bb%ac%eb%9f%bc--%eb%a0%88%ec%bd%94%eb%93%9c" aria-label="03 · 관계형 데이터베이스 — 테이블 = 컬럼 &#43; 레코드">03 · 관계형 데이터베이스 — 테이블 = 컬럼 + 레코드</a></li>
+            <li>
+                <a href="#04--%ec%8b%a4%ec%8a%b5-%ed%99%98%ea%b2%bd-%ec%84%b8%ed%8c%85--1%ec%b0%a8-%ea%b4%80%eb%ac%b8-%ed%86%b5%ea%b3%bc%ed%95%98%ea%b8%b0" aria-label="04 · 실습 환경 세팅 — &ldquo;1차 관문&rdquo; 통과하기">04 · 실습 환경 세팅 — &ldquo;1차 관문&rdquo; 통과하기</a></li>
+            <li>
+                <a href="#05--chinook-%ea%b5%ac%ec%a1%b0-%ec%9d%bd%ea%b8%b0--erd%ec%99%80-crows-foot-%ed%91%9c%ea%b8%b0%eb%b2%95" aria-label="05 · chinook 구조 읽기 — ERD와 Crow&rsquo;s Foot 표기법">05 · chinook 구조 읽기 — ERD와 Crow&rsquo;s Foot 표기법</a><ul>
+                    
+            <li>
+                <a href="#crows-foot%ea%b9%8c%eb%a7%88%ea%b7%80%eb%b0%9c-%ed%91%9c%ea%b8%b0%eb%b2%95--%ec%84%a0-%eb%81%9d-%ea%b8%b0%ed%98%b8-%ec%9d%bd%ea%b8%b0" aria-label="Crow&rsquo;s Foot(까마귀발) 표기법 — 선 끝 기호 읽기">Crow&rsquo;s Foot(까마귀발) 표기법 — 선 끝 기호 읽기</a></li>
+            <li>
+                <a href="#chinook-db%eb%8a%94-3%ea%b0%9c-%ec%98%81%ec%97%ad%ec%9c%bc%eb%a1%9c" aria-label="chinook DB는 3개 영역으로">chinook DB는 3개 영역으로</a></li></ul>
+            </li>
+            <li>
+                <a href="#06--select-%ea%b8%b0%ec%b4%88--%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%a5%bc-%ea%b3%a8%eb%9d%bc-%eb%b3%b4%ea%b8%b0-chinook-db" aria-label="06 · SELECT 기초 — 데이터를 골라 보기 (chinook DB)">06 · SELECT 기초 — 데이터를 골라 보기 (chinook DB)</a><ul>
+                    
+            <li>
+                <a href="#distinct--%ec%a4%91%eb%b3%b5-%ec%a0%9c%ea%b1%b0" aria-label="DISTINCT — 중복 제거">DISTINCT — 중복 제거</a></li>
+            <li>
+                <a href="#where--%ec%a1%b0%ea%b1%b4-%ea%b1%b8%ea%b8%b0" aria-label="WHERE — 조건 걸기">WHERE — 조건 걸기</a></li>
+            <li>
+                <a href="#%eb%b3%b5%ed%95%a9-%ec%a1%b0%ea%b1%b4--and--or--not" aria-label="복합 조건 — AND / OR / NOT">복합 조건 — AND / OR / NOT</a></li>
+            <li>
+                <a href="#%ea%b8%b0%ed%83%80-%ec%97%b0%ec%82%b0%ec%9e%90--between--in--not-in" aria-label="기타 연산자 — BETWEEN / IN / NOT IN">기타 연산자 — BETWEEN / IN / NOT IN</a></li>
+            <li>
+                <a href="#like--%ed%8c%a8%ed%84%b4%ec%9c%bc%eb%a1%9c-%ec%b0%be%ea%b8%b0" aria-label="LIKE — 패턴으로 찾기">LIKE — 패턴으로 찾기</a></li>
+            <li>
+                <a href="#order-by--%ec%a0%95%eb%a0%ac" aria-label="ORDER BY — 정렬">ORDER BY — 정렬</a></li></ul>
+            </li>
+            <li>
+                <a href="#07--dml--%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%a5%bc-%ec%b6%94%ea%b0%80%ec%88%98%ec%a0%95%ec%82%ad%ec%a0%9c%ed%95%98%ea%b8%b0-book-%ed%85%8c%ec%9d%b4%eb%b8%94" aria-label="07 · DML — 데이터를 추가·수정·삭제하기 (book 테이블)">07 · DML — 데이터를 추가·수정·삭제하기 (book 테이블)</a><ul>
+                    
+            <li>
+                <a href="#insert--%ed%96%89-%ec%b6%94%ea%b0%80" aria-label="INSERT — 행 추가">INSERT — 행 추가</a></li>
+            <li>
+                <a href="#update--%ea%b0%92-%ec%88%98%ec%a0%95" aria-label="UPDATE — 값 수정">UPDATE — 값 수정</a></li>
+            <li>
+                <a href="#delete--%ed%96%89-%ec%82%ad%ec%a0%9c" aria-label="DELETE — 행 삭제">DELETE — 행 삭제</a></li></ul>
+            </li>
+            <li>
+                <a href="#08--%ea%b0%95%ec%82%ac%eb%8b%98%ec%9d%b4-%ea%b0%95%ec%a1%b0%ed%95%9c-%ed%8f%ac%ec%9d%b8%ed%8a%b8-%ec%a0%95%eb%a6%ac" aria-label="08 · 강사님이 강조한 포인트 (정리)">08 · 강사님이 강조한 포인트 (정리)</a></li></ul>
+            </li>
+            <li>
+                <a href="#-%ec%b0%b8%ea%b3%a0%ec%9e%90%eb%a3%8c" aria-label="📚 참고자료">📚 참고자료</a><ul>
+                    
+            <li>
+                <a href="#%eb%a7%88%eb%ac%b4%eb%a6%ac" aria-label="마무리">마무리</a></li>
+            <li>
+                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
+            </li>
+        </ul>
+        </li>
+        </ul>
+    </div>
+</details>
+
+  <div class="post-content md-content"><blockquote>
+<p>오늘부터 <strong>SQL</strong>이다. &ldquo;데이터베이스가 도대체 뭔데?&ldquo;부터 시작해, 데이터를 **조회(SELECT)**하고 **추가·수정·삭제(DML)**하는 기본기를 닦았다. 코드를 외우기보다 <strong>CRUD라는 큰 틀</strong>과 <strong>실습 환경 세팅</strong>에 집중한 날. 강사님 표현으로는 환경 세팅이 &ldquo;1차 관문&quot;이었다.</p>
+</blockquote>
+<h1 id="-수업-내용">📖 수업 내용<a hidden class="anchor" aria-hidden="true" href="#-수업-내용">#</a></h1>
+<p>오늘의 큰 그림은 이렇다.</p>
+<ol>
+<li><strong>DB/SQL 기초 이론</strong> — 데이터베이스란? SQL이란? 그리고 핵심 키워드 <strong>CRUD</strong></li>
+<li><strong>실습 환경 세팅(1차 관문)</strong> — VS Code + SQLTools + SQLite 연결</li>
+<li><strong>chinook 구조 읽기</strong> — ERD와 Crow&rsquo;s Foot 표기법으로 테이블 관계 파악</li>
+<li><strong>SELECT 기초</strong> — chinook DB로 조회 연습 (WHERE·DISTINCT·LIKE·ORDER BY)</li>
+<li><strong>DML</strong> — 직접 만든 book 테이블에 INSERT·UPDATE·DELETE</li>
+</ol>
+<p>이론을 빠르게 훑고, 손으로 직접 쳐보는 실습에 가장 많은 시간을 썼다.</p>
+<hr>
+<h2 id="01--데이터베이스란--그리고-왜-sqlite로-배우나">01 · 데이터베이스란? — 그리고 왜 SQLite로 배우나<a hidden class="anchor" aria-hidden="true" href="#01--데이터베이스란--그리고-왜-sqlite로-배우나">#</a></h2>
+<p>**데이터베이스(DB)**를 한 마디로 하면 **&ldquo;여러 사람이 공유해 사용할 목적으로 통합해서 관리하는 데이터의 모음&rdquo;**이다. 우리가 쓰는 거의 모든 서비스(쇼핑몰, SNS, 은행) 뒤에는 DB가 있다.</p>
+<p>DB는 종류가 정말 많다. MariaDB, Oracle, Amazon Redshift… 하지만 강사님이 분명히 못 박았다 — <strong>세상의 모든 DB를 다 알 필요는 없다.</strong> 종류에 따라 사용법이 조금씩 다를 뿐, <strong>검색·분석에 쓰는 기본 사용법은 DB 종류와 상관없이 거의 같기</strong> 때문이다. 그 공통분모가 바로 우리가 배울 내용이다.</p>
+<p>그럼 왜 하필 <strong>SQLite</strong>로 배울까?</p>
+<table>
+	<thead>
+			<tr>
+					<th>DB 엔진</th>
+					<th>특징</th>
+					<th>학습 적합성</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Oracle, MySQL 등</td>
+					<td>강력하지만 설치가 무겁고 환경 충돌 위험</td>
+					<td>비대면·다양한 PC 환경엔 부담</td>
+			</tr>
+			<tr>
+					<td><strong>SQLite</strong></td>
+					<td><strong>가볍고 설치 부담이 낮음</strong> (파일 하나가 곧 DB)</td>
+					<td><strong>기초 SQL 학습에 최적</strong></td>
+			</tr>
+	</tbody>
+</table>
+<p>SQL 문법은 DB마다 미세하게 다르지만, <strong>기본 CRUD 개념은 공통</strong>이라 어떤 DB로 시작해도 옮겨가기 쉽다.</p>
+<blockquote>
+<p>💡 팁: 실습 플랫폼(엘리스)의 DB 엔진은 SQLite가 아닐 수 있다(MariaDB 등). 세미콜론 처리 등 일부 문법이 미세하게 다를 수 있으니, &ldquo;문법은 환경마다 조금씩 다르다&quot;는 걸 염두에 두자.</p>
+</blockquote>
+<hr>
+<h2 id="02--sql과-crud--데이터를-다루는-4가지-동작">02 · SQL과 CRUD — 데이터를 다루는 4가지 동작<a hidden class="anchor" aria-hidden="true" href="#02--sql과-crud--데이터를-다루는-4가지-동작">#</a></h2>
+<p><strong>SQL</strong>은 <strong>S</strong>tructured <strong>Q</strong>uery <strong>L</strong>anguage(구조화 질의 언어)의 약자로, **&ldquo;데이터베이스에 접근하고 조작하기 위한 표준 언어&rdquo;**다. 쉽게 말해 <strong>DB에게 일을 시키는 명령어</strong>다.</p>
+<p>SQL로 할 수 있는 일은 많지만, 핵심은 딱 4가지 <strong>CRUD</strong>로 요약된다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>약자</th>
+					<th>영어</th>
+					<th>하는 일</th>
+					<th>대표 SQL</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>C</strong></td>
+					<td>Create</td>
+					<td>데이터를 <strong>만든다(삽입)</strong></td>
+					<td><code>INSERT</code></td>
+			</tr>
+			<tr>
+					<td><strong>R</strong></td>
+					<td>Read</td>
+					<td>데이터를 <strong>읽는다(조회)</strong></td>
+					<td><code>SELECT</code></td>
+			</tr>
+			<tr>
+					<td><strong>U</strong></td>
+					<td>Update</td>
+					<td>데이터를 <strong>수정한다</strong></td>
+					<td><code>UPDATE</code></td>
+			</tr>
+			<tr>
+					<td><strong>D</strong></td>
+					<td>Delete</td>
+					<td>데이터를 <strong>삭제한다</strong></td>
+					<td><code>DELETE</code></td>
+			</tr>
+	</tbody>
+</table>
+<p>강사님이 강조한 포인트: <strong>어려운 건 CRUD 자체가 아니다.</strong> CRUD 명령어는 단순하다. 진짜 어려움은 <strong>여러 테이블을 조합하거나, 조회 조건을 어떻게 설계하느냐</strong>에서 나온다(이건 6/9에 본격적으로 다룬다).</p>
+<p>쿼리(명령문)의 기본 구조는 **&ldquo;명령 + 대상&rdquo;**이다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">DESC</span><span class="w"> </span><span class="n">Employees</span><span class="p">;</span><span class="w">   </span><span class="c1">-- 명령(DESC) + 대상(Employees). 테이블 구조 확인용
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: 여기 나온 <code>DESC</code>(테이블 구조 보기)는 나중에 배울 <code>ORDER BY ... DESC</code>(내림차순 정렬)와 <strong>이름만 같고 기능이 완전히 다르다.</strong> 헷갈리지 말 것.</p>
+</blockquote>
+<hr>
+<h2 id="03--관계형-데이터베이스--테이블--컬럼--레코드">03 · 관계형 데이터베이스 — 테이블 = 컬럼 + 레코드<a hidden class="anchor" aria-hidden="true" href="#03--관계형-데이터베이스--테이블--컬럼--레코드">#</a></h2>
+<p>DB 종류 중 가장 많이 쓰는 게 **관계형 데이터베이스(RDB)**다. <strong>&ldquo;하나 이상의 테이블로 이루어지며, 서로 연결된 데이터를 가진&rdquo;</strong> DB이고, SQL로 제어한다.</p>
+<p>테이블은 <strong>컬럼(Column)과 레코드(Record)로 이루어진 표</strong>다. 엑셀 시트를 떠올리면 쉽다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>사번</th>
+					<th>이름</th>
+					<th>성별</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>001</td>
+					<td>홍길동</td>
+					<td>남성</td>
+			</tr>
+			<tr>
+					<td>002</td>
+					<td>김철수</td>
+					<td>남성</td>
+			</tr>
+			<tr>
+					<td>003</td>
+					<td>김영희</td>
+					<td>여성</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li><strong>컬럼(세로)</strong>: 사번, 이름, 성별 같은 <strong>항목(속성)</strong></li>
+<li><strong>레코드(가로)</strong>: 한 줄 한 줄, 즉 <strong>개별 데이터 한 건</strong></li>
+</ul>
+<p>모든 테이블은 고유한 이름으로 구분된다.</p>
+<blockquote>
+<p>💡 팁: 실무에서는 &ldquo;컬럼&quot;을 **&ldquo;필드(field)&rdquo;**라고도 부른다. 강의자료는 &ldquo;컬럼&quot;을 쓰지만 둘은 같은 말이니 혼동하지 말자.</p>
+</blockquote>
+<hr>
+<h2 id="04--실습-환경-세팅--1차-관문-통과하기">04 · 실습 환경 세팅 — &ldquo;1차 관문&rdquo; 통과하기<a hidden class="anchor" aria-hidden="true" href="#04--실습-환경-세팅--1차-관문-통과하기">#</a></h2>
+<p>오늘 오전의 진짜 미션은 <strong>실습 환경을 직접 세팅하는 것</strong>이었다. 강사님은 이걸 **&ldquo;1차 관문&rdquo;**이라 불렀다. 통과 기준은 명확하다 — <strong>SQLite 연결 테스트에서 &ldquo;Successfully connected&rdquo; 메시지를 보는 것.</strong></p>
+<p><strong>① VS Code 확장 3종 설치</strong> (<code>Ctrl+Shift+X</code>로 Extensions 열기)</p>
+<table>
+	<thead>
+			<tr>
+					<th>확장</th>
+					<th>역할</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>SQLTools</strong></td>
+					<td>SQL을 VS Code에서 실행하는 핵심 도구</td>
+			</tr>
+			<tr>
+					<td><strong>SQLTools SQLite</strong></td>
+					<td>SQLTools가 SQLite와 연결되게 해주는 드라이버</td>
+			</tr>
+			<tr>
+					<td><strong>SQLite Viewer</strong></td>
+					<td>DB 파일 내용을 눈으로 확인</td>
+			</tr>
+	</tbody>
+</table>
+<p><strong>② (Windows) Node.js 설치 권장</strong> — 일부 PC에서 SQLTools/SQLite 연동 시 런타임 요구 메시지가 뜰 수 있어 사전 방지용. 설치 시 <strong>Add to PATH 체크</strong>, 설치 후 재부팅 권장.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">node -v   <span class="c1"># 설치 확인 (버전이 나오면 성공)</span>
+</span></span><span class="line"><span class="cl">npm -v
+</span></span></code></pre></div><p><strong>③ 커넥션 생성</strong> — SQLTools 패널 → Add New Connection → 타입 <strong>SQLite</strong> → 이름 임의 → Database File에 DB 파일 경로 입력 → <strong>Test Connection</strong> → &ldquo;Successfully connected&rdquo; 확인 → Save → Connect.</p>
+<ul>
+<li>경로 주의: <strong>Windows는 역슬래시 <code>\</code>, Mac은 슬래시 <code>/</code></strong></li>
+</ul>
+<p><strong>④ 편의 설정 2가지</strong></p>
+<ul>
+<li><strong>단축키 변경</strong>: 선택한 쿼리 실행을 **<code>Ctrl+Enter</code>**로 바꾸면 편하다.</li>
+<li><strong>레이아웃</strong>: View → Editor Layout → <strong>Two Rows</strong>로 결과창을 아래에 배치.</li>
+</ul>
+<blockquote>
+<p>💡 팁: 쿼리가 바로 실행 안 되면 <strong>실행할 부분을 드래그(선택)한 뒤 실행</strong>하자. 전체 실행과 부분 실행이 헷갈려서 생기는 문제가 많다. &ldquo;table이 없다&quot;는 메시지는 데이터를 아직 안 넣은 상태일 수 있으니, 스크립트를 <strong>위에서부터 순서대로</strong> 실행하자.</p>
+</blockquote>
+<hr>
+<h2 id="05--chinook-구조-읽기--erd와-crows-foot-표기법">05 · chinook 구조 읽기 — ERD와 Crow&rsquo;s Foot 표기법<a hidden class="anchor" aria-hidden="true" href="#05--chinook-구조-읽기--erd와-crows-foot-표기법">#</a></h2>
+<p>쿼리를 치기 전에, <strong>테이블들이 서로 어떻게 연결돼 있는지</strong>를 그림으로 읽는 법을 짚었다. 이게 **ERD(개체-관계 다이어그램, Entity-Relationship Diagram)**다. 내일 배울 JOIN의 토대이기도 하다.</p>
+<p>ERD는 세 가지로 이루어진다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>구성요소</th>
+					<th>ERD에서 모습</th>
+					<th>의미</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>개체(Entity)</strong></td>
+					<td>박스 하나</td>
+					<td><strong>테이블</strong> (예: <code>tracks</code>, <code>albums</code>)</td>
+			</tr>
+			<tr>
+					<td><strong>속성(Attribute)</strong></td>
+					<td>박스 안 항목</td>
+					<td><strong>컬럼</strong> + 자료형(INTEGER, NVARCHAR 등)</td>
+			</tr>
+			<tr>
+					<td><strong>관계(Relationship)</strong></td>
+					<td>박스를 잇는 <strong>선</strong></td>
+					<td>테이블 간 연결, 선 끝 기호가 <strong>수 관계(카디널리티)</strong></td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="crows-foot까마귀발-표기법--선-끝-기호-읽기">Crow&rsquo;s Foot(까마귀발) 표기법 — 선 끝 기호 읽기<a hidden class="anchor" aria-hidden="true" href="#crows-foot까마귀발-표기법--선-끝-기호-읽기">#</a></h3>
+<p>관계선의 양 끝에 붙는 기호로 &ldquo;몇 대 몇&rdquo; 관계인지 읽는다. 기호는 **바깥쪽(최대 수)**과 <strong>안쪽(최소 수)</strong> 두 자리로 본다.</p>
+<ul>
+<li>바깥쪽(테이블 쪽) = <strong>최대</strong>: <code>|</code>(막대)=정확히 하나 / <code>&lt;</code>(까마귀발)=다수(many)</li>
+<li>안쪽(선 쪽) = <strong>최소</strong>: <code>|</code>(막대)=최소 하나(필수) / <code>O</code>(동그라미)=0 가능(선택)</li>
+</ul>
+<p>조합하면 이렇게 읽힌다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>기호</th>
+					<th>의미</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>`</td>
+					<td></td>
+			</tr>
+			<tr>
+					<td>`O</td>
+					<td>`</td>
+			</tr>
+			<tr>
+					<td>`</td>
+					<td>&lt;`</td>
+			</tr>
+			<tr>
+					<td><code>O&lt;</code></td>
+					<td>0 또는 다수 (선택 다중) — <strong>1:N 관계에서 가장 흔함</strong></td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p>💡 팁: <code>O&lt;</code>(0 또는 다수)가 실무에서 제일 자주 보인다. &ldquo;한 앨범에 트랙이 0개일 수도, 여러 개일 수도&quot;처럼 대부분의 1:N이 이 모양이다.</p>
+</blockquote>
+<h3 id="chinook-db는-3개-영역으로">chinook DB는 3개 영역으로<a hidden class="anchor" aria-hidden="true" href="#chinook-db는-3개-영역으로">#</a></h3>
+<p>오늘 실습할 chinook(음악 판매 샘플 DB)의 구조를 ERD로 보면 크게 세 덩어리다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>영역</th>
+					<th>테이블</th>
+					<th>관계</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>음악 카탈로그</strong></td>
+					<td>artists → albums → tracks</td>
+					<td><strong>1:N</strong> (아티스트 1명이 앨범 다수, 앨범 1개에 트랙 다수)</td>
+			</tr>
+			<tr>
+					<td><strong>플레이리스트</strong></td>
+					<td>playlists ↔ <strong>playlist_track</strong> ↔ tracks</td>
+					<td><strong>N:M</strong> — 중간 <strong>정션 테이블</strong>(playlist_track)로 연결</td>
+			</tr>
+			<tr>
+					<td><strong>판매</strong></td>
+					<td>customers → invoices → invoice_items</td>
+					<td>계층 구조(고객 1명이 인보이스 다수, 인보이스 1건에 항목 다수)</td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p>💡 팁: <strong>N:M(다대다)은 직접 못 잇는다.</strong> 한 플레이리스트에 여러 트랙이 들고, 한 트랙도 여러 플레이리스트에 들어가니, 그 사이에 <strong>playlist_track</strong> 같은 <strong>정션(중간) 테이블</strong>을 둔다. JOIN 실습에서 &ldquo;왜 중간 테이블을 거치지?&ldquo;가 바로 이거다.</p>
+</blockquote>
+<blockquote>
+<p>참고: ERD·Crow&rsquo;s Foot·chinook 영역 구분은 강사님 라이브 정리(노션)에 정리된 내용으로 보강했다. SQLite 입문 자료는 <a href="https://www.sqlitetutorial.net/sqlite-sample-database/">SQLite Tutorial 샘플 DB</a> 페이지에 chinook ERD가 그림으로 있으니 함께 보면 좋다.</p>
+</blockquote>
+<hr>
+<h2 id="06--select-기초--데이터를-골라-보기-chinook-db">06 · SELECT 기초 — 데이터를 골라 보기 (chinook DB)<a hidden class="anchor" aria-hidden="true" href="#06--select-기초--데이터를-골라-보기-chinook-db">#</a></h2>
+<p>이제 본격적으로 조회다. 실습 DB는 <strong>chinook</strong>(음악 판매 샘플 DB — albums, artists, tracks, customers, invoices 등의 테이블).</p>
+<p>기본형은 <strong><code>SELECT 컬럼 FROM 테이블;</code></strong> = &ldquo;어떤 컬럼을(SELECT) 어느 테이블에서(FROM) 가져와라&rdquo;.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="p">;</span><span class="w">        </span><span class="c1">-- albums에서 Title 컬럼만
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">artists</span><span class="p">;</span><span class="w">           </span><span class="c1">-- * = 모든 컬럼
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">   </span><span class="c1">-- LIMIT 10 = 앞 10건만
+</span></span></span></code></pre></div><p><code>*</code>는 &ldquo;전체 컬럼&rdquo;, <code>LIMIT n</code>은 &ldquo;데이터가 많을 때 앞 n개만 보기&quot;다.</p>
+<h3 id="distinct--중복-제거">DISTINCT — 중복 제거<a hidden class="anchor" aria-hidden="true" href="#distinct--중복-제거">#</a></h3>
+<p><code>DISTINCT</code>(&ldquo;뚜렷한&quot;이라는 뜻)는 뒤에 오는 컬럼의 <strong>중복을 없애고</strong> 보여준다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="p">;</span><span class="w">       </span><span class="c1">-- 나라 종류만 (중복 제거)
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="p">;</span><span class="w"> </span><span class="c1">-- City+Country 조합 기준 중복 제거
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: <code>DISTINCT</code> 뒤에 컬럼을 2개 이상 쓰면 <strong>조합 기준</strong>으로 중복을 판단한다. 한쪽이 같아도 다른 쪽이 다르면 다른 행으로 취급한다.</p>
+</blockquote>
+<h3 id="where--조건-걸기">WHERE — 조건 걸기<a hidden class="anchor" aria-hidden="true" href="#where--조건-걸기">#</a></h3>
+<p><code>WHERE</code>는 **&ldquo;검색할 데이터의 조건을 설정&rdquo;**한다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>연산자</th>
+					<th>의미</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>&gt;</code> <code>&lt;</code></td>
+					<td>초과 / 미만</td>
+			</tr>
+			<tr>
+					<td><code>&gt;=</code> <code>&lt;=</code></td>
+					<td>이상 / 이하</td>
+			</tr>
+			<tr>
+					<td><code>=</code></td>
+					<td>같다</td>
+			</tr>
+			<tr>
+					<td><code>!=</code></td>
+					<td>같지 않다</td>
+			</tr>
+	</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USA&#39;</span><span class="p">;</span><span class="w">      </span><span class="c1">-- 문자열은 따옴표!
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">UnitPrice</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">99</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">invoices</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Total</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: 문자열을 비교할 땐 <code>'USA'</code>처럼 <strong>작은따옴표</strong>로 감싸야 한다. 숫자는 따옴표 없이 쓴다.</p>
+</blockquote>
+<h3 id="복합-조건--and--or--not">복합 조건 — AND / OR / NOT<a hidden class="anchor" aria-hidden="true" href="#복합-조건--and--or--not">#</a></h3>
+<p>조건을 여러 개 묶을 때 쓴다. <code>AND</code>(둘 다), <code>OR</code>(또는), <code>NOT</code>(아닌 것).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USA&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">State</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;CA&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USA&#39;</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Canada&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USA&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">-- = WHERE Country != &#39;USA&#39;
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: 강사님은 여러 나라를 OR로 길게 나열하기보다 다음에 배울 <strong><code>IN(...)</code>을 쓰는 게 더 깔끔</strong>하다고 안내했다.</p>
+</blockquote>
+<h3 id="기타-연산자--between--in--not-in">기타 연산자 — BETWEEN / IN / NOT IN<a hidden class="anchor" aria-hidden="true" href="#기타-연산자--between--in--not-in">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">invoices</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Total</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">            </span><span class="c1">-- 5~10 (경계 포함)
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Canada&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Brazil&#39;</span><span class="p">);</span><span class="w">     </span><span class="c1">-- 목록 포함
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Canada&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Brazil&#39;</span><span class="p">);</span><span class="w"> </span><span class="c1">-- 목록 제외
+</span></span></span></code></pre></div><p><code>BETWEEN A AND B</code>는 <strong>A와 B를 포함</strong>한다는 점에 주의.</p>
+<h3 id="like--패턴으로-찾기">LIKE — 패턴으로 찾기<a hidden class="anchor" aria-hidden="true" href="#like--패턴으로-찾기">#</a></h3>
+<p>특정 문자가 <strong>포함된</strong> 문자열을 찾을 때 쓴다. 와일드카드 <code>%</code>의 위치가 핵심이다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>패턴</th>
+					<th>의미</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>'K%'</code></td>
+					<td>K로 <strong>시작</strong></td>
+			</tr>
+			<tr>
+					<td><code>'%K'</code></td>
+					<td>K로 <strong>끝남</strong></td>
+			</tr>
+			<tr>
+					<td><code>'%K%'</code></td>
+					<td>K <strong>포함</strong></td>
+			</tr>
+	</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;Rock%&#39;</span><span class="p">;</span><span class="w">   </span><span class="c1">-- &#39;Rock&#39;으로 시작
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%Live&#39;</span><span class="p">;</span><span class="w">   </span><span class="c1">-- &#39;Live&#39;로 끝남
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%Love%&#39;</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">  </span><span class="c1">-- &#39;Love&#39; 포함
+</span></span></span></code></pre></div><h3 id="order-by--정렬">ORDER BY — 정렬<a hidden class="anchor" aria-hidden="true" href="#order-by--정렬">#</a></h3>
+<p><code>ORDER BY</code>는 결과를 정렬한다. <code>ASC</code>=오름차순(작은 값부터), <code>DESC</code>=내림차순(큰 값부터).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">UnitPrice</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">UnitPrice</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 비싼 순 10개
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">invoices</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">Total</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">                   </span><span class="c1">-- 결제액 큰 순 5건
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="k">ASC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">                 </span><span class="c1">-- 제목 알파벳 순
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: 앞서 말한 대로 여기 <code>DESC</code>는 <strong>내림차순 정렬</strong>이고, 1장에서 본 <code>DESC 테이블명</code>(구조 보기)과는 완전히 다른 기능이다.</p>
+</blockquote>
+<hr>
+<h2 id="07--dml--데이터를-추가수정삭제하기-book-테이블">07 · DML — 데이터를 추가·수정·삭제하기 (book 테이블)<a hidden class="anchor" aria-hidden="true" href="#07--dml--데이터를-추가수정삭제하기-book-테이블">#</a></h2>
+<p>조회(Read)를 익혔으니 이제 <strong>C·U·D</strong>다. 이걸 데이터를 다룬다는 뜻에서 **DML(데이터 조작어)**라 부른다.</p>
+<p>중요한 원칙: <strong>실습용 chinook DB를 직접 건드리지 않는다.</strong> 대신 <strong><code>book</code>이라는 테이블을 새로 만들어</strong> 거기서 INSERT·UPDATE·DELETE를 연습했다(실수로 원본 데이터를 망치지 않기 위함).</p>
+<p>먼저 테이블을 만들고 데이터를 채운다(코드 전문은 실습 노트 참고).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">book</span><span class="p">;</span><span class="w">   </span><span class="c1">-- 이미 있으면 지우고 새로 → 몇 번 실행해도 에러 없음
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">id</span><span class="w">       </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">title</span><span class="w">    </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">category</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">price</span><span class="w">    </span><span class="nb">REAL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">rating</span><span class="w">   </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">stock</span><span class="w">    </span><span class="nb">INTEGER</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p><code>DROP TABLE IF EXISTS</code>는 <strong>재실행 가능한 스크립트</strong>를 만드는 패턴이다. 이미 테이블이 있어도 에러 없이 새로 만든다.</p>
+<h3 id="insert--행-추가">INSERT — 행 추가<a hidden class="anchor" aria-hidden="true" href="#insert--행-추가">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 컬럼명 명시
+</span></span></span><span class="line"><span class="cl"><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">category</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">,</span><span class="w"> </span><span class="n">rating</span><span class="p">,</span><span class="w"> </span><span class="n">stock</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;It&#39;&#39;s Only the Himalayas&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Travel&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">.</span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- 컬럼명 생략 (테이블 정의 순서대로 값 입력)
+</span></span></span><span class="line"><span class="cl"><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Set Me Free&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Young Adult&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">.</span><span class="mi">46</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: 컬럼명을 생략하면 <strong>테이블을 만들 때 정한 순서대로</strong> 값이 들어간다. 그리고 문자열 안에 작은따옴표가 있으면(<code>It's</code>) **두 번 연속(<code>''</code>)**으로 써서 이스케이프한다. 컬럼 수와 값 개수가 안 맞으면 에러가 난다.</p>
+</blockquote>
+<h3 id="update--값-수정">UPDATE — 값 수정<a hidden class="anchor" aria-hidden="true" href="#update--값-수정">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">UPDATE</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">39</span><span class="p">.</span><span class="mi">99</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Soumission&#39;</span><span class="p">;</span><span class="w">      </span><span class="c1">-- 특정 책 가격 변경
+</span></span></span><span class="line"><span class="cl"><span class="k">UPDATE</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">stock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stock</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Poetry&#39;</span><span class="p">;</span><span class="w">   </span><span class="c1">-- 기존 값 기반 연산
+</span></span></span></code></pre></div><p><code>SET 컬럼 = 값</code>으로 수정하고, <code>WHERE</code>로 <strong>어떤 행을</strong> 바꿀지 지정한다. <code>stock = stock + 5</code>처럼 <strong>기존 값을 활용한 연산</strong>도 가능하다.</p>
+<h3 id="delete--행-삭제">DELETE — 행 삭제<a hidden class="anchor" aria-hidden="true" href="#delete--행-삭제">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">    </span><span class="c1">-- 평점 1점인 책 삭제
+</span></span></span><span class="line"><span class="cl"><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">stock</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w">    </span><span class="c1">-- 재고 16권 미만 삭제
+</span></span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>가장 중요한 주의:</strong> <code>UPDATE</code>와 <code>DELETE</code>에서 <strong><code>WHERE</code>를 빼먹으면 테이블 전체가 수정·삭제된다.</strong> 예를 들어 <code>DELETE FROM book;</code>은 book의 <strong>모든 행을 삭제</strong>한다. 실무에서 가장 무서운 실수다.</p>
+</blockquote>
+<blockquote>
+<p>참고: 판서 기록의 과제 표현(&ldquo;재고=15 삭제&rdquo;)과 정답 SQL의 <code>stock &lt; 16</code>(재고 16 미만) 사이에 표현 차이가 있다. 결과적으로는 거의 같으나, 본 정리는 **정답 파일 기준 <code>stock &lt; 16</code>**으로 서술했다 <code>[원문 확인 필요]</code>.</p>
+</blockquote>
+<hr>
+<h2 id="08--강사님이-강조한-포인트-정리">08 · 강사님이 강조한 포인트 (정리)<a hidden class="anchor" aria-hidden="true" href="#08--강사님이-강조한-포인트-정리">#</a></h2>
+<p>오늘 반복해서 강조된 내용을 모았다.</p>
+<ul>
+<li><strong>CRUD가 DB 기초의 핵심.</strong> 어려움은 CRUD가 아니라 <strong>테이블 조합·조건 설계</strong>에서 온다.</li>
+<li><strong>ERD(테이블 관계도) 보는 훈련을 반복하라.</strong> &ldquo;강사 화면 따라 치기&rdquo; 금지 — ERD를 보고 컬럼·테이블을 확인한 뒤 직접 작성.</li>
+<li><strong>DML은 별도 DB(book)에서.</strong> 원본(chinook) 손상 방지. 동시에 여러 DB를 연결하면 헷갈리니 <strong>하나만 연결 유지</strong>(나머지 Disconnect).</li>
+<li><strong><code>WHERE</code> 누락 = 전체 수정/삭제 위험</strong>(UPDATE·DELETE 공통).</li>
+<li><strong>직무별 활용도(강사 의견):</strong> 데이터 분석 직무는 임의 삭제·수정이 위험해 실무에선 제한적, 개발 직무는 CRUD가 필수.</li>
+<li><strong>운영 공지:</strong> 화~금 6교시 시험 예고, 답지는 매일 공유, 다음날부터 시험은 <strong>classicmodels DB</strong> 사용 예고.</li>
+</ul>
+<hr>
+<h1 id="-참고자료">📚 참고자료<a hidden class="anchor" aria-hidden="true" href="#-참고자료">#</a></h1>
+<ul>
+<li>Elice, 「01 SQL 시작하기」 강의 자료 (슬라이드 39p)</li>
+<li>Elice, 「02 데이터를 제어하는 DML(데이터 조작어)」 강의 자료 (슬라이드 35p)</li>
+<li>SQLite Tutorial — 샘플 DB(chinook ERD 그림 수록): <a href="https://www.sqlitetutorial.net/sqlite-sample-database/">https://www.sqlitetutorial.net/sqlite-sample-database/</a></li>
+<li>타 DBMS 튜토리얼(강사 추천): <a href="https://www.oracletutorial.com/">Oracle</a> · <a href="https://www.mysqltutorial.org/">MySQL</a> · <a href="https://www.pgtutorial.com/">PostgreSQL</a></li>
+<li>실습 SQL: <code>Day01_lecture.sql</code>(SELECT 정답), <code>Day01_dml_lecture.sql</code>(DML 정답)</li>
+<li>실습 DB: <code>chinook.db</code>(SQLite Tutorial 샘플), <code>book.db</code>(DML 연습용 — 수업 중 생성)</li>
+<li>라이브 수업 진행 기록 (1-3교시 / 4-6교시) — 강사: 황지영</li>
+</ul>
+<h2 id="마무리">마무리<a hidden class="anchor" aria-hidden="true" href="#마무리">#</a></h2>
+<p>오늘은 데이터를 다루는 <strong>첫 삽</strong>을 뜬 날이다. 큰 그림은 단순하다 — <strong>데이터베이스는 데이터의 모음</strong>이고, 그걸 다루는 표준 언어가 <strong>SQL</strong>이며, 핵심 동작은 <strong>CRUD</strong> 네 가지다. SELECT로 원하는 데이터를 <strong>조건 걸어 골라내고</strong>(WHERE·DISTINCT·LIKE·ORDER BY), DML로 <strong>추가·수정·삭제</strong>한다. 무엇보다 잊지 말 것 — <strong><code>WHERE</code> 없는 UPDATE·DELETE는 전체를 날린다.</strong> 내일은 여기에 **함수와 여러 테이블 결합(JOIN)**이 더해진다.</p>
+<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
+<ul>
+<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">6/8 SQL 시작하기 코드 노트</a> — 오늘 쿼리를 직접 실행해보는 실습 노트</li>
+<li><a href="/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/">6/9 SQL 함수와 서브쿼리</a> — 집계함수·GROUP BY·JOIN·서브쿼리 (다음 강의)</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yw8837.github.io/tags/sql/">SQL</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/">데이터베이스</a></li>
+      <li><a href="https://yw8837.github.io/tags/sqlite/">SQLite</a></li>
+      <li><a href="https://yw8837.github.io/tags/crud/">CRUD</a></li>
+      <li><a href="https://yw8837.github.io/tags/select/">SELECT</a></li>
+      <li><a href="https://yw8837.github.io/tags/dml/">DML</a></li>
+      <li><a href="https://yw8837.github.io/tags/erd/">ERD</a></li>
+      <li><a href="https://yw8837.github.io/tags/chinook/">Chinook</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%BD%94%EB%94%A9%EA%B8%B0%EC%B4%88/">코딩기초</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/">
+    <span class="title">« 이전 페이지</span>
+    <span>6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기</span>
+  </a>
+  <a class="next" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+    <span class="title">다음 페이지 »</span>
+    <span>6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
+        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '복사';
+
+        function copyingDone() {
+            copybutton.innerHTML = '복사 완료!';
+            setTimeout(() => {
+                copybutton.innerHTML = '복사';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

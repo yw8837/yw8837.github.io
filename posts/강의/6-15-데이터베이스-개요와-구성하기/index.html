@@ -1,36 +1,955 @@
-<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>6/15 데이터베이스 개요 & 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가 | AI_6스터디</title><meta name=keywords content="데이터베이스,DB,RDB,NoSQL,SQL,DDL,DML,DCL,CREATE,자료형,제약조건,NOTNULL,UNIQUE,DEFAULT,CHECK,CONSTRAINT,기본키,외래키,복합키,무결성,데이터모델링,ERD,PeterChen,까마귀발,SQLite,school_db,초보자"><meta name=description content="이어드림 6기 데이터베이스 개요 & 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다."><meta name=author content="yw8837"><link rel=canonical href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/><link crossorigin=anonymous href=/assets/css/stylesheet.css rel="preload stylesheet" as=style><link rel=icon href=https://yw8837.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://yw8837.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://yw8837.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://yw8837.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yw8837.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script><script>var doNotTrack=!1,dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes";if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-EQR4094Q13")}</script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/"><meta property="og:site_name" content="AI_6스터디"><meta property="og:title" content="6/15 데이터베이스 개요 & 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가"><meta property="og:description" content="이어드림 6기 데이터베이스 개요 & 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다."><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-06-15T09:00:00+09:00"><meta property="article:modified_time" content="2026-06-15T09:00:00+09:00"><meta property="article:tag" content="데이터베이스"><meta property="article:tag" content="DB"><meta property="article:tag" content="RDB"><meta property="article:tag" content="NoSQL"><meta property="article:tag" content="SQL"><meta property="article:tag" content="DDL"><meta name=twitter:card content="summary"><meta name=twitter:title content="6/15 데이터베이스 개요 & 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가"><meta name=twitter:description content="이어드림 6기 데이터베이스 개요 & 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yw8837.github.io/posts/"},{"@type":"ListItem","position":2,"name":"6/15 데이터베이스 개요 \u0026 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가","item":"https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"6/15 데이터베이스 개요 \u0026 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가","name":"6\/15 데이터베이스 개요 \u0026 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가","description":"이어드림 6기 데이터베이스 개요 \u0026 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다.","keywords":["데이터베이스","DB","RDB","NoSQL","SQL","DDL","DML","DCL","CREATE","자료형","제약조건","NOTNULL","UNIQUE","DEFAULT","CHECK","CONSTRAINT","기본키","외래키","복합키","무결성","데이터모델링","ERD","PeterChen","까마귀발","SQLite","school_db","초보자"],"articleBody":" 지금까지는 이미 만들어진 DB(chinook·classicmodels)에서 SELECT·JOIN·윈도우 함수로 데이터를 꺼내 썼다. 오늘은 방향을 180도 돌린다 — DB를 직접 설계하고 만드는 첫 수업이다. “DB가 대체 왜 필요한가\"부터 시작해서 → RDB vs NoSQL → CREATE로 테이블 만들기 → DDL/DML/DCL·자료형 → 제약조건(NOT NULL·UNIQUE·DEFAULT·CHECK) → 키(PK·FK·후보·대체·슈퍼키)와 무결성 → 데이터 모델링 → ERD까지 이어진다. 오늘 전체를 관통하는 한 문장은 강사님의 이 말이다 — “제약조건은 잘못된 데이터 입력을 막는 마지막 방어선이다.”\n📖 수업 내용 오전엔 운영 공지와 지난 윈도우 함수 복습이 있었고, DB 본 수업은 오후에 집중됐다. 이 글은 라이브 진행 흐름을 따라 아래 순서로 간다.\n01. DB는 왜 필요한가 (파일처리 시스템의 한계) 02. DB의 종류 — RDB vs NoSQL 03. 관계형 DB 만들기 — CREATE / INSERT / SELECT 04. SQL 3분류(DDL/DML/DCL) · 자료형 · ALTER / DROP 05. 제약조건 — \"마지막 방어선\" (NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT) 06. 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키 07. 데이터 모델링 08. ERD — Peter Chen / 까마귀발(IE) / ERD Editor ⚠️ 실습 DBMS는 SQLite다. 그런데 이론 슬라이드 일부는 MySQL/표준 SQL 기준(예: ALTER ... MODIFY COLUMN, DROP CONSTRAINT, information_schema)이라 SQLite에선 그대로 안 되는 항목이 있다. 이런 부분은 본문에서 ⚠ SQLite 주의로 따로 표시한다. 실습 코드는 코드 노트에서 직접 돌려본다.\n01 · DB는 왜 필요한가 — 파일처리 시스템의 한계 먼저 용어 정리부터. 데이터(data) 는 현실에서 수집한 가공 전의 단순한 사실·값이다(예: 85, 홍길동). 정보(information) 는 그 데이터를 목적에 맞게 의미 있게 가공한 결과다(예: “홍길동의 점수 85점은 상위 10%”). 그리고 데이터베이스(DB) 는 한 조직 안에서 여러 사용자·프로그램이 공유하려고 통합·저장·운영하는 데이터의 집합이다.\n그럼 그냥 엑셀 파일이나 CSV에 저장하면 안 될까? 강사님은 “개인 작업이라면 엑셀·CSV·SQLite로도 충분하다\"고 했다. 문제는 조직 단위로 갈 때 생긴다. 예전 방식(파일처리 시스템)은 세 가지 한계가 있다.\n한계 무슨 뜻인가 쉬운 비유 데이터 종속성 데이터 구조가 바뀌면 그 데이터를 쓰는 프로그램도 다 같이 고쳐야 함 책장 칸 배치를 바꿨더니, 그 책장을 쓰는 모든 사람이 위치를 새로 외워야 하는 격 데이터 중복성 프로그램마다 같은 데이터를 따로 복사해 보관 → 중복 같은 연락처를 카톡·전화부·메모장에 각각 저장 무결성 훼손 중복된 데이터가 서로 안 맞게 되어 어디가 맞는지 모름 카톡엔 010-1111, 전화부엔 010-2222 💡 그래서 DB는 공유 · 동시 사용 · 권한 관리 · 무결성을 한 곳에서 책임진다. 이게 “왜 DB인가\"의 답이다.\n⚠️ 팀 프로젝트에서 SQLite 쓰지 말 것(강사 경고). SQLite는 파일 하나로 된 개인용 DB라 여러 명이 동시에 쓰는 팀 프로젝트엔 부적절하다 → 팀은 클라우드 DB를 권장한다. (단 오늘 실습은 학습 목적이라 가볍게 SQLite를 쓴다.)\n02 · DB의 종류 — RDB vs NoSQL DB는 크게 두 갈래다. 데이터를 표(table) 로 다루는 관계형(RDB) 과, 표 틀에 얽매이지 않는 NoSQL.\n구분 RDB (관계형) NoSQL (Not only SQL) 데이터 구조 2차원 표(행·열), 정해진 스키마 유연한 스키마(미리 정의 안 함) 강점 무결성·일관성·신뢰성, 정규화로 중복 최소화 비정형 데이터(이미지·자연어), 대용량·수평 확장 어울리는 상황 구조가 일관적이고 정확성이 중요할 때 구조가 자주 바뀌거나 대량을 빠르게 처리할 때 대표 제품 MySQL, PostgreSQL, MariaDB, Oracle MongoDB, Redis, Cassandra RDB는 데이터를 행과 열의 표로 표현하고, 표끼리 관계로 이어 무결성을 지킨다. 구조가 일관적이라 신뢰성·안정성이 높다. NoSQL은 미리 정한 스키마가 없어 자유롭게 저장할 수 있고, 비정형 데이터나 대용량 분산 저장에 강하다.\n💡 강사 선택 팁: “분석에 어떤 DB를 쓸 것인가\"의 선택이 중요하다. NoSQL은 폭넓게 저장 가능하지만 학습 난이도가 있고, 공간(지도) 데이터는 PostgreSQL을 추천한다. 현업 분석에선 클라우드 데이터 웨어하우스(BigQuery 등) 사용 빈도가 높다(쿠팡 등 사례). 클라우드는 비용이 드니 용도·예산을 함께 고려한다.\n03 · 관계형 DB 만들기 — CREATE / INSERT / SELECT 이제 표를 직접 만든다. 그 전에 RDB 용어부터 — 같은 것을 부르는 이름이 여러 개라 헷갈리기 쉽다.\n표현 1 표현 2 표현 3 쉬운 설명 행(row) 튜플(tuple) 레코드 가로 한 줄 = 데이터 한 건 열(column) 속성(attribute) — 세로 한 칸 = 항목(이름, 나이…) 기본키(PK) — — 행을 유일하게 식별하는 속성(예: id) 도메인(domain) — — 그 속성이 가질 수 있는 값의 범위 기본 구문 세 개다. (아래는 슬라이드의 일반형 틀 — ⚠ 일반형)\n-- 테이블 만들기 CREATE TABLE 테이블명 (속성1 데이터타입, 속성2 데이터타입, ...); -- 데이터 넣기 (속성 생략 시 빈 칸엔 NULL이 들어감) INSERT INTO 테이블명 (속성1, 속성2, ...) VALUES (값1, 값2, ...); -- 데이터 꺼내기 SELECT 속성1, 속성2, ... FROM 테이블명; 💡 SQL 작성 규칙(가독성 약속):\n키워드(CREATE, SELECT…)는 대문자 테이블·속성 이름은 소문자, 띄어쓰기는 언더바(_)로 (dept_name) 이름은 의미가 분명하게, 명령 끝엔 세미콜론(;) 04 · SQL 3분류 · 자료형 · ALTER / DROP SQL(Structured Query Language)은 관계형 DB를 다루는 표준 언어다. 하는 일에 따라 세 종류로 나뉜다.\n분류 풀이 하는 일 대표 명령 DDL 데이터 정의어 테이블 등 구조를 정의 CREATE, ALTER, DROP DML 데이터 조작어 데이터를 조회·입력·수정·삭제 SELECT, INSERT, UPDATE, DELETE DCL 데이터 제어어 권한을 부여·회수 GRANT, REVOKE 지금까지 우리가 쓰던 SELECT는 DML, 오늘 새로 배우는 CREATE는 DDL이다.\n자료형 — 칸마다 담는 값의 종류 테이블을 만들 땐 각 칸에 무슨 종류의 값이 들어갈지(자료형)를 정해야 한다. DBMS마다 종류·이름이 조금씩 다르다.\n자료형 설명 VARCHAR(n) 최대 n바이트의 가변 길이 문자 INT 정수(4바이트) FLOAT 실수, 4바이트 부동소수점 DATETIME 날짜+시간 (YYYY-MM-DD HH:MM:SS) 💡 강사 포인트: VARCHAR 길이 같은 건 확장성을 고려해 정한다(다국적 이름, 긴 입력 등). 화면 입력(문자열) → 앱 처리 → DB 저장(날짜 타입 등) 사이에 타입이 안 맞아 정보가 유실될 수 있다는 점도 주의. 그리고 어떤 칸을 필수로 할지(NOT NULL), 기본값을 줄지(DEFAULT)는 비즈니스 로직에 근거해 설계해야 한다 → 바로 다음 챕터 제약조건으로 이어진다.\n테이블 수정·삭제 — ALTER / DROP -- 슬라이드 일반형(⚠ MySQL 기준) ALTER TABLE 테이블명 ADD COLUMN 컬럼명 데이터타입; -- 컬럼 추가 ALTER TABLE 테이블명 MODIFY COLUMN 컬럼명 데이터타입; -- 컬럼 수정 ALTER TABLE 테이블명 DROP COLUMN 컬럼명; -- 컬럼 삭제 DROP TABLE 테이블명; -- 테이블 통째 삭제 ⚠️ SQLite 주의: 위 MODIFY COLUMN·CHANGE COLUMN은 MySQL 문법이라 SQLite에선 안 된다. SQLite의 ALTER는 ADD COLUMN 정도만 되고, 제약·기본값을 바꾸려면 새 테이블을 만들어 데이터를 복사한 뒤 이름을 바꾸는 우회 패턴을 쓴다(코드 노트 참고).\n💡 DROP 순서(강사): 외래키(FK)로 연결된 테이블은 참조 역순(자식 → 부모) 으로 지워야 에러가 안 난다. 부모를 먼저 지우면 “아직 자식이 참조 중인데?” 하고 막힌다.\n05 · 제약조건 — “잘못된 데이터를 막는 마지막 방어선” 오늘의 핵심. 제약조건(constraint) 은 정확한 데이터만 들어오도록 보장하는 규칙이다. 비즈니스 규칙을 DB 레벨에서 강제해, 프론트엔드·백엔드가 실수로 이상한 값을 보내도 DB가 마지막에 막아준다. 그래서 강사님은 이를 “마지막 방어선” 이라 불렀다.\n왜 유용한가? ① DB 관리자 관점: 무결성 유지 ② 비즈니스 관점: 규칙 강제(예: 19세 미만 가입 차단) ③ 분석·개발 관점: 쓰레기 데이터가 줄어 정제 비용이 줄고 양질의 데이터가 쌓인다.\n제약조건 하는 일 한 줄 예시 NOT NULL 빈 값(NULL) 금지 = “필수 입력” 이름은 반드시 있어야 함 UNIQUE 중복 값 금지 (단 NULL은 중복 허용) 이메일은 겹치면 안 됨 DEFAULT 값을 안 주면 자동으로 채울 기본값 주소 미입력 시 ‘미정’ CHECK 값의 범위·조건 제한 학점은 13, 점수는 0100 CONSTRAINT 위 제약에 이름을 붙여 관리 쉽게 CONSTRAINT pk_x PRIMARY KEY(...) -- 제약에 이름 붙이기(관리·조회 편하게) CONSTRAINT 제약조건이름 제약조건(컬럼명) 강사님이 짚은 디테일 두 가지가 중요하다.\n💡 UNIQUE는 이메일에 ⭕, 이름엔 ❌. 이메일은 사람마다 달라야 하니 UNIQUE가 맞다. 하지만 이름은 동명이인이 있어 UNIQUE를 걸면 멀쩡한 사람이 가입을 못 한다. 그리고 UNIQUE는 NULL은 중복으로 안 친다 — 이메일을 비워둔 사람은 여러 명 있어도 된다.\n💡 DEFAULT vs NOT NULL은 택일. 둘 다 “빈 값 처리” 얘기지만 방향이 다르다. 쇼핑몰 배송지처럼 꼭 있어야 하는 값은 DEFAULT로 대충 채우기보다 NOT NULL로 강제하는 게 낫다. 정답은 비즈니스 로직이 정한다.\n⚠️ SQLite 주의: 슬라이드의 SELECT * FROM information_schema...(제약 조회)와 ALTER TABLE ... ADD/DROP CONSTRAINT(제약 추가·삭제)는 MySQL/표준 문법이라 SQLite엔 없다. SQLite에선 제약 조회를 PRAGMA table_info(...)·PRAGMA foreign_key_list(...)로, 제약 변경은 테이블 재생성으로 한다.\n06 · 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키 테이블에서 행을 구분하고, 테이블끼리 잇는 역할을 하는 게 키(key) 다.\n기본키 / 외래키 기본키(Primary Key, PK): 행을 유일하게 식별하는 기준 속성. 중복 불가 + NULL 불가(= NOT NULL + UNIQUE를 합친 것). 테이블당 보통 1개. 설정은 PRIMARY KEY. 외래키(Foreign Key, FK): 다른 테이블의 기본키를 참조하는 속성. 테이블 간 관계를 만든다. 참조하는 값은 부모 테이블 PK에 실제로 있는 값(또는 NULL)만 가능 → 이게 참조 무결성. 설정은 FOREIGN KEY (컬럼) REFERENCES 부모테이블(부모컬럼). 비유하면, PK는 주민등록번호(나를 유일하게 가리킴), FK는 가족관계증명서에 적힌 부모의 주민번호(존재하는 사람만 적을 수 있음)다.\n후보키 · 대체키 · 슈퍼키 키 정의 유일성 최소성 슈퍼키 유일하게 식별은 되지만 불필요한 속성이 섞임 ⭕ ❌ 후보키 기본키가 될 자격이 있는 키 ⭕ ⭕ 대체키 후보키 중 기본키로 안 뽑힌 키 ⭕ ⭕ 유일성 = 그 값으로 행을 하나로 특정할 수 있음 최소성 = 더 빼면 식별이 안 되는, 꼭 필요한 속성만 남은 상태 복합 기본키(Composite Key) 칼럼 하나로 식별이 안 될 때 두 개 이상을 묶어 PK로 삼는다. 오늘 실습의 enrollment(student_id, course_id)가 그 예 — “어떤 학생이 어떤 강의를 듣는가\"는 학생+강의 한 쌍이 있어야 한 건으로 특정된다.\n무결성 제약 — 데이터가 지켜야 할 규칙들 무결성 규칙 개체 무결성 기본키는 NULL·중복 불가 참조 무결성 외래키는 부모 PK에 있는 값이거나 NULL 도메인 무결성 값은 그 속성의 허용 범위(도메인) 안 NULL 무결성 특정 속성은 NULL 불가 고유 무결성 각 튜플의 값이 서로 다름 키 무결성 테이블엔 최소 한 개의 키가 존재 07 · 데이터 모델링 — 현실을 표로 옮기는 과정 데이터 모델링은 현실 세계의 데이터를 데이터베이스로 옮기는 설계 작업이다. 세 가지 재료로 구성된다.\n개체(Entity): 관리 대상 (예: 학생, 강의) 속성(Attribute): 개체의 특성·정보 (예: 학생의 이름, 학번) 관계(Relationship): 개체 간 연관 (예: 학생이 강의를 수강한다) 과정은 개념적 설계 → 논리적 설계 → 물리적 설계 3단계로 추상에서 구체로 내려간다.\n08 · ERD — 테이블 관계를 그림으로 그리는 설계도 ERD(Entity-Relationship Diagram) 는 테이블들이 서로 어떻게 연결되는지를 그림으로 보여주는 설계도다. 구성요소는 셋이다.\n개체(Entity): 박스 하나 = 테이블 하나 속성(Attribute): 박스 안 항목 = 컬럼 (🔑 = PK) 관계(Relationship): 박스를 잇는 선, 선 끝 모양 = 카디널리티(수량) Peter Chen 표기법 기호 의미 사각형 개체(Entity) 타원 속성(Attribute) 마름모 관계(Relationship) 밑줄 기본키 이중 타원 다중값 속성 카디널리티는 1(1:1), \u003c(1:N), \u003e\u003c(N:M)로 표기한다. 도구로는 draw.io(app.diagrams.net)가 소개됐다.\nIE(까마귀발) 표기법 실무에서 더 자주 보는 표기다. 선 끝의 새 발(crow’s foot) 모양으로 수량을 나타낸다.\n기호 의미 ─┼ 하나(one), 1 ─○ 영(zero), 0 ─\u003c 다수(many), N 이걸 조합해 0..1(없거나 하나), 1..N(하나 이상 필수), 0..N(없거나 여럿)을 표현한다. 예를 들어 한쪽이 ┼, 반대쪽이 \u003c면 일대다(1:N) 관계다.\n관계 유형과 N:M 분해 (강사 강조) 💡 기본은 일대다(1:N)로 생각하라. 일대일(1:1)은 보안·민감정보 분리처럼 매우 예외적인 경우다. 그리고 다대다(N:M)는 그대로 두지 않고, 최종적으로 중간(연결) 테이블로 분해해 1:N 둘로 만든다. 오늘 실습의 enrollment가 바로 그것 — 학생(N)과 강의(M)의 N:M을, 학생–enrollment(1:N)와 강의–enrollment(1:N)로 푼 것이다. (이 “분해\"가 정규화의 일부이고, 정규화는 다음 시간 상세 예고.)\n💡 선택/필수 관계: ERD Editor에선 관계가 0..N(선택적)인지 1..N(필수 포함)인지도 정한다. 예) 고객–계좌에서 “계좌가 꼭 있어야 하는가\"에 따라 갈린다.\nERD Editor 실습 (코드 ↔ ERD 양방향) VS Code 확장 ERD Editor를 쓰면 SQL과 그림을 서로 변환할 수 있다.\nVS Code에서 ERD Editor 확장 설치 작업 폴더에 .erd 파일 생성 (예: school_db.erd) ERD 화면 우클릭 → Database → SQLite → Import → Schema SQL → 우리가 만든 SQL을 불러오면 관계도가 자동 생성 반대로 Export → .sql 하면 CREATE 문이 생성됨 💡 강사 강조: 코드 → ERD, ERD → 코드 둘 다 되지만, 내보낸 SQL은 반드시 최종 검토·수정 후 적용해야 한다. 자동 생성을 맹신하지 말 것.\n📚 참고자료 Elice, 「데이터베이스 개요」 강의 자료 (슬라이드 29p) — 소개·종류(RDB/NoSQL)·관계형 DB 만들기·DDL/DML/DCL·자료형 Elice, 「데이터베이스 구성하기」 강의 자료 (슬라이드 36p) — 제약조건·키·데이터 모델링·ERD(Peter Chen / IE 까마귀발) 실습 정답본: Day06_lecture.sql(school_db 5테이블 + 제약조건 예제) — 강사 정답 ERD 작성 실습: VS Code ERD Editor 확장 (Schema SQL Import → ERD 자동 생성) 미니 프로젝트: constraint_demo (good.db vs bad.db, Streamlit) — 제약 설계 실패 사례 MySQL 데이터 타입 문서: dev.mysql.com/doc/refman/8.0/en/data-types.html draw.io: app.diagrams.net (Peter Chen ERD 작도) 📌 파일명/회차 참고: 폴더는 04_데이터베이스개요(3주차 04번째)인데, 실습 파일명은 Day06_lecture.sql, 내부 주석은 -- Day 05로 표기가 엇갈린다. 이 글은 강의일 기준 2026-06-15 / 3주차-04로 통일했다(원문 주석 표기는 보존).\n📌 참고: 강사가 클라우드 크레딧(GCP 무료 크레딧 등)을 언급했으나 정확한 금액·기간 조건은 시기에 따라 달라지므로 실제 사용 전 공식 안내를 확인하자. 운영성 정보라 본문 비중은 낮췄다.\n마무리 오늘은 데이터를 꺼내 쓰는 쪽에서 설계하고 만드는 쪽으로 넘어왔다. DB가 필요한 이유(파일처리의 종속성·중복·무결성 한계)에서 출발해, RDB vs NoSQL로 선택지를 보고, CREATE/INSERT/SELECT로 표를 만들었다. DDL/DML/DCL로 SQL의 갈래를 잡고, 자료형을 정한 뒤, 오늘의 핵심인 제약조건(NOT NULL·UNIQUE·DEFAULT·CHECK·CONSTRAINT)과 키·무결성(PK·FK·후보·대체·슈퍼키·복합키)을 다뤘다. 마지막으로 데이터 모델링과 ERD(Peter Chen·까마귀발·ERD Editor)로 설계를 그림으로 옮겼다. 한 문장으로 남기자면 — 제약조건은 잘못된 데이터를 막는 마지막 방어선이고, 키는 행을 식별하고 테이블을 잇는 손잡이다. 그리고 N:M은 중간 테이블로 분해한다는 것, SQLite는 표준/MySQL 문법 일부를 못 쓴다는 것을 기억해두자. 정규화·카디널리티 심화는 다음 시간이다.\n🔗 연관 노트 6/15 데이터베이스 개요 \u0026 구성하기 코드 노트 — 오늘 배운 제약조건·키를 school_db 5테이블 CREATE로 직접 만들고, constraint_demo(good.db vs bad.db)로 “제약 설계가 틀리면 가입이 안 된다\"를 체험하는 실습 노트 6/12 그룹 함수 \u0026 윈도우 함수 — 지난 시간(이미 만들어진 DB에서 데이터를 꺼내는 통계·분석 쿼리). 오늘부터는 그 DB를 만드는 쪽 6/11 JOIN \u0026 서브쿼리 심화 — JOIN으로 테이블을 잇던 그 “관계\"가, 오늘 PK–FK 설계로 어떻게 생기는지의 출발점 ","wordCount":"2005","inLanguage":"en","datePublished":"2026-06-15T09:00:00+09:00","dateModified":"2026-06-15T09:00:00+09:00","author":{"@type":"Person","name":"yw8837"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/"},"publisher":{"@type":"Organization","name":"AI_6스터디","logo":{"@type":"ImageObject","url":"https://yw8837.github.io/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=header-nav><div class=logo><a href=https://yw8837.github.io/ accesskey=h title="AI_6스터디 (Alt + H)">AI_6스터디</a><div class=logo-switches><button id=theme-toggle class=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
-<svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-<svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu class=menu><li><a href=https://yw8837.github.io/categories/year-study/ title="📚 Year Study"><span>📚 Year Study</span></a></li><li><a href=https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/ title="강의 정리"><span>강의 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/ title="실습 정리"><span>실습 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/ title=프로젝트><span>프로젝트</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><nav class=breadcrumbs role=navigation aria-label=Breadcrumb><a href=/>홈</a>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg>
-<a href=/posts/>Posts</a>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg></nav><h1 class="post-title entry-hint-parent">6/15 데이터베이스 개요 & 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가</h1><div class=post-description>이어드림 6기 데이터베이스 개요 & 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다.</div><div class=post-meta><span title='2026-06-15 09:00:00 +0900 KST'>2026년 6월 15일</span>&nbsp;·&nbsp;<span>10 분</span>&nbsp;·&nbsp;<span>yw8837</span></div></header><details class=toc><summary accesskey=c title="(Alt + C)"><span class=title>목차</span></summary><div class=inner><ul><li><a href=#-%ec%88%98%ec%97%85-%eb%82%b4%ec%9a%a9 aria-label="📖 수업 내용">📖 수업 내용</a><ul><li><a href=#01--db%eb%8a%94-%ec%99%9c-%ed%95%84%ec%9a%94%ed%95%9c%ea%b0%80--%ed%8c%8c%ec%9d%bc%ec%b2%98%eb%a6%ac-%ec%8b%9c%ec%8a%a4%ed%85%9c%ec%9d%98-%ed%95%9c%ea%b3%84 aria-label="01 · DB는 왜 필요한가 — 파일처리 시스템의 한계">01 · DB는 왜 필요한가 — 파일처리 시스템의 한계</a></li><li><a href=#02--db%ec%9d%98-%ec%a2%85%eb%a5%98--rdb-vs-nosql aria-label="02 · DB의 종류 — RDB vs NoSQL">02 · DB의 종류 — RDB vs NoSQL</a></li><li><a href=#03--%ea%b4%80%ea%b3%84%ed%98%95-db-%eb%a7%8c%eb%93%a4%ea%b8%b0--create--insert--select aria-label="03 · 관계형 DB 만들기 — CREATE / INSERT / SELECT">03 · 관계형 DB 만들기 — CREATE / INSERT / SELECT</a></li><li><a href=#04--sql-3%eb%b6%84%eb%a5%98--%ec%9e%90%eb%a3%8c%ed%98%95--alter--drop aria-label="04 · SQL 3분류 · 자료형 · ALTER / DROP">04 · SQL 3분류 · 자료형 · ALTER / DROP</a><ul><li><a href=#%ec%9e%90%eb%a3%8c%ed%98%95--%ec%b9%b8%eb%a7%88%eb%8b%a4-%eb%8b%b4%eb%8a%94-%ea%b0%92%ec%9d%98-%ec%a2%85%eb%a5%98 aria-label="자료형 — 칸마다 담는 값의 종류">자료형 — 칸마다 담는 값의 종류</a></li><li><a href=#%ed%85%8c%ec%9d%b4%eb%b8%94-%ec%88%98%ec%a0%95%ec%82%ad%ec%a0%9c--alter--drop aria-label="테이블 수정·삭제 — ALTER / DROP">테이블 수정·삭제 — ALTER / DROP</a></li></ul></li><li><a href=#05--%ec%a0%9c%ec%95%bd%ec%a1%b0%ea%b1%b4--%ec%9e%98%eb%aa%bb%eb%90%9c-%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%a5%bc-%eb%a7%89%eb%8a%94-%eb%a7%88%ec%a7%80%eb%a7%89-%eb%b0%a9%ec%96%b4%ec%84%a0 aria-label="05 · 제약조건 — &ldquo;잘못된 데이터를 막는 마지막 방어선&rdquo;">05 · 제약조건 — &ldquo;잘못된 데이터를 막는 마지막 방어선&rdquo;</a></li><li><a href=#06--%ed%82%a4%ec%99%80-%eb%ac%b4%ea%b2%b0%ec%84%b1--pk--fk--%ed%9b%84%eb%b3%b4%eb%8c%80%ec%b2%b4%ec%8a%88%ed%8d%bc%ed%82%a4--%eb%b3%b5%ed%95%a9%ed%82%a4 aria-label="06 · 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키">06 · 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키</a><ul><li><a href=#%ea%b8%b0%eb%b3%b8%ed%82%a4--%ec%99%b8%eb%9e%98%ed%82%a4 aria-label="기본키 / 외래키">기본키 / 외래키</a></li><li><a href=#%ed%9b%84%eb%b3%b4%ed%82%a4--%eb%8c%80%ec%b2%b4%ed%82%a4--%ec%8a%88%ed%8d%bc%ed%82%a4 aria-label="후보키 · 대체키 · 슈퍼키">후보키 · 대체키 · 슈퍼키</a></li><li><a href=#%eb%b3%b5%ed%95%a9-%ea%b8%b0%eb%b3%b8%ed%82%a4composite-key aria-label="복합 기본키(Composite Key)">복합 기본키(Composite Key)</a></li><li><a href=#%eb%ac%b4%ea%b2%b0%ec%84%b1-%ec%a0%9c%ec%95%bd--%eb%8d%b0%ec%9d%b4%ed%84%b0%ea%b0%80-%ec%a7%80%ec%bc%9c%ec%95%bc-%ed%95%a0-%ea%b7%9c%ec%b9%99%eb%93%a4 aria-label="무결성 제약 — 데이터가 지켜야 할 규칙들">무결성 제약 — 데이터가 지켜야 할 규칙들</a></li></ul></li><li><a href=#07--%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%aa%a8%eb%8d%b8%eb%a7%81--%ed%98%84%ec%8b%a4%ec%9d%84-%ed%91%9c%eb%a1%9c-%ec%98%ae%ea%b8%b0%eb%8a%94-%ea%b3%bc%ec%a0%95 aria-label="07 · 데이터 모델링 — 현실을 표로 옮기는 과정">07 · 데이터 모델링 — 현실을 표로 옮기는 과정</a></li><li><a href=#08--erd--%ed%85%8c%ec%9d%b4%eb%b8%94-%ea%b4%80%ea%b3%84%eb%a5%bc-%ea%b7%b8%eb%a6%bc%ec%9c%bc%eb%a1%9c-%ea%b7%b8%eb%a6%ac%eb%8a%94-%ec%84%a4%ea%b3%84%eb%8f%84 aria-label="08 · ERD — 테이블 관계를 그림으로 그리는 설계도">08 · ERD — 테이블 관계를 그림으로 그리는 설계도</a><ul><li><a href=#peter-chen-%ed%91%9c%ea%b8%b0%eb%b2%95 aria-label="Peter Chen 표기법">Peter Chen 표기법</a></li><li><a href=#ie%ea%b9%8c%eb%a7%88%ea%b7%80%eb%b0%9c-%ed%91%9c%ea%b8%b0%eb%b2%95 aria-label="IE(까마귀발) 표기법">IE(까마귀발) 표기법</a></li><li><a href=#%ea%b4%80%ea%b3%84-%ec%9c%a0%ed%98%95%ea%b3%bc-nm-%eb%b6%84%ed%95%b4-%ea%b0%95%ec%82%ac-%ea%b0%95%ec%a1%b0 aria-label="관계 유형과 N:M 분해 (강사 강조)">관계 유형과 N:M 분해 (강사 강조)</a></li><li><a href=#erd-editor-%ec%8b%a4%ec%8a%b5-%ec%bd%94%eb%93%9c--erd-%ec%96%91%eb%b0%a9%ed%96%a5 aria-label="ERD Editor 실습 (코드 ↔ ERD 양방향)">ERD Editor 실습 (코드 ↔ ERD 양방향)</a></li></ul></li></ul></li><li><a href=#-%ec%b0%b8%ea%b3%a0%ec%9e%90%eb%a3%8c aria-label="📚 참고자료">📚 참고자료</a><ul><li><a href=#%eb%a7%88%eb%ac%b4%eb%a6%ac aria-label=마무리>마무리</a></li><li><a href=#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8 aria-label="🔗 연관 노트">🔗 연관 노트</a></li></ul></li></ul></div></details><div class="post-content md-content"><blockquote><p>지금까지는 <strong>이미 만들어진 DB</strong>(chinook·classicmodels)에서 <code>SELECT</code>·<code>JOIN</code>·윈도우 함수로 데이터를 <em>꺼내</em> 썼다. 오늘은 방향을 180도 돌린다 — <strong>DB를 직접 설계하고 만드는</strong> 첫 수업이다. &ldquo;DB가 대체 왜 필요한가"부터 시작해서 → RDB vs NoSQL → <code>CREATE</code>로 테이블 만들기 → DDL/DML/DCL·자료형 → <strong>제약조건</strong>(NOT NULL·UNIQUE·DEFAULT·CHECK) → <strong>키</strong>(PK·FK·후보·대체·슈퍼키)와 무결성 → 데이터 모델링 → <strong>ERD</strong>까지 이어진다. 오늘 전체를 관통하는 한 문장은 강사님의 이 말이다 — <strong>&ldquo;제약조건은 잘못된 데이터 입력을 막는 <em>마지막 방어선</em>이다.&rdquo;</strong></p></blockquote><h1 id=-수업-내용>📖 수업 내용<a hidden class=anchor aria-hidden=true href=#-수업-내용>#</a></h1><p>오전엔 운영 공지와 지난 윈도우 함수 복습이 있었고, <strong>DB 본 수업은 오후</strong>에 집중됐다. 이 글은 라이브 진행 흐름을 따라 아래 순서로 간다.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>01. DB는 왜 필요한가 (파일처리 시스템의 한계)
-</span></span><span class=line><span class=cl>02. DB의 종류 — RDB vs NoSQL
-</span></span><span class=line><span class=cl>03. 관계형 DB 만들기 — CREATE / INSERT / SELECT
-</span></span><span class=line><span class=cl>04. SQL 3분류(DDL/DML/DCL) · 자료형 · ALTER / DROP
-</span></span><span class=line><span class=cl>05. 제약조건 — &#34;마지막 방어선&#34; (NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT)
-</span></span><span class=line><span class=cl>06. 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키
-</span></span><span class=line><span class=cl>07. 데이터 모델링
-</span></span><span class=line><span class=cl>08. ERD — Peter Chen / 까마귀발(IE) / ERD Editor
-</span></span></code></pre></div><blockquote><p>⚠️ <strong>실습 DBMS는 SQLite다.</strong> 그런데 이론 슬라이드 일부는 <strong>MySQL/표준 SQL 기준</strong>(예: <code>ALTER ... MODIFY COLUMN</code>, <code>DROP CONSTRAINT</code>, <code>information_schema</code>)이라 <strong>SQLite에선 그대로 안 되는</strong> 항목이 있다. 이런 부분은 본문에서 <code>⚠ SQLite 주의</code>로 따로 표시한다. 실습 코드는 <a href=/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/>코드 노트</a>에서 직접 돌려본다.</p></blockquote><hr><h2 id=01--db는-왜-필요한가--파일처리-시스템의-한계>01 · DB는 왜 필요한가 — 파일처리 시스템의 한계<a hidden class=anchor aria-hidden=true href=#01--db는-왜-필요한가--파일처리-시스템의-한계>#</a></h2><p>먼저 용어 정리부터. <strong>데이터(data)</strong> 는 현실에서 수집한 <em>가공 전의</em> 단순한 사실·값이다(예: <code>85</code>, <code>홍길동</code>). <strong>정보(information)</strong> 는 그 데이터를 목적에 맞게 <em>의미 있게 가공한</em> 결과다(예: &ldquo;홍길동의 점수 85점은 상위 10%&rdquo;). 그리고 <strong>데이터베이스(DB)</strong> 는 한 조직 안에서 <strong>여러 사용자·프로그램이 공유</strong>하려고 통합·저장·운영하는 <strong>데이터의 집합</strong>이다.</p><p>그럼 그냥 엑셀 파일이나 CSV에 저장하면 안 될까? 강사님은 &ldquo;개인 작업이라면 엑셀·CSV·SQLite로도 충분하다"고 했다. 문제는 <strong>조직 단위로 갈 때</strong> 생긴다. 예전 방식(파일처리 시스템)은 세 가지 한계가 있다.</p><table><thead><tr><th>한계</th><th>무슨 뜻인가</th><th>쉬운 비유</th></tr></thead><tbody><tr><td><strong>데이터 종속성</strong></td><td>데이터 구조가 바뀌면 그 데이터를 쓰는 프로그램도 다 같이 고쳐야 함</td><td>책장 칸 배치를 바꿨더니, 그 책장을 쓰는 모든 사람이 위치를 새로 외워야 하는 격</td></tr><tr><td><strong>데이터 중복성</strong></td><td>프로그램마다 같은 데이터를 따로 복사해 보관 → 중복</td><td>같은 연락처를 카톡·전화부·메모장에 각각 저장</td></tr><tr><td><strong>무결성 훼손</strong></td><td>중복된 데이터가 서로 안 맞게 되어 어디가 맞는지 모름</td><td>카톡엔 010-1111, 전화부엔 010-2222</td></tr></tbody></table><blockquote><p>💡 그래서 DB는 <strong>공유 · 동시 사용 · 권한 관리 · 무결성</strong>을 한 곳에서 책임진다. 이게 &ldquo;왜 DB인가"의 답이다.</p></blockquote><blockquote><p>⚠️ <strong>팀 프로젝트에서 SQLite 쓰지 말 것(강사 경고).</strong> SQLite는 <strong>파일 하나로 된 개인용 DB</strong>라 여러 명이 동시에 쓰는 팀 프로젝트엔 부적절하다 → 팀은 <strong>클라우드 DB</strong>를 권장한다. (단 오늘 실습은 <em>학습 목적</em>이라 가볍게 SQLite를 쓴다.)</p></blockquote><hr><h2 id=02--db의-종류--rdb-vs-nosql>02 · DB의 종류 — RDB vs NoSQL<a hidden class=anchor aria-hidden=true href=#02--db의-종류--rdb-vs-nosql>#</a></h2><p>DB는 크게 두 갈래다. 데이터를 <strong>표(table)</strong> 로 다루는 <strong>관계형(RDB)</strong> 과, 표 틀에 얽매이지 않는 <strong>NoSQL</strong>.</p><table><thead><tr><th>구분</th><th>RDB (관계형)</th><th>NoSQL (Not only SQL)</th></tr></thead><tbody><tr><td>데이터 구조</td><td>2차원 표(행·열), 정해진 스키마</td><td>유연한 스키마(미리 정의 안 함)</td></tr><tr><td>강점</td><td>무결성·일관성·신뢰성, 정규화로 중복 최소화</td><td>비정형 데이터(이미지·자연어), 대용량·수평 확장</td></tr><tr><td>어울리는 상황</td><td>구조가 일관적이고 정확성이 중요할 때</td><td>구조가 자주 바뀌거나 대량을 빠르게 처리할 때</td></tr><tr><td>대표 제품</td><td>MySQL, PostgreSQL, MariaDB, Oracle</td><td>MongoDB, Redis, Cassandra</td></tr></tbody></table><p><strong>RDB</strong>는 데이터를 행과 열의 표로 표현하고, 표끼리 <strong>관계</strong>로 이어 무결성을 지킨다. 구조가 일관적이라 신뢰성·안정성이 높다. <strong>NoSQL</strong>은 미리 정한 스키마가 없어 자유롭게 저장할 수 있고, 비정형 데이터나 대용량 분산 저장에 강하다.</p><blockquote><p>💡 <strong>강사 선택 팁:</strong> &ldquo;분석에 어떤 DB를 쓸 것인가"의 선택이 중요하다. NoSQL은 폭넓게 저장 가능하지만 학습 난이도가 있고, <strong>공간(지도) 데이터는 PostgreSQL을 추천</strong>한다. 현업 분석에선 <strong>클라우드 데이터 웨어하우스(BigQuery 등)</strong> 사용 빈도가 높다(쿠팡 등 사례). 클라우드는 비용이 드니 용도·예산을 함께 고려한다.</p></blockquote><hr><h2 id=03--관계형-db-만들기--create--insert--select>03 · 관계형 DB 만들기 — CREATE / INSERT / SELECT<a hidden class=anchor aria-hidden=true href=#03--관계형-db-만들기--create--insert--select>#</a></h2><p>이제 표를 직접 만든다. 그 전에 RDB 용어부터 — 같은 것을 부르는 이름이 여러 개라 헷갈리기 쉽다.</p><table><thead><tr><th>표현 1</th><th>표현 2</th><th>표현 3</th><th>쉬운 설명</th></tr></thead><tbody><tr><td>행(row)</td><td>튜플(tuple)</td><td>레코드</td><td>가로 한 줄 = 데이터 한 건</td></tr><tr><td>열(column)</td><td>속성(attribute)</td><td>—</td><td>세로 한 칸 = 항목(이름, 나이…)</td></tr><tr><td>기본키(PK)</td><td>—</td><td>—</td><td>행을 유일하게 식별하는 속성(예: id)</td></tr><tr><td>도메인(domain)</td><td>—</td><td>—</td><td>그 속성이 가질 수 있는 <strong>값의 범위</strong></td></tr></tbody></table><p>기본 구문 세 개다. (아래는 슬라이드의 일반형 틀 — <code>⚠ 일반형</code>)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 테이블 만들기
-</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=err>테이블명</span><span class=w> </span><span class=p>(</span><span class=err>속성</span><span class=mi>1</span><span class=w> </span><span class=err>데이터타입</span><span class=p>,</span><span class=w> </span><span class=err>속성</span><span class=mi>2</span><span class=w> </span><span class=err>데이터타입</span><span class=p>,</span><span class=w> </span><span class=p>...);</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=c1>-- 데이터 넣기 (속성 생략 시 빈 칸엔 NULL이 들어감)
-</span></span></span><span class=line><span class=cl><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=err>테이블명</span><span class=w> </span><span class=p>(</span><span class=err>속성</span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=err>속성</span><span class=mi>2</span><span class=p>,</span><span class=w> </span><span class=p>...)</span><span class=w> </span><span class=k>VALUES</span><span class=w> </span><span class=p>(</span><span class=err>값</span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=err>값</span><span class=mi>2</span><span class=p>,</span><span class=w> </span><span class=p>...);</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=c1>-- 데이터 꺼내기
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=err>속성</span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=err>속성</span><span class=mi>2</span><span class=p>,</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=err>테이블명</span><span class=p>;</span><span class=w>
-</span></span></span></code></pre></div><blockquote><p>💡 <strong>SQL 작성 규칙(가독성 약속):</strong></p><ul><li>키워드(<code>CREATE</code>, <code>SELECT</code>…)는 <strong>대문자</strong></li><li>테이블·속성 이름은 <strong>소문자</strong>, 띄어쓰기는 언더바(<code>_</code>)로 (<code>dept_name</code>)</li><li>이름은 의미가 분명하게, 명령 끝엔 <strong>세미콜론(<code>;</code>)</strong></li></ul></blockquote><hr><h2 id=04--sql-3분류--자료형--alter--drop>04 · SQL 3분류 · 자료형 · ALTER / DROP<a hidden class=anchor aria-hidden=true href=#04--sql-3분류--자료형--alter--drop>#</a></h2><p><strong>SQL</strong>(Structured Query Language)은 관계형 DB를 다루는 표준 언어다. 하는 일에 따라 세 종류로 나뉜다.</p><table><thead><tr><th>분류</th><th>풀이</th><th>하는 일</th><th>대표 명령</th></tr></thead><tbody><tr><td><strong>DDL</strong></td><td>데이터 정의어</td><td>테이블 등 <strong>구조</strong>를 정의</td><td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code></td></tr><tr><td><strong>DML</strong></td><td>데이터 조작어</td><td><strong>데이터</strong>를 조회·입력·수정·삭제</td><td><code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td></tr><tr><td><strong>DCL</strong></td><td>데이터 제어어</td><td><strong>권한</strong>을 부여·회수</td><td><code>GRANT</code>, <code>REVOKE</code></td></tr></tbody></table><p>지금까지 우리가 쓰던 <code>SELECT</code>는 DML, 오늘 새로 배우는 <code>CREATE</code>는 DDL이다.</p><h3 id=자료형--칸마다-담는-값의-종류>자료형 — 칸마다 담는 값의 종류<a hidden class=anchor aria-hidden=true href=#자료형--칸마다-담는-값의-종류>#</a></h3><p>테이블을 만들 땐 각 칸에 무슨 종류의 값이 들어갈지(자료형)를 정해야 한다. <strong>DBMS마다 종류·이름이 조금씩 다르다.</strong></p><table><thead><tr><th>자료형</th><th>설명</th></tr></thead><tbody><tr><td><code>VARCHAR(n)</code></td><td>최대 n바이트의 <strong>가변 길이</strong> 문자</td></tr><tr><td><code>INT</code></td><td>정수(4바이트)</td></tr><tr><td><code>FLOAT</code></td><td>실수, 4바이트 부동소수점</td></tr><tr><td><code>DATETIME</code></td><td>날짜+시간 (<code>YYYY-MM-DD HH:MM:SS</code>)</td></tr></tbody></table><blockquote><p>💡 <strong>강사 포인트:</strong> <code>VARCHAR</code> 길이 같은 건 <strong>확장성을 고려</strong>해 정한다(다국적 이름, 긴 입력 등). 화면 입력(문자열) → 앱 처리 → DB 저장(날짜 타입 등) 사이에 <strong>타입이 안 맞아 정보가 유실될 수 있다</strong>는 점도 주의. 그리고 어떤 칸을 필수로 할지(NOT NULL), 기본값을 줄지(DEFAULT)는 <strong>비즈니스 로직에 근거해</strong> 설계해야 한다 → 바로 다음 챕터 제약조건으로 이어진다.</p></blockquote><h3 id=테이블-수정삭제--alter--drop>테이블 수정·삭제 — ALTER / DROP<a hidden class=anchor aria-hidden=true href=#테이블-수정삭제--alter--drop>#</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 슬라이드 일반형(⚠ MySQL 기준)
-</span></span></span><span class=line><span class=cl><span class=k>ALTER</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=err>테이블명</span><span class=w> </span><span class=k>ADD</span><span class=w> </span><span class=k>COLUMN</span><span class=w> </span><span class=err>컬럼명</span><span class=w> </span><span class=err>데이터타입</span><span class=p>;</span><span class=w>     </span><span class=c1>-- 컬럼 추가
-</span></span></span><span class=line><span class=cl><span class=k>ALTER</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=err>테이블명</span><span class=w> </span><span class=k>MODIFY</span><span class=w> </span><span class=k>COLUMN</span><span class=w> </span><span class=err>컬럼명</span><span class=w> </span><span class=err>데이터타입</span><span class=p>;</span><span class=w>  </span><span class=c1>-- 컬럼 수정
-</span></span></span><span class=line><span class=cl><span class=k>ALTER</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=err>테이블명</span><span class=w> </span><span class=k>DROP</span><span class=w> </span><span class=k>COLUMN</span><span class=w> </span><span class=err>컬럼명</span><span class=p>;</span><span class=w>               </span><span class=c1>-- 컬럼 삭제
-</span></span></span><span class=line><span class=cl><span class=k>DROP</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=err>테이블명</span><span class=p>;</span><span class=w>                                   </span><span class=c1>-- 테이블 통째 삭제
-</span></span></span></code></pre></div><blockquote><p>⚠️ <strong>SQLite 주의:</strong> 위 <code>MODIFY COLUMN</code>·<code>CHANGE COLUMN</code>은 <strong>MySQL 문법</strong>이라 <strong>SQLite에선 안 된다.</strong> SQLite의 <code>ALTER</code>는 <code>ADD COLUMN</code> 정도만 되고, 제약·기본값을 바꾸려면 <strong>새 테이블을 만들어 데이터를 복사한 뒤 이름을 바꾸는</strong> 우회 패턴을 쓴다(코드 노트 참고).</p></blockquote><blockquote><p>💡 <strong>DROP 순서(강사):</strong> 외래키(FK)로 연결된 테이블은 <strong>참조 역순(자식 → 부모)</strong> 으로 지워야 에러가 안 난다. 부모를 먼저 지우면 &ldquo;아직 자식이 참조 중인데?&rdquo; 하고 막힌다.</p></blockquote><hr><h2 id=05--제약조건--잘못된-데이터를-막는-마지막-방어선>05 · 제약조건 — &ldquo;잘못된 데이터를 막는 마지막 방어선&rdquo;<a hidden class=anchor aria-hidden=true href=#05--제약조건--잘못된-데이터를-막는-마지막-방어선>#</a></h2><p>오늘의 핵심. <strong>제약조건(constraint)</strong> 은 <em>정확한 데이터만 들어오도록 보장하는 규칙</em>이다. 비즈니스 규칙을 <strong>DB 레벨에서 강제</strong>해, 프론트엔드·백엔드가 실수로 이상한 값을 보내도 <strong>DB가 마지막에 막아준다.</strong> 그래서 강사님은 이를 <strong>&ldquo;마지막 방어선&rdquo;</strong> 이라 불렀다.</p><blockquote><p>왜 유용한가? ① <strong>DB 관리자</strong> 관점: 무결성 유지 ② <strong>비즈니스</strong> 관점: 규칙 강제(예: 19세 미만 가입 차단) ③ <strong>분석·개발</strong> 관점: 쓰레기 데이터가 줄어 정제 비용이 줄고 양질의 데이터가 쌓인다.</p></blockquote><table><thead><tr><th>제약조건</th><th>하는 일</th><th>한 줄 예시</th></tr></thead><tbody><tr><td><strong>NOT NULL</strong></td><td>빈 값(NULL) 금지 = &ldquo;필수 입력&rdquo;</td><td>이름은 반드시 있어야 함</td></tr><tr><td><strong>UNIQUE</strong></td><td>중복 값 금지 (단 NULL은 중복 허용)</td><td>이메일은 겹치면 안 됨</td></tr><tr><td><strong>DEFAULT</strong></td><td>값을 안 주면 자동으로 채울 기본값</td><td>주소 미입력 시 &lsquo;미정&rsquo;</td></tr><tr><td><strong>CHECK</strong></td><td>값의 범위·조건 제한</td><td>학점은 1<del>3, 점수는 0</del>100</td></tr><tr><td><strong>CONSTRAINT</strong></td><td>위 제약에 <strong>이름</strong>을 붙여 관리 쉽게</td><td><code>CONSTRAINT pk_x PRIMARY KEY(...)</code></td></tr></tbody></table><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 제약에 이름 붙이기(관리·조회 편하게)
-</span></span></span><span class=line><span class=cl><span class=k>CONSTRAINT</span><span class=w> </span><span class=err>제약조건이름</span><span class=w> </span><span class=err>제약조건</span><span class=p>(</span><span class=err>컬럼명</span><span class=p>)</span><span class=w>
-</span></span></span></code></pre></div><p>강사님이 짚은 디테일 두 가지가 중요하다.</p><blockquote><p>💡 <strong>UNIQUE는 이메일에 ⭕, 이름엔 ❌.</strong> 이메일은 사람마다 달라야 하니 UNIQUE가 맞다. 하지만 <strong>이름은 동명이인</strong>이 있어 UNIQUE를 걸면 멀쩡한 사람이 가입을 못 한다. 그리고 UNIQUE는 <strong>NULL은 중복으로 안 친다</strong> — 이메일을 비워둔 사람은 여러 명 있어도 된다.</p></blockquote><blockquote><p>💡 <strong>DEFAULT vs NOT NULL은 택일.</strong> 둘 다 &ldquo;빈 값 처리&rdquo; 얘기지만 방향이 다르다. 쇼핑몰 배송지처럼 <em>꼭 있어야 하는</em> 값은 DEFAULT로 대충 채우기보다 <strong>NOT NULL로 강제</strong>하는 게 낫다. 정답은 <strong>비즈니스 로직</strong>이 정한다.</p></blockquote><blockquote><p>⚠️ <strong>SQLite 주의:</strong> 슬라이드의 <code>SELECT * FROM information_schema...</code>(제약 조회)와 <code>ALTER TABLE ... ADD/DROP CONSTRAINT</code>(제약 추가·삭제)는 <strong>MySQL/표준 문법</strong>이라 SQLite엔 없다. SQLite에선 제약 조회를 <code>PRAGMA table_info(...)</code>·<code>PRAGMA foreign_key_list(...)</code>로, 제약 변경은 테이블 재생성으로 한다.</p></blockquote><hr><h2 id=06--키와-무결성--pk--fk--후보대체슈퍼키--복합키>06 · 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키<a hidden class=anchor aria-hidden=true href=#06--키와-무결성--pk--fk--후보대체슈퍼키--복합키>#</a></h2><p>테이블에서 <strong>행을 구분하고, 테이블끼리 잇는</strong> 역할을 하는 게 <strong>키(key)</strong> 다.</p><h3 id=기본키--외래키>기본키 / 외래키<a hidden class=anchor aria-hidden=true href=#기본키--외래키>#</a></h3><ul><li><strong>기본키(Primary Key, PK):</strong> 행을 <strong>유일하게 식별</strong>하는 기준 속성. <strong>중복 불가 + NULL 불가</strong>(= NOT NULL + UNIQUE를 합친 것). 테이블당 보통 1개. 설정은 <code>PRIMARY KEY</code>.</li><li><strong>외래키(Foreign Key, FK):</strong> <strong>다른 테이블의 기본키를 참조</strong>하는 속성. 테이블 간 관계를 만든다. 참조하는 값은 <em>부모 테이블 PK에 실제로 있는 값</em>(또는 NULL)만 가능 → 이게 <strong>참조 무결성</strong>. 설정은 <code>FOREIGN KEY (컬럼) REFERENCES 부모테이블(부모컬럼)</code>.</li></ul><blockquote><p>비유하면, <strong>PK는 주민등록번호</strong>(나를 유일하게 가리킴), <strong>FK는 가족관계증명서에 적힌 부모의 주민번호</strong>(존재하는 사람만 적을 수 있음)다.</p></blockquote><h3 id=후보키--대체키--슈퍼키>후보키 · 대체키 · 슈퍼키<a hidden class=anchor aria-hidden=true href=#후보키--대체키--슈퍼키>#</a></h3><table><thead><tr><th>키</th><th>정의</th><th>유일성</th><th>최소성</th></tr></thead><tbody><tr><td><strong>슈퍼키</strong></td><td>유일하게 식별은 되지만 불필요한 속성이 섞임</td><td>⭕</td><td>❌</td></tr><tr><td><strong>후보키</strong></td><td>기본키가 될 자격이 있는 키</td><td>⭕</td><td>⭕</td></tr><tr><td><strong>대체키</strong></td><td>후보키 중 기본키로 <strong>안 뽑힌</strong> 키</td><td>⭕</td><td>⭕</td></tr></tbody></table><ul><li><strong>유일성</strong> = 그 값으로 행을 하나로 특정할 수 있음</li><li><strong>최소성</strong> = 더 빼면 식별이 안 되는, 꼭 필요한 속성만 남은 상태</li></ul><h3 id=복합-기본키composite-key>복합 기본키(Composite Key)<a hidden class=anchor aria-hidden=true href=#복합-기본키composite-key>#</a></h3><p>칼럼 하나로 식별이 안 될 때 <strong>두 개 이상을 묶어</strong> PK로 삼는다. 오늘 실습의 <code>enrollment(student_id, course_id)</code>가 그 예 — &ldquo;어떤 학생이 어떤 강의를 듣는가"는 <em>학생+강의 한 쌍</em>이 있어야 한 건으로 특정된다.</p><h3 id=무결성-제약--데이터가-지켜야-할-규칙들>무결성 제약 — 데이터가 지켜야 할 규칙들<a hidden class=anchor aria-hidden=true href=#무결성-제약--데이터가-지켜야-할-규칙들>#</a></h3><table><thead><tr><th>무결성</th><th>규칙</th></tr></thead><tbody><tr><td>개체 무결성</td><td>기본키는 NULL·중복 불가</td></tr><tr><td>참조 무결성</td><td>외래키는 부모 PK에 있는 값이거나 NULL</td></tr><tr><td>도메인 무결성</td><td>값은 그 속성의 허용 범위(도메인) 안</td></tr><tr><td>NULL 무결성</td><td>특정 속성은 NULL 불가</td></tr><tr><td>고유 무결성</td><td>각 튜플의 값이 서로 다름</td></tr><tr><td>키 무결성</td><td>테이블엔 최소 한 개의 키가 존재</td></tr></tbody></table><hr><h2 id=07--데이터-모델링--현실을-표로-옮기는-과정>07 · 데이터 모델링 — 현실을 표로 옮기는 과정<a hidden class=anchor aria-hidden=true href=#07--데이터-모델링--현실을-표로-옮기는-과정>#</a></h2><p><strong>데이터 모델링</strong>은 현실 세계의 데이터를 데이터베이스로 옮기는 설계 작업이다. 세 가지 재료로 구성된다.</p><ul><li><strong>개체(Entity):</strong> 관리 대상 (예: 학생, 강의)</li><li><strong>속성(Attribute):</strong> 개체의 특성·정보 (예: 학생의 이름, 학번)</li><li><strong>관계(Relationship):</strong> 개체 간 연관 (예: 학생이 강의를 <em>수강한다</em>)</li></ul><p>과정은 <strong>개념적 설계 → 논리적 설계 → 물리적 설계</strong> 3단계로 추상에서 구체로 내려간다.</p><hr><h2 id=08--erd--테이블-관계를-그림으로-그리는-설계도>08 · ERD — 테이블 관계를 그림으로 그리는 설계도<a hidden class=anchor aria-hidden=true href=#08--erd--테이블-관계를-그림으로-그리는-설계도>#</a></h2><p><strong>ERD(Entity-Relationship Diagram)</strong> 는 테이블들이 서로 어떻게 연결되는지를 그림으로 보여주는 <strong>설계도</strong>다. 구성요소는 셋이다.</p><ul><li><strong>개체(Entity):</strong> 박스 하나 = 테이블 하나</li><li><strong>속성(Attribute):</strong> 박스 안 항목 = 컬럼 (🔑 = PK)</li><li><strong>관계(Relationship):</strong> 박스를 잇는 선, 선 끝 모양 = <strong>카디널리티</strong>(수량)</li></ul><h3 id=peter-chen-표기법>Peter Chen 표기법<a hidden class=anchor aria-hidden=true href=#peter-chen-표기법>#</a></h3><table><thead><tr><th>기호</th><th>의미</th></tr></thead><tbody><tr><td>사각형</td><td>개체(Entity)</td></tr><tr><td>타원</td><td>속성(Attribute)</td></tr><tr><td>마름모</td><td>관계(Relationship)</td></tr><tr><td>밑줄</td><td>기본키</td></tr><tr><td>이중 타원</td><td>다중값 속성</td></tr></tbody></table><p>카디널리티는 <code>1</code>(1:1), <code>&lt;</code>(1:N), <code>>&lt;</code>(N:M)로 표기한다. 도구로는 draw.io(<code>app.diagrams.net</code>)가 소개됐다.</p><h3 id=ie까마귀발-표기법>IE(까마귀발) 표기법<a hidden class=anchor aria-hidden=true href=#ie까마귀발-표기법>#</a></h3><p>실무에서 더 자주 보는 표기다. 선 끝의 <strong>새 발(crow&rsquo;s foot)</strong> 모양으로 수량을 나타낸다.</p><table><thead><tr><th>기호</th><th>의미</th></tr></thead><tbody><tr><td><code>─┼</code></td><td>하나(one), 1</td></tr><tr><td><code>─○</code></td><td>영(zero), 0</td></tr><tr><td><code>─&lt;</code></td><td>다수(many), N</td></tr></tbody></table><p>이걸 조합해 <code>0..1</code>(없거나 하나), <code>1..N</code>(하나 이상 필수), <code>0..N</code>(없거나 여럿)을 표현한다. 예를 들어 한쪽이 <code>┼</code>, 반대쪽이 <code>&lt;</code>면 <strong>일대다(1:N)</strong> 관계다.</p><h3 id=관계-유형과-nm-분해-강사-강조>관계 유형과 N:M 분해 (강사 강조)<a hidden class=anchor aria-hidden=true href=#관계-유형과-nm-분해-강사-강조>#</a></h3><blockquote><p>💡 <strong>기본은 일대다(1:N)로 생각하라.</strong> 일대일(1:1)은 보안·민감정보 분리처럼 매우 예외적인 경우다. 그리고 <strong>다대다(N:M)는 그대로 두지 않고, 최종적으로 <em>중간(연결) 테이블</em>로 분해해 1:N 둘로 만든다.</strong> 오늘 실습의 <code>enrollment</code>가 바로 그것 — 학생(N)과 강의(M)의 N:M을, 학생–enrollment(1:N)와 강의–enrollment(1:N)로 푼 것이다. (이 &ldquo;분해"가 정규화의 일부이고, 정규화는 다음 시간 상세 예고.)</p></blockquote><blockquote><p>💡 <strong>선택/필수 관계:</strong> ERD Editor에선 관계가 <code>0..N</code>(선택적)인지 <code>1..N</code>(필수 포함)인지도 정한다. 예) 고객–계좌에서 &ldquo;계좌가 꼭 있어야 하는가"에 따라 갈린다.</p></blockquote><h3 id=erd-editor-실습-코드--erd-양방향>ERD Editor 실습 (코드 ↔ ERD 양방향)<a hidden class=anchor aria-hidden=true href=#erd-editor-실습-코드--erd-양방향>#</a></h3><p>VS Code 확장 <strong>ERD Editor</strong>를 쓰면 SQL과 그림을 서로 변환할 수 있다.</p><ol><li>VS Code에서 <strong>ERD Editor</strong> 확장 설치</li><li>작업 폴더에 <code>.erd</code> 파일 생성 (예: <code>school_db.erd</code>)</li><li>ERD 화면 우클릭 → <strong>Database → SQLite → Import → Schema SQL</strong> → 우리가 만든 SQL을 불러오면 <strong>관계도가 자동 생성</strong></li><li>반대로 <strong>Export → .sql</strong> 하면 CREATE 문이 생성됨</li></ol><blockquote><p>💡 <strong>강사 강조:</strong> 코드 → ERD, ERD → 코드 둘 다 되지만, <strong>내보낸 SQL은 반드시 최종 검토·수정 후 적용</strong>해야 한다. 자동 생성을 맹신하지 말 것.</p></blockquote><hr><h1 id=-참고자료>📚 참고자료<a hidden class=anchor aria-hidden=true href=#-참고자료>#</a></h1><ul><li>Elice, 「데이터베이스 개요」 강의 자료 (슬라이드 29p) — 소개·종류(RDB/NoSQL)·관계형 DB 만들기·DDL/DML/DCL·자료형</li><li>Elice, 「데이터베이스 구성하기」 강의 자료 (슬라이드 36p) — 제약조건·키·데이터 모델링·ERD(Peter Chen / IE 까마귀발)</li><li>실습 정답본: <code>Day06_lecture.sql</code>(school_db 5테이블 + 제약조건 예제) — 강사 정답</li><li>ERD 작성 실습: VS Code <strong>ERD Editor</strong> 확장 (Schema SQL Import → ERD 자동 생성)</li><li>미니 프로젝트: <code>constraint_demo</code> (good.db vs bad.db, Streamlit) — 제약 설계 실패 사례</li><li>MySQL 데이터 타입 문서: <code>dev.mysql.com/doc/refman/8.0/en/data-types.html</code></li><li>draw.io: <code>app.diagrams.net</code> (Peter Chen ERD 작도)</li></ul><blockquote><p>📌 <strong>파일명/회차 참고:</strong> 폴더는 <code>04_데이터베이스개요</code>(3주차 04번째)인데, 실습 파일명은 <code>Day06_lecture.sql</code>, 내부 주석은 <code>-- Day 05</code>로 표기가 엇갈린다. 이 글은 <strong>강의일 기준 2026-06-15 / 3주차-04</strong>로 통일했다(원문 주석 표기는 보존).</p></blockquote><blockquote><p>📌 <strong>참고:</strong> 강사가 클라우드 크레딧(GCP 무료 크레딧 등)을 언급했으나 정확한 금액·기간 조건은 시기에 따라 달라지므로 실제 사용 전 공식 안내를 확인하자. 운영성 정보라 본문 비중은 낮췄다.</p></blockquote><h2 id=마무리>마무리<a hidden class=anchor aria-hidden=true href=#마무리>#</a></h2><p>오늘은 데이터를 <em>꺼내 쓰는</em> 쪽에서 <em>설계하고 만드는</em> 쪽으로 넘어왔다. <strong>DB가 필요한 이유</strong>(파일처리의 종속성·중복·무결성 한계)에서 출발해, <strong>RDB vs NoSQL</strong>로 선택지를 보고, <code>CREATE</code>/<code>INSERT</code>/<code>SELECT</code>로 표를 만들었다. <strong>DDL/DML/DCL</strong>로 SQL의 갈래를 잡고, 자료형을 정한 뒤, 오늘의 핵심인 <strong>제약조건</strong>(NOT NULL·UNIQUE·DEFAULT·CHECK·CONSTRAINT)과 <strong>키·무결성</strong>(PK·FK·후보·대체·슈퍼키·복합키)을 다뤘다. 마지막으로 <strong>데이터 모델링</strong>과 <strong>ERD</strong>(Peter Chen·까마귀발·ERD Editor)로 설계를 그림으로 옮겼다. 한 문장으로 남기자면 — <strong>제약조건은 잘못된 데이터를 막는 마지막 방어선이고, 키는 행을 식별하고 테이블을 잇는 손잡이다.</strong> 그리고 <strong>N:M은 중간 테이블로 분해</strong>한다는 것, <strong>SQLite는 표준/MySQL 문법 일부를 못 쓴다</strong>는 것을 기억해두자. 정규화·카디널리티 심화는 다음 시간이다.</p><h2 id=-연관-노트>🔗 연관 노트<a hidden class=anchor aria-hidden=true href=#-연관-노트>#</a></h2><ul><li><a href=/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/>6/15 데이터베이스 개요 & 구성하기 코드 노트</a> — 오늘 배운 제약조건·키를 <code>school_db</code> 5테이블 CREATE로 직접 만들고, constraint_demo(good.db vs bad.db)로 &ldquo;제약 설계가 틀리면 가입이 안 된다"를 체험하는 실습 노트</li><li><a href=/posts/%EA%B0%95%EC%9D%98/6-12-%EA%B7%B8%EB%A3%B9-%ED%95%A8%EC%88%98%EC%99%80-%EC%9C%88%EB%8F%84%EC%9A%B0-%ED%95%A8%EC%88%98/>6/12 그룹 함수 & 윈도우 함수</a> — 지난 시간(이미 만들어진 DB에서 데이터를 <em>꺼내는</em> 통계·분석 쿼리). 오늘부터는 그 DB를 <em>만드는</em> 쪽</li><li><a href=/posts/%EA%B0%95%EC%9D%98/6-11-join%EA%B3%BC-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC-%EC%8B%AC%ED%99%94/>6/11 JOIN & 서브쿼리 심화</a> — JOIN으로 테이블을 잇던 그 &ldquo;관계"가, 오늘 PK–FK 설계로 어떻게 생기는지의 출발점</li></ul></div><footer class=post-footer><ul class=post-tags><li><a href=https://yw8837.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/>데이터베이스</a></li><li><a href=https://yw8837.github.io/tags/db/>DB</a></li><li><a href=https://yw8837.github.io/tags/rdb/>RDB</a></li><li><a href=https://yw8837.github.io/tags/nosql/>NoSQL</a></li><li><a href=https://yw8837.github.io/tags/sql/>SQL</a></li><li><a href=https://yw8837.github.io/tags/ddl/>DDL</a></li><li><a href=https://yw8837.github.io/tags/dml/>DML</a></li><li><a href=https://yw8837.github.io/tags/dcl/>DCL</a></li><li><a href=https://yw8837.github.io/tags/create/>CREATE</a></li><li><a href=https://yw8837.github.io/tags/%EC%9E%90%EB%A3%8C%ED%98%95/>자료형</a></li><li><a href=https://yw8837.github.io/tags/%EC%A0%9C%EC%95%BD%EC%A1%B0%EA%B1%B4/>제약조건</a></li><li><a href=https://yw8837.github.io/tags/notnull/>NOTNULL</a></li><li><a href=https://yw8837.github.io/tags/unique/>UNIQUE</a></li><li><a href=https://yw8837.github.io/tags/default/>DEFAULT</a></li><li><a href=https://yw8837.github.io/tags/check/>CHECK</a></li><li><a href=https://yw8837.github.io/tags/constraint/>CONSTRAINT</a></li><li><a href=https://yw8837.github.io/tags/%EA%B8%B0%EB%B3%B8%ED%82%A4/>기본키</a></li><li><a href=https://yw8837.github.io/tags/%EC%99%B8%EB%9E%98%ED%82%A4/>외래키</a></li><li><a href=https://yw8837.github.io/tags/%EB%B3%B5%ED%95%A9%ED%82%A4/>복합키</a></li><li><a href=https://yw8837.github.io/tags/%EB%AC%B4%EA%B2%B0%EC%84%B1/>무결성</a></li><li><a href=https://yw8837.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%AA%A8%EB%8D%B8%EB%A7%81/>데이터모델링</a></li><li><a href=https://yw8837.github.io/tags/erd/>ERD</a></li><li><a href=https://yw8837.github.io/tags/peterchen/>PeterChen</a></li><li><a href=https://yw8837.github.io/tags/%EA%B9%8C%EB%A7%88%EA%B7%80%EB%B0%9C/>까마귀발</a></li><li><a href=https://yw8837.github.io/tags/sqlite/>SQLite</a></li><li><a href=https://yw8837.github.io/tags/school_db/>School_db</a></li><li><a href=https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/>초보자</a></li></ul><nav class=paginav><a class=prev href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/><span class=title>« 이전 페이지</span>
-<span>6/16 정규화 & 데이터베이스 구현 — 같은 데이터인데 왜 1NF·2NF·3NF로 쪼개야 하는가</span>
-</a><a class=next href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><span class=title>다음 페이지 »</span>
-<span>6/15 데이터베이스 개요 & 구성하기 — school_db 5테이블 CREATE·제약조건·constraint_demo 실습 노트</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2026 <a href=https://yw8837.github.io/>AI_6스터디</a></span> ·
-<a href=/posts/privacy-policy/>개인정보처리방침</a> · <a href=/posts/disclaimer/>서비스 이용 안내</a> ·
-<span>Powered by
-<a href="https://gohugo.io/?utm_source=papermod" rel=noopener target=_blank>Hugo</a> &
-<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top id=top-link class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey=g><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></a><div style=text-align:center;margin-top:8px;font-size:13px;color:#888><a href=/posts/privacy-policy/ style=color:#888>개인정보처리방침</a> · <a href=/posts/disclaimer/ style=color:#888>서비스 이용 안내</a></div><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var toplink=document.getElementById("top-link");window.onscroll=function(){const e=window.innerHeight;document.body.scrollTop>e||document.documentElement.scrollTop>e?toplink.classList.remove("hidden"):toplink.classList.add("hidden")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="복사";function s(){t.innerHTML="복사 완료!",setTimeout(()=>{t.innerHTML="복사"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>6/15 데이터베이스 개요 &amp; 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가 | AI_6스터디</title>
+<meta name="keywords" content="데이터베이스, DB, RDB, NoSQL, SQL, DDL, DML, DCL, CREATE, 자료형, 제약조건, NOTNULL, UNIQUE, DEFAULT, CHECK, CONSTRAINT, 기본키, 외래키, 복합키, 무결성, 데이터모델링, ERD, PeterChen, 까마귀발, SQLite, school_db, 초보자">
+<meta name="description" content="이어드림 6기 데이터베이스 개요 &amp; 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다.">
+<meta name="author" content="yw8837">
+<link rel="canonical" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yw8837.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-EQR4094Q13');
+        }
+      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/">
+  <meta property="og:site_name" content="AI_6스터디">
+  <meta property="og:title" content="6/15 데이터베이스 개요 & 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가">
+  <meta property="og:description" content="이어드림 6기 데이터베이스 개요 &amp; 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다.">
+  <meta property="og:locale" content="ko">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-15T09:00:00+09:00">
+    <meta property="article:modified_time" content="2026-06-15T09:00:00+09:00">
+    <meta property="article:tag" content="데이터베이스">
+    <meta property="article:tag" content="DB">
+    <meta property="article:tag" content="RDB">
+    <meta property="article:tag" content="NoSQL">
+    <meta property="article:tag" content="SQL">
+    <meta property="article:tag" content="DDL">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="6/15 데이터베이스 개요 & 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가">
+  <meta name="twitter:description" content="이어드림 6기 데이터베이스 개요 &amp; 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yw8837.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "6/15 데이터베이스 개요 \u0026 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가",
+      "item": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "6/15 데이터베이스 개요 \u0026 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가",
+  "name": "6\/15 데이터베이스 개요 \u0026 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가",
+  "description": "이어드림 6기 데이터베이스 개요 \u0026 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다.",
+  "keywords": [
+    "데이터베이스", "DB", "RDB", "NoSQL", "SQL", "DDL", "DML", "DCL", "CREATE", "자료형", "제약조건", "NOTNULL", "UNIQUE", "DEFAULT", "CHECK", "CONSTRAINT", "기본키", "외래키", "복합키", "무결성", "데이터모델링", "ERD", "PeterChen", "까마귀발", "SQLite", "school_db", "초보자"
+  ],
+  "articleBody": " 지금까지는 이미 만들어진 DB(chinook·classicmodels)에서 SELECT·JOIN·윈도우 함수로 데이터를 꺼내 썼다. 오늘은 방향을 180도 돌린다 — DB를 직접 설계하고 만드는 첫 수업이다. “DB가 대체 왜 필요한가\"부터 시작해서 → RDB vs NoSQL → CREATE로 테이블 만들기 → DDL/DML/DCL·자료형 → 제약조건(NOT NULL·UNIQUE·DEFAULT·CHECK) → 키(PK·FK·후보·대체·슈퍼키)와 무결성 → 데이터 모델링 → ERD까지 이어진다. 오늘 전체를 관통하는 한 문장은 강사님의 이 말이다 — “제약조건은 잘못된 데이터 입력을 막는 마지막 방어선이다.”\n📖 수업 내용 오전엔 운영 공지와 지난 윈도우 함수 복습이 있었고, DB 본 수업은 오후에 집중됐다. 이 글은 라이브 진행 흐름을 따라 아래 순서로 간다.\n01. DB는 왜 필요한가 (파일처리 시스템의 한계) 02. DB의 종류 — RDB vs NoSQL 03. 관계형 DB 만들기 — CREATE / INSERT / SELECT 04. SQL 3분류(DDL/DML/DCL) · 자료형 · ALTER / DROP 05. 제약조건 — \"마지막 방어선\" (NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT) 06. 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키 07. 데이터 모델링 08. ERD — Peter Chen / 까마귀발(IE) / ERD Editor ⚠️ 실습 DBMS는 SQLite다. 그런데 이론 슬라이드 일부는 MySQL/표준 SQL 기준(예: ALTER ... MODIFY COLUMN, DROP CONSTRAINT, information_schema)이라 SQLite에선 그대로 안 되는 항목이 있다. 이런 부분은 본문에서 ⚠ SQLite 주의로 따로 표시한다. 실습 코드는 코드 노트에서 직접 돌려본다.\n01 · DB는 왜 필요한가 — 파일처리 시스템의 한계 먼저 용어 정리부터. 데이터(data) 는 현실에서 수집한 가공 전의 단순한 사실·값이다(예: 85, 홍길동). 정보(information) 는 그 데이터를 목적에 맞게 의미 있게 가공한 결과다(예: “홍길동의 점수 85점은 상위 10%”). 그리고 데이터베이스(DB) 는 한 조직 안에서 여러 사용자·프로그램이 공유하려고 통합·저장·운영하는 데이터의 집합이다.\n그럼 그냥 엑셀 파일이나 CSV에 저장하면 안 될까? 강사님은 “개인 작업이라면 엑셀·CSV·SQLite로도 충분하다\"고 했다. 문제는 조직 단위로 갈 때 생긴다. 예전 방식(파일처리 시스템)은 세 가지 한계가 있다.\n한계 무슨 뜻인가 쉬운 비유 데이터 종속성 데이터 구조가 바뀌면 그 데이터를 쓰는 프로그램도 다 같이 고쳐야 함 책장 칸 배치를 바꿨더니, 그 책장을 쓰는 모든 사람이 위치를 새로 외워야 하는 격 데이터 중복성 프로그램마다 같은 데이터를 따로 복사해 보관 → 중복 같은 연락처를 카톡·전화부·메모장에 각각 저장 무결성 훼손 중복된 데이터가 서로 안 맞게 되어 어디가 맞는지 모름 카톡엔 010-1111, 전화부엔 010-2222 💡 그래서 DB는 공유 · 동시 사용 · 권한 관리 · 무결성을 한 곳에서 책임진다. 이게 “왜 DB인가\"의 답이다.\n⚠️ 팀 프로젝트에서 SQLite 쓰지 말 것(강사 경고). SQLite는 파일 하나로 된 개인용 DB라 여러 명이 동시에 쓰는 팀 프로젝트엔 부적절하다 → 팀은 클라우드 DB를 권장한다. (단 오늘 실습은 학습 목적이라 가볍게 SQLite를 쓴다.)\n02 · DB의 종류 — RDB vs NoSQL DB는 크게 두 갈래다. 데이터를 표(table) 로 다루는 관계형(RDB) 과, 표 틀에 얽매이지 않는 NoSQL.\n구분 RDB (관계형) NoSQL (Not only SQL) 데이터 구조 2차원 표(행·열), 정해진 스키마 유연한 스키마(미리 정의 안 함) 강점 무결성·일관성·신뢰성, 정규화로 중복 최소화 비정형 데이터(이미지·자연어), 대용량·수평 확장 어울리는 상황 구조가 일관적이고 정확성이 중요할 때 구조가 자주 바뀌거나 대량을 빠르게 처리할 때 대표 제품 MySQL, PostgreSQL, MariaDB, Oracle MongoDB, Redis, Cassandra RDB는 데이터를 행과 열의 표로 표현하고, 표끼리 관계로 이어 무결성을 지킨다. 구조가 일관적이라 신뢰성·안정성이 높다. NoSQL은 미리 정한 스키마가 없어 자유롭게 저장할 수 있고, 비정형 데이터나 대용량 분산 저장에 강하다.\n💡 강사 선택 팁: “분석에 어떤 DB를 쓸 것인가\"의 선택이 중요하다. NoSQL은 폭넓게 저장 가능하지만 학습 난이도가 있고, 공간(지도) 데이터는 PostgreSQL을 추천한다. 현업 분석에선 클라우드 데이터 웨어하우스(BigQuery 등) 사용 빈도가 높다(쿠팡 등 사례). 클라우드는 비용이 드니 용도·예산을 함께 고려한다.\n03 · 관계형 DB 만들기 — CREATE / INSERT / SELECT 이제 표를 직접 만든다. 그 전에 RDB 용어부터 — 같은 것을 부르는 이름이 여러 개라 헷갈리기 쉽다.\n표현 1 표현 2 표현 3 쉬운 설명 행(row) 튜플(tuple) 레코드 가로 한 줄 = 데이터 한 건 열(column) 속성(attribute) — 세로 한 칸 = 항목(이름, 나이…) 기본키(PK) — — 행을 유일하게 식별하는 속성(예: id) 도메인(domain) — — 그 속성이 가질 수 있는 값의 범위 기본 구문 세 개다. (아래는 슬라이드의 일반형 틀 — ⚠ 일반형)\n-- 테이블 만들기 CREATE TABLE 테이블명 (속성1 데이터타입, 속성2 데이터타입, ...); -- 데이터 넣기 (속성 생략 시 빈 칸엔 NULL이 들어감) INSERT INTO 테이블명 (속성1, 속성2, ...) VALUES (값1, 값2, ...); -- 데이터 꺼내기 SELECT 속성1, 속성2, ... FROM 테이블명; 💡 SQL 작성 규칙(가독성 약속):\n키워드(CREATE, SELECT…)는 대문자 테이블·속성 이름은 소문자, 띄어쓰기는 언더바(_)로 (dept_name) 이름은 의미가 분명하게, 명령 끝엔 세미콜론(;) 04 · SQL 3분류 · 자료형 · ALTER / DROP SQL(Structured Query Language)은 관계형 DB를 다루는 표준 언어다. 하는 일에 따라 세 종류로 나뉜다.\n분류 풀이 하는 일 대표 명령 DDL 데이터 정의어 테이블 등 구조를 정의 CREATE, ALTER, DROP DML 데이터 조작어 데이터를 조회·입력·수정·삭제 SELECT, INSERT, UPDATE, DELETE DCL 데이터 제어어 권한을 부여·회수 GRANT, REVOKE 지금까지 우리가 쓰던 SELECT는 DML, 오늘 새로 배우는 CREATE는 DDL이다.\n자료형 — 칸마다 담는 값의 종류 테이블을 만들 땐 각 칸에 무슨 종류의 값이 들어갈지(자료형)를 정해야 한다. DBMS마다 종류·이름이 조금씩 다르다.\n자료형 설명 VARCHAR(n) 최대 n바이트의 가변 길이 문자 INT 정수(4바이트) FLOAT 실수, 4바이트 부동소수점 DATETIME 날짜+시간 (YYYY-MM-DD HH:MM:SS) 💡 강사 포인트: VARCHAR 길이 같은 건 확장성을 고려해 정한다(다국적 이름, 긴 입력 등). 화면 입력(문자열) → 앱 처리 → DB 저장(날짜 타입 등) 사이에 타입이 안 맞아 정보가 유실될 수 있다는 점도 주의. 그리고 어떤 칸을 필수로 할지(NOT NULL), 기본값을 줄지(DEFAULT)는 비즈니스 로직에 근거해 설계해야 한다 → 바로 다음 챕터 제약조건으로 이어진다.\n테이블 수정·삭제 — ALTER / DROP -- 슬라이드 일반형(⚠ MySQL 기준) ALTER TABLE 테이블명 ADD COLUMN 컬럼명 데이터타입; -- 컬럼 추가 ALTER TABLE 테이블명 MODIFY COLUMN 컬럼명 데이터타입; -- 컬럼 수정 ALTER TABLE 테이블명 DROP COLUMN 컬럼명; -- 컬럼 삭제 DROP TABLE 테이블명; -- 테이블 통째 삭제 ⚠️ SQLite 주의: 위 MODIFY COLUMN·CHANGE COLUMN은 MySQL 문법이라 SQLite에선 안 된다. SQLite의 ALTER는 ADD COLUMN 정도만 되고, 제약·기본값을 바꾸려면 새 테이블을 만들어 데이터를 복사한 뒤 이름을 바꾸는 우회 패턴을 쓴다(코드 노트 참고).\n💡 DROP 순서(강사): 외래키(FK)로 연결된 테이블은 참조 역순(자식 → 부모) 으로 지워야 에러가 안 난다. 부모를 먼저 지우면 “아직 자식이 참조 중인데?” 하고 막힌다.\n05 · 제약조건 — “잘못된 데이터를 막는 마지막 방어선” 오늘의 핵심. 제약조건(constraint) 은 정확한 데이터만 들어오도록 보장하는 규칙이다. 비즈니스 규칙을 DB 레벨에서 강제해, 프론트엔드·백엔드가 실수로 이상한 값을 보내도 DB가 마지막에 막아준다. 그래서 강사님은 이를 “마지막 방어선” 이라 불렀다.\n왜 유용한가? ① DB 관리자 관점: 무결성 유지 ② 비즈니스 관점: 규칙 강제(예: 19세 미만 가입 차단) ③ 분석·개발 관점: 쓰레기 데이터가 줄어 정제 비용이 줄고 양질의 데이터가 쌓인다.\n제약조건 하는 일 한 줄 예시 NOT NULL 빈 값(NULL) 금지 = “필수 입력” 이름은 반드시 있어야 함 UNIQUE 중복 값 금지 (단 NULL은 중복 허용) 이메일은 겹치면 안 됨 DEFAULT 값을 안 주면 자동으로 채울 기본값 주소 미입력 시 ‘미정’ CHECK 값의 범위·조건 제한 학점은 13, 점수는 0100 CONSTRAINT 위 제약에 이름을 붙여 관리 쉽게 CONSTRAINT pk_x PRIMARY KEY(...) -- 제약에 이름 붙이기(관리·조회 편하게) CONSTRAINT 제약조건이름 제약조건(컬럼명) 강사님이 짚은 디테일 두 가지가 중요하다.\n💡 UNIQUE는 이메일에 ⭕, 이름엔 ❌. 이메일은 사람마다 달라야 하니 UNIQUE가 맞다. 하지만 이름은 동명이인이 있어 UNIQUE를 걸면 멀쩡한 사람이 가입을 못 한다. 그리고 UNIQUE는 NULL은 중복으로 안 친다 — 이메일을 비워둔 사람은 여러 명 있어도 된다.\n💡 DEFAULT vs NOT NULL은 택일. 둘 다 “빈 값 처리” 얘기지만 방향이 다르다. 쇼핑몰 배송지처럼 꼭 있어야 하는 값은 DEFAULT로 대충 채우기보다 NOT NULL로 강제하는 게 낫다. 정답은 비즈니스 로직이 정한다.\n⚠️ SQLite 주의: 슬라이드의 SELECT * FROM information_schema...(제약 조회)와 ALTER TABLE ... ADD/DROP CONSTRAINT(제약 추가·삭제)는 MySQL/표준 문법이라 SQLite엔 없다. SQLite에선 제약 조회를 PRAGMA table_info(...)·PRAGMA foreign_key_list(...)로, 제약 변경은 테이블 재생성으로 한다.\n06 · 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키 테이블에서 행을 구분하고, 테이블끼리 잇는 역할을 하는 게 키(key) 다.\n기본키 / 외래키 기본키(Primary Key, PK): 행을 유일하게 식별하는 기준 속성. 중복 불가 + NULL 불가(= NOT NULL + UNIQUE를 합친 것). 테이블당 보통 1개. 설정은 PRIMARY KEY. 외래키(Foreign Key, FK): 다른 테이블의 기본키를 참조하는 속성. 테이블 간 관계를 만든다. 참조하는 값은 부모 테이블 PK에 실제로 있는 값(또는 NULL)만 가능 → 이게 참조 무결성. 설정은 FOREIGN KEY (컬럼) REFERENCES 부모테이블(부모컬럼). 비유하면, PK는 주민등록번호(나를 유일하게 가리킴), FK는 가족관계증명서에 적힌 부모의 주민번호(존재하는 사람만 적을 수 있음)다.\n후보키 · 대체키 · 슈퍼키 키 정의 유일성 최소성 슈퍼키 유일하게 식별은 되지만 불필요한 속성이 섞임 ⭕ ❌ 후보키 기본키가 될 자격이 있는 키 ⭕ ⭕ 대체키 후보키 중 기본키로 안 뽑힌 키 ⭕ ⭕ 유일성 = 그 값으로 행을 하나로 특정할 수 있음 최소성 = 더 빼면 식별이 안 되는, 꼭 필요한 속성만 남은 상태 복합 기본키(Composite Key) 칼럼 하나로 식별이 안 될 때 두 개 이상을 묶어 PK로 삼는다. 오늘 실습의 enrollment(student_id, course_id)가 그 예 — “어떤 학생이 어떤 강의를 듣는가\"는 학생+강의 한 쌍이 있어야 한 건으로 특정된다.\n무결성 제약 — 데이터가 지켜야 할 규칙들 무결성 규칙 개체 무결성 기본키는 NULL·중복 불가 참조 무결성 외래키는 부모 PK에 있는 값이거나 NULL 도메인 무결성 값은 그 속성의 허용 범위(도메인) 안 NULL 무결성 특정 속성은 NULL 불가 고유 무결성 각 튜플의 값이 서로 다름 키 무결성 테이블엔 최소 한 개의 키가 존재 07 · 데이터 모델링 — 현실을 표로 옮기는 과정 데이터 모델링은 현실 세계의 데이터를 데이터베이스로 옮기는 설계 작업이다. 세 가지 재료로 구성된다.\n개체(Entity): 관리 대상 (예: 학생, 강의) 속성(Attribute): 개체의 특성·정보 (예: 학생의 이름, 학번) 관계(Relationship): 개체 간 연관 (예: 학생이 강의를 수강한다) 과정은 개념적 설계 → 논리적 설계 → 물리적 설계 3단계로 추상에서 구체로 내려간다.\n08 · ERD — 테이블 관계를 그림으로 그리는 설계도 ERD(Entity-Relationship Diagram) 는 테이블들이 서로 어떻게 연결되는지를 그림으로 보여주는 설계도다. 구성요소는 셋이다.\n개체(Entity): 박스 하나 = 테이블 하나 속성(Attribute): 박스 안 항목 = 컬럼 (🔑 = PK) 관계(Relationship): 박스를 잇는 선, 선 끝 모양 = 카디널리티(수량) Peter Chen 표기법 기호 의미 사각형 개체(Entity) 타원 속성(Attribute) 마름모 관계(Relationship) 밑줄 기본키 이중 타원 다중값 속성 카디널리티는 1(1:1), \u003c(1:N), \u003e\u003c(N:M)로 표기한다. 도구로는 draw.io(app.diagrams.net)가 소개됐다.\nIE(까마귀발) 표기법 실무에서 더 자주 보는 표기다. 선 끝의 새 발(crow’s foot) 모양으로 수량을 나타낸다.\n기호 의미 ─┼ 하나(one), 1 ─○ 영(zero), 0 ─\u003c 다수(many), N 이걸 조합해 0..1(없거나 하나), 1..N(하나 이상 필수), 0..N(없거나 여럿)을 표현한다. 예를 들어 한쪽이 ┼, 반대쪽이 \u003c면 일대다(1:N) 관계다.\n관계 유형과 N:M 분해 (강사 강조) 💡 기본은 일대다(1:N)로 생각하라. 일대일(1:1)은 보안·민감정보 분리처럼 매우 예외적인 경우다. 그리고 다대다(N:M)는 그대로 두지 않고, 최종적으로 중간(연결) 테이블로 분해해 1:N 둘로 만든다. 오늘 실습의 enrollment가 바로 그것 — 학생(N)과 강의(M)의 N:M을, 학생–enrollment(1:N)와 강의–enrollment(1:N)로 푼 것이다. (이 “분해\"가 정규화의 일부이고, 정규화는 다음 시간 상세 예고.)\n💡 선택/필수 관계: ERD Editor에선 관계가 0..N(선택적)인지 1..N(필수 포함)인지도 정한다. 예) 고객–계좌에서 “계좌가 꼭 있어야 하는가\"에 따라 갈린다.\nERD Editor 실습 (코드 ↔ ERD 양방향) VS Code 확장 ERD Editor를 쓰면 SQL과 그림을 서로 변환할 수 있다.\nVS Code에서 ERD Editor 확장 설치 작업 폴더에 .erd 파일 생성 (예: school_db.erd) ERD 화면 우클릭 → Database → SQLite → Import → Schema SQL → 우리가 만든 SQL을 불러오면 관계도가 자동 생성 반대로 Export → .sql 하면 CREATE 문이 생성됨 💡 강사 강조: 코드 → ERD, ERD → 코드 둘 다 되지만, 내보낸 SQL은 반드시 최종 검토·수정 후 적용해야 한다. 자동 생성을 맹신하지 말 것.\n📚 참고자료 Elice, 「데이터베이스 개요」 강의 자료 (슬라이드 29p) — 소개·종류(RDB/NoSQL)·관계형 DB 만들기·DDL/DML/DCL·자료형 Elice, 「데이터베이스 구성하기」 강의 자료 (슬라이드 36p) — 제약조건·키·데이터 모델링·ERD(Peter Chen / IE 까마귀발) 실습 정답본: Day06_lecture.sql(school_db 5테이블 + 제약조건 예제) — 강사 정답 ERD 작성 실습: VS Code ERD Editor 확장 (Schema SQL Import → ERD 자동 생성) 미니 프로젝트: constraint_demo (good.db vs bad.db, Streamlit) — 제약 설계 실패 사례 MySQL 데이터 타입 문서: dev.mysql.com/doc/refman/8.0/en/data-types.html draw.io: app.diagrams.net (Peter Chen ERD 작도) 📌 파일명/회차 참고: 폴더는 04_데이터베이스개요(3주차 04번째)인데, 실습 파일명은 Day06_lecture.sql, 내부 주석은 -- Day 05로 표기가 엇갈린다. 이 글은 강의일 기준 2026-06-15 / 3주차-04로 통일했다(원문 주석 표기는 보존).\n📌 참고: 강사가 클라우드 크레딧(GCP 무료 크레딧 등)을 언급했으나 정확한 금액·기간 조건은 시기에 따라 달라지므로 실제 사용 전 공식 안내를 확인하자. 운영성 정보라 본문 비중은 낮췄다.\n마무리 오늘은 데이터를 꺼내 쓰는 쪽에서 설계하고 만드는 쪽으로 넘어왔다. DB가 필요한 이유(파일처리의 종속성·중복·무결성 한계)에서 출발해, RDB vs NoSQL로 선택지를 보고, CREATE/INSERT/SELECT로 표를 만들었다. DDL/DML/DCL로 SQL의 갈래를 잡고, 자료형을 정한 뒤, 오늘의 핵심인 제약조건(NOT NULL·UNIQUE·DEFAULT·CHECK·CONSTRAINT)과 키·무결성(PK·FK·후보·대체·슈퍼키·복합키)을 다뤘다. 마지막으로 데이터 모델링과 ERD(Peter Chen·까마귀발·ERD Editor)로 설계를 그림으로 옮겼다. 한 문장으로 남기자면 — 제약조건은 잘못된 데이터를 막는 마지막 방어선이고, 키는 행을 식별하고 테이블을 잇는 손잡이다. 그리고 N:M은 중간 테이블로 분해한다는 것, SQLite는 표준/MySQL 문법 일부를 못 쓴다는 것을 기억해두자. 정규화·카디널리티 심화는 다음 시간이다.\n🔗 연관 노트 6/15 데이터베이스 개요 \u0026 구성하기 코드 노트 — 오늘 배운 제약조건·키를 school_db 5테이블 CREATE로 직접 만들고, constraint_demo(good.db vs bad.db)로 “제약 설계가 틀리면 가입이 안 된다\"를 체험하는 실습 노트 6/12 그룹 함수 \u0026 윈도우 함수 — 지난 시간(이미 만들어진 DB에서 데이터를 꺼내는 통계·분석 쿼리). 오늘부터는 그 DB를 만드는 쪽 6/11 JOIN \u0026 서브쿼리 심화 — JOIN으로 테이블을 잇던 그 “관계\"가, 오늘 PK–FK 설계로 어떻게 생기는지의 출발점 ",
+  "wordCount" : "2005",
+  "inLanguage": "en",
+  "datePublished": "2026-06-15T09:00:00+09:00",
+  "dateModified": "2026-06-15T09:00:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "yw8837"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI_6스터디",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yw8837.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
+                    <span>📚 Year Study</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
+                    <span>강의 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
+                    <span>실습 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
+                    <span>프로젝트</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+            <a href="/">홈</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="/posts/">Posts</a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+</nav>
+    <h1 class="post-title entry-hint-parent">
+      6/15 데이터베이스 개요 &amp; 구성하기 — DB는 왜 필요하고, 제약조건은 왜 마지막 방어선인가
+    </h1>
+    <div class="post-description">
+      이어드림 6기 데이터베이스 개요 &amp; 구성하기 강의 정리. DB 필요성(파일처리 시스템의 한계), RDB vs NoSQL, 관계형 DB 만들기(CREATE/INSERT/SELECT), SQL 3분류(DDL/DML/DCL)와 자료형·ALTER/DROP, 제약조건(NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT, 마지막 방어선), 키(기본키·외래키·후보·대체·슈퍼키·복합키)와 무결성, 데이터 모델링, ERD(Peter Chen·IE 까마귀발·ERD Editor)를 비전공자 눈높이로 정리한다. 실습 DBMS는 SQLite라 슬라이드의 MySQL/표준 문법 일부는 미지원이라는 점도 라벨로 구분한다.
+    </div>
+    <div class="post-meta">
+
+<span title='2026-06-15 09:00:00 +0900 KST'>2026년 6월 15일</span>&nbsp;·&nbsp;<span>10 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+
+</div>
+  </header> <details class="toc" >
+    <summary accesskey="c" title="(Alt + C)">
+        <span class="title">목차</span>
+    </summary>
+
+    <div class="inner"><ul>
+            <li>
+                <a href="#-%ec%88%98%ec%97%85-%eb%82%b4%ec%9a%a9" aria-label="📖 수업 내용">📖 수업 내용</a><ul>
+                    
+            <li>
+                <a href="#01--db%eb%8a%94-%ec%99%9c-%ed%95%84%ec%9a%94%ed%95%9c%ea%b0%80--%ed%8c%8c%ec%9d%bc%ec%b2%98%eb%a6%ac-%ec%8b%9c%ec%8a%a4%ed%85%9c%ec%9d%98-%ed%95%9c%ea%b3%84" aria-label="01 · DB는 왜 필요한가 — 파일처리 시스템의 한계">01 · DB는 왜 필요한가 — 파일처리 시스템의 한계</a></li>
+            <li>
+                <a href="#02--db%ec%9d%98-%ec%a2%85%eb%a5%98--rdb-vs-nosql" aria-label="02 · DB의 종류 — RDB vs NoSQL">02 · DB의 종류 — RDB vs NoSQL</a></li>
+            <li>
+                <a href="#03--%ea%b4%80%ea%b3%84%ed%98%95-db-%eb%a7%8c%eb%93%a4%ea%b8%b0--create--insert--select" aria-label="03 · 관계형 DB 만들기 — CREATE / INSERT / SELECT">03 · 관계형 DB 만들기 — CREATE / INSERT / SELECT</a></li>
+            <li>
+                <a href="#04--sql-3%eb%b6%84%eb%a5%98--%ec%9e%90%eb%a3%8c%ed%98%95--alter--drop" aria-label="04 · SQL 3분류 · 자료형 · ALTER / DROP">04 · SQL 3분류 · 자료형 · ALTER / DROP</a><ul>
+                    
+            <li>
+                <a href="#%ec%9e%90%eb%a3%8c%ed%98%95--%ec%b9%b8%eb%a7%88%eb%8b%a4-%eb%8b%b4%eb%8a%94-%ea%b0%92%ec%9d%98-%ec%a2%85%eb%a5%98" aria-label="자료형 — 칸마다 담는 값의 종류">자료형 — 칸마다 담는 값의 종류</a></li>
+            <li>
+                <a href="#%ed%85%8c%ec%9d%b4%eb%b8%94-%ec%88%98%ec%a0%95%ec%82%ad%ec%a0%9c--alter--drop" aria-label="테이블 수정·삭제 — ALTER / DROP">테이블 수정·삭제 — ALTER / DROP</a></li></ul>
+            </li>
+            <li>
+                <a href="#05--%ec%a0%9c%ec%95%bd%ec%a1%b0%ea%b1%b4--%ec%9e%98%eb%aa%bb%eb%90%9c-%eb%8d%b0%ec%9d%b4%ed%84%b0%eb%a5%bc-%eb%a7%89%eb%8a%94-%eb%a7%88%ec%a7%80%eb%a7%89-%eb%b0%a9%ec%96%b4%ec%84%a0" aria-label="05 · 제약조건 — &ldquo;잘못된 데이터를 막는 마지막 방어선&rdquo;">05 · 제약조건 — &ldquo;잘못된 데이터를 막는 마지막 방어선&rdquo;</a></li>
+            <li>
+                <a href="#06--%ed%82%a4%ec%99%80-%eb%ac%b4%ea%b2%b0%ec%84%b1--pk--fk--%ed%9b%84%eb%b3%b4%eb%8c%80%ec%b2%b4%ec%8a%88%ed%8d%bc%ed%82%a4--%eb%b3%b5%ed%95%a9%ed%82%a4" aria-label="06 · 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키">06 · 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키</a><ul>
+                    
+            <li>
+                <a href="#%ea%b8%b0%eb%b3%b8%ed%82%a4--%ec%99%b8%eb%9e%98%ed%82%a4" aria-label="기본키 / 외래키">기본키 / 외래키</a></li>
+            <li>
+                <a href="#%ed%9b%84%eb%b3%b4%ed%82%a4--%eb%8c%80%ec%b2%b4%ed%82%a4--%ec%8a%88%ed%8d%bc%ed%82%a4" aria-label="후보키 · 대체키 · 슈퍼키">후보키 · 대체키 · 슈퍼키</a></li>
+            <li>
+                <a href="#%eb%b3%b5%ed%95%a9-%ea%b8%b0%eb%b3%b8%ed%82%a4composite-key" aria-label="복합 기본키(Composite Key)">복합 기본키(Composite Key)</a></li>
+            <li>
+                <a href="#%eb%ac%b4%ea%b2%b0%ec%84%b1-%ec%a0%9c%ec%95%bd--%eb%8d%b0%ec%9d%b4%ed%84%b0%ea%b0%80-%ec%a7%80%ec%bc%9c%ec%95%bc-%ed%95%a0-%ea%b7%9c%ec%b9%99%eb%93%a4" aria-label="무결성 제약 — 데이터가 지켜야 할 규칙들">무결성 제약 — 데이터가 지켜야 할 규칙들</a></li></ul>
+            </li>
+            <li>
+                <a href="#07--%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%aa%a8%eb%8d%b8%eb%a7%81--%ed%98%84%ec%8b%a4%ec%9d%84-%ed%91%9c%eb%a1%9c-%ec%98%ae%ea%b8%b0%eb%8a%94-%ea%b3%bc%ec%a0%95" aria-label="07 · 데이터 모델링 — 현실을 표로 옮기는 과정">07 · 데이터 모델링 — 현실을 표로 옮기는 과정</a></li>
+            <li>
+                <a href="#08--erd--%ed%85%8c%ec%9d%b4%eb%b8%94-%ea%b4%80%ea%b3%84%eb%a5%bc-%ea%b7%b8%eb%a6%bc%ec%9c%bc%eb%a1%9c-%ea%b7%b8%eb%a6%ac%eb%8a%94-%ec%84%a4%ea%b3%84%eb%8f%84" aria-label="08 · ERD — 테이블 관계를 그림으로 그리는 설계도">08 · ERD — 테이블 관계를 그림으로 그리는 설계도</a><ul>
+                    
+            <li>
+                <a href="#peter-chen-%ed%91%9c%ea%b8%b0%eb%b2%95" aria-label="Peter Chen 표기법">Peter Chen 표기법</a></li>
+            <li>
+                <a href="#ie%ea%b9%8c%eb%a7%88%ea%b7%80%eb%b0%9c-%ed%91%9c%ea%b8%b0%eb%b2%95" aria-label="IE(까마귀발) 표기법">IE(까마귀발) 표기법</a></li>
+            <li>
+                <a href="#%ea%b4%80%ea%b3%84-%ec%9c%a0%ed%98%95%ea%b3%bc-nm-%eb%b6%84%ed%95%b4-%ea%b0%95%ec%82%ac-%ea%b0%95%ec%a1%b0" aria-label="관계 유형과 N:M 분해 (강사 강조)">관계 유형과 N:M 분해 (강사 강조)</a></li>
+            <li>
+                <a href="#erd-editor-%ec%8b%a4%ec%8a%b5-%ec%bd%94%eb%93%9c--erd-%ec%96%91%eb%b0%a9%ed%96%a5" aria-label="ERD Editor 실습 (코드 ↔ ERD 양방향)">ERD Editor 실습 (코드 ↔ ERD 양방향)</a></li></ul>
+            </li></ul>
+            </li>
+            <li>
+                <a href="#-%ec%b0%b8%ea%b3%a0%ec%9e%90%eb%a3%8c" aria-label="📚 참고자료">📚 참고자료</a><ul>
+                    
+            <li>
+                <a href="#%eb%a7%88%eb%ac%b4%eb%a6%ac" aria-label="마무리">마무리</a></li>
+            <li>
+                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
+            </li>
+        </ul>
+        </li>
+        </ul>
+    </div>
+</details>
+
+  <div class="post-content md-content"><blockquote>
+<p>지금까지는 <strong>이미 만들어진 DB</strong>(chinook·classicmodels)에서 <code>SELECT</code>·<code>JOIN</code>·윈도우 함수로 데이터를 <em>꺼내</em> 썼다. 오늘은 방향을 180도 돌린다 — <strong>DB를 직접 설계하고 만드는</strong> 첫 수업이다. &ldquo;DB가 대체 왜 필요한가&quot;부터 시작해서 → RDB vs NoSQL → <code>CREATE</code>로 테이블 만들기 → DDL/DML/DCL·자료형 → <strong>제약조건</strong>(NOT NULL·UNIQUE·DEFAULT·CHECK) → <strong>키</strong>(PK·FK·후보·대체·슈퍼키)와 무결성 → 데이터 모델링 → <strong>ERD</strong>까지 이어진다. 오늘 전체를 관통하는 한 문장은 강사님의 이 말이다 — <strong>&ldquo;제약조건은 잘못된 데이터 입력을 막는 <em>마지막 방어선</em>이다.&rdquo;</strong></p>
+</blockquote>
+<h1 id="-수업-내용">📖 수업 내용<a hidden class="anchor" aria-hidden="true" href="#-수업-내용">#</a></h1>
+<p>오전엔 운영 공지와 지난 윈도우 함수 복습이 있었고, <strong>DB 본 수업은 오후</strong>에 집중됐다. 이 글은 라이브 진행 흐름을 따라 아래 순서로 간다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">01. DB는 왜 필요한가 (파일처리 시스템의 한계)
+</span></span><span class="line"><span class="cl">02. DB의 종류 — RDB vs NoSQL
+</span></span><span class="line"><span class="cl">03. 관계형 DB 만들기 — CREATE / INSERT / SELECT
+</span></span><span class="line"><span class="cl">04. SQL 3분류(DDL/DML/DCL) · 자료형 · ALTER / DROP
+</span></span><span class="line"><span class="cl">05. 제약조건 — &#34;마지막 방어선&#34; (NOT NULL/UNIQUE/DEFAULT/CHECK/CONSTRAINT)
+</span></span><span class="line"><span class="cl">06. 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키
+</span></span><span class="line"><span class="cl">07. 데이터 모델링
+</span></span><span class="line"><span class="cl">08. ERD — Peter Chen / 까마귀발(IE) / ERD Editor
+</span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>실습 DBMS는 SQLite다.</strong> 그런데 이론 슬라이드 일부는 <strong>MySQL/표준 SQL 기준</strong>(예: <code>ALTER ... MODIFY COLUMN</code>, <code>DROP CONSTRAINT</code>, <code>information_schema</code>)이라 <strong>SQLite에선 그대로 안 되는</strong> 항목이 있다. 이런 부분은 본문에서 <code>⚠ SQLite 주의</code>로 따로 표시한다. 실습 코드는 <a href="/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">코드 노트</a>에서 직접 돌려본다.</p>
+</blockquote>
+<hr>
+<h2 id="01--db는-왜-필요한가--파일처리-시스템의-한계">01 · DB는 왜 필요한가 — 파일처리 시스템의 한계<a hidden class="anchor" aria-hidden="true" href="#01--db는-왜-필요한가--파일처리-시스템의-한계">#</a></h2>
+<p>먼저 용어 정리부터. <strong>데이터(data)</strong> 는 현실에서 수집한 <em>가공 전의</em> 단순한 사실·값이다(예: <code>85</code>, <code>홍길동</code>). <strong>정보(information)</strong> 는 그 데이터를 목적에 맞게 <em>의미 있게 가공한</em> 결과다(예: &ldquo;홍길동의 점수 85점은 상위 10%&rdquo;). 그리고 <strong>데이터베이스(DB)</strong> 는 한 조직 안에서 <strong>여러 사용자·프로그램이 공유</strong>하려고 통합·저장·운영하는 <strong>데이터의 집합</strong>이다.</p>
+<p>그럼 그냥 엑셀 파일이나 CSV에 저장하면 안 될까? 강사님은 &ldquo;개인 작업이라면 엑셀·CSV·SQLite로도 충분하다&quot;고 했다. 문제는 <strong>조직 단위로 갈 때</strong> 생긴다. 예전 방식(파일처리 시스템)은 세 가지 한계가 있다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>한계</th>
+					<th>무슨 뜻인가</th>
+					<th>쉬운 비유</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>데이터 종속성</strong></td>
+					<td>데이터 구조가 바뀌면 그 데이터를 쓰는 프로그램도 다 같이 고쳐야 함</td>
+					<td>책장 칸 배치를 바꿨더니, 그 책장을 쓰는 모든 사람이 위치를 새로 외워야 하는 격</td>
+			</tr>
+			<tr>
+					<td><strong>데이터 중복성</strong></td>
+					<td>프로그램마다 같은 데이터를 따로 복사해 보관 → 중복</td>
+					<td>같은 연락처를 카톡·전화부·메모장에 각각 저장</td>
+			</tr>
+			<tr>
+					<td><strong>무결성 훼손</strong></td>
+					<td>중복된 데이터가 서로 안 맞게 되어 어디가 맞는지 모름</td>
+					<td>카톡엔 010-1111, 전화부엔 010-2222</td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p>💡 그래서 DB는 <strong>공유 · 동시 사용 · 권한 관리 · 무결성</strong>을 한 곳에서 책임진다. 이게 &ldquo;왜 DB인가&quot;의 답이다.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>팀 프로젝트에서 SQLite 쓰지 말 것(강사 경고).</strong> SQLite는 <strong>파일 하나로 된 개인용 DB</strong>라 여러 명이 동시에 쓰는 팀 프로젝트엔 부적절하다 → 팀은 <strong>클라우드 DB</strong>를 권장한다. (단 오늘 실습은 <em>학습 목적</em>이라 가볍게 SQLite를 쓴다.)</p>
+</blockquote>
+<hr>
+<h2 id="02--db의-종류--rdb-vs-nosql">02 · DB의 종류 — RDB vs NoSQL<a hidden class="anchor" aria-hidden="true" href="#02--db의-종류--rdb-vs-nosql">#</a></h2>
+<p>DB는 크게 두 갈래다. 데이터를 <strong>표(table)</strong> 로 다루는 <strong>관계형(RDB)</strong> 과, 표 틀에 얽매이지 않는 <strong>NoSQL</strong>.</p>
+<table>
+	<thead>
+			<tr>
+					<th>구분</th>
+					<th>RDB (관계형)</th>
+					<th>NoSQL (Not only SQL)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>데이터 구조</td>
+					<td>2차원 표(행·열), 정해진 스키마</td>
+					<td>유연한 스키마(미리 정의 안 함)</td>
+			</tr>
+			<tr>
+					<td>강점</td>
+					<td>무결성·일관성·신뢰성, 정규화로 중복 최소화</td>
+					<td>비정형 데이터(이미지·자연어), 대용량·수평 확장</td>
+			</tr>
+			<tr>
+					<td>어울리는 상황</td>
+					<td>구조가 일관적이고 정확성이 중요할 때</td>
+					<td>구조가 자주 바뀌거나 대량을 빠르게 처리할 때</td>
+			</tr>
+			<tr>
+					<td>대표 제품</td>
+					<td>MySQL, PostgreSQL, MariaDB, Oracle</td>
+					<td>MongoDB, Redis, Cassandra</td>
+			</tr>
+	</tbody>
+</table>
+<p><strong>RDB</strong>는 데이터를 행과 열의 표로 표현하고, 표끼리 <strong>관계</strong>로 이어 무결성을 지킨다. 구조가 일관적이라 신뢰성·안정성이 높다. <strong>NoSQL</strong>은 미리 정한 스키마가 없어 자유롭게 저장할 수 있고, 비정형 데이터나 대용량 분산 저장에 강하다.</p>
+<blockquote>
+<p>💡 <strong>강사 선택 팁:</strong> &ldquo;분석에 어떤 DB를 쓸 것인가&quot;의 선택이 중요하다. NoSQL은 폭넓게 저장 가능하지만 학습 난이도가 있고, <strong>공간(지도) 데이터는 PostgreSQL을 추천</strong>한다. 현업 분석에선 <strong>클라우드 데이터 웨어하우스(BigQuery 등)</strong> 사용 빈도가 높다(쿠팡 등 사례). 클라우드는 비용이 드니 용도·예산을 함께 고려한다.</p>
+</blockquote>
+<hr>
+<h2 id="03--관계형-db-만들기--create--insert--select">03 · 관계형 DB 만들기 — CREATE / INSERT / SELECT<a hidden class="anchor" aria-hidden="true" href="#03--관계형-db-만들기--create--insert--select">#</a></h2>
+<p>이제 표를 직접 만든다. 그 전에 RDB 용어부터 — 같은 것을 부르는 이름이 여러 개라 헷갈리기 쉽다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>표현 1</th>
+					<th>표현 2</th>
+					<th>표현 3</th>
+					<th>쉬운 설명</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>행(row)</td>
+					<td>튜플(tuple)</td>
+					<td>레코드</td>
+					<td>가로 한 줄 = 데이터 한 건</td>
+			</tr>
+			<tr>
+					<td>열(column)</td>
+					<td>속성(attribute)</td>
+					<td>—</td>
+					<td>세로 한 칸 = 항목(이름, 나이…)</td>
+			</tr>
+			<tr>
+					<td>기본키(PK)</td>
+					<td>—</td>
+					<td>—</td>
+					<td>행을 유일하게 식별하는 속성(예: id)</td>
+			</tr>
+			<tr>
+					<td>도메인(domain)</td>
+					<td>—</td>
+					<td>—</td>
+					<td>그 속성이 가질 수 있는 <strong>값의 범위</strong></td>
+			</tr>
+	</tbody>
+</table>
+<p>기본 구문 세 개다. (아래는 슬라이드의 일반형 틀 — <code>⚠ 일반형</code>)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 테이블 만들기
+</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="err">테이블명</span><span class="w"> </span><span class="p">(</span><span class="err">속성</span><span class="mi">1</span><span class="w"> </span><span class="err">데이터타입</span><span class="p">,</span><span class="w"> </span><span class="err">속성</span><span class="mi">2</span><span class="w"> </span><span class="err">데이터타입</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- 데이터 넣기 (속성 생략 시 빈 칸엔 NULL이 들어감)
+</span></span></span><span class="line"><span class="cl"><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="err">테이블명</span><span class="w"> </span><span class="p">(</span><span class="err">속성</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="err">속성</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">...)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="err">값</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="err">값</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- 데이터 꺼내기
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="err">속성</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="err">속성</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="err">테이블명</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><blockquote>
+<p>💡 <strong>SQL 작성 규칙(가독성 약속):</strong></p>
+<ul>
+<li>키워드(<code>CREATE</code>, <code>SELECT</code>…)는 <strong>대문자</strong></li>
+<li>테이블·속성 이름은 <strong>소문자</strong>, 띄어쓰기는 언더바(<code>_</code>)로 (<code>dept_name</code>)</li>
+<li>이름은 의미가 분명하게, 명령 끝엔 <strong>세미콜론(<code>;</code>)</strong></li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="04--sql-3분류--자료형--alter--drop">04 · SQL 3분류 · 자료형 · ALTER / DROP<a hidden class="anchor" aria-hidden="true" href="#04--sql-3분류--자료형--alter--drop">#</a></h2>
+<p><strong>SQL</strong>(Structured Query Language)은 관계형 DB를 다루는 표준 언어다. 하는 일에 따라 세 종류로 나뉜다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>분류</th>
+					<th>풀이</th>
+					<th>하는 일</th>
+					<th>대표 명령</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>DDL</strong></td>
+					<td>데이터 정의어</td>
+					<td>테이블 등 <strong>구조</strong>를 정의</td>
+					<td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code></td>
+			</tr>
+			<tr>
+					<td><strong>DML</strong></td>
+					<td>데이터 조작어</td>
+					<td><strong>데이터</strong>를 조회·입력·수정·삭제</td>
+					<td><code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td>
+			</tr>
+			<tr>
+					<td><strong>DCL</strong></td>
+					<td>데이터 제어어</td>
+					<td><strong>권한</strong>을 부여·회수</td>
+					<td><code>GRANT</code>, <code>REVOKE</code></td>
+			</tr>
+	</tbody>
+</table>
+<p>지금까지 우리가 쓰던 <code>SELECT</code>는 DML, 오늘 새로 배우는 <code>CREATE</code>는 DDL이다.</p>
+<h3 id="자료형--칸마다-담는-값의-종류">자료형 — 칸마다 담는 값의 종류<a hidden class="anchor" aria-hidden="true" href="#자료형--칸마다-담는-값의-종류">#</a></h3>
+<p>테이블을 만들 땐 각 칸에 무슨 종류의 값이 들어갈지(자료형)를 정해야 한다. <strong>DBMS마다 종류·이름이 조금씩 다르다.</strong></p>
+<table>
+	<thead>
+			<tr>
+					<th>자료형</th>
+					<th>설명</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>VARCHAR(n)</code></td>
+					<td>최대 n바이트의 <strong>가변 길이</strong> 문자</td>
+			</tr>
+			<tr>
+					<td><code>INT</code></td>
+					<td>정수(4바이트)</td>
+			</tr>
+			<tr>
+					<td><code>FLOAT</code></td>
+					<td>실수, 4바이트 부동소수점</td>
+			</tr>
+			<tr>
+					<td><code>DATETIME</code></td>
+					<td>날짜+시간 (<code>YYYY-MM-DD HH:MM:SS</code>)</td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>강사 포인트:</strong> <code>VARCHAR</code> 길이 같은 건 <strong>확장성을 고려</strong>해 정한다(다국적 이름, 긴 입력 등). 화면 입력(문자열) → 앱 처리 → DB 저장(날짜 타입 등) 사이에 <strong>타입이 안 맞아 정보가 유실될 수 있다</strong>는 점도 주의. 그리고 어떤 칸을 필수로 할지(NOT NULL), 기본값을 줄지(DEFAULT)는 <strong>비즈니스 로직에 근거해</strong> 설계해야 한다 → 바로 다음 챕터 제약조건으로 이어진다.</p>
+</blockquote>
+<h3 id="테이블-수정삭제--alter--drop">테이블 수정·삭제 — ALTER / DROP<a hidden class="anchor" aria-hidden="true" href="#테이블-수정삭제--alter--drop">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 슬라이드 일반형(⚠ MySQL 기준)
+</span></span></span><span class="line"><span class="cl"><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="err">테이블명</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="err">컬럼명</span><span class="w"> </span><span class="err">데이터타입</span><span class="p">;</span><span class="w">     </span><span class="c1">-- 컬럼 추가
+</span></span></span><span class="line"><span class="cl"><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="err">테이블명</span><span class="w"> </span><span class="k">MODIFY</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="err">컬럼명</span><span class="w"> </span><span class="err">데이터타입</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 컬럼 수정
+</span></span></span><span class="line"><span class="cl"><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="err">테이블명</span><span class="w"> </span><span class="k">DROP</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="err">컬럼명</span><span class="p">;</span><span class="w">               </span><span class="c1">-- 컬럼 삭제
+</span></span></span><span class="line"><span class="cl"><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="err">테이블명</span><span class="p">;</span><span class="w">                                   </span><span class="c1">-- 테이블 통째 삭제
+</span></span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>SQLite 주의:</strong> 위 <code>MODIFY COLUMN</code>·<code>CHANGE COLUMN</code>은 <strong>MySQL 문법</strong>이라 <strong>SQLite에선 안 된다.</strong> SQLite의 <code>ALTER</code>는 <code>ADD COLUMN</code> 정도만 되고, 제약·기본값을 바꾸려면 <strong>새 테이블을 만들어 데이터를 복사한 뒤 이름을 바꾸는</strong> 우회 패턴을 쓴다(코드 노트 참고).</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>DROP 순서(강사):</strong> 외래키(FK)로 연결된 테이블은 <strong>참조 역순(자식 → 부모)</strong> 으로 지워야 에러가 안 난다. 부모를 먼저 지우면 &ldquo;아직 자식이 참조 중인데?&rdquo; 하고 막힌다.</p>
+</blockquote>
+<hr>
+<h2 id="05--제약조건--잘못된-데이터를-막는-마지막-방어선">05 · 제약조건 — &ldquo;잘못된 데이터를 막는 마지막 방어선&rdquo;<a hidden class="anchor" aria-hidden="true" href="#05--제약조건--잘못된-데이터를-막는-마지막-방어선">#</a></h2>
+<p>오늘의 핵심. <strong>제약조건(constraint)</strong> 은 <em>정확한 데이터만 들어오도록 보장하는 규칙</em>이다. 비즈니스 규칙을 <strong>DB 레벨에서 강제</strong>해, 프론트엔드·백엔드가 실수로 이상한 값을 보내도 <strong>DB가 마지막에 막아준다.</strong> 그래서 강사님은 이를 <strong>&ldquo;마지막 방어선&rdquo;</strong> 이라 불렀다.</p>
+<blockquote>
+<p>왜 유용한가? ① <strong>DB 관리자</strong> 관점: 무결성 유지 ② <strong>비즈니스</strong> 관점: 규칙 강제(예: 19세 미만 가입 차단) ③ <strong>분석·개발</strong> 관점: 쓰레기 데이터가 줄어 정제 비용이 줄고 양질의 데이터가 쌓인다.</p>
+</blockquote>
+<table>
+	<thead>
+			<tr>
+					<th>제약조건</th>
+					<th>하는 일</th>
+					<th>한 줄 예시</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>NOT NULL</strong></td>
+					<td>빈 값(NULL) 금지 = &ldquo;필수 입력&rdquo;</td>
+					<td>이름은 반드시 있어야 함</td>
+			</tr>
+			<tr>
+					<td><strong>UNIQUE</strong></td>
+					<td>중복 값 금지 (단 NULL은 중복 허용)</td>
+					<td>이메일은 겹치면 안 됨</td>
+			</tr>
+			<tr>
+					<td><strong>DEFAULT</strong></td>
+					<td>값을 안 주면 자동으로 채울 기본값</td>
+					<td>주소 미입력 시 &lsquo;미정&rsquo;</td>
+			</tr>
+			<tr>
+					<td><strong>CHECK</strong></td>
+					<td>값의 범위·조건 제한</td>
+					<td>학점은 1<del>3, 점수는 0</del>100</td>
+			</tr>
+			<tr>
+					<td><strong>CONSTRAINT</strong></td>
+					<td>위 제약에 <strong>이름</strong>을 붙여 관리 쉽게</td>
+					<td><code>CONSTRAINT pk_x PRIMARY KEY(...)</code></td>
+			</tr>
+	</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 제약에 이름 붙이기(관리·조회 편하게)
+</span></span></span><span class="line"><span class="cl"><span class="k">CONSTRAINT</span><span class="w"> </span><span class="err">제약조건이름</span><span class="w"> </span><span class="err">제약조건</span><span class="p">(</span><span class="err">컬럼명</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>강사님이 짚은 디테일 두 가지가 중요하다.</p>
+<blockquote>
+<p>💡 <strong>UNIQUE는 이메일에 ⭕, 이름엔 ❌.</strong> 이메일은 사람마다 달라야 하니 UNIQUE가 맞다. 하지만 <strong>이름은 동명이인</strong>이 있어 UNIQUE를 걸면 멀쩡한 사람이 가입을 못 한다. 그리고 UNIQUE는 <strong>NULL은 중복으로 안 친다</strong> — 이메일을 비워둔 사람은 여러 명 있어도 된다.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>DEFAULT vs NOT NULL은 택일.</strong> 둘 다 &ldquo;빈 값 처리&rdquo; 얘기지만 방향이 다르다. 쇼핑몰 배송지처럼 <em>꼭 있어야 하는</em> 값은 DEFAULT로 대충 채우기보다 <strong>NOT NULL로 강제</strong>하는 게 낫다. 정답은 <strong>비즈니스 로직</strong>이 정한다.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>SQLite 주의:</strong> 슬라이드의 <code>SELECT * FROM information_schema...</code>(제약 조회)와 <code>ALTER TABLE ... ADD/DROP CONSTRAINT</code>(제약 추가·삭제)는 <strong>MySQL/표준 문법</strong>이라 SQLite엔 없다. SQLite에선 제약 조회를 <code>PRAGMA table_info(...)</code>·<code>PRAGMA foreign_key_list(...)</code>로, 제약 변경은 테이블 재생성으로 한다.</p>
+</blockquote>
+<hr>
+<h2 id="06--키와-무결성--pk--fk--후보대체슈퍼키--복합키">06 · 키와 무결성 — PK / FK / 후보·대체·슈퍼키 / 복합키<a hidden class="anchor" aria-hidden="true" href="#06--키와-무결성--pk--fk--후보대체슈퍼키--복합키">#</a></h2>
+<p>테이블에서 <strong>행을 구분하고, 테이블끼리 잇는</strong> 역할을 하는 게 <strong>키(key)</strong> 다.</p>
+<h3 id="기본키--외래키">기본키 / 외래키<a hidden class="anchor" aria-hidden="true" href="#기본키--외래키">#</a></h3>
+<ul>
+<li><strong>기본키(Primary Key, PK):</strong> 행을 <strong>유일하게 식별</strong>하는 기준 속성. <strong>중복 불가 + NULL 불가</strong>(= NOT NULL + UNIQUE를 합친 것). 테이블당 보통 1개. 설정은 <code>PRIMARY KEY</code>.</li>
+<li><strong>외래키(Foreign Key, FK):</strong> <strong>다른 테이블의 기본키를 참조</strong>하는 속성. 테이블 간 관계를 만든다. 참조하는 값은 <em>부모 테이블 PK에 실제로 있는 값</em>(또는 NULL)만 가능 → 이게 <strong>참조 무결성</strong>. 설정은 <code>FOREIGN KEY (컬럼) REFERENCES 부모테이블(부모컬럼)</code>.</li>
+</ul>
+<blockquote>
+<p>비유하면, <strong>PK는 주민등록번호</strong>(나를 유일하게 가리킴), <strong>FK는 가족관계증명서에 적힌 부모의 주민번호</strong>(존재하는 사람만 적을 수 있음)다.</p>
+</blockquote>
+<h3 id="후보키--대체키--슈퍼키">후보키 · 대체키 · 슈퍼키<a hidden class="anchor" aria-hidden="true" href="#후보키--대체키--슈퍼키">#</a></h3>
+<table>
+	<thead>
+			<tr>
+					<th>키</th>
+					<th>정의</th>
+					<th>유일성</th>
+					<th>최소성</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>슈퍼키</strong></td>
+					<td>유일하게 식별은 되지만 불필요한 속성이 섞임</td>
+					<td>⭕</td>
+					<td>❌</td>
+			</tr>
+			<tr>
+					<td><strong>후보키</strong></td>
+					<td>기본키가 될 자격이 있는 키</td>
+					<td>⭕</td>
+					<td>⭕</td>
+			</tr>
+			<tr>
+					<td><strong>대체키</strong></td>
+					<td>후보키 중 기본키로 <strong>안 뽑힌</strong> 키</td>
+					<td>⭕</td>
+					<td>⭕</td>
+			</tr>
+	</tbody>
+</table>
+<ul>
+<li><strong>유일성</strong> = 그 값으로 행을 하나로 특정할 수 있음</li>
+<li><strong>최소성</strong> = 더 빼면 식별이 안 되는, 꼭 필요한 속성만 남은 상태</li>
+</ul>
+<h3 id="복합-기본키composite-key">복합 기본키(Composite Key)<a hidden class="anchor" aria-hidden="true" href="#복합-기본키composite-key">#</a></h3>
+<p>칼럼 하나로 식별이 안 될 때 <strong>두 개 이상을 묶어</strong> PK로 삼는다. 오늘 실습의 <code>enrollment(student_id, course_id)</code>가 그 예 — &ldquo;어떤 학생이 어떤 강의를 듣는가&quot;는 <em>학생+강의 한 쌍</em>이 있어야 한 건으로 특정된다.</p>
+<h3 id="무결성-제약--데이터가-지켜야-할-규칙들">무결성 제약 — 데이터가 지켜야 할 규칙들<a hidden class="anchor" aria-hidden="true" href="#무결성-제약--데이터가-지켜야-할-규칙들">#</a></h3>
+<table>
+	<thead>
+			<tr>
+					<th>무결성</th>
+					<th>규칙</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>개체 무결성</td>
+					<td>기본키는 NULL·중복 불가</td>
+			</tr>
+			<tr>
+					<td>참조 무결성</td>
+					<td>외래키는 부모 PK에 있는 값이거나 NULL</td>
+			</tr>
+			<tr>
+					<td>도메인 무결성</td>
+					<td>값은 그 속성의 허용 범위(도메인) 안</td>
+			</tr>
+			<tr>
+					<td>NULL 무결성</td>
+					<td>특정 속성은 NULL 불가</td>
+			</tr>
+			<tr>
+					<td>고유 무결성</td>
+					<td>각 튜플의 값이 서로 다름</td>
+			</tr>
+			<tr>
+					<td>키 무결성</td>
+					<td>테이블엔 최소 한 개의 키가 존재</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<h2 id="07--데이터-모델링--현실을-표로-옮기는-과정">07 · 데이터 모델링 — 현실을 표로 옮기는 과정<a hidden class="anchor" aria-hidden="true" href="#07--데이터-모델링--현실을-표로-옮기는-과정">#</a></h2>
+<p><strong>데이터 모델링</strong>은 현실 세계의 데이터를 데이터베이스로 옮기는 설계 작업이다. 세 가지 재료로 구성된다.</p>
+<ul>
+<li><strong>개체(Entity):</strong> 관리 대상 (예: 학생, 강의)</li>
+<li><strong>속성(Attribute):</strong> 개체의 특성·정보 (예: 학생의 이름, 학번)</li>
+<li><strong>관계(Relationship):</strong> 개체 간 연관 (예: 학생이 강의를 <em>수강한다</em>)</li>
+</ul>
+<p>과정은 <strong>개념적 설계 → 논리적 설계 → 물리적 설계</strong> 3단계로 추상에서 구체로 내려간다.</p>
+<hr>
+<h2 id="08--erd--테이블-관계를-그림으로-그리는-설계도">08 · ERD — 테이블 관계를 그림으로 그리는 설계도<a hidden class="anchor" aria-hidden="true" href="#08--erd--테이블-관계를-그림으로-그리는-설계도">#</a></h2>
+<p><strong>ERD(Entity-Relationship Diagram)</strong> 는 테이블들이 서로 어떻게 연결되는지를 그림으로 보여주는 <strong>설계도</strong>다. 구성요소는 셋이다.</p>
+<ul>
+<li><strong>개체(Entity):</strong> 박스 하나 = 테이블 하나</li>
+<li><strong>속성(Attribute):</strong> 박스 안 항목 = 컬럼 (🔑 = PK)</li>
+<li><strong>관계(Relationship):</strong> 박스를 잇는 선, 선 끝 모양 = <strong>카디널리티</strong>(수량)</li>
+</ul>
+<h3 id="peter-chen-표기법">Peter Chen 표기법<a hidden class="anchor" aria-hidden="true" href="#peter-chen-표기법">#</a></h3>
+<table>
+	<thead>
+			<tr>
+					<th>기호</th>
+					<th>의미</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>사각형</td>
+					<td>개체(Entity)</td>
+			</tr>
+			<tr>
+					<td>타원</td>
+					<td>속성(Attribute)</td>
+			</tr>
+			<tr>
+					<td>마름모</td>
+					<td>관계(Relationship)</td>
+			</tr>
+			<tr>
+					<td>밑줄</td>
+					<td>기본키</td>
+			</tr>
+			<tr>
+					<td>이중 타원</td>
+					<td>다중값 속성</td>
+			</tr>
+	</tbody>
+</table>
+<p>카디널리티는 <code>1</code>(1:1), <code>&lt;</code>(1:N), <code>&gt;&lt;</code>(N:M)로 표기한다. 도구로는 draw.io(<code>app.diagrams.net</code>)가 소개됐다.</p>
+<h3 id="ie까마귀발-표기법">IE(까마귀발) 표기법<a hidden class="anchor" aria-hidden="true" href="#ie까마귀발-표기법">#</a></h3>
+<p>실무에서 더 자주 보는 표기다. 선 끝의 <strong>새 발(crow&rsquo;s foot)</strong> 모양으로 수량을 나타낸다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>기호</th>
+					<th>의미</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>─┼</code></td>
+					<td>하나(one), 1</td>
+			</tr>
+			<tr>
+					<td><code>─○</code></td>
+					<td>영(zero), 0</td>
+			</tr>
+			<tr>
+					<td><code>─&lt;</code></td>
+					<td>다수(many), N</td>
+			</tr>
+	</tbody>
+</table>
+<p>이걸 조합해 <code>0..1</code>(없거나 하나), <code>1..N</code>(하나 이상 필수), <code>0..N</code>(없거나 여럿)을 표현한다. 예를 들어 한쪽이 <code>┼</code>, 반대쪽이 <code>&lt;</code>면 <strong>일대다(1:N)</strong> 관계다.</p>
+<h3 id="관계-유형과-nm-분해-강사-강조">관계 유형과 N:M 분해 (강사 강조)<a hidden class="anchor" aria-hidden="true" href="#관계-유형과-nm-분해-강사-강조">#</a></h3>
+<blockquote>
+<p>💡 <strong>기본은 일대다(1:N)로 생각하라.</strong> 일대일(1:1)은 보안·민감정보 분리처럼 매우 예외적인 경우다. 그리고 <strong>다대다(N:M)는 그대로 두지 않고, 최종적으로 <em>중간(연결) 테이블</em>로 분해해 1:N 둘로 만든다.</strong> 오늘 실습의 <code>enrollment</code>가 바로 그것 — 학생(N)과 강의(M)의 N:M을, 학생–enrollment(1:N)와 강의–enrollment(1:N)로 푼 것이다. (이 &ldquo;분해&quot;가 정규화의 일부이고, 정규화는 다음 시간 상세 예고.)</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>선택/필수 관계:</strong> ERD Editor에선 관계가 <code>0..N</code>(선택적)인지 <code>1..N</code>(필수 포함)인지도 정한다. 예) 고객–계좌에서 &ldquo;계좌가 꼭 있어야 하는가&quot;에 따라 갈린다.</p>
+</blockquote>
+<h3 id="erd-editor-실습-코드--erd-양방향">ERD Editor 실습 (코드 ↔ ERD 양방향)<a hidden class="anchor" aria-hidden="true" href="#erd-editor-실습-코드--erd-양방향">#</a></h3>
+<p>VS Code 확장 <strong>ERD Editor</strong>를 쓰면 SQL과 그림을 서로 변환할 수 있다.</p>
+<ol>
+<li>VS Code에서 <strong>ERD Editor</strong> 확장 설치</li>
+<li>작업 폴더에 <code>.erd</code> 파일 생성 (예: <code>school_db.erd</code>)</li>
+<li>ERD 화면 우클릭 → <strong>Database → SQLite → Import → Schema SQL</strong> → 우리가 만든 SQL을 불러오면 <strong>관계도가 자동 생성</strong></li>
+<li>반대로 <strong>Export → .sql</strong> 하면 CREATE 문이 생성됨</li>
+</ol>
+<blockquote>
+<p>💡 <strong>강사 강조:</strong> 코드 → ERD, ERD → 코드 둘 다 되지만, <strong>내보낸 SQL은 반드시 최종 검토·수정 후 적용</strong>해야 한다. 자동 생성을 맹신하지 말 것.</p>
+</blockquote>
+<hr>
+<h1 id="-참고자료">📚 참고자료<a hidden class="anchor" aria-hidden="true" href="#-참고자료">#</a></h1>
+<ul>
+<li>Elice, 「데이터베이스 개요」 강의 자료 (슬라이드 29p) — 소개·종류(RDB/NoSQL)·관계형 DB 만들기·DDL/DML/DCL·자료형</li>
+<li>Elice, 「데이터베이스 구성하기」 강의 자료 (슬라이드 36p) — 제약조건·키·데이터 모델링·ERD(Peter Chen / IE 까마귀발)</li>
+<li>실습 정답본: <code>Day06_lecture.sql</code>(school_db 5테이블 + 제약조건 예제) — 강사 정답</li>
+<li>ERD 작성 실습: VS Code <strong>ERD Editor</strong> 확장 (Schema SQL Import → ERD 자동 생성)</li>
+<li>미니 프로젝트: <code>constraint_demo</code> (good.db vs bad.db, Streamlit) — 제약 설계 실패 사례</li>
+<li>MySQL 데이터 타입 문서: <code>dev.mysql.com/doc/refman/8.0/en/data-types.html</code></li>
+<li>draw.io: <code>app.diagrams.net</code> (Peter Chen ERD 작도)</li>
+</ul>
+<blockquote>
+<p>📌 <strong>파일명/회차 참고:</strong> 폴더는 <code>04_데이터베이스개요</code>(3주차 04번째)인데, 실습 파일명은 <code>Day06_lecture.sql</code>, 내부 주석은 <code>-- Day 05</code>로 표기가 엇갈린다. 이 글은 <strong>강의일 기준 2026-06-15 / 3주차-04</strong>로 통일했다(원문 주석 표기는 보존).</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>참고:</strong> 강사가 클라우드 크레딧(GCP 무료 크레딧 등)을 언급했으나 정확한 금액·기간 조건은 시기에 따라 달라지므로 실제 사용 전 공식 안내를 확인하자. 운영성 정보라 본문 비중은 낮췄다.</p>
+</blockquote>
+<h2 id="마무리">마무리<a hidden class="anchor" aria-hidden="true" href="#마무리">#</a></h2>
+<p>오늘은 데이터를 <em>꺼내 쓰는</em> 쪽에서 <em>설계하고 만드는</em> 쪽으로 넘어왔다. <strong>DB가 필요한 이유</strong>(파일처리의 종속성·중복·무결성 한계)에서 출발해, <strong>RDB vs NoSQL</strong>로 선택지를 보고, <code>CREATE</code>/<code>INSERT</code>/<code>SELECT</code>로 표를 만들었다. <strong>DDL/DML/DCL</strong>로 SQL의 갈래를 잡고, 자료형을 정한 뒤, 오늘의 핵심인 <strong>제약조건</strong>(NOT NULL·UNIQUE·DEFAULT·CHECK·CONSTRAINT)과 <strong>키·무결성</strong>(PK·FK·후보·대체·슈퍼키·복합키)을 다뤘다. 마지막으로 <strong>데이터 모델링</strong>과 <strong>ERD</strong>(Peter Chen·까마귀발·ERD Editor)로 설계를 그림으로 옮겼다. 한 문장으로 남기자면 — <strong>제약조건은 잘못된 데이터를 막는 마지막 방어선이고, 키는 행을 식별하고 테이블을 잇는 손잡이다.</strong> 그리고 <strong>N:M은 중간 테이블로 분해</strong>한다는 것, <strong>SQLite는 표준/MySQL 문법 일부를 못 쓴다</strong>는 것을 기억해두자. 정규화·카디널리티 심화는 다음 시간이다.</p>
+<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
+<ul>
+<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">6/15 데이터베이스 개요 &amp; 구성하기 코드 노트</a> — 오늘 배운 제약조건·키를 <code>school_db</code> 5테이블 CREATE로 직접 만들고, constraint_demo(good.db vs bad.db)로 &ldquo;제약 설계가 틀리면 가입이 안 된다&quot;를 체험하는 실습 노트</li>
+<li><a href="/posts/%EA%B0%95%EC%9D%98/6-12-%EA%B7%B8%EB%A3%B9-%ED%95%A8%EC%88%98%EC%99%80-%EC%9C%88%EB%8F%84%EC%9A%B0-%ED%95%A8%EC%88%98/">6/12 그룹 함수 &amp; 윈도우 함수</a> — 지난 시간(이미 만들어진 DB에서 데이터를 <em>꺼내는</em> 통계·분석 쿼리). 오늘부터는 그 DB를 <em>만드는</em> 쪽</li>
+<li><a href="/posts/%EA%B0%95%EC%9D%98/6-11-join%EA%B3%BC-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC-%EC%8B%AC%ED%99%94/">6/11 JOIN &amp; 서브쿼리 심화</a> — JOIN으로 테이블을 잇던 그 &ldquo;관계&quot;가, 오늘 PK–FK 설계로 어떻게 생기는지의 출발점</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yw8837.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/">데이터베이스</a></li>
+      <li><a href="https://yw8837.github.io/tags/db/">DB</a></li>
+      <li><a href="https://yw8837.github.io/tags/rdb/">RDB</a></li>
+      <li><a href="https://yw8837.github.io/tags/nosql/">NoSQL</a></li>
+      <li><a href="https://yw8837.github.io/tags/sql/">SQL</a></li>
+      <li><a href="https://yw8837.github.io/tags/ddl/">DDL</a></li>
+      <li><a href="https://yw8837.github.io/tags/dml/">DML</a></li>
+      <li><a href="https://yw8837.github.io/tags/dcl/">DCL</a></li>
+      <li><a href="https://yw8837.github.io/tags/create/">CREATE</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%9E%90%EB%A3%8C%ED%98%95/">자료형</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%A0%9C%EC%95%BD%EC%A1%B0%EA%B1%B4/">제약조건</a></li>
+      <li><a href="https://yw8837.github.io/tags/notnull/">NOTNULL</a></li>
+      <li><a href="https://yw8837.github.io/tags/unique/">UNIQUE</a></li>
+      <li><a href="https://yw8837.github.io/tags/default/">DEFAULT</a></li>
+      <li><a href="https://yw8837.github.io/tags/check/">CHECK</a></li>
+      <li><a href="https://yw8837.github.io/tags/constraint/">CONSTRAINT</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EA%B8%B0%EB%B3%B8%ED%82%A4/">기본키</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%99%B8%EB%9E%98%ED%82%A4/">외래키</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EB%B3%B5%ED%95%A9%ED%82%A4/">복합키</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EB%AC%B4%EA%B2%B0%EC%84%B1/">무결성</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%AA%A8%EB%8D%B8%EB%A7%81/">데이터모델링</a></li>
+      <li><a href="https://yw8837.github.io/tags/erd/">ERD</a></li>
+      <li><a href="https://yw8837.github.io/tags/peterchen/">PeterChen</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EA%B9%8C%EB%A7%88%EA%B7%80%EB%B0%9C/">까마귀발</a></li>
+      <li><a href="https://yw8837.github.io/tags/sqlite/">SQLite</a></li>
+      <li><a href="https://yw8837.github.io/tags/school_db/">School_db</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/">
+    <span class="title">« 이전 페이지</span>
+    <span>6/16 정규화 &amp; 데이터베이스 구현 — 같은 데이터인데 왜 1NF·2NF·3NF로 쪼개야 하는가</span>
+  </a>
+  <a class="next" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+    <span class="title">다음 페이지 »</span>
+    <span>6/15 데이터베이스 개요 &amp; 구성하기 — school_db 5테이블 CREATE·제약조건·constraint_demo 실습 노트</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
+        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '복사';
+
+        function copyingDone() {
+            copybutton.innerHTML = '복사 완료!';
+            setTimeout(() => {
+                copybutton.innerHTML = '복사';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

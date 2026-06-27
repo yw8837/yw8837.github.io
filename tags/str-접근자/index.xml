@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Str 접근자 on AI_6스터디</title>
+    <link>https://yw8837.github.io/tags/str-%EC%A0%91%EA%B7%BC%EC%9E%90/</link>
+    <description>Recent content in Str 접근자 on AI_6스터디</description>
+    <generator>Hugo</generator>
+    <language>ko</language>
+    <lastBuildDate>Thu, 18 Jun 2026 09:00:00 +0900</lastBuildDate>
+    <atom:link href="https://yw8837.github.io/tags/str-%EC%A0%91%EA%B7%BC%EC%9E%90/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>6/18 pandas &amp; 데이터 시각화 — 군 데이터셋 70제·실습 코드 노트</title>
+      <link>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-18-pandas%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</link>
+      <pubDate>Thu, 18 Jun 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-18-pandas%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</guid>
+      <description>6/18 pandas 기초 실습 코드 노트. pandas_예제.ipynb 70선과 vectorization.ipynb를 원본 코드·실제 출력 그대로 수록. 환경설정(setup_matplotlib_korean_font·한글폰트 Malgun Gothic 적용, drive.mount, 헤더 시그니처로 CSV 자동 구분, FileNotFoundError·NFC/NFD 디버깅), 데이터 로드·점검(shape (11000,15)/info/describe), DataFrame vs Series, loc/iloc, 조건 필터링(단일·복합 &amp;amp;·|·isin·컬럼 간 비교 stock_level&amp;lt;reorder_threshold), 정렬, groupby/agg(check_type별 mean·max)/unstack을 한 셀씩 설명. 원본 오류 정정: 문제27 mental_wellbeing_score 60~80 → Empty DataFrame(실분포 1~10, 의도는 6~8), 문제61 df_sup.merge(df_wel, on=unit_code, inner) → (0,33)(unit_code 도메인 불일치). 벡터화 speedup 39.4x.</description>
+    </item>
+  </channel>
+</rss>

@@ -1,1 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>4NF on AI_6스터디</title><link>https://yw8837.github.io/tags/4nf/</link><description>Recent content in 4NF on AI_6스터디</description><generator>Hugo</generator><language>ko</language><lastBuildDate>Tue, 16 Jun 2026 09:00:00 +0900</lastBuildDate><atom:link href="https://yw8837.github.io/tags/4nf/index.xml" rel="self" type="application/rss+xml"/><item><title>6/16 정규화 &amp; 데이터베이스 구현 — 같은 데이터인데 왜 1NF·2NF·3NF로 쪼개야 하는가</title><link>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/</link><pubDate>Tue, 16 Jun 2026 09:00:00 +0900</pubDate><guid>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/</guid><description>이어드림 6기 정규화 &amp;amp; 데이터베이스 구현 강의 정리. 이상현상(삽입·갱신·삭제 Anomaly), 함수 종속(부분·이행·완전·결정자), 1NF(원자값)·2NF(부분 함수 종속 제거)·3NF(이행 함수 종속 제거)를 학생/수강/학과 예제로 직관적으로 풀고, BCNF·4NF(다치 종속)·5NF(조인 종속)·역정규화와 &amp;#34;3NF면 충분&amp;#34;의 기준선, 공유킥보드 최종 4테이블 ERD를 정리한다. 후반 MySQL DB 구현(윈도우/맥 설치, CREATE/USE DATABASE, DCL GRANT/REVOKE/CREATE USER, 인덱스 CREATE/SHOW/DROP과 사용 전략)을 다루고, 실습 SQLite vs 슬라이드 MySQL 차이(권한·DATABASE·SHOW INDEX 부재)를 라벨로 구분한다.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>4NF on AI_6스터디</title>
+    <link>https://yw8837.github.io/tags/4nf/</link>
+    <description>Recent content in 4NF on AI_6스터디</description>
+    <generator>Hugo</generator>
+    <language>ko</language>
+    <lastBuildDate>Tue, 16 Jun 2026 09:00:00 +0900</lastBuildDate>
+    <atom:link href="https://yw8837.github.io/tags/4nf/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>6/16 정규화 &amp; 데이터베이스 구현 — 같은 데이터인데 왜 1NF·2NF·3NF로 쪼개야 하는가</title>
+      <link>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/</link>
+      <pubDate>Tue, 16 Jun 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/</guid>
+      <description>이어드림 6기 정규화 &amp;amp; 데이터베이스 구현 강의 정리. 이상현상(삽입·갱신·삭제 Anomaly), 함수 종속(부분·이행·완전·결정자), 1NF(원자값)·2NF(부분 함수 종속 제거)·3NF(이행 함수 종속 제거)를 학생/수강/학과 예제로 직관적으로 풀고, BCNF·4NF(다치 종속)·5NF(조인 종속)·역정규화와 &amp;#34;3NF면 충분&amp;#34;의 기준선, 공유킥보드 최종 4테이블 ERD를 정리한다. 후반 MySQL DB 구현(윈도우/맥 설치, CREATE/USE DATABASE, DCL GRANT/REVOKE/CREATE USER, 인덱스 CREATE/SHOW/DROP과 사용 전략)을 다루고, 실습 SQLite vs 슬라이드 MySQL 차이(권한·DATABASE·SHOW INDEX 부재)를 라벨로 구분한다.</description>
+    </item>
+  </channel>
+</rss>

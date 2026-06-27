@@ -1,1 +1,26 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>브로드캐스팅 on AI_6스터디</title><link>https://yw8837.github.io/tags/%EB%B8%8C%EB%A1%9C%EB%93%9C%EC%BA%90%EC%8A%A4%ED%8C%85/</link><description>Recent content in 브로드캐스팅 on AI_6스터디</description><generator>Hugo</generator><language>ko</language><lastBuildDate>Wed, 17 Jun 2026 09:00:00 +0900</lastBuildDate><atom:link href="https://yw8837.github.io/tags/%EB%B8%8C%EB%A1%9C%EB%93%9C%EC%BA%90%EC%8A%A4%ED%8C%85/index.xml" rel="self" type="application/rss+xml"/><item><title>6/17 데이터 리터러시 &amp; NumPy 기초 — NumPy 예제 70선·정형 데이터 가공 실습 노트</title><link>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</link><pubDate>Wed, 17 Jun 2026 09:00:00 +0900</pubDate><guid>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</guid><description>6/17 NumPy 기초 실습 코드 노트. numpy_예제.ipynb 70선을 강사 원본 코드와 실제 출력 그대로 수록하고, ndarray·dtype·속성, 인덱싱/슬라이싱과 뷰 vs 복사(슬라이스는 뷰·flatten은 복사·ravel은 뷰), 불리언 마스킹(괄호 필수·bool vs 정수 인덱싱), axis 집계(axis=0 열·axis=1 행), 브로드캐스팅/벡터화를 한 줄씩 설명한다. 하이라이트 문제 61~70은 pandas read_csv→to_numpy로 X(군수품)·SRV(서버)·ISSUE_CAT를 1회 로드한 뒤 NumPy만으로 열 슬라이스·np.hstack 파생·np.isnan 결측 제거·조건 필터·z-score 표준화·np.argsort 순위·np.unique return_inverse 라벨링·permutation 셔플 분할·column_stack 설계행렬을 만든다.</description></item><item><title>6/17 데이터 리터러시 &amp; NumPy 기초 — 데이터를 읽는 눈과, 분석 패키지의 뼈대</title><link>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88/</link><pubDate>Wed, 17 Jun 2026 09:00:00 +0900</pubDate><guid>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88/</guid><description>이어드림 6기 데이터 리터러시 &amp;amp; NumPy 기초 강의 정리. 데이터 정의·정형/비정형/반정형, 변수의 척도(명목·서열·등간·비율)와 통계 분석법, 양질의 데이터(고품질=희소·고비용)·딥러닝(양) vs 머신러닝(질), 신뢰할 수 있는 데이터(편향·오류·결측치, 처리 전략은 비교 실험으로), 상관 vs 인과·DIKW 피라미드·데이터 마이닝·시각화 리터러시·RAW vs 집계 데이터를 초보자 눈높이로 정리한다. 후반부 NumPy 기초: ndarray·dtype·shape, 인덱싱/슬라이싱과 뷰 vs 복사, reshape, 불리언 마스킹, axis 집계, 그리고 가장 중요한 브로드캐스팅·벡터화까지.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>브로드캐스팅 on AI_6스터디</title>
+    <link>https://yw8837.github.io/tags/%EB%B8%8C%EB%A1%9C%EB%93%9C%EC%BA%90%EC%8A%A4%ED%8C%85/</link>
+    <description>Recent content in 브로드캐스팅 on AI_6스터디</description>
+    <generator>Hugo</generator>
+    <language>ko</language>
+    <lastBuildDate>Wed, 17 Jun 2026 09:00:00 +0900</lastBuildDate>
+    <atom:link href="https://yw8837.github.io/tags/%EB%B8%8C%EB%A1%9C%EB%93%9C%EC%BA%90%EC%8A%A4%ED%8C%85/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>6/17 데이터 리터러시 &amp; NumPy 기초 — NumPy 예제 70선·정형 데이터 가공 실습 노트</title>
+      <link>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</link>
+      <pubDate>Wed, 17 Jun 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</guid>
+      <description>6/17 NumPy 기초 실습 코드 노트. numpy_예제.ipynb 70선을 강사 원본 코드와 실제 출력 그대로 수록하고, ndarray·dtype·속성, 인덱싱/슬라이싱과 뷰 vs 복사(슬라이스는 뷰·flatten은 복사·ravel은 뷰), 불리언 마스킹(괄호 필수·bool vs 정수 인덱싱), axis 집계(axis=0 열·axis=1 행), 브로드캐스팅/벡터화를 한 줄씩 설명한다. 하이라이트 문제 61~70은 pandas read_csv→to_numpy로 X(군수품)·SRV(서버)·ISSUE_CAT를 1회 로드한 뒤 NumPy만으로 열 슬라이스·np.hstack 파생·np.isnan 결측 제거·조건 필터·z-score 표준화·np.argsort 순위·np.unique return_inverse 라벨링·permutation 셔플 분할·column_stack 설계행렬을 만든다.</description>
+    </item>
+    <item>
+      <title>6/17 데이터 리터러시 &amp; NumPy 기초 — 데이터를 읽는 눈과, 분석 패키지의 뼈대</title>
+      <link>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88/</link>
+      <pubDate>Wed, 17 Jun 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88/</guid>
+      <description>이어드림 6기 데이터 리터러시 &amp;amp; NumPy 기초 강의 정리. 데이터 정의·정형/비정형/반정형, 변수의 척도(명목·서열·등간·비율)와 통계 분석법, 양질의 데이터(고품질=희소·고비용)·딥러닝(양) vs 머신러닝(질), 신뢰할 수 있는 데이터(편향·오류·결측치, 처리 전략은 비교 실험으로), 상관 vs 인과·DIKW 피라미드·데이터 마이닝·시각화 리터러시·RAW vs 집계 데이터를 초보자 눈높이로 정리한다. 후반부 NumPy 기초: ndarray·dtype·shape, 인덱싱/슬라이싱과 뷰 vs 복사, reshape, 불리언 마스킹, axis 집계, 그리고 가장 중요한 브로드캐스팅·벡터화까지.</description>
+    </item>
+  </channel>
+</rss>

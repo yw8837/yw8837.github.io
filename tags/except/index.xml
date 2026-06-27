@@ -1,1 +1,26 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>EXCEPT on AI_6스터디</title><link>https://yw8837.github.io/tags/except/</link><description>Recent content in EXCEPT on AI_6스터디</description><generator>Hugo</generator><language>ko</language><lastBuildDate>Wed, 10 Jun 2026 09:00:00 +0900</lastBuildDate><atom:link href="https://yw8837.github.io/tags/except/index.xml" rel="self" type="application/rss+xml"/><item><title>6/10 집합 연산자 &amp; 계층형 질의 — UNION·INTERSECT·EXCEPT·재귀 CTE 실습 쿼리 노트</title><link>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-10-%EC%A7%91%ED%95%A9-%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80-%EA%B3%84%EC%B8%B5%ED%98%95-%EC%A7%88%EC%9D%98-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</link><pubDate>Wed, 10 Jun 2026 09:00:00 +0900</pubDate><guid>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-10-%EC%A7%91%ED%95%A9-%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80-%EA%B3%84%EC%B8%B5%ED%98%95-%EC%A7%88%EC%9D%98-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</guid><description>6/10 집합 연산자와 계층형 질의 실습 코드 노트. chinook DB로 UNION/UNION ALL/INTERSECT/EXCEPT 4종, 소계 패턴(UNION ALL), 집합 연산 결과를 서브쿼리로 감싼 JOIN, 계층형 질의 WITH RECURSIVE(기본·집계·경로·소계)까지 실제 답지 기반으로 다룬다. SQLite와 Oracle/MySQL 문법 차이, /10000 단위 오타와 괄호 누락 버그 보정까지 정직하게 표기한다.</description></item><item><title>6/10 집합 연산자 &amp; 계층형 질의 — 조인 없이 합치고, 조직도처럼 파고들기</title><link>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-10-%EC%A7%91%ED%95%A9-%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80-%EA%B3%84%EC%B8%B5%ED%98%95-%EC%A7%88%EC%9D%98/</link><pubDate>Wed, 10 Jun 2026 09:00:00 +0900</pubDate><guid>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-10-%EC%A7%91%ED%95%A9-%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80-%EA%B3%84%EC%B8%B5%ED%98%95-%EC%A7%88%EC%9D%98/</guid><description>이어드림 6기 집합 연산자와 계층형 질의 강의 정리. 관계형 대수(집합 연산·관계 연산), 집합 연산자 4종(UNION/UNION ALL/INTERSECT/EXCEPT)과 공통 규칙, 소계 패턴, 계층형 데이터와 Oracle CONNECT BY vs 재귀 CTE(WITH RECURSIVE)까지. DBMS별 지원 차이(INTERSECT/EXCEPT MySQL 미지원, EXCEPT=Oracle MINUS)와 실무 팁을 비전공자 눈높이로 정리한다.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>EXCEPT on AI_6스터디</title>
+    <link>https://yw8837.github.io/tags/except/</link>
+    <description>Recent content in EXCEPT on AI_6스터디</description>
+    <generator>Hugo</generator>
+    <language>ko</language>
+    <lastBuildDate>Wed, 10 Jun 2026 09:00:00 +0900</lastBuildDate>
+    <atom:link href="https://yw8837.github.io/tags/except/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>6/10 집합 연산자 &amp; 계층형 질의 — UNION·INTERSECT·EXCEPT·재귀 CTE 실습 쿼리 노트</title>
+      <link>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-10-%EC%A7%91%ED%95%A9-%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80-%EA%B3%84%EC%B8%B5%ED%98%95-%EC%A7%88%EC%9D%98-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</link>
+      <pubDate>Wed, 10 Jun 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-10-%EC%A7%91%ED%95%A9-%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80-%EA%B3%84%EC%B8%B5%ED%98%95-%EC%A7%88%EC%9D%98-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/</guid>
+      <description>6/10 집합 연산자와 계층형 질의 실습 코드 노트. chinook DB로 UNION/UNION ALL/INTERSECT/EXCEPT 4종, 소계 패턴(UNION ALL), 집합 연산 결과를 서브쿼리로 감싼 JOIN, 계층형 질의 WITH RECURSIVE(기본·집계·경로·소계)까지 실제 답지 기반으로 다룬다. SQLite와 Oracle/MySQL 문법 차이, /10000 단위 오타와 괄호 누락 버그 보정까지 정직하게 표기한다.</description>
+    </item>
+    <item>
+      <title>6/10 집합 연산자 &amp; 계층형 질의 — 조인 없이 합치고, 조직도처럼 파고들기</title>
+      <link>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-10-%EC%A7%91%ED%95%A9-%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80-%EA%B3%84%EC%B8%B5%ED%98%95-%EC%A7%88%EC%9D%98/</link>
+      <pubDate>Wed, 10 Jun 2026 09:00:00 +0900</pubDate>
+      <guid>https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-10-%EC%A7%91%ED%95%A9-%EC%97%B0%EC%82%B0%EC%9E%90%EC%99%80-%EA%B3%84%EC%B8%B5%ED%98%95-%EC%A7%88%EC%9D%98/</guid>
+      <description>이어드림 6기 집합 연산자와 계층형 질의 강의 정리. 관계형 대수(집합 연산·관계 연산), 집합 연산자 4종(UNION/UNION ALL/INTERSECT/EXCEPT)과 공통 규칙, 소계 패턴, 계층형 데이터와 Oracle CONNECT BY vs 재귀 CTE(WITH RECURSIVE)까지. DBMS별 지원 차이(INTERSECT/EXCEPT MySQL 미지원, EXCEPT=Oracle MINUS)와 실무 팁을 비전공자 눈높이로 정리한다.</description>
+    </item>
+  </channel>
+</rss>

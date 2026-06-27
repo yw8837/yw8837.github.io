@@ -1,70 +1,775 @@
-<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기 | AI_6스터디</title><meta name=keywords content="SQL,집계함수,GROUP BY,HAVING,JOIN,서브쿼리,SQLite,chinook,초보자"><meta name=description content="이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다."><meta name=author content="yw8837"><link rel=canonical href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/><link crossorigin=anonymous href=/assets/css/stylesheet.css rel="preload stylesheet" as=style><link rel=icon href=https://yw8837.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://yw8837.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://yw8837.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://yw8837.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yw8837.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script><script>var doNotTrack=!1,dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes";if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-EQR4094Q13")}</script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/"><meta property="og:site_name" content="AI_6스터디"><meta property="og:title" content="6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기"><meta property="og:description" content="이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다."><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-06-09T09:00:00+09:00"><meta property="article:modified_time" content="2026-06-09T09:00:00+09:00"><meta property="article:tag" content="SQL"><meta property="article:tag" content="집계함수"><meta property="article:tag" content="GROUP BY"><meta property="article:tag" content="HAVING"><meta property="article:tag" content="JOIN"><meta property="article:tag" content="서브쿼리"><meta name=twitter:card content="summary"><meta name=twitter:title content="6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기"><meta name=twitter:description content="이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yw8837.github.io/posts/"},{"@type":"ListItem","position":2,"name":"6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기","item":"https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기","name":"6\/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기","description":"이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다.","keywords":["SQL","집계함수","GROUP BY","HAVING","JOIN","서브쿼리","SQLite","chinook","초보자"],"articleBody":" 어제(6/8) SELECT로 데이터를 골라봤다면, 오늘은 그 위에 네 개의 무기를 얹었다 — 집계함수(여러 행을 한 값으로 요약), GROUP BY(그룹별 집계), JOIN(여러 테이블 결합), 서브쿼리(쿼리 속 쿼리). 난도가 확 올라가는 날이라, 강사님은 **“분할 → 각각 실행 → 합치기”**라는 학습법을 계속 강조했다.\n📖 수업 내용 오늘의 흐름은 이렇다.\n집계 함수 — COUNT·SUM·AVG·MAX·MIN으로 여러 행을 한 값으로 요약 GROUP BY / HAVING — “그룹별로 묶어서” 집계하고, 그 결과에 조건 걸기 JOIN — 흩어진 여러 테이블을 키로 연결 (INNER·LEFT·RIGHT) 서브쿼리 — 쿼리 안에 또 다른 쿼리를 넣어 “모르는 기준\"으로 검색 📌 실습 정답 출처: 6/9 실습 파일(Day02_*)은 문제 주석만 있고 정답 칸이 비어 있었으나, 강사님 노션 답지(260609)에 핵심 문항(HAVING·JOIN·서브쿼리)의 실제 정답이 있어 그대로 반영했다. 노션에 없는 일부 문항만 슬라이드 문법 기반 재구성으로 표시했다(코드 노트에서 ✅ 실제 답지 / ⚠ 재구성으로 구분).\n01 · 집계 함수 — 여러 행을 한 값으로 지금까지 SELECT는 행을 그대로 여러 줄 보여줬다. **집계 함수(Aggregate Function)**는 여러 행을 하나의 요약값으로 만든다. 다섯 가지를 배웠다.\n함수 하는 일 비유 COUNT 개수 세기 “몇 명?” SUM 합계 “다 더하면?” AVG 평균 “평균은?” MAX 최댓값 “제일 큰 값?” MIN 최솟값 “제일 작은 값?” COUNT COUNT는 검색 결과의 데이터 개수를 센다. 한 가지 중요한 특징 — NULL(빈 값)은 세지 않는다.\nSELECT COUNT(id) FROM book; -- id 컬럼의 값 개수 (NULL 제외) SELECT COUNT(*) FROM book; -- 전체 행 개수 💡 팁: 전체 10행 중 어떤 컬럼에 NULL이 3개 있으면 COUNT(그 컬럼)은 7이 나온다. “왜 개수가 적지?” 싶으면 NULL을 의심하자. 그래서 행 전체를 셀 땐 COUNT(*)를 쓴다.\nSUM · AVG · MAX · MIN SELECT SUM(math) FROM grade; -- 합계 SELECT AVG(korean), AVG(english), AVG(math) FROM grade; -- 평균(여러 개 동시 가능) SELECT MAX(korean) FROM grade; -- 최댓값 SELECT MIN(english) FROM grade; -- 최솟값 AVG는 SUM/COUNT를 직접 안 써도 평균을 구해준다. MAX·MIN은 숫자뿐 아니라 문자형에도 쓸 수 있다(알파벳 순 최대/최소).\nLIMIT 다시 보기 LIMIT는 출력 개수를 제한한다. 인덱스 시작이 0이라는 점이 포인트다.\nSELECT * FROM book LIMIT 5; -- 앞에서 5개 SELECT * FROM book LIMIT 1, 5; -- 2번째부터 5개 (시작 인덱스 1 = 두 번째) 💡 팁: LIMIT는 DBMS마다 문법이 다르다. 예를 들어 Oracle은 문법이 상이하다. “환경마다 다를 수 있다\"를 항상 기억하자.\n02 · GROUP BY / HAVING — 그룹별로 묶어 집계하기 집계 함수를 그룹별로 쓰고 싶을 때가 있다. “나라별 고객 수”, “장르별 평균 재생시간\"처럼. 이때 **GROUP BY**를 쓴다.\nSELECT user_id, COUNT(*) FROM rental GROUP BY user_id; -- user_id가 같은 것끼리 묶어서 각 그룹의 개수 기준 컬럼이 같은 행끼리 묶고, 그 그룹마다 집계 함수(COUNT/SUM/AVG/MAX/MIN)를 적용한다.\n💡 팁: GROUP BY의 기준 컬럼은 SELECT 절에도 반드시 넣는 게 원칙이다. SQLite는 안 넣어도 동작하는 경우가 있지만, 결과의 의미가 불명확해지므로 정석 문법을 지키자.\nHAVING — 그룹에 조건 걸기 WHERE는 그룹으로 묶기 전 개별 행을 거르고, HAVING은 그룹으로 묶은 후 그룹을 거른다.\nSELECT user_id, COUNT(*) FROM rental GROUP BY user_id HAVING COUNT(user_id) \u003e 1; -- 묶은 결과 중 개수가 1보다 큰 그룹만 절 거르는 시점 대상 WHERE 그룹화 전 개별 행 HAVING 그룹화 후 그룹(집계 결과) 💡 팁: HAVING은 혼자 못 쓴다. 반드시 GROUP BY 다음에 온다. “집계한 결과에 조건\"이 필요할 때 HAVING을 떠올리자.\n예를 들어 chinook에서 “앨범이 5개 이상인 아티스트만\"은 이렇게 쓴다(노션 실제 답지 — 지문은 “5개 이상\"이나 답지 SQL은 \u003e 5로 작성돼 있다).\nSELECT ArtistId, COUNT(*) AS album_cnt FROM albums GROUP BY ArtistId HAVING COUNT(*) \u003e 5; 03 · JOIN — 흩어진 테이블을 연결하기 데이터는 보통 여러 테이블에 나뉘어 저장된다. 왜 나눌까?\n중복·저장 낭비 방지 (같은 정보를 여기저기 적지 않음) 수정의 일관성 (유저 정보 한 번만 고치면 됨) 삭제·무결성 문제 방지 이렇게 잘 나누는 설계를 정규화라 한다(자세한 건 후반부). 그런데 나눠놓으면 합쳐서 봐야 할 때가 온다. 그게 JOIN이다.\nINNER JOIN — 교집합 두 테이블에서 키가 서로 매칭되는 행만 가져온다(교집합).\nSELECT * FROM rental INNER JOIN user ON user.id = rental.user_id; -- 두 테이블을 잇는 '키'를 ON으로 지정 매칭되지 않는 행(예: 대여 기록이 없는 유저)은 결과에서 빠진다.\n💡 팁: ERD를 보고 어떤 키로 연결되는지 먼저 확인하라. 그리고 두 테이블에 같은 컬럼명(예: Name)이 있으면 table.column으로 명시해야 한다. 안 그러면 ambiguous column name(컬럼 이름이 모호함) 오류가 난다.\n3개 테이블도 연결할 수 있다. 단, 직접 연결되는 키가 있어야 한다. 예를 들어 트랙→아티스트는 직접 연결이 안 돼서, 앨범을 경유해야 한다(트랙→앨범→아티스트).\nSELECT tracks.Name, albums.Title, artists.Name FROM tracks INNER JOIN albums ON tracks.AlbumId = albums.AlbumId INNER JOIN artists ON albums.ArtistId = artists.ArtistId LIMIT 20; 💡 팁: 조인이 잘 됐는지 먼저 SELECT *로 확인한 뒤, 필요한 컬럼만 좁히는 게 실습 요령이다. 단, 실무에서 SELECT *는 금지에 가깝다(컬럼 과다·성능·가독성). 확인용으로만 쓰자.\nLEFT JOIN / RIGHT JOIN — 한쪽을 다 보존 종류 결과 INNER JOIN 양쪽 다 매칭되는 것만 (교집합) LEFT JOIN 왼쪽 테이블 전부 + 매칭 안 되면 NULL RIGHT JOIN 오른쪽 테이블 전부 + 매칭 안 되면 NULL SELECT * FROM user LEFT JOIN rental ON user.id = rental.user_id; -- user 전부 SELECT * FROM user RIGHT JOIN rental ON user.id = rental.user_id; -- rental 전부 NULL 필터링 — “관계 없는 행” 찾기 LEFT JOIN으로 “앨범이 하나도 없는 아티스트” 같은 걸 찾을 수 있다. 매칭 실패 시 NULL이 되니, 그 NULL을 거르면 된다.\nSELECT artists.Name FROM artists LEFT JOIN albums ON artists.ArtistId = albums.ArtistId WHERE albums.AlbumId IS NULL; -- 앨범이 없는(매칭 실패) 아티스트만 💡 팁: NULL은 = NULL로 못 거른다. 반드시 **IS NULL / IS NOT NULL**을 써야 한다. “관계가 없는 행 찾기\"의 핵심 기술이다.\n💡 팁: RIGHT JOIN보다 LEFT JOIN을 권장한다. 두 테이블이면 테이블 순서만 바꾸면 RIGHT 효과를 LEFT로 낼 수 있기 때문. 게다가 RIGHT JOIN은 SQLite 3.39.0 이상에서만 동작한다.\n참고: 강사님은 Customer.SupportRepId 같은 컬럼은 이름만 봐선 의미를 알기 어렵다며, **데이터 정의서(Data Dictionary)**가 있으면 “SupportRepId = 담당 직원 EmployeeId\"를 추론 없이 확인할 수 있다고 강조했다.\n04 · 서브쿼리 — 쿼리 속의 쿼리 서브쿼리는 **“하나의 쿼리 안에 포함된 또 하나의 쿼리”**다. 메인쿼리가 서브쿼리를 품는 종속 관계다.\n왜 쓸까? 기준값을 모를 때 유용하다. 예를 들어 “elice보다 급여 높은 사람\"을 찾는데 elice 급여를 모른다면:\n-- 급여 2500을 '아는' 상태라면: SELECT * FROM employee WHERE 급여 \u003e 2500; -- 급여를 '몰라도' 서브쿼리로: SELECT * FROM employee WHERE 급여 \u003e (SELECT 급여 FROM employee WHERE 이름 = 'elice'); 주의사항 4가지 (슬라이드):\n서브쿼리는 괄호 ()와 함께 쓴다. 서브쿼리 안에서는 ORDER BY 사용 불가. 서브쿼리는 연산자의 오른쪽에 둔다. 서브쿼리는 오직 SELECT문으로만 작성한다. 💡 핵심 학습법(강사님 반복 강조): “분할 → 각각 실행 → 합치기”. 메인쿼리와 서브쿼리를 먼저 텍스트로 구분하고, 바로 코딩하지 말고 구조부터 잡는다. 각각 따로 돌려보고 맞으면 합친다.\n단일행 vs 다중행 서브쿼리 서브쿼리가 몇 개의 값을 돌려주느냐로 나뉜다.\n종류 반환 쓰는 연산자 단일행 1개 값 =, \u003c\u003e, \u003e, \u003e=, \u003c, \u003c= 다중행 2개 이상 IN, ANY, ALL -- 단일행: 평균보다 긴 트랙 (AVG는 값 1개) SELECT Name FROM tracks WHERE Milliseconds \u003e (SELECT AVG(Milliseconds) FROM tracks); -- 다중행: 부서별 최고 급여에 해당하는 사람 (여러 부서 = 여러 값) SELECT * FROM employee WHERE 급여 IN (SELECT MAX(급여) FROM employee GROUP BY 부서번호); ⚠️ SQLite 주의: SQLite는 ANY/ALL을 지원하지 않는다. 대신 MIN/MAX로 대체한다.\nALL(모든 값보다 큼) → MAX보다 큼 ANY(하나라도보다 큼) → MIN보다 큼 위치에 따른 분류 서브쿼리가 쿼리의 어디에 들어가느냐로도 나뉜다.\n위치 이름 특징 WHERE 절 가장 일반적 조건에 서브쿼리 SELECT 절 스칼라 서브쿼리 한 행만 반환, JOIN과 같은 결과 FROM 절 파생 테이블 서브쿼리 결과를 표처럼 사용, 별칭 필수 EXISTS 상관 서브쿼리 존재 여부만 확인 -- 스칼라(SELECT절): 앨범별 트랙 수 SELECT a.Title, (SELECT COUNT(*) FROM tracks t WHERE t.AlbumId = a.AlbumId) AS track_count FROM albums a; -- FROM절 파생 테이블: 앨범별 트랙 수의 전체 평균 (별칭 sub 필수) SELECT AVG(cnt) FROM ( SELECT AlbumId, COUNT(*) AS cnt FROM tracks GROUP BY AlbumId ) AS sub; -- EXISTS: 트랙이 있는 앨범만 SELECT Title FROM albums a WHERE EXISTS (SELECT 1 FROM tracks t WHERE t.AlbumId = a.AlbumId); 💡 팁: NOT IN은 NULL에 취약하다. 서브쿼리 결과에 NULL이 섞이면 아무것도 반환 안 할 수 있다. 그래서 “구매 안 된 트랙 찾기” 같은 건 NOT EXISTS가 더 안전하다(NULL 안전).\n05 · 강사님이 강조한 포인트 (정리) 서브쿼리 핵심 학습법: “분할 → 각각 실행 → 합치기”. 바로 코딩 말고 구조부터. GROUP BY 기준 컬럼은 SELECT에도 포함(정석). SQLite가 예외 동작해도 정석 준수. JOIN은 ERD/키 확인 후 작성. 컬럼명 겹치면 table.column, 동일 컬럼명은 별칭으로 구분. SELECT *는 실무에서 금지에 가까움. 조인 확인용으로만. RIGHT JOIN보다 LEFT JOIN 권장(테이블 순서로 대체). RIGHT는 SQLite 3.39.0+ 필요. NULL 필터링은 IS NULL/IS NOT NULL. 비교 연산으로는 NULL을 못 거른다. NOT IN은 NULL 취약 → NOT EXISTS가 안전. SQLite는 ANY/ALL 미지원 → MIN/MAX로 대체. COUNT는 NULL 제외, 용어 “컬럼=필드” 혼용 주의. 분석가 로드맵: 기본문법 + 서브쿼리 + 조인 + 윈도우 함수, 그리고 보고서·엑셀 역량도 중요. 운영: 시험은 classicmodels DB로 진행 예고. 답지는 노션 업로드. 📚 참고자료 Elice, 「01 SQL과 함수」 강의 자료 (슬라이드 33p) Elice, 「02 다수의 테이블 제어하기」 강의 자료 (슬라이드 38p) Elice, 「03 서브쿼리」 강의 자료 (슬라이드 23p) 실습 SQL 문제: Day02_groupby_Join_student.sql, Day02_subquery_student.sql (문제 주석만 수록, 정답은 비어 있음 → 실습 노트의 정답은 재구성본) 실습 DB: chinook.db 라이브 수업 진행 기록 (1-3교시 / 4-6교시) — 강사: 황지영 마무리 오늘은 SELECT 위에 집계·그룹·결합·중첩을 쌓은 날이다. 집계 함수로 여러 행을 한 값으로 요약하고, GROUP BY/HAVING으로 그룹별로 집계·필터하고, JOIN으로 흩어진 테이블을 키로 잇고, 서브쿼리로 모르는 기준까지 검색했다. 양이 많지만 관통하는 학습법은 하나다 — “분할 → 각각 실행 → 합치기”. 복잡한 쿼리일수록 한 번에 쓰려 하지 말고, 조각으로 나눠 각각 검증한 뒤 합치자. 그리고 SQLite의 특이점(ANY/ALL 미지원, RIGHT JOIN 버전 제약)과 NULL의 함정(NOT IN vs NOT EXISTS)을 꼭 기억하자.\n🔗 연관 노트 6/9 SQL 함수와 서브쿼리 코드 노트 — 오늘 쿼리를 직접 실행해보는 실습 노트(핵심 문항은 강사 노션 답지 반영) 6/8 SQL 시작하기 — DB 개념·SELECT·DML (이전 강의) ","wordCount":"1522","inLanguage":"en","datePublished":"2026-06-09T09:00:00+09:00","dateModified":"2026-06-09T09:00:00+09:00","author":{"@type":"Person","name":"yw8837"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/"},"publisher":{"@type":"Organization","name":"AI_6스터디","logo":{"@type":"ImageObject","url":"https://yw8837.github.io/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=header-nav><div class=logo><a href=https://yw8837.github.io/ accesskey=h title="AI_6스터디 (Alt + H)">AI_6스터디</a><div class=logo-switches><button id=theme-toggle class=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
-<svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-<svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu class=menu><li><a href=https://yw8837.github.io/categories/year-study/ title="📚 Year Study"><span>📚 Year Study</span></a></li><li><a href=https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/ title="강의 정리"><span>강의 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/ title="실습 정리"><span>실습 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/ title=프로젝트><span>프로젝트</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><nav class=breadcrumbs role=navigation aria-label=Breadcrumb><a href=/>홈</a>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg>
-<a href=/posts/>Posts</a>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg></nav><h1 class="post-title entry-hint-parent">6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기</h1><div class=post-description>이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다.</div><div class=post-meta><span title='2026-06-09 09:00:00 +0900 KST'>2026년 6월 9일</span>&nbsp;·&nbsp;<span>8 분</span>&nbsp;·&nbsp;<span>yw8837</span></div></header><details class=toc><summary accesskey=c title="(Alt + C)"><span class=title>목차</span></summary><div class=inner><ul><li><a href=#-%ec%88%98%ec%97%85-%eb%82%b4%ec%9a%a9 aria-label="📖 수업 내용">📖 수업 내용</a><ul><li><a href=#01--%ec%a7%91%ea%b3%84-%ed%95%a8%ec%88%98--%ec%97%ac%eb%9f%ac-%ed%96%89%ec%9d%84-%ed%95%9c-%ea%b0%92%ec%9c%bc%eb%a1%9c aria-label="01 · 집계 함수 — 여러 행을 한 값으로">01 · 집계 함수 — 여러 행을 한 값으로</a><ul><li><a href=#count aria-label=COUNT>COUNT</a></li><li><a href=#sum--avg--max--min aria-label="SUM · AVG · MAX · MIN">SUM · AVG · MAX · MIN</a></li><li><a href=#limit-%eb%8b%a4%ec%8b%9c-%eb%b3%b4%ea%b8%b0 aria-label="LIMIT 다시 보기">LIMIT 다시 보기</a></li></ul></li><li><a href=#02--group-by--having--%ea%b7%b8%eb%a3%b9%eb%b3%84%eb%a1%9c-%eb%ac%b6%ec%96%b4-%ec%a7%91%ea%b3%84%ed%95%98%ea%b8%b0 aria-label="02 · GROUP BY / HAVING — 그룹별로 묶어 집계하기">02 · GROUP BY / HAVING — 그룹별로 묶어 집계하기</a><ul><li><a href=#having--%ea%b7%b8%eb%a3%b9%ec%97%90-%ec%a1%b0%ea%b1%b4-%ea%b1%b8%ea%b8%b0 aria-label="HAVING — 그룹에 조건 걸기">HAVING — 그룹에 조건 걸기</a></li></ul></li><li><a href=#03--join--%ed%9d%a9%ec%96%b4%ec%a7%84-%ed%85%8c%ec%9d%b4%eb%b8%94%ec%9d%84-%ec%97%b0%ea%b2%b0%ed%95%98%ea%b8%b0 aria-label="03 · JOIN — 흩어진 테이블을 연결하기">03 · JOIN — 흩어진 테이블을 연결하기</a><ul><li><a href=#inner-join--%ea%b5%90%ec%a7%91%ed%95%a9 aria-label="INNER JOIN — 교집합">INNER JOIN — 교집합</a></li><li><a href=#left-join--right-join--%ed%95%9c%ec%aa%bd%ec%9d%84-%eb%8b%a4-%eb%b3%b4%ec%a1%b4 aria-label="LEFT JOIN / RIGHT JOIN — 한쪽을 다 보존">LEFT JOIN / RIGHT JOIN — 한쪽을 다 보존</a></li><li><a href=#null-%ed%95%84%ed%84%b0%eb%a7%81--%ea%b4%80%ea%b3%84-%ec%97%86%eb%8a%94-%ed%96%89-%ec%b0%be%ea%b8%b0 aria-label="NULL 필터링 — &ldquo;관계 없는 행&rdquo; 찾기">NULL 필터링 — &ldquo;관계 없는 행&rdquo; 찾기</a></li></ul></li><li><a href=#04--%ec%84%9c%eb%b8%8c%ec%bf%bc%eb%a6%ac--%ec%bf%bc%eb%a6%ac-%ec%86%8d%ec%9d%98-%ec%bf%bc%eb%a6%ac aria-label="04 · 서브쿼리 — 쿼리 속의 쿼리">04 · 서브쿼리 — 쿼리 속의 쿼리</a><ul><li><a href=#%eb%8b%a8%ec%9d%bc%ed%96%89-vs-%eb%8b%a4%ec%a4%91%ed%96%89-%ec%84%9c%eb%b8%8c%ec%bf%bc%eb%a6%ac aria-label="단일행 vs 다중행 서브쿼리">단일행 vs 다중행 서브쿼리</a></li><li><a href=#%ec%9c%84%ec%b9%98%ec%97%90-%eb%94%b0%eb%a5%b8-%eb%b6%84%eb%a5%98 aria-label="위치에 따른 분류">위치에 따른 분류</a></li></ul></li><li><a href=#05--%ea%b0%95%ec%82%ac%eb%8b%98%ec%9d%b4-%ea%b0%95%ec%a1%b0%ed%95%9c-%ed%8f%ac%ec%9d%b8%ed%8a%b8-%ec%a0%95%eb%a6%ac aria-label="05 · 강사님이 강조한 포인트 (정리)">05 · 강사님이 강조한 포인트 (정리)</a></li></ul></li><li><a href=#-%ec%b0%b8%ea%b3%a0%ec%9e%90%eb%a3%8c aria-label="📚 참고자료">📚 참고자료</a><ul><li><a href=#%eb%a7%88%eb%ac%b4%eb%a6%ac aria-label=마무리>마무리</a></li><li><a href=#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8 aria-label="🔗 연관 노트">🔗 연관 노트</a></li></ul></li></ul></div></details><div class="post-content md-content"><blockquote><p>어제(6/8) <strong>SELECT</strong>로 데이터를 골라봤다면, 오늘은 그 위에 네 개의 무기를 얹었다 — <strong>집계함수</strong>(여러 행을 한 값으로 요약), <strong>GROUP BY</strong>(그룹별 집계), <strong>JOIN</strong>(여러 테이블 결합), <strong>서브쿼리</strong>(쿼리 속 쿼리). 난도가 확 올라가는 날이라, 강사님은 **&ldquo;분할 → 각각 실행 → 합치기&rdquo;**라는 학습법을 계속 강조했다.</p></blockquote><h1 id=-수업-내용>📖 수업 내용<a hidden class=anchor aria-hidden=true href=#-수업-내용>#</a></h1><p>오늘의 흐름은 이렇다.</p><ol><li><strong>집계 함수</strong> — COUNT·SUM·AVG·MAX·MIN으로 여러 행을 한 값으로 요약</li><li><strong>GROUP BY / HAVING</strong> — &ldquo;그룹별로 묶어서&rdquo; 집계하고, 그 결과에 조건 걸기</li><li><strong>JOIN</strong> — 흩어진 여러 테이블을 키로 연결 (INNER·LEFT·RIGHT)</li><li><strong>서브쿼리</strong> — 쿼리 안에 또 다른 쿼리를 넣어 &ldquo;모르는 기준"으로 검색</li></ol><blockquote><p>📌 <strong>실습 정답 출처:</strong> 6/9 실습 파일(<code>Day02_*</code>)은 문제 주석만 있고 정답 칸이 비어 있었으나, <strong>강사님 노션 답지(260609)에 핵심 문항(HAVING·JOIN·서브쿼리)의 실제 정답</strong>이 있어 그대로 반영했다. 노션에 없는 일부 문항만 슬라이드 문법 기반 <strong>재구성</strong>으로 표시했다(코드 노트에서 <code>✅ 실제 답지</code> / <code>⚠ 재구성</code>으로 구분).</p></blockquote><hr><h2 id=01--집계-함수--여러-행을-한-값으로>01 · 집계 함수 — 여러 행을 한 값으로<a hidden class=anchor aria-hidden=true href=#01--집계-함수--여러-행을-한-값으로>#</a></h2><p>지금까지 SELECT는 행을 그대로 여러 줄 보여줬다. **집계 함수(Aggregate Function)**는 여러 행을 <strong>하나의 요약값</strong>으로 만든다. 다섯 가지를 배웠다.</p><table><thead><tr><th>함수</th><th>하는 일</th><th>비유</th></tr></thead><tbody><tr><td><strong>COUNT</strong></td><td>개수 세기</td><td>&ldquo;몇 명?&rdquo;</td></tr><tr><td><strong>SUM</strong></td><td>합계</td><td>&ldquo;다 더하면?&rdquo;</td></tr><tr><td><strong>AVG</strong></td><td>평균</td><td>&ldquo;평균은?&rdquo;</td></tr><tr><td><strong>MAX</strong></td><td>최댓값</td><td>&ldquo;제일 큰 값?&rdquo;</td></tr><tr><td><strong>MIN</strong></td><td>최솟값</td><td>&ldquo;제일 작은 값?&rdquo;</td></tr></tbody></table><h3 id=count>COUNT<a hidden class=anchor aria-hidden=true href=#count>#</a></h3><p><code>COUNT</code>는 검색 결과의 <strong>데이터 개수</strong>를 센다. 한 가지 중요한 특징 — <strong>NULL(빈 값)은 세지 않는다.</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=n>id</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=p>;</span><span class=w>   </span><span class=c1>-- id 컬럼의 값 개수 (NULL 제외)
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>  </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=p>;</span><span class=w>   </span><span class=c1>-- 전체 행 개수
-</span></span></span></code></pre></div><blockquote><p>💡 팁: 전체 10행 중 어떤 컬럼에 NULL이 3개 있으면 <code>COUNT(그 컬럼)</code>은 <strong>7</strong>이 나온다. &ldquo;왜 개수가 적지?&rdquo; 싶으면 NULL을 의심하자. 그래서 행 전체를 셀 땐 <code>COUNT(*)</code>를 쓴다.</p></blockquote><h3 id=sum--avg--max--min>SUM · AVG · MAX · MIN<a hidden class=anchor aria-hidden=true href=#sum--avg--max--min>#</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>SUM</span><span class=p>(</span><span class=n>math</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>grade</span><span class=p>;</span><span class=w>                          </span><span class=c1>-- 합계
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>AVG</span><span class=p>(</span><span class=n>korean</span><span class=p>),</span><span class=w> </span><span class=k>AVG</span><span class=p>(</span><span class=n>english</span><span class=p>),</span><span class=w> </span><span class=k>AVG</span><span class=p>(</span><span class=n>math</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>grade</span><span class=p>;</span><span class=w> </span><span class=c1>-- 평균(여러 개 동시 가능)
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>MAX</span><span class=p>(</span><span class=n>korean</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>grade</span><span class=p>;</span><span class=w>                        </span><span class=c1>-- 최댓값
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>MIN</span><span class=p>(</span><span class=n>english</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>grade</span><span class=p>;</span><span class=w>                       </span><span class=c1>-- 최솟값
-</span></span></span></code></pre></div><p><code>AVG</code>는 <code>SUM/COUNT</code>를 직접 안 써도 평균을 구해준다. <code>MAX</code>·<code>MIN</code>은 <strong>숫자뿐 아니라 문자형에도</strong> 쓸 수 있다(알파벳 순 최대/최소).</p><h3 id=limit-다시-보기>LIMIT 다시 보기<a hidden class=anchor aria-hidden=true href=#limit-다시-보기>#</a></h3><p><code>LIMIT</code>는 출력 개수를 제한한다. 인덱스 시작이 <strong>0</strong>이라는 점이 포인트다.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>5</span><span class=p>;</span><span class=w>     </span><span class=c1>-- 앞에서 5개
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>LIMIT</span><span class=w> </span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=mi>5</span><span class=p>;</span><span class=w>  </span><span class=c1>-- 2번째부터 5개 (시작 인덱스 1 = 두 번째)
-</span></span></span></code></pre></div><blockquote><p>💡 팁: <code>LIMIT</code>는 DBMS마다 문법이 다르다. 예를 들어 Oracle은 문법이 상이하다. &ldquo;환경마다 다를 수 있다"를 항상 기억하자.</p></blockquote><hr><h2 id=02--group-by--having--그룹별로-묶어-집계하기>02 · GROUP BY / HAVING — 그룹별로 묶어 집계하기<a hidden class=anchor aria-hidden=true href=#02--group-by--having--그룹별로-묶어-집계하기>#</a></h2><p>집계 함수를 <strong>그룹별로</strong> 쓰고 싶을 때가 있다. &ldquo;<strong>나라별</strong> 고객 수&rdquo;, &ldquo;<strong>장르별</strong> 평균 재생시간"처럼. 이때 **<code>GROUP BY</code>**를 쓴다.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>user_id</span><span class=p>,</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>rental</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>user_id</span><span class=p>;</span><span class=w>   </span><span class=c1>-- user_id가 같은 것끼리 묶어서 각 그룹의 개수
-</span></span></span></code></pre></div><p>기준 컬럼이 같은 행끼리 묶고, 그 그룹마다 집계 함수(COUNT/SUM/AVG/MAX/MIN)를 적용한다.</p><blockquote><p>💡 팁: <strong>GROUP BY의 기준 컬럼은 SELECT 절에도 반드시 넣는 게 원칙</strong>이다. SQLite는 안 넣어도 동작하는 경우가 있지만, 결과의 의미가 불명확해지므로 <strong>정석 문법을 지키자</strong>.</p></blockquote><h3 id=having--그룹에-조건-걸기>HAVING — 그룹에 조건 걸기<a hidden class=anchor aria-hidden=true href=#having--그룹에-조건-걸기>#</a></h3><p><code>WHERE</code>는 그룹으로 묶기 <strong>전</strong> 개별 행을 거르고, <code>HAVING</code>은 그룹으로 묶은 <strong>후</strong> 그룹을 거른다.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>user_id</span><span class=p>,</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>rental</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>user_id</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>HAVING</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=n>user_id</span><span class=p>)</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>1</span><span class=p>;</span><span class=w>   </span><span class=c1>-- 묶은 결과 중 개수가 1보다 큰 그룹만
-</span></span></span></code></pre></div><table><thead><tr><th>절</th><th>거르는 시점</th><th>대상</th></tr></thead><tbody><tr><td><strong>WHERE</strong></td><td>그룹화 <strong>전</strong></td><td>개별 행</td></tr><tr><td><strong>HAVING</strong></td><td>그룹화 <strong>후</strong></td><td>그룹(집계 결과)</td></tr></tbody></table><blockquote><p>💡 팁: <code>HAVING</code>은 <strong>혼자 못 쓴다.</strong> 반드시 <code>GROUP BY</code> 다음에 온다. &ldquo;집계한 결과에 조건"이 필요할 때 HAVING을 떠올리자.</p></blockquote><p>예를 들어 chinook에서 &ldquo;앨범이 5개 이상인 아티스트만"은 이렇게 쓴다(노션 실제 답지 — 지문은 &ldquo;5개 이상"이나 답지 SQL은 <code>> 5</code>로 작성돼 있다).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>ArtistId</span><span class=p>,</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>album_cnt</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>ArtistId</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>HAVING</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>5</span><span class=p>;</span><span class=w>
-</span></span></span></code></pre></div><hr><h2 id=03--join--흩어진-테이블을-연결하기>03 · JOIN — 흩어진 테이블을 연결하기<a hidden class=anchor aria-hidden=true href=#03--join--흩어진-테이블을-연결하기>#</a></h2><p>데이터는 보통 <strong>여러 테이블에 나뉘어</strong> 저장된다. 왜 나눌까?</p><ul><li><strong>중복·저장 낭비 방지</strong> (같은 정보를 여기저기 적지 않음)</li><li><strong>수정의 일관성</strong> (유저 정보 한 번만 고치면 됨)</li><li><strong>삭제·무결성 문제 방지</strong></li></ul><p>이렇게 잘 나누는 설계를 <strong>정규화</strong>라 한다(자세한 건 후반부). 그런데 나눠놓으면 <strong>합쳐서 봐야</strong> 할 때가 온다. 그게 <strong>JOIN</strong>이다.</p><h3 id=inner-join--교집합>INNER JOIN — 교집합<a hidden class=anchor aria-hidden=true href=#inner-join--교집합>#</a></h3><p>두 테이블에서 <strong>키가 서로 매칭되는 행만</strong> 가져온다(교집합).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>rental</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=k>user</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>ON</span><span class=w> </span><span class=k>user</span><span class=p>.</span><span class=n>id</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>rental</span><span class=p>.</span><span class=n>user_id</span><span class=p>;</span><span class=w>   </span><span class=c1>-- 두 테이블을 잇는 &#39;키&#39;를 ON으로 지정
-</span></span></span></code></pre></div><p>매칭되지 않는 행(예: 대여 기록이 없는 유저)은 결과에서 빠진다.</p><blockquote><p>💡 팁: <strong>ERD를 보고 어떤 키로 연결되는지 먼저 확인</strong>하라. 그리고 두 테이블에 <strong>같은 컬럼명</strong>(예: <code>Name</code>)이 있으면 <code>table.column</code>으로 명시해야 한다. 안 그러면 <code>ambiguous column name</code>(컬럼 이름이 모호함) 오류가 난다.</p></blockquote><p>3개 테이블도 연결할 수 있다. 단, <strong>직접 연결되는 키가 있어야</strong> 한다. 예를 들어 트랙→아티스트는 직접 연결이 안 돼서, <strong>앨범을 경유</strong>해야 한다(트랙→앨범→아티스트).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>tracks</span><span class=p>.</span><span class=n>Name</span><span class=p>,</span><span class=w> </span><span class=n>albums</span><span class=p>.</span><span class=n>Title</span><span class=p>,</span><span class=w> </span><span class=n>artists</span><span class=p>.</span><span class=n>Name</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=n>albums</span><span class=w>  </span><span class=k>ON</span><span class=w> </span><span class=n>tracks</span><span class=p>.</span><span class=n>AlbumId</span><span class=w>  </span><span class=o>=</span><span class=w> </span><span class=n>albums</span><span class=p>.</span><span class=n>AlbumId</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=n>artists</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>albums</span><span class=p>.</span><span class=n>ArtistId</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>artists</span><span class=p>.</span><span class=n>ArtistId</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>LIMIT</span><span class=w> </span><span class=mi>20</span><span class=p>;</span><span class=w>
-</span></span></span></code></pre></div><blockquote><p>💡 팁: 조인이 잘 됐는지 먼저 <code>SELECT *</code>로 확인한 뒤, 필요한 컬럼만 좁히는 게 실습 요령이다. 단, <strong>실무에서 <code>SELECT *</code>는 금지에 가깝다</strong>(컬럼 과다·성능·가독성). 확인용으로만 쓰자.</p></blockquote><h3 id=left-join--right-join--한쪽을-다-보존>LEFT JOIN / RIGHT JOIN — 한쪽을 다 보존<a hidden class=anchor aria-hidden=true href=#left-join--right-join--한쪽을-다-보존>#</a></h3><table><thead><tr><th>종류</th><th>결과</th></tr></thead><tbody><tr><td><strong>INNER JOIN</strong></td><td>양쪽 다 매칭되는 것만 (교집합)</td></tr><tr><td><strong>LEFT JOIN</strong></td><td><strong>왼쪽 테이블 전부</strong> + 매칭 안 되면 NULL</td></tr><tr><td><strong>RIGHT JOIN</strong></td><td><strong>오른쪽 테이블 전부</strong> + 매칭 안 되면 NULL</td></tr></tbody></table><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=k>user</span><span class=w> </span><span class=k>LEFT</span><span class=w>  </span><span class=k>JOIN</span><span class=w> </span><span class=n>rental</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=k>user</span><span class=p>.</span><span class=n>id</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>rental</span><span class=p>.</span><span class=n>user_id</span><span class=p>;</span><span class=w>  </span><span class=c1>-- user 전부
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=k>user</span><span class=w> </span><span class=k>RIGHT</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=n>rental</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=k>user</span><span class=p>.</span><span class=n>id</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>rental</span><span class=p>.</span><span class=n>user_id</span><span class=p>;</span><span class=w>  </span><span class=c1>-- rental 전부
-</span></span></span></code></pre></div><h3 id=null-필터링--관계-없는-행-찾기>NULL 필터링 — &ldquo;관계 없는 행&rdquo; 찾기<a hidden class=anchor aria-hidden=true href=#null-필터링--관계-없는-행-찾기>#</a></h3><p>LEFT JOIN으로 &ldquo;<strong>앨범이 하나도 없는 아티스트</strong>&rdquo; 같은 걸 찾을 수 있다. 매칭 실패 시 NULL이 되니, 그 NULL을 거르면 된다.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>artists</span><span class=p>.</span><span class=n>Name</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>artists</span><span class=w> </span><span class=k>LEFT</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=n>albums</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>artists</span><span class=p>.</span><span class=n>ArtistId</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>albums</span><span class=p>.</span><span class=n>ArtistId</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>albums</span><span class=p>.</span><span class=n>AlbumId</span><span class=w> </span><span class=k>IS</span><span class=w> </span><span class=k>NULL</span><span class=p>;</span><span class=w>   </span><span class=c1>-- 앨범이 없는(매칭 실패) 아티스트만
-</span></span></span></code></pre></div><blockquote><p>💡 팁: NULL은 <code>= NULL</code>로 못 거른다. 반드시 **<code>IS NULL</code> / <code>IS NOT NULL</code>**을 써야 한다. &ldquo;관계가 없는 행 찾기"의 핵심 기술이다.</p></blockquote><blockquote><p>💡 팁: <strong>RIGHT JOIN보다 LEFT JOIN을 권장</strong>한다. 두 테이블이면 <strong>테이블 순서만 바꾸면</strong> RIGHT 효과를 LEFT로 낼 수 있기 때문. 게다가 RIGHT JOIN은 <strong>SQLite 3.39.0 이상</strong>에서만 동작한다.</p></blockquote><blockquote><p>참고: 강사님은 <code>Customer.SupportRepId</code> 같은 컬럼은 이름만 봐선 의미를 알기 어렵다며, **데이터 정의서(Data Dictionary)**가 있으면 &ldquo;SupportRepId = 담당 직원 EmployeeId"를 추론 없이 확인할 수 있다고 강조했다.</p></blockquote><hr><h2 id=04--서브쿼리--쿼리-속의-쿼리>04 · 서브쿼리 — 쿼리 속의 쿼리<a hidden class=anchor aria-hidden=true href=#04--서브쿼리--쿼리-속의-쿼리>#</a></h2><p><strong>서브쿼리</strong>는 **&ldquo;하나의 쿼리 안에 포함된 또 하나의 쿼리&rdquo;**다. 메인쿼리가 서브쿼리를 품는 종속 관계다.</p><p>왜 쓸까? <strong>기준값을 모를 때</strong> 유용하다. 예를 들어 &ldquo;elice보다 급여 높은 사람"을 찾는데 elice 급여를 모른다면:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 급여 2500을 &#39;아는&#39; 상태라면:
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employee</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=err>급여</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>2500</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=c1>-- 급여를 &#39;몰라도&#39; 서브쿼리로:
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employee</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=err>급여</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=err>급여</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employee</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=err>이름</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;elice&#39;</span><span class=p>);</span><span class=w>
-</span></span></span></code></pre></div><p><strong>주의사항 4가지</strong> (슬라이드):</p><ol><li>서브쿼리는 <strong>괄호</strong> <code>()</code>와 함께 쓴다.</li><li>서브쿼리 안에서는 <strong>ORDER BY 사용 불가.</strong></li><li>서브쿼리는 <strong>연산자의 오른쪽</strong>에 둔다.</li><li>서브쿼리는 <strong>오직 SELECT문</strong>으로만 작성한다.</li></ol><blockquote><p>💡 핵심 학습법(강사님 반복 강조): <strong>&ldquo;분할 → 각각 실행 → 합치기&rdquo;.</strong> 메인쿼리와 서브쿼리를 먼저 텍스트로 구분하고, 바로 코딩하지 말고 <strong>구조부터 잡는다.</strong> 각각 따로 돌려보고 맞으면 합친다.</p></blockquote><h3 id=단일행-vs-다중행-서브쿼리>단일행 vs 다중행 서브쿼리<a hidden class=anchor aria-hidden=true href=#단일행-vs-다중행-서브쿼리>#</a></h3><p>서브쿼리가 <strong>몇 개의 값을 돌려주느냐</strong>로 나뉜다.</p><table><thead><tr><th>종류</th><th>반환</th><th>쓰는 연산자</th></tr></thead><tbody><tr><td><strong>단일행</strong></td><td>1개 값</td><td><code>=</code>, <code>&lt;></code>, <code>></code>, <code>>=</code>, <code>&lt;</code>, <code>&lt;=</code></td></tr><tr><td><strong>다중행</strong></td><td>2개 이상</td><td><code>IN</code>, <code>ANY</code>, <code>ALL</code></td></tr></tbody></table><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 단일행: 평균보다 긴 트랙 (AVG는 값 1개)
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>Name</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Milliseconds</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=k>AVG</span><span class=p>(</span><span class=n>Milliseconds</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=p>);</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=c1>-- 다중행: 부서별 최고 급여에 해당하는 사람 (여러 부서 = 여러 값)
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employee</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=err>급여</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=k>MAX</span><span class=p>(</span><span class=err>급여</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>employee</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=err>부서번호</span><span class=p>);</span><span class=w>
-</span></span></span></code></pre></div><blockquote><p>⚠️ <strong>SQLite 주의:</strong> SQLite는 <strong><code>ANY</code>/<code>ALL</code>을 지원하지 않는다.</strong> 대신 <strong>MIN/MAX로 대체</strong>한다.</p><ul><li><code>ALL</code>(모든 값보다 큼) → <strong>MAX보다 큼</strong></li><li><code>ANY</code>(하나라도보다 큼) → <strong>MIN보다 큼</strong></li></ul></blockquote><h3 id=위치에-따른-분류>위치에 따른 분류<a hidden class=anchor aria-hidden=true href=#위치에-따른-분류>#</a></h3><p>서브쿼리가 <strong>쿼리의 어디에 들어가느냐</strong>로도 나뉜다.</p><table><thead><tr><th>위치</th><th>이름</th><th>특징</th></tr></thead><tbody><tr><td><strong>WHERE 절</strong></td><td>가장 일반적</td><td>조건에 서브쿼리</td></tr><tr><td><strong>SELECT 절</strong></td><td>스칼라 서브쿼리</td><td>한 행만 반환, <strong>JOIN과 같은 결과</strong></td></tr><tr><td><strong>FROM 절</strong></td><td>파생 테이블</td><td>서브쿼리 결과를 표처럼 사용, <strong>별칭 필수</strong></td></tr><tr><td><strong>EXISTS</strong></td><td>상관 서브쿼리</td><td>존재 여부만 확인</td></tr></tbody></table><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 스칼라(SELECT절): 앨범별 트랙 수
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=n>Title</span><span class=p>,</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w> </span><span class=n>t</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>t</span><span class=p>.</span><span class=n>AlbumId</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=n>AlbumId</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>track_count</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=w> </span><span class=n>a</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=c1>-- FROM절 파생 테이블: 앨범별 트랙 수의 전체 평균 (별칭 sub 필수)
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>AVG</span><span class=p>(</span><span class=n>cnt</span><span class=p>)</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=p>(</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>SELECT</span><span class=w> </span><span class=n>AlbumId</span><span class=p>,</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>cnt</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w> </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>AlbumId</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>sub</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=c1>-- EXISTS: 트랙이 있는 앨범만
-</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>Title</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=w> </span><span class=n>a</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=k>EXISTS</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w> </span><span class=n>t</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>t</span><span class=p>.</span><span class=n>AlbumId</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=n>AlbumId</span><span class=p>);</span><span class=w>
-</span></span></span></code></pre></div><blockquote><p>💡 팁: <strong><code>NOT IN</code>은 NULL에 취약하다.</strong> 서브쿼리 결과에 NULL이 섞이면 아무것도 반환 안 할 수 있다. 그래서 &ldquo;구매 안 된 트랙 찾기&rdquo; 같은 건 <strong><code>NOT EXISTS</code>가 더 안전</strong>하다(NULL 안전).</p></blockquote><hr><h2 id=05--강사님이-강조한-포인트-정리>05 · 강사님이 강조한 포인트 (정리)<a hidden class=anchor aria-hidden=true href=#05--강사님이-강조한-포인트-정리>#</a></h2><ul><li><strong>서브쿼리 핵심 학습법: &ldquo;분할 → 각각 실행 → 합치기&rdquo;.</strong> 바로 코딩 말고 구조부터.</li><li><strong>GROUP BY 기준 컬럼은 SELECT에도 포함</strong>(정석). SQLite가 예외 동작해도 정석 준수.</li><li><strong>JOIN은 ERD/키 확인 후 작성.</strong> 컬럼명 겹치면 <code>table.column</code>, 동일 컬럼명은 <strong>별칭</strong>으로 구분.</li><li><strong><code>SELECT *</code>는 실무에서 금지에 가까움.</strong> 조인 확인용으로만.</li><li><strong>RIGHT JOIN보다 LEFT JOIN 권장</strong>(테이블 순서로 대체). RIGHT는 SQLite 3.39.0+ 필요.</li><li><strong>NULL 필터링은 <code>IS NULL</code>/<code>IS NOT NULL</code>.</strong> 비교 연산으로는 NULL을 못 거른다.</li><li><strong><code>NOT IN</code>은 NULL 취약 → <code>NOT EXISTS</code>가 안전.</strong></li><li><strong>SQLite는 ANY/ALL 미지원 → MIN/MAX로 대체.</strong></li><li><strong>COUNT는 NULL 제외</strong>, 용어 &ldquo;컬럼=필드&rdquo; 혼용 주의.</li><li><strong>분석가 로드맵:</strong> 기본문법 + 서브쿼리 + 조인 + <strong>윈도우 함수</strong>, 그리고 보고서·엑셀 역량도 중요.</li><li><strong>운영:</strong> 시험은 <strong>classicmodels DB</strong>로 진행 예고. 답지는 노션 업로드.</li></ul><hr><h1 id=-참고자료>📚 참고자료<a hidden class=anchor aria-hidden=true href=#-참고자료>#</a></h1><ul><li>Elice, 「01 SQL과 함수」 강의 자료 (슬라이드 33p)</li><li>Elice, 「02 다수의 테이블 제어하기」 강의 자료 (슬라이드 38p)</li><li>Elice, 「03 서브쿼리」 강의 자료 (슬라이드 23p)</li><li>실습 SQL 문제: <code>Day02_groupby_Join_student.sql</code>, <code>Day02_subquery_student.sql</code> (문제 주석만 수록, 정답은 비어 있음 → 실습 노트의 정답은 재구성본)</li><li>실습 DB: <code>chinook.db</code></li><li>라이브 수업 진행 기록 (1-3교시 / 4-6교시) — 강사: 황지영</li></ul><h2 id=마무리>마무리<a hidden class=anchor aria-hidden=true href=#마무리>#</a></h2><p>오늘은 SELECT 위에 <strong>집계·그룹·결합·중첩</strong>을 쌓은 날이다. <strong>집계 함수</strong>로 여러 행을 한 값으로 요약하고, <strong>GROUP BY/HAVING</strong>으로 그룹별로 집계·필터하고, <strong>JOIN</strong>으로 흩어진 테이블을 키로 잇고, <strong>서브쿼리</strong>로 모르는 기준까지 검색했다. 양이 많지만 관통하는 학습법은 하나다 — <strong>&ldquo;분할 → 각각 실행 → 합치기&rdquo;.</strong> 복잡한 쿼리일수록 한 번에 쓰려 하지 말고, 조각으로 나눠 각각 검증한 뒤 합치자. 그리고 SQLite의 특이점(ANY/ALL 미지원, RIGHT JOIN 버전 제약)과 NULL의 함정(<code>NOT IN</code> vs <code>NOT EXISTS</code>)을 꼭 기억하자.</p><h2 id=-연관-노트>🔗 연관 노트<a hidden class=anchor aria-hidden=true href=#-연관-노트>#</a></h2><ul><li><a href=/posts/%EC%8B%A4%EC%8A%B5/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/>6/9 SQL 함수와 서브쿼리 코드 노트</a> — 오늘 쿼리를 직접 실행해보는 실습 노트(핵심 문항은 강사 노션 답지 반영)</li><li><a href=/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/>6/8 SQL 시작하기</a> — DB 개념·SELECT·DML (이전 강의)</li></ul></div><footer class=post-footer><ul class=post-tags><li><a href=https://yw8837.github.io/tags/sql/>SQL</a></li><li><a href=https://yw8837.github.io/tags/%EC%A7%91%EA%B3%84%ED%95%A8%EC%88%98/>집계함수</a></li><li><a href=https://yw8837.github.io/tags/group-by/>GROUP BY</a></li><li><a href=https://yw8837.github.io/tags/having/>HAVING</a></li><li><a href=https://yw8837.github.io/tags/join/>JOIN</a></li><li><a href=https://yw8837.github.io/tags/%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/>서브쿼리</a></li><li><a href=https://yw8837.github.io/tags/sqlite/>SQLite</a></li><li><a href=https://yw8837.github.io/tags/chinook/>Chinook</a></li><li><a href=https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/>초보자</a></li></ul><nav class=paginav><a class=prev href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><span class=title>« 이전 페이지</span>
-<span>6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리 실습 쿼리 노트</span>
-</a><a class=next href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/><span class=title>다음 페이지 »</span>
-<span>6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2026 <a href=https://yw8837.github.io/>AI_6스터디</a></span> ·
-<a href=/posts/privacy-policy/>개인정보처리방침</a> · <a href=/posts/disclaimer/>서비스 이용 안내</a> ·
-<span>Powered by
-<a href="https://gohugo.io/?utm_source=papermod" rel=noopener target=_blank>Hugo</a> &
-<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top id=top-link class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey=g><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></a><div style=text-align:center;margin-top:8px;font-size:13px;color:#888><a href=/posts/privacy-policy/ style=color:#888>개인정보처리방침</a> · <a href=/posts/disclaimer/ style=color:#888>서비스 이용 안내</a></div><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var toplink=document.getElementById("top-link");window.onscroll=function(){const e=window.innerHeight;document.body.scrollTop>e||document.documentElement.scrollTop>e?toplink.classList.remove("hidden"):toplink.classList.add("hidden")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="복사";function s(){t.innerHTML="복사 완료!",setTimeout(()=>{t.innerHTML="복사"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기 | AI_6스터디</title>
+<meta name="keywords" content="SQL, 집계함수, GROUP BY, HAVING, JOIN, 서브쿼리, SQLite, chinook, 초보자">
+<meta name="description" content="이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다.">
+<meta name="author" content="yw8837">
+<link rel="canonical" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yw8837.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-EQR4094Q13');
+        }
+      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/">
+  <meta property="og:site_name" content="AI_6스터디">
+  <meta property="og:title" content="6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기">
+  <meta property="og:description" content="이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다.">
+  <meta property="og:locale" content="ko">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-06-09T09:00:00+09:00">
+    <meta property="article:modified_time" content="2026-06-09T09:00:00+09:00">
+    <meta property="article:tag" content="SQL">
+    <meta property="article:tag" content="집계함수">
+    <meta property="article:tag" content="GROUP BY">
+    <meta property="article:tag" content="HAVING">
+    <meta property="article:tag" content="JOIN">
+    <meta property="article:tag" content="서브쿼리">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기">
+  <meta name="twitter:description" content="이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://yw8837.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기",
+      "item": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기",
+  "name": "6\/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기",
+  "description": "이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다.",
+  "keywords": [
+    "SQL", "집계함수", "GROUP BY", "HAVING", "JOIN", "서브쿼리", "SQLite", "chinook", "초보자"
+  ],
+  "articleBody": " 어제(6/8) SELECT로 데이터를 골라봤다면, 오늘은 그 위에 네 개의 무기를 얹었다 — 집계함수(여러 행을 한 값으로 요약), GROUP BY(그룹별 집계), JOIN(여러 테이블 결합), 서브쿼리(쿼리 속 쿼리). 난도가 확 올라가는 날이라, 강사님은 **“분할 → 각각 실행 → 합치기”**라는 학습법을 계속 강조했다.\n📖 수업 내용 오늘의 흐름은 이렇다.\n집계 함수 — COUNT·SUM·AVG·MAX·MIN으로 여러 행을 한 값으로 요약 GROUP BY / HAVING — “그룹별로 묶어서” 집계하고, 그 결과에 조건 걸기 JOIN — 흩어진 여러 테이블을 키로 연결 (INNER·LEFT·RIGHT) 서브쿼리 — 쿼리 안에 또 다른 쿼리를 넣어 “모르는 기준\"으로 검색 📌 실습 정답 출처: 6/9 실습 파일(Day02_*)은 문제 주석만 있고 정답 칸이 비어 있었으나, 강사님 노션 답지(260609)에 핵심 문항(HAVING·JOIN·서브쿼리)의 실제 정답이 있어 그대로 반영했다. 노션에 없는 일부 문항만 슬라이드 문법 기반 재구성으로 표시했다(코드 노트에서 ✅ 실제 답지 / ⚠ 재구성으로 구분).\n01 · 집계 함수 — 여러 행을 한 값으로 지금까지 SELECT는 행을 그대로 여러 줄 보여줬다. **집계 함수(Aggregate Function)**는 여러 행을 하나의 요약값으로 만든다. 다섯 가지를 배웠다.\n함수 하는 일 비유 COUNT 개수 세기 “몇 명?” SUM 합계 “다 더하면?” AVG 평균 “평균은?” MAX 최댓값 “제일 큰 값?” MIN 최솟값 “제일 작은 값?” COUNT COUNT는 검색 결과의 데이터 개수를 센다. 한 가지 중요한 특징 — NULL(빈 값)은 세지 않는다.\nSELECT COUNT(id) FROM book; -- id 컬럼의 값 개수 (NULL 제외) SELECT COUNT(*) FROM book; -- 전체 행 개수 💡 팁: 전체 10행 중 어떤 컬럼에 NULL이 3개 있으면 COUNT(그 컬럼)은 7이 나온다. “왜 개수가 적지?” 싶으면 NULL을 의심하자. 그래서 행 전체를 셀 땐 COUNT(*)를 쓴다.\nSUM · AVG · MAX · MIN SELECT SUM(math) FROM grade; -- 합계 SELECT AVG(korean), AVG(english), AVG(math) FROM grade; -- 평균(여러 개 동시 가능) SELECT MAX(korean) FROM grade; -- 최댓값 SELECT MIN(english) FROM grade; -- 최솟값 AVG는 SUM/COUNT를 직접 안 써도 평균을 구해준다. MAX·MIN은 숫자뿐 아니라 문자형에도 쓸 수 있다(알파벳 순 최대/최소).\nLIMIT 다시 보기 LIMIT는 출력 개수를 제한한다. 인덱스 시작이 0이라는 점이 포인트다.\nSELECT * FROM book LIMIT 5; -- 앞에서 5개 SELECT * FROM book LIMIT 1, 5; -- 2번째부터 5개 (시작 인덱스 1 = 두 번째) 💡 팁: LIMIT는 DBMS마다 문법이 다르다. 예를 들어 Oracle은 문법이 상이하다. “환경마다 다를 수 있다\"를 항상 기억하자.\n02 · GROUP BY / HAVING — 그룹별로 묶어 집계하기 집계 함수를 그룹별로 쓰고 싶을 때가 있다. “나라별 고객 수”, “장르별 평균 재생시간\"처럼. 이때 **GROUP BY**를 쓴다.\nSELECT user_id, COUNT(*) FROM rental GROUP BY user_id; -- user_id가 같은 것끼리 묶어서 각 그룹의 개수 기준 컬럼이 같은 행끼리 묶고, 그 그룹마다 집계 함수(COUNT/SUM/AVG/MAX/MIN)를 적용한다.\n💡 팁: GROUP BY의 기준 컬럼은 SELECT 절에도 반드시 넣는 게 원칙이다. SQLite는 안 넣어도 동작하는 경우가 있지만, 결과의 의미가 불명확해지므로 정석 문법을 지키자.\nHAVING — 그룹에 조건 걸기 WHERE는 그룹으로 묶기 전 개별 행을 거르고, HAVING은 그룹으로 묶은 후 그룹을 거른다.\nSELECT user_id, COUNT(*) FROM rental GROUP BY user_id HAVING COUNT(user_id) \u003e 1; -- 묶은 결과 중 개수가 1보다 큰 그룹만 절 거르는 시점 대상 WHERE 그룹화 전 개별 행 HAVING 그룹화 후 그룹(집계 결과) 💡 팁: HAVING은 혼자 못 쓴다. 반드시 GROUP BY 다음에 온다. “집계한 결과에 조건\"이 필요할 때 HAVING을 떠올리자.\n예를 들어 chinook에서 “앨범이 5개 이상인 아티스트만\"은 이렇게 쓴다(노션 실제 답지 — 지문은 “5개 이상\"이나 답지 SQL은 \u003e 5로 작성돼 있다).\nSELECT ArtistId, COUNT(*) AS album_cnt FROM albums GROUP BY ArtistId HAVING COUNT(*) \u003e 5; 03 · JOIN — 흩어진 테이블을 연결하기 데이터는 보통 여러 테이블에 나뉘어 저장된다. 왜 나눌까?\n중복·저장 낭비 방지 (같은 정보를 여기저기 적지 않음) 수정의 일관성 (유저 정보 한 번만 고치면 됨) 삭제·무결성 문제 방지 이렇게 잘 나누는 설계를 정규화라 한다(자세한 건 후반부). 그런데 나눠놓으면 합쳐서 봐야 할 때가 온다. 그게 JOIN이다.\nINNER JOIN — 교집합 두 테이블에서 키가 서로 매칭되는 행만 가져온다(교집합).\nSELECT * FROM rental INNER JOIN user ON user.id = rental.user_id; -- 두 테이블을 잇는 '키'를 ON으로 지정 매칭되지 않는 행(예: 대여 기록이 없는 유저)은 결과에서 빠진다.\n💡 팁: ERD를 보고 어떤 키로 연결되는지 먼저 확인하라. 그리고 두 테이블에 같은 컬럼명(예: Name)이 있으면 table.column으로 명시해야 한다. 안 그러면 ambiguous column name(컬럼 이름이 모호함) 오류가 난다.\n3개 테이블도 연결할 수 있다. 단, 직접 연결되는 키가 있어야 한다. 예를 들어 트랙→아티스트는 직접 연결이 안 돼서, 앨범을 경유해야 한다(트랙→앨범→아티스트).\nSELECT tracks.Name, albums.Title, artists.Name FROM tracks INNER JOIN albums ON tracks.AlbumId = albums.AlbumId INNER JOIN artists ON albums.ArtistId = artists.ArtistId LIMIT 20; 💡 팁: 조인이 잘 됐는지 먼저 SELECT *로 확인한 뒤, 필요한 컬럼만 좁히는 게 실습 요령이다. 단, 실무에서 SELECT *는 금지에 가깝다(컬럼 과다·성능·가독성). 확인용으로만 쓰자.\nLEFT JOIN / RIGHT JOIN — 한쪽을 다 보존 종류 결과 INNER JOIN 양쪽 다 매칭되는 것만 (교집합) LEFT JOIN 왼쪽 테이블 전부 + 매칭 안 되면 NULL RIGHT JOIN 오른쪽 테이블 전부 + 매칭 안 되면 NULL SELECT * FROM user LEFT JOIN rental ON user.id = rental.user_id; -- user 전부 SELECT * FROM user RIGHT JOIN rental ON user.id = rental.user_id; -- rental 전부 NULL 필터링 — “관계 없는 행” 찾기 LEFT JOIN으로 “앨범이 하나도 없는 아티스트” 같은 걸 찾을 수 있다. 매칭 실패 시 NULL이 되니, 그 NULL을 거르면 된다.\nSELECT artists.Name FROM artists LEFT JOIN albums ON artists.ArtistId = albums.ArtistId WHERE albums.AlbumId IS NULL; -- 앨범이 없는(매칭 실패) 아티스트만 💡 팁: NULL은 = NULL로 못 거른다. 반드시 **IS NULL / IS NOT NULL**을 써야 한다. “관계가 없는 행 찾기\"의 핵심 기술이다.\n💡 팁: RIGHT JOIN보다 LEFT JOIN을 권장한다. 두 테이블이면 테이블 순서만 바꾸면 RIGHT 효과를 LEFT로 낼 수 있기 때문. 게다가 RIGHT JOIN은 SQLite 3.39.0 이상에서만 동작한다.\n참고: 강사님은 Customer.SupportRepId 같은 컬럼은 이름만 봐선 의미를 알기 어렵다며, **데이터 정의서(Data Dictionary)**가 있으면 “SupportRepId = 담당 직원 EmployeeId\"를 추론 없이 확인할 수 있다고 강조했다.\n04 · 서브쿼리 — 쿼리 속의 쿼리 서브쿼리는 **“하나의 쿼리 안에 포함된 또 하나의 쿼리”**다. 메인쿼리가 서브쿼리를 품는 종속 관계다.\n왜 쓸까? 기준값을 모를 때 유용하다. 예를 들어 “elice보다 급여 높은 사람\"을 찾는데 elice 급여를 모른다면:\n-- 급여 2500을 '아는' 상태라면: SELECT * FROM employee WHERE 급여 \u003e 2500; -- 급여를 '몰라도' 서브쿼리로: SELECT * FROM employee WHERE 급여 \u003e (SELECT 급여 FROM employee WHERE 이름 = 'elice'); 주의사항 4가지 (슬라이드):\n서브쿼리는 괄호 ()와 함께 쓴다. 서브쿼리 안에서는 ORDER BY 사용 불가. 서브쿼리는 연산자의 오른쪽에 둔다. 서브쿼리는 오직 SELECT문으로만 작성한다. 💡 핵심 학습법(강사님 반복 강조): “분할 → 각각 실행 → 합치기”. 메인쿼리와 서브쿼리를 먼저 텍스트로 구분하고, 바로 코딩하지 말고 구조부터 잡는다. 각각 따로 돌려보고 맞으면 합친다.\n단일행 vs 다중행 서브쿼리 서브쿼리가 몇 개의 값을 돌려주느냐로 나뉜다.\n종류 반환 쓰는 연산자 단일행 1개 값 =, \u003c\u003e, \u003e, \u003e=, \u003c, \u003c= 다중행 2개 이상 IN, ANY, ALL -- 단일행: 평균보다 긴 트랙 (AVG는 값 1개) SELECT Name FROM tracks WHERE Milliseconds \u003e (SELECT AVG(Milliseconds) FROM tracks); -- 다중행: 부서별 최고 급여에 해당하는 사람 (여러 부서 = 여러 값) SELECT * FROM employee WHERE 급여 IN (SELECT MAX(급여) FROM employee GROUP BY 부서번호); ⚠️ SQLite 주의: SQLite는 ANY/ALL을 지원하지 않는다. 대신 MIN/MAX로 대체한다.\nALL(모든 값보다 큼) → MAX보다 큼 ANY(하나라도보다 큼) → MIN보다 큼 위치에 따른 분류 서브쿼리가 쿼리의 어디에 들어가느냐로도 나뉜다.\n위치 이름 특징 WHERE 절 가장 일반적 조건에 서브쿼리 SELECT 절 스칼라 서브쿼리 한 행만 반환, JOIN과 같은 결과 FROM 절 파생 테이블 서브쿼리 결과를 표처럼 사용, 별칭 필수 EXISTS 상관 서브쿼리 존재 여부만 확인 -- 스칼라(SELECT절): 앨범별 트랙 수 SELECT a.Title, (SELECT COUNT(*) FROM tracks t WHERE t.AlbumId = a.AlbumId) AS track_count FROM albums a; -- FROM절 파생 테이블: 앨범별 트랙 수의 전체 평균 (별칭 sub 필수) SELECT AVG(cnt) FROM ( SELECT AlbumId, COUNT(*) AS cnt FROM tracks GROUP BY AlbumId ) AS sub; -- EXISTS: 트랙이 있는 앨범만 SELECT Title FROM albums a WHERE EXISTS (SELECT 1 FROM tracks t WHERE t.AlbumId = a.AlbumId); 💡 팁: NOT IN은 NULL에 취약하다. 서브쿼리 결과에 NULL이 섞이면 아무것도 반환 안 할 수 있다. 그래서 “구매 안 된 트랙 찾기” 같은 건 NOT EXISTS가 더 안전하다(NULL 안전).\n05 · 강사님이 강조한 포인트 (정리) 서브쿼리 핵심 학습법: “분할 → 각각 실행 → 합치기”. 바로 코딩 말고 구조부터. GROUP BY 기준 컬럼은 SELECT에도 포함(정석). SQLite가 예외 동작해도 정석 준수. JOIN은 ERD/키 확인 후 작성. 컬럼명 겹치면 table.column, 동일 컬럼명은 별칭으로 구분. SELECT *는 실무에서 금지에 가까움. 조인 확인용으로만. RIGHT JOIN보다 LEFT JOIN 권장(테이블 순서로 대체). RIGHT는 SQLite 3.39.0+ 필요. NULL 필터링은 IS NULL/IS NOT NULL. 비교 연산으로는 NULL을 못 거른다. NOT IN은 NULL 취약 → NOT EXISTS가 안전. SQLite는 ANY/ALL 미지원 → MIN/MAX로 대체. COUNT는 NULL 제외, 용어 “컬럼=필드” 혼용 주의. 분석가 로드맵: 기본문법 + 서브쿼리 + 조인 + 윈도우 함수, 그리고 보고서·엑셀 역량도 중요. 운영: 시험은 classicmodels DB로 진행 예고. 답지는 노션 업로드. 📚 참고자료 Elice, 「01 SQL과 함수」 강의 자료 (슬라이드 33p) Elice, 「02 다수의 테이블 제어하기」 강의 자료 (슬라이드 38p) Elice, 「03 서브쿼리」 강의 자료 (슬라이드 23p) 실습 SQL 문제: Day02_groupby_Join_student.sql, Day02_subquery_student.sql (문제 주석만 수록, 정답은 비어 있음 → 실습 노트의 정답은 재구성본) 실습 DB: chinook.db 라이브 수업 진행 기록 (1-3교시 / 4-6교시) — 강사: 황지영 마무리 오늘은 SELECT 위에 집계·그룹·결합·중첩을 쌓은 날이다. 집계 함수로 여러 행을 한 값으로 요약하고, GROUP BY/HAVING으로 그룹별로 집계·필터하고, JOIN으로 흩어진 테이블을 키로 잇고, 서브쿼리로 모르는 기준까지 검색했다. 양이 많지만 관통하는 학습법은 하나다 — “분할 → 각각 실행 → 합치기”. 복잡한 쿼리일수록 한 번에 쓰려 하지 말고, 조각으로 나눠 각각 검증한 뒤 합치자. 그리고 SQLite의 특이점(ANY/ALL 미지원, RIGHT JOIN 버전 제약)과 NULL의 함정(NOT IN vs NOT EXISTS)을 꼭 기억하자.\n🔗 연관 노트 6/9 SQL 함수와 서브쿼리 코드 노트 — 오늘 쿼리를 직접 실행해보는 실습 노트(핵심 문항은 강사 노션 답지 반영) 6/8 SQL 시작하기 — DB 개념·SELECT·DML (이전 강의) ",
+  "wordCount" : "1522",
+  "inLanguage": "en",
+  "datePublished": "2026-06-09T09:00:00+09:00",
+  "dateModified": "2026-06-09T09:00:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "yw8837"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI_6스터디",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yw8837.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+            <li>
+                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
+                    <span>📚 Year Study</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
+                    <span>강의 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
+                    <span>실습 정리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
+                    <span>프로젝트</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
+            <a href="/">홈</a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <a href="/posts/">Posts</a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+</nav>
+    <h1 class="post-title entry-hint-parent">
+      6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리로 데이터 깊게 다루기
+    </h1>
+    <div class="post-description">
+      이어드림 6기 SQL 함수와 서브쿼리 강의 정리. 집계함수와 LIMIT, GROUP BY/HAVING 그룹 집계, INNER/LEFT/RIGHT JOIN과 NULL 필터링, 단일행·다중행·스칼라·EXISTS 서브쿼리까지. SQLite 특이점(ANY/ALL→MIN/MAX)과 실무 팁을 비전공자 눈높이로 정리한다.
+    </div>
+    <div class="post-meta">
+
+<span title='2026-06-09 09:00:00 +0900 KST'>2026년 6월 9일</span>&nbsp;·&nbsp;<span>8 분</span>&nbsp;·&nbsp;<span>yw8837</span>
+
+</div>
+  </header> <details class="toc" >
+    <summary accesskey="c" title="(Alt + C)">
+        <span class="title">목차</span>
+    </summary>
+
+    <div class="inner"><ul>
+            <li>
+                <a href="#-%ec%88%98%ec%97%85-%eb%82%b4%ec%9a%a9" aria-label="📖 수업 내용">📖 수업 내용</a><ul>
+                    
+            <li>
+                <a href="#01--%ec%a7%91%ea%b3%84-%ed%95%a8%ec%88%98--%ec%97%ac%eb%9f%ac-%ed%96%89%ec%9d%84-%ed%95%9c-%ea%b0%92%ec%9c%bc%eb%a1%9c" aria-label="01 · 집계 함수 — 여러 행을 한 값으로">01 · 집계 함수 — 여러 행을 한 값으로</a><ul>
+                    
+            <li>
+                <a href="#count" aria-label="COUNT">COUNT</a></li>
+            <li>
+                <a href="#sum--avg--max--min" aria-label="SUM · AVG · MAX · MIN">SUM · AVG · MAX · MIN</a></li>
+            <li>
+                <a href="#limit-%eb%8b%a4%ec%8b%9c-%eb%b3%b4%ea%b8%b0" aria-label="LIMIT 다시 보기">LIMIT 다시 보기</a></li></ul>
+            </li>
+            <li>
+                <a href="#02--group-by--having--%ea%b7%b8%eb%a3%b9%eb%b3%84%eb%a1%9c-%eb%ac%b6%ec%96%b4-%ec%a7%91%ea%b3%84%ed%95%98%ea%b8%b0" aria-label="02 · GROUP BY / HAVING — 그룹별로 묶어 집계하기">02 · GROUP BY / HAVING — 그룹별로 묶어 집계하기</a><ul>
+                    
+            <li>
+                <a href="#having--%ea%b7%b8%eb%a3%b9%ec%97%90-%ec%a1%b0%ea%b1%b4-%ea%b1%b8%ea%b8%b0" aria-label="HAVING — 그룹에 조건 걸기">HAVING — 그룹에 조건 걸기</a></li></ul>
+            </li>
+            <li>
+                <a href="#03--join--%ed%9d%a9%ec%96%b4%ec%a7%84-%ed%85%8c%ec%9d%b4%eb%b8%94%ec%9d%84-%ec%97%b0%ea%b2%b0%ed%95%98%ea%b8%b0" aria-label="03 · JOIN — 흩어진 테이블을 연결하기">03 · JOIN — 흩어진 테이블을 연결하기</a><ul>
+                    
+            <li>
+                <a href="#inner-join--%ea%b5%90%ec%a7%91%ed%95%a9" aria-label="INNER JOIN — 교집합">INNER JOIN — 교집합</a></li>
+            <li>
+                <a href="#left-join--right-join--%ed%95%9c%ec%aa%bd%ec%9d%84-%eb%8b%a4-%eb%b3%b4%ec%a1%b4" aria-label="LEFT JOIN / RIGHT JOIN — 한쪽을 다 보존">LEFT JOIN / RIGHT JOIN — 한쪽을 다 보존</a></li>
+            <li>
+                <a href="#null-%ed%95%84%ed%84%b0%eb%a7%81--%ea%b4%80%ea%b3%84-%ec%97%86%eb%8a%94-%ed%96%89-%ec%b0%be%ea%b8%b0" aria-label="NULL 필터링 — &ldquo;관계 없는 행&rdquo; 찾기">NULL 필터링 — &ldquo;관계 없는 행&rdquo; 찾기</a></li></ul>
+            </li>
+            <li>
+                <a href="#04--%ec%84%9c%eb%b8%8c%ec%bf%bc%eb%a6%ac--%ec%bf%bc%eb%a6%ac-%ec%86%8d%ec%9d%98-%ec%bf%bc%eb%a6%ac" aria-label="04 · 서브쿼리 — 쿼리 속의 쿼리">04 · 서브쿼리 — 쿼리 속의 쿼리</a><ul>
+                    
+            <li>
+                <a href="#%eb%8b%a8%ec%9d%bc%ed%96%89-vs-%eb%8b%a4%ec%a4%91%ed%96%89-%ec%84%9c%eb%b8%8c%ec%bf%bc%eb%a6%ac" aria-label="단일행 vs 다중행 서브쿼리">단일행 vs 다중행 서브쿼리</a></li>
+            <li>
+                <a href="#%ec%9c%84%ec%b9%98%ec%97%90-%eb%94%b0%eb%a5%b8-%eb%b6%84%eb%a5%98" aria-label="위치에 따른 분류">위치에 따른 분류</a></li></ul>
+            </li>
+            <li>
+                <a href="#05--%ea%b0%95%ec%82%ac%eb%8b%98%ec%9d%b4-%ea%b0%95%ec%a1%b0%ed%95%9c-%ed%8f%ac%ec%9d%b8%ed%8a%b8-%ec%a0%95%eb%a6%ac" aria-label="05 · 강사님이 강조한 포인트 (정리)">05 · 강사님이 강조한 포인트 (정리)</a></li></ul>
+            </li>
+            <li>
+                <a href="#-%ec%b0%b8%ea%b3%a0%ec%9e%90%eb%a3%8c" aria-label="📚 참고자료">📚 참고자료</a><ul>
+                    
+            <li>
+                <a href="#%eb%a7%88%eb%ac%b4%eb%a6%ac" aria-label="마무리">마무리</a></li>
+            <li>
+                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
+            </li>
+        </ul>
+        </li>
+        </ul>
+    </div>
+</details>
+
+  <div class="post-content md-content"><blockquote>
+<p>어제(6/8) <strong>SELECT</strong>로 데이터를 골라봤다면, 오늘은 그 위에 네 개의 무기를 얹었다 — <strong>집계함수</strong>(여러 행을 한 값으로 요약), <strong>GROUP BY</strong>(그룹별 집계), <strong>JOIN</strong>(여러 테이블 결합), <strong>서브쿼리</strong>(쿼리 속 쿼리). 난도가 확 올라가는 날이라, 강사님은 **&ldquo;분할 → 각각 실행 → 합치기&rdquo;**라는 학습법을 계속 강조했다.</p>
+</blockquote>
+<h1 id="-수업-내용">📖 수업 내용<a hidden class="anchor" aria-hidden="true" href="#-수업-내용">#</a></h1>
+<p>오늘의 흐름은 이렇다.</p>
+<ol>
+<li><strong>집계 함수</strong> — COUNT·SUM·AVG·MAX·MIN으로 여러 행을 한 값으로 요약</li>
+<li><strong>GROUP BY / HAVING</strong> — &ldquo;그룹별로 묶어서&rdquo; 집계하고, 그 결과에 조건 걸기</li>
+<li><strong>JOIN</strong> — 흩어진 여러 테이블을 키로 연결 (INNER·LEFT·RIGHT)</li>
+<li><strong>서브쿼리</strong> — 쿼리 안에 또 다른 쿼리를 넣어 &ldquo;모르는 기준&quot;으로 검색</li>
+</ol>
+<blockquote>
+<p>📌 <strong>실습 정답 출처:</strong> 6/9 실습 파일(<code>Day02_*</code>)은 문제 주석만 있고 정답 칸이 비어 있었으나, <strong>강사님 노션 답지(260609)에 핵심 문항(HAVING·JOIN·서브쿼리)의 실제 정답</strong>이 있어 그대로 반영했다. 노션에 없는 일부 문항만 슬라이드 문법 기반 <strong>재구성</strong>으로 표시했다(코드 노트에서 <code>✅ 실제 답지</code> / <code>⚠ 재구성</code>으로 구분).</p>
+</blockquote>
+<hr>
+<h2 id="01--집계-함수--여러-행을-한-값으로">01 · 집계 함수 — 여러 행을 한 값으로<a hidden class="anchor" aria-hidden="true" href="#01--집계-함수--여러-행을-한-값으로">#</a></h2>
+<p>지금까지 SELECT는 행을 그대로 여러 줄 보여줬다. **집계 함수(Aggregate Function)**는 여러 행을 <strong>하나의 요약값</strong>으로 만든다. 다섯 가지를 배웠다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>함수</th>
+					<th>하는 일</th>
+					<th>비유</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>COUNT</strong></td>
+					<td>개수 세기</td>
+					<td>&ldquo;몇 명?&rdquo;</td>
+			</tr>
+			<tr>
+					<td><strong>SUM</strong></td>
+					<td>합계</td>
+					<td>&ldquo;다 더하면?&rdquo;</td>
+			</tr>
+			<tr>
+					<td><strong>AVG</strong></td>
+					<td>평균</td>
+					<td>&ldquo;평균은?&rdquo;</td>
+			</tr>
+			<tr>
+					<td><strong>MAX</strong></td>
+					<td>최댓값</td>
+					<td>&ldquo;제일 큰 값?&rdquo;</td>
+			</tr>
+			<tr>
+					<td><strong>MIN</strong></td>
+					<td>최솟값</td>
+					<td>&ldquo;제일 작은 값?&rdquo;</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="count">COUNT<a hidden class="anchor" aria-hidden="true" href="#count">#</a></h3>
+<p><code>COUNT</code>는 검색 결과의 <strong>데이터 개수</strong>를 센다. 한 가지 중요한 특징 — <strong>NULL(빈 값)은 세지 않는다.</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="p">;</span><span class="w">   </span><span class="c1">-- id 컬럼의 값 개수 (NULL 제외)
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="p">;</span><span class="w">   </span><span class="c1">-- 전체 행 개수
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: 전체 10행 중 어떤 컬럼에 NULL이 3개 있으면 <code>COUNT(그 컬럼)</code>은 <strong>7</strong>이 나온다. &ldquo;왜 개수가 적지?&rdquo; 싶으면 NULL을 의심하자. 그래서 행 전체를 셀 땐 <code>COUNT(*)</code>를 쓴다.</p>
+</blockquote>
+<h3 id="sum--avg--max--min">SUM · AVG · MAX · MIN<a hidden class="anchor" aria-hidden="true" href="#sum--avg--max--min">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="n">math</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">grade</span><span class="p">;</span><span class="w">                          </span><span class="c1">-- 합계
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">AVG</span><span class="p">(</span><span class="n">korean</span><span class="p">),</span><span class="w"> </span><span class="k">AVG</span><span class="p">(</span><span class="n">english</span><span class="p">),</span><span class="w"> </span><span class="k">AVG</span><span class="p">(</span><span class="n">math</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">grade</span><span class="p">;</span><span class="w"> </span><span class="c1">-- 평균(여러 개 동시 가능)
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">korean</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">grade</span><span class="p">;</span><span class="w">                        </span><span class="c1">-- 최댓값
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">MIN</span><span class="p">(</span><span class="n">english</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">grade</span><span class="p">;</span><span class="w">                       </span><span class="c1">-- 최솟값
+</span></span></span></code></pre></div><p><code>AVG</code>는 <code>SUM/COUNT</code>를 직접 안 써도 평균을 구해준다. <code>MAX</code>·<code>MIN</code>은 <strong>숫자뿐 아니라 문자형에도</strong> 쓸 수 있다(알파벳 순 최대/최소).</p>
+<h3 id="limit-다시-보기">LIMIT 다시 보기<a hidden class="anchor" aria-hidden="true" href="#limit-다시-보기">#</a></h3>
+<p><code>LIMIT</code>는 출력 개수를 제한한다. 인덱스 시작이 <strong>0</strong>이라는 점이 포인트다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">     </span><span class="c1">-- 앞에서 5개
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 2번째부터 5개 (시작 인덱스 1 = 두 번째)
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: <code>LIMIT</code>는 DBMS마다 문법이 다르다. 예를 들어 Oracle은 문법이 상이하다. &ldquo;환경마다 다를 수 있다&quot;를 항상 기억하자.</p>
+</blockquote>
+<hr>
+<h2 id="02--group-by--having--그룹별로-묶어-집계하기">02 · GROUP BY / HAVING — 그룹별로 묶어 집계하기<a hidden class="anchor" aria-hidden="true" href="#02--group-by--having--그룹별로-묶어-집계하기">#</a></h2>
+<p>집계 함수를 <strong>그룹별로</strong> 쓰고 싶을 때가 있다. &ldquo;<strong>나라별</strong> 고객 수&rdquo;, &ldquo;<strong>장르별</strong> 평균 재생시간&quot;처럼. 이때 **<code>GROUP BY</code>**를 쓴다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">rental</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">user_id</span><span class="p">;</span><span class="w">   </span><span class="c1">-- user_id가 같은 것끼리 묶어서 각 그룹의 개수
+</span></span></span></code></pre></div><p>기준 컬럼이 같은 행끼리 묶고, 그 그룹마다 집계 함수(COUNT/SUM/AVG/MAX/MIN)를 적용한다.</p>
+<blockquote>
+<p>💡 팁: <strong>GROUP BY의 기준 컬럼은 SELECT 절에도 반드시 넣는 게 원칙</strong>이다. SQLite는 안 넣어도 동작하는 경우가 있지만, 결과의 의미가 불명확해지므로 <strong>정석 문법을 지키자</strong>.</p>
+</blockquote>
+<h3 id="having--그룹에-조건-걸기">HAVING — 그룹에 조건 걸기<a hidden class="anchor" aria-hidden="true" href="#having--그룹에-조건-걸기">#</a></h3>
+<p><code>WHERE</code>는 그룹으로 묶기 <strong>전</strong> 개별 행을 거르고, <code>HAVING</code>은 그룹으로 묶은 <strong>후</strong> 그룹을 거른다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">user_id</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">rental</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">user_id</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">   </span><span class="c1">-- 묶은 결과 중 개수가 1보다 큰 그룹만
+</span></span></span></code></pre></div><table>
+	<thead>
+			<tr>
+					<th>절</th>
+					<th>거르는 시점</th>
+					<th>대상</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>WHERE</strong></td>
+					<td>그룹화 <strong>전</strong></td>
+					<td>개별 행</td>
+			</tr>
+			<tr>
+					<td><strong>HAVING</strong></td>
+					<td>그룹화 <strong>후</strong></td>
+					<td>그룹(집계 결과)</td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p>💡 팁: <code>HAVING</code>은 <strong>혼자 못 쓴다.</strong> 반드시 <code>GROUP BY</code> 다음에 온다. &ldquo;집계한 결과에 조건&quot;이 필요할 때 HAVING을 떠올리자.</p>
+</blockquote>
+<p>예를 들어 chinook에서 &ldquo;앨범이 5개 이상인 아티스트만&quot;은 이렇게 쓴다(노션 실제 답지 — 지문은 &ldquo;5개 이상&quot;이나 답지 SQL은 <code>&gt; 5</code>로 작성돼 있다).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">ArtistId</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">album_cnt</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">ArtistId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><hr>
+<h2 id="03--join--흩어진-테이블을-연결하기">03 · JOIN — 흩어진 테이블을 연결하기<a hidden class="anchor" aria-hidden="true" href="#03--join--흩어진-테이블을-연결하기">#</a></h2>
+<p>데이터는 보통 <strong>여러 테이블에 나뉘어</strong> 저장된다. 왜 나눌까?</p>
+<ul>
+<li><strong>중복·저장 낭비 방지</strong> (같은 정보를 여기저기 적지 않음)</li>
+<li><strong>수정의 일관성</strong> (유저 정보 한 번만 고치면 됨)</li>
+<li><strong>삭제·무결성 문제 방지</strong></li>
+</ul>
+<p>이렇게 잘 나누는 설계를 <strong>정규화</strong>라 한다(자세한 건 후반부). 그런데 나눠놓으면 <strong>합쳐서 봐야</strong> 할 때가 온다. 그게 <strong>JOIN</strong>이다.</p>
+<h3 id="inner-join--교집합">INNER JOIN — 교집합<a hidden class="anchor" aria-hidden="true" href="#inner-join--교집합">#</a></h3>
+<p>두 테이블에서 <strong>키가 서로 매칭되는 행만</strong> 가져온다(교집합).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">rental</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="k">user</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">ON</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rental</span><span class="p">.</span><span class="n">user_id</span><span class="p">;</span><span class="w">   </span><span class="c1">-- 두 테이블을 잇는 &#39;키&#39;를 ON으로 지정
+</span></span></span></code></pre></div><p>매칭되지 않는 행(예: 대여 기록이 없는 유저)은 결과에서 빠진다.</p>
+<blockquote>
+<p>💡 팁: <strong>ERD를 보고 어떤 키로 연결되는지 먼저 확인</strong>하라. 그리고 두 테이블에 <strong>같은 컬럼명</strong>(예: <code>Name</code>)이 있으면 <code>table.column</code>으로 명시해야 한다. 안 그러면 <code>ambiguous column name</code>(컬럼 이름이 모호함) 오류가 난다.</p>
+</blockquote>
+<p>3개 테이블도 연결할 수 있다. 단, <strong>직접 연결되는 키가 있어야</strong> 한다. 예를 들어 트랙→아티스트는 직접 연결이 안 돼서, <strong>앨범을 경유</strong>해야 한다(트랙→앨범→아티스트).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">tracks</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">albums</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="n">artists</span><span class="p">.</span><span class="n">Name</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">albums</span><span class="w">  </span><span class="k">ON</span><span class="w"> </span><span class="n">tracks</span><span class="p">.</span><span class="n">AlbumId</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">albums</span><span class="p">.</span><span class="n">AlbumId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">artists</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">albums</span><span class="p">.</span><span class="n">ArtistId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">artists</span><span class="p">.</span><span class="n">ArtistId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: 조인이 잘 됐는지 먼저 <code>SELECT *</code>로 확인한 뒤, 필요한 컬럼만 좁히는 게 실습 요령이다. 단, <strong>실무에서 <code>SELECT *</code>는 금지에 가깝다</strong>(컬럼 과다·성능·가독성). 확인용으로만 쓰자.</p>
+</blockquote>
+<h3 id="left-join--right-join--한쪽을-다-보존">LEFT JOIN / RIGHT JOIN — 한쪽을 다 보존<a hidden class="anchor" aria-hidden="true" href="#left-join--right-join--한쪽을-다-보존">#</a></h3>
+<table>
+	<thead>
+			<tr>
+					<th>종류</th>
+					<th>결과</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>INNER JOIN</strong></td>
+					<td>양쪽 다 매칭되는 것만 (교집합)</td>
+			</tr>
+			<tr>
+					<td><strong>LEFT JOIN</strong></td>
+					<td><strong>왼쪽 테이블 전부</strong> + 매칭 안 되면 NULL</td>
+			</tr>
+			<tr>
+					<td><strong>RIGHT JOIN</strong></td>
+					<td><strong>오른쪽 테이블 전부</strong> + 매칭 안 되면 NULL</td>
+			</tr>
+	</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">LEFT</span><span class="w">  </span><span class="k">JOIN</span><span class="w"> </span><span class="n">rental</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rental</span><span class="p">.</span><span class="n">user_id</span><span class="p">;</span><span class="w">  </span><span class="c1">-- user 전부
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">RIGHT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">rental</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rental</span><span class="p">.</span><span class="n">user_id</span><span class="p">;</span><span class="w">  </span><span class="c1">-- rental 전부
+</span></span></span></code></pre></div><h3 id="null-필터링--관계-없는-행-찾기">NULL 필터링 — &ldquo;관계 없는 행&rdquo; 찾기<a hidden class="anchor" aria-hidden="true" href="#null-필터링--관계-없는-행-찾기">#</a></h3>
+<p>LEFT JOIN으로 &ldquo;<strong>앨범이 하나도 없는 아티스트</strong>&rdquo; 같은 걸 찾을 수 있다. 매칭 실패 시 NULL이 되니, 그 NULL을 거르면 된다.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">artists</span><span class="p">.</span><span class="n">Name</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">artists</span><span class="w"> </span><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">albums</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">artists</span><span class="p">.</span><span class="n">ArtistId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">albums</span><span class="p">.</span><span class="n">ArtistId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">albums</span><span class="p">.</span><span class="n">AlbumId</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span><span class="w">   </span><span class="c1">-- 앨범이 없는(매칭 실패) 아티스트만
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: NULL은 <code>= NULL</code>로 못 거른다. 반드시 **<code>IS NULL</code> / <code>IS NOT NULL</code>**을 써야 한다. &ldquo;관계가 없는 행 찾기&quot;의 핵심 기술이다.</p>
+</blockquote>
+<blockquote>
+<p>💡 팁: <strong>RIGHT JOIN보다 LEFT JOIN을 권장</strong>한다. 두 테이블이면 <strong>테이블 순서만 바꾸면</strong> RIGHT 효과를 LEFT로 낼 수 있기 때문. 게다가 RIGHT JOIN은 <strong>SQLite 3.39.0 이상</strong>에서만 동작한다.</p>
+</blockquote>
+<blockquote>
+<p>참고: 강사님은 <code>Customer.SupportRepId</code> 같은 컬럼은 이름만 봐선 의미를 알기 어렵다며, **데이터 정의서(Data Dictionary)**가 있으면 &ldquo;SupportRepId = 담당 직원 EmployeeId&quot;를 추론 없이 확인할 수 있다고 강조했다.</p>
+</blockquote>
+<hr>
+<h2 id="04--서브쿼리--쿼리-속의-쿼리">04 · 서브쿼리 — 쿼리 속의 쿼리<a hidden class="anchor" aria-hidden="true" href="#04--서브쿼리--쿼리-속의-쿼리">#</a></h2>
+<p><strong>서브쿼리</strong>는 **&ldquo;하나의 쿼리 안에 포함된 또 하나의 쿼리&rdquo;**다. 메인쿼리가 서브쿼리를 품는 종속 관계다.</p>
+<p>왜 쓸까? <strong>기준값을 모를 때</strong> 유용하다. 예를 들어 &ldquo;elice보다 급여 높은 사람&quot;을 찾는데 elice 급여를 모른다면:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 급여 2500을 &#39;아는&#39; 상태라면:
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">employee</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="err">급여</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2500</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- 급여를 &#39;몰라도&#39; 서브쿼리로:
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">employee</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="err">급여</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="err">급여</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">employee</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="err">이름</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;elice&#39;</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p><strong>주의사항 4가지</strong> (슬라이드):</p>
+<ol>
+<li>서브쿼리는 <strong>괄호</strong> <code>()</code>와 함께 쓴다.</li>
+<li>서브쿼리 안에서는 <strong>ORDER BY 사용 불가.</strong></li>
+<li>서브쿼리는 <strong>연산자의 오른쪽</strong>에 둔다.</li>
+<li>서브쿼리는 <strong>오직 SELECT문</strong>으로만 작성한다.</li>
+</ol>
+<blockquote>
+<p>💡 핵심 학습법(강사님 반복 강조): <strong>&ldquo;분할 → 각각 실행 → 합치기&rdquo;.</strong> 메인쿼리와 서브쿼리를 먼저 텍스트로 구분하고, 바로 코딩하지 말고 <strong>구조부터 잡는다.</strong> 각각 따로 돌려보고 맞으면 합친다.</p>
+</blockquote>
+<h3 id="단일행-vs-다중행-서브쿼리">단일행 vs 다중행 서브쿼리<a hidden class="anchor" aria-hidden="true" href="#단일행-vs-다중행-서브쿼리">#</a></h3>
+<p>서브쿼리가 <strong>몇 개의 값을 돌려주느냐</strong>로 나뉜다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>종류</th>
+					<th>반환</th>
+					<th>쓰는 연산자</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>단일행</strong></td>
+					<td>1개 값</td>
+					<td><code>=</code>, <code>&lt;&gt;</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code></td>
+			</tr>
+			<tr>
+					<td><strong>다중행</strong></td>
+					<td>2개 이상</td>
+					<td><code>IN</code>, <code>ANY</code>, <code>ALL</code></td>
+			</tr>
+	</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 단일행: 평균보다 긴 트랙 (AVG는 값 1개)
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Milliseconds</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">AVG</span><span class="p">(</span><span class="n">Milliseconds</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- 다중행: 부서별 최고 급여에 해당하는 사람 (여러 부서 = 여러 값)
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">employee</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="err">급여</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="err">급여</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">employee</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="err">부서번호</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><blockquote>
+<p>⚠️ <strong>SQLite 주의:</strong> SQLite는 <strong><code>ANY</code>/<code>ALL</code>을 지원하지 않는다.</strong> 대신 <strong>MIN/MAX로 대체</strong>한다.</p>
+<ul>
+<li><code>ALL</code>(모든 값보다 큼) → <strong>MAX보다 큼</strong></li>
+<li><code>ANY</code>(하나라도보다 큼) → <strong>MIN보다 큼</strong></li>
+</ul>
+</blockquote>
+<h3 id="위치에-따른-분류">위치에 따른 분류<a hidden class="anchor" aria-hidden="true" href="#위치에-따른-분류">#</a></h3>
+<p>서브쿼리가 <strong>쿼리의 어디에 들어가느냐</strong>로도 나뉜다.</p>
+<table>
+	<thead>
+			<tr>
+					<th>위치</th>
+					<th>이름</th>
+					<th>특징</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>WHERE 절</strong></td>
+					<td>가장 일반적</td>
+					<td>조건에 서브쿼리</td>
+			</tr>
+			<tr>
+					<td><strong>SELECT 절</strong></td>
+					<td>스칼라 서브쿼리</td>
+					<td>한 행만 반환, <strong>JOIN과 같은 결과</strong></td>
+			</tr>
+			<tr>
+					<td><strong>FROM 절</strong></td>
+					<td>파생 테이블</td>
+					<td>서브쿼리 결과를 표처럼 사용, <strong>별칭 필수</strong></td>
+			</tr>
+			<tr>
+					<td><strong>EXISTS</strong></td>
+					<td>상관 서브쿼리</td>
+					<td>존재 여부만 확인</td>
+			</tr>
+	</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 스칼라(SELECT절): 앨범별 트랙 수
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">Title</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">AlbumId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">AlbumId</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">track_count</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- FROM절 파생 테이블: 앨범별 트랙 수의 전체 평균 (별칭 sub 필수)
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">AVG</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">AlbumId</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">cnt</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">AlbumId</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">sub</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- EXISTS: 트랙이 있는 앨범만
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="w"> </span><span class="n">a</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">AlbumId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">AlbumId</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><blockquote>
+<p>💡 팁: <strong><code>NOT IN</code>은 NULL에 취약하다.</strong> 서브쿼리 결과에 NULL이 섞이면 아무것도 반환 안 할 수 있다. 그래서 &ldquo;구매 안 된 트랙 찾기&rdquo; 같은 건 <strong><code>NOT EXISTS</code>가 더 안전</strong>하다(NULL 안전).</p>
+</blockquote>
+<hr>
+<h2 id="05--강사님이-강조한-포인트-정리">05 · 강사님이 강조한 포인트 (정리)<a hidden class="anchor" aria-hidden="true" href="#05--강사님이-강조한-포인트-정리">#</a></h2>
+<ul>
+<li><strong>서브쿼리 핵심 학습법: &ldquo;분할 → 각각 실행 → 합치기&rdquo;.</strong> 바로 코딩 말고 구조부터.</li>
+<li><strong>GROUP BY 기준 컬럼은 SELECT에도 포함</strong>(정석). SQLite가 예외 동작해도 정석 준수.</li>
+<li><strong>JOIN은 ERD/키 확인 후 작성.</strong> 컬럼명 겹치면 <code>table.column</code>, 동일 컬럼명은 <strong>별칭</strong>으로 구분.</li>
+<li><strong><code>SELECT *</code>는 실무에서 금지에 가까움.</strong> 조인 확인용으로만.</li>
+<li><strong>RIGHT JOIN보다 LEFT JOIN 권장</strong>(테이블 순서로 대체). RIGHT는 SQLite 3.39.0+ 필요.</li>
+<li><strong>NULL 필터링은 <code>IS NULL</code>/<code>IS NOT NULL</code>.</strong> 비교 연산으로는 NULL을 못 거른다.</li>
+<li><strong><code>NOT IN</code>은 NULL 취약 → <code>NOT EXISTS</code>가 안전.</strong></li>
+<li><strong>SQLite는 ANY/ALL 미지원 → MIN/MAX로 대체.</strong></li>
+<li><strong>COUNT는 NULL 제외</strong>, 용어 &ldquo;컬럼=필드&rdquo; 혼용 주의.</li>
+<li><strong>분석가 로드맵:</strong> 기본문법 + 서브쿼리 + 조인 + <strong>윈도우 함수</strong>, 그리고 보고서·엑셀 역량도 중요.</li>
+<li><strong>운영:</strong> 시험은 <strong>classicmodels DB</strong>로 진행 예고. 답지는 노션 업로드.</li>
+</ul>
+<hr>
+<h1 id="-참고자료">📚 참고자료<a hidden class="anchor" aria-hidden="true" href="#-참고자료">#</a></h1>
+<ul>
+<li>Elice, 「01 SQL과 함수」 강의 자료 (슬라이드 33p)</li>
+<li>Elice, 「02 다수의 테이블 제어하기」 강의 자료 (슬라이드 38p)</li>
+<li>Elice, 「03 서브쿼리」 강의 자료 (슬라이드 23p)</li>
+<li>실습 SQL 문제: <code>Day02_groupby_Join_student.sql</code>, <code>Day02_subquery_student.sql</code> (문제 주석만 수록, 정답은 비어 있음 → 실습 노트의 정답은 재구성본)</li>
+<li>실습 DB: <code>chinook.db</code></li>
+<li>라이브 수업 진행 기록 (1-3교시 / 4-6교시) — 강사: 황지영</li>
+</ul>
+<h2 id="마무리">마무리<a hidden class="anchor" aria-hidden="true" href="#마무리">#</a></h2>
+<p>오늘은 SELECT 위에 <strong>집계·그룹·결합·중첩</strong>을 쌓은 날이다. <strong>집계 함수</strong>로 여러 행을 한 값으로 요약하고, <strong>GROUP BY/HAVING</strong>으로 그룹별로 집계·필터하고, <strong>JOIN</strong>으로 흩어진 테이블을 키로 잇고, <strong>서브쿼리</strong>로 모르는 기준까지 검색했다. 양이 많지만 관통하는 학습법은 하나다 — <strong>&ldquo;분할 → 각각 실행 → 합치기&rdquo;.</strong> 복잡한 쿼리일수록 한 번에 쓰려 하지 말고, 조각으로 나눠 각각 검증한 뒤 합치자. 그리고 SQLite의 특이점(ANY/ALL 미지원, RIGHT JOIN 버전 제약)과 NULL의 함정(<code>NOT IN</code> vs <code>NOT EXISTS</code>)을 꼭 기억하자.</p>
+<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
+<ul>
+<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">6/9 SQL 함수와 서브쿼리 코드 노트</a> — 오늘 쿼리를 직접 실행해보는 실습 노트(핵심 문항은 강사 노션 답지 반영)</li>
+<li><a href="/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/">6/8 SQL 시작하기</a> — DB 개념·SELECT·DML (이전 강의)</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://yw8837.github.io/tags/sql/">SQL</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%A7%91%EA%B3%84%ED%95%A8%EC%88%98/">집계함수</a></li>
+      <li><a href="https://yw8837.github.io/tags/group-by/">GROUP BY</a></li>
+      <li><a href="https://yw8837.github.io/tags/having/">HAVING</a></li>
+      <li><a href="https://yw8837.github.io/tags/join/">JOIN</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC/">서브쿼리</a></li>
+      <li><a href="https://yw8837.github.io/tags/sqlite/">SQLite</a></li>
+      <li><a href="https://yw8837.github.io/tags/chinook/">Chinook</a></li>
+      <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-09-sql-%ED%95%A8%EC%88%98%EC%99%80-%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
+    <span class="title">« 이전 페이지</span>
+    <span>6/9 SQL 함수와 서브쿼리 — 집계·GROUP BY·JOIN·서브쿼리 실습 쿼리 노트</span>
+  </a>
+  <a class="next" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/">
+    <span class="title">다음 페이지 »</span>
+    <span>6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
+        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    window.onscroll = function () {
+        const scrollThreshold = window.innerHeight;
+        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
+            toplink.classList.remove("hidden");
+        } else {
+            toplink.classList.add("hidden");
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '복사';
+
+        function copyingDone() {
+            copybutton.innerHTML = '복사 완료!';
+            setTimeout(() => {
+                copybutton.innerHTML = '복사';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
