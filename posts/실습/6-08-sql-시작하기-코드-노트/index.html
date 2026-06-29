@@ -1,779 +1,195 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트 | AI_6스터디</title>
-<meta name="keywords" content="SQL, 실습, SELECT, DML, chinook, SQLite, WHERE, LIKE, ORDER BY">
-<meta name="description" content="6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다.">
-<meta name="author" content="yw8837">
-<link rel="canonical" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://yw8837.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-                color-scheme: dark;
-            }
-
-            .list {
-                background: var(--theme);
-            }
-
-            .toc {
-                background: var(--entry);
-            }
-        }
-
-    </style>
-</noscript>
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else if (localStorage.getItem("pref-theme") === "light") {
-       document.querySelector("html").dataset.theme = 'light';
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else {
-        document.querySelector("html").dataset.theme = 'light';
-    }
-
-</script>
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
-      <script>
-        var doNotTrack = false;
-        if ( true ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
-        }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-EQR4094Q13');
-        }
-      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-  <meta property="og:site_name" content="AI_6스터디">
-  <meta property="og:title" content="6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트">
-  <meta property="og:description" content="6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다.">
-  <meta property="og:locale" content="ko">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2026-06-08T09:00:00+09:00">
-    <meta property="article:modified_time" content="2026-06-08T09:00:00+09:00">
-    <meta property="article:tag" content="SQL">
-    <meta property="article:tag" content="실습">
-    <meta property="article:tag" content="SELECT">
-    <meta property="article:tag" content="DML">
-    <meta property="article:tag" content="Chinook">
-    <meta property="article:tag" content="SQLite">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트">
-  <meta name="twitter:description" content="6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다.">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://yw8837.github.io/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트",
-      "item": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트",
-  "name": "6\/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트",
-  "description": "6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다.",
-  "keywords": [
-    "SQL", "실습", "SELECT", "DML", "chinook", "SQLite", "WHERE", "LIKE", "ORDER BY"
-  ],
-  "articleBody": " 🧪 이 노트는 실습용 쿼리 모음이다. 6/8 쿼리는 강사님 정답 파일(Day01_lecture.sql, Day01_dml_lecture.sql)에서 그대로 가져온 것이라 안심하고 따라 해도 된다(6/9 노트와 달리 재구성이 아니다). 실습 DB는 chinook(SELECT용), DML은 직접 만든 book 테이블에서 진행한다.\n⚠️ 한 줄 주의: 이 노트의 쿼리·예시는 학습용 정리이며, 실행 결과는 데이터 버전에 따라 조금씩 다를 수 있다.\n🧪 실습 노트 순서대로 따라 하면 된다. 위에서 아래로 실행해야 의존성이 끊기지 않는다(특히 6번 book 테이블은 생성→시드→DML 순서 필수).\nSELECT / FROM · 컬럼 선택 · LIMIT DISTINCT (중복 제거) WHERE + 비교 연산자 복합 조건 (AND / OR / NOT) 기타 연산자 (BETWEEN / IN / NOT IN) LIKE (패턴 검색) ORDER BY (정렬) DML 준비 — book 테이블 생성 + 시드 INSERT / UPDATE / DELETE 01 · SELECT / FROM · 컬럼 선택 · LIMIT ① 한 줄 설명 — 가장 기본. 어떤 컬럼을(SELECT) 어느 테이블에서(FROM) 가져올지 지정한다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. albums 테이블에서 앨범 제목(Title)만 모두 보여주세요. SELECT Title FROM albums; -- 문제 2. artists 테이블의 모든 정보를 보여주세요. SELECT * FROM artists; -- 문제 3. tracks 테이블의 모든 컬럼을 앞 10건만 보여주세요. SELECT * FROM tracks LIMIT 10; -- 문제 4. tracks 테이블에서 곡 이름(Name)과 단가(UnitPrice)만 보여주세요. (앞 10건) SELECT Name, UnitPrice FROM tracks LIMIT 10; ③ 출력 결과 — 문제 1은 앨범 제목 한 컬럼, 문제 2는 artists 전체 컬럼, 문제 3·4는 10행만 출력된다.\n④ 한 줄씩 뜯어보기\nSELECT Title : Title 컬럼만 고른다. 여러 개면 Name, UnitPrice처럼 콤마로. SELECT * : *는 모든 컬럼. FROM albums : 데이터를 가져올 테이블. LIMIT 10 : 앞 10건만. 데이터가 많을 때 미리보기용. ⑤ 💡 팁 — 큰 테이블을 통째로 SELECT *하면 느리다. 처음엔 LIMIT 10으로 구조를 확인하고 시작하자.\n02 · DISTINCT (중복 제거) ① 한 줄 설명 — 뒤에 오는 컬럼의 중복을 제거하고 보여준다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. customers 테이블에서 Country를 중복 없이. SELECT DISTINCT Country FROM customers; -- 문제 2. tracks 테이블에서 UnitPrice의 종류를 중복 없이. SELECT DISTINCT UnitPrice FROM tracks; -- 문제 3. City와 Country를 함께 중복 없이. SELECT DISTINCT City, Country FROM customers; ③ 출력 결과 — 문제 1은 고객 국가의 “종류\"만, 문제 3은 (City, Country) 조합의 종류만 출력된다.\n④ 한 줄씩 뜯어보기\nDISTINCT Country : Country 값에서 중복을 없앤다. DISTINCT City, Country : 두 컬럼 조합 기준으로 중복 제거. ⑤ 💡 팁 — 컬럼이 2개 이상이면 “조합” 기준이라, 같은 도시여도 나라가 다르면 별개로 본다. “나라 종류 수만 알고 싶다\"면 컬럼 하나만 DISTINCT 하자.\n03 · WHERE + 비교 연산자 ① 한 줄 설명 — 조건에 맞는 행만 걸러낸다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. Country가 'USA'인 고객. SELECT * FROM customers WHERE Country = 'USA'; -- 문제 2. UnitPrice가 0.99 초과인 곡. (앞 10건) SELECT * FROM tracks WHERE UnitPrice \u003e 0.99 LIMIT 10; -- 문제 3. invoices에서 Total이 10 이상인 건. SELECT * FROM invoices WHERE Total \u003e= 10; ③ 출력 결과 — 각 조건을 만족하는 행만 출력된다.\n④ 한 줄씩 뜯어보기\nWHERE Country = 'USA' : 문자열은 작은따옴표로 감싼다. WHERE UnitPrice \u003e 0.99 : 숫자는 따옴표 없이. \u003e는 초과, \u003e=는 이상. ⑤ 💡 팁 — = 하나는 “같다”(비교)다. 헷갈려서 따옴표를 빼면 컬럼/문자열 오류가 난다. 문자열 비교는 항상 따옴표 확인.\n04 · 복합 조건 (AND / OR / NOT) ① 한 줄 설명 — 여러 조건을 AND·OR·NOT으로 묶는다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. Country가 'USA' 그리고 State가 'CA'인 고객. SELECT * FROM customers WHERE Country = 'USA' AND State = 'CA'; -- 문제 2. Country가 'USA' 이거나 'Canada'인 고객. SELECT * FROM customers WHERE Country = 'USA' OR Country = 'Canada'; -- 문제 3. Country가 'USA'가 아닌 고객. SELECT * FROM customers WHERE NOT Country = 'USA'; -- (WHERE Country != 'USA' 와 동일) ③ 출력 결과 — 문제 1은 두 조건 모두 만족, 문제 2는 둘 중 하나, 문제 3은 USA가 아닌 고객.\n④ 한 줄씩 뜯어보기\nAND : 둘 다 만족해야 통과. OR : 하나만 만족해도 통과. NOT Country = 'USA' : 조건의 반대. Country != 'USA'와 같다. ⑤ 💡 팁 — 같은 컬럼을 여러 값과 OR로 길게 나열할 거면, 다음 절의 IN(...)이 훨씬 깔끔하다.\n05 · 기타 연산자 (BETWEEN / IN / NOT IN) ① 한 줄 설명 — 범위(BETWEEN)와 목록(IN/NOT IN)으로 조건을 건다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. Total이 5~10 사이(포함)인 인보이스. SELECT * FROM invoices WHERE Total BETWEEN 5 AND 10; -- 문제 2. 미국, 캐나다, 브라질 고객. SELECT * FROM customers WHERE Country IN ('USA', 'Canada', 'Brazil'); -- 문제 3. 위 세 나라를 제외한 나머지. SELECT * FROM customers WHERE Country NOT IN ('USA', 'Canada', 'Brazil'); ③ 출력 결과 — 문제 1은 5~10 범위(경계 포함), 문제 2는 세 나라, 문제 3은 그 외 나라.\n④ 한 줄씩 뜯어보기\nBETWEEN 5 AND 10 : 5와 10을 포함하는 범위. IN ('USA', 'Canada', 'Brazil') : 목록 중 하나라도 일치. NOT IN (...) : 목록에 없는 것. ⑤ 💡 팁 — BETWEEN은 경계값을 포함한다. “5 초과 10 미만\"이 필요하면 Total \u003e 5 AND Total \u003c 10처럼 직접 써야 한다.\n06 · LIKE (패턴 검색) ① 한 줄 설명 — 특정 문자가 포함된 문자열을 와일드카드 %로 찾는다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. 제목이 'Rock'으로 시작하는 앨범. SELECT * FROM albums WHERE Title LIKE 'Rock%'; -- 문제 2. 제목이 'Live'로 끝나는 앨범. SELECT * FROM albums WHERE Title LIKE '%Live'; -- 문제 3. 곡 이름에 'Love'가 들어간 곡. (앞 10건) SELECT * FROM tracks WHERE Name LIKE '%Love%' LIMIT 10; ③ 출력 결과 — ‘Rock…’ 시작 앨범, ‘…Live’ 끝 앨범, ‘Love’ 포함 곡(10건).\n④ 한 줄씩 뜯어보기\n'Rock%' : Rock으로 시작(% = 뒤에 아무거나). '%Live' : Live로 끝남(% = 앞에 아무거나). '%Love%' : Love 포함(앞뒤 아무거나). ⑤ 💡 팁 — %는 “임의의 문자열\"이다. 한 글자만 매칭하는 _(언더스코어)도 있다. SQLite의 LIKE는 기본적으로 대소문자를 구분하지 않는다.\n07 · ORDER BY (정렬) ① 한 줄 설명 — 결과를 오름차순(ASC)·내림차순(DESC)으로 정렬한다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. tracks를 UnitPrice 내림차순으로. (앞 10건) SELECT Name, UnitPrice FROM tracks ORDER BY UnitPrice DESC LIMIT 10; -- 문제 2. 결제 금액이 가장 큰 인보이스 5건. SELECT * FROM invoices ORDER BY Total DESC LIMIT 5; -- 문제 3. 앨범 제목을 알파벳 오름차순으로. (앞 10건) SELECT Title FROM albums ORDER BY Title ASC LIMIT 10; ③ 출력 결과 — 단가 높은 순 10곡, 결제액 큰 순 5건, 제목 알파벳 순 10개.\n④ 한 줄씩 뜯어보기\nORDER BY UnitPrice DESC : UnitPrice 기준 내림차순(큰 값부터). ORDER BY Title ASC : Title 기준 오름차순(작은 값/A부터). ASC는 기본값이라 생략 가능. ⑤ 💡 팁 — ORDER BY ... DESC + LIMIT n 조합이 “상위 n개” 뽑는 단골 패턴이다(예: 매출 TOP 5). 여기 DESC는 정렬용으로, 6/8 강의의 DESC 테이블명(구조 보기)과 다른 기능이다.\n08 · DML 준비 — book 테이블 생성 + 시드 ① 한 줄 설명 — chinook를 건드리지 않기 위해, DML 연습용 book 테이블을 새로 만들고 데이터를 채운다.\n② 코드 (출처: Day01_dml_lecture.sql, 원문 그대로)\n-- 이미 있으면 지우고 새로 만들어, 몇 번을 실행해도 에러가 안 나게 함 DROP TABLE IF EXISTS book; CREATE TABLE book ( id INTEGER PRIMARY KEY, title TEXT, category TEXT, price REAL, -- 단위: £ (사이트 값, 무작위라 의미는 없음) rating INTEGER, -- 1~5 (연습용) stock INTEGER -- 재고 수량 (연습용) ); INSERT INTO book (id, title, category, price, rating, stock) VALUES (1, 'A Light in the Attic', 'Poetry', 51.77, 3, 22), (2, 'Tipping the Velvet', 'Historical Fiction', 53.74, 1, 20), (3, 'Soumission', 'Fiction', 50.10, 1, 20), (4, 'Sharp Objects', 'Mystery', 47.82, 4, 20), (5, 'Sapiens: A Brief History of Humankind','History', 54.23, 5, 20), (6, 'The Requiem Red', 'Young Adult', 22.65, 1, 19), (7, 'The Dirty Little Secrets of Getting Your Dream Job', 'Business', 33.34, 4, 19), (8, 'The Black Maria', 'Poetry', 52.15, 1, 19), (9, 'Starving Hearts', 'Fiction', 13.99, 2, 18), (10, 'Shakespeare''s Sonnets', 'Poetry', 20.66, 4, 18), (11, 'Scott Pilgrim''s Precious Little Life', 'Sequential Art', 52.29, 5, 16), (12, 'Rip it Up and Start Again', 'Music', 35.02, 5, 15); -- 시드가 잘 들어갔는지 확인 SELECT * FROM book; ③ 출력 결과 — 마지막 SELECT * FROM book;에서 12개 행이 모두 출력되면 성공이다.\n④ 한 줄씩 뜯어보기\nDROP TABLE IF EXISTS book : book이 있으면 지운다. 덕분에 몇 번 실행해도 에러가 안 난다(재실행 가능 패턴). CREATE TABLE book (...) : 컬럼과 자료형(INTEGER/TEXT/REAL)을 정의. id INTEGER PRIMARY KEY는 각 행을 구분하는 기본 키. INSERT INTO book ... VALUES (...), (...) : 여러 행을 한 번에 삽입. 'Shakespeare''s Sonnets' : 제목 속 작은따옴표는 **두 번('')**으로 이스케이프. ⑤ 💡 팁 — DROP TABLE IF EXISTS → CREATE → INSERT 순서를 한 스크립트에 묶어두면, 데이터가 꼬여도 위에서부터 다시 실행해 언제든 초기 상태로 복구할 수 있다.\n데이터 출처: 제목·가격은 https://books.toscrape.com/ 의 값, 카테고리·평점·재고는 연습용 임의값이다.\n09 · INSERT / UPDATE / DELETE ① 한 줄 설명 — book 테이블에 행을 추가(INSERT)·수정(UPDATE)·삭제(DELETE)한다. (8번을 먼저 실행해 book이 있어야 한다.)\n② 코드 (출처: Day01_dml_lecture.sql)\n-- 8. INSERT -------------------------------------------------- -- 문제 1. 신간 'It''s Only the Himalayas' (Travel, £45.17, 평점 2, 재고 19) 추가. INSERT INTO book (id, title, category, price, rating, stock) VALUES (13, 'It''s Only the Himalayas', 'Travel', 45.17, 2, 19); -- 문제 2. 컬럼명 생략 방식으로 'Set Me Free' (Young Adult, £17.46, 평점 5, 재고 19) 추가. INSERT INTO book VALUES (14, 'Set Me Free', 'Young Adult', 17.46, 5, 19); SELECT * FROM book; -- 9. UPDATE -------------------------------------------------- -- 문제 1. 'Soumission' 가격을 50.10 -\u003e 39.99 로 변경. UPDATE book SET price = 39.99 WHERE title = 'Soumission'; -- 문제 2. Poetry 책들의 stock 을 기존 값 + 5 로 변경. UPDATE book SET stock = stock + 5 WHERE category = 'Poetry'; SELECT * FROM book; -- 10. DELETE ------------------------------------------------- -- 문제 1. 평점이 1점인 책들을 모두 삭제. DELETE FROM book WHERE rating = 1; -- 문제 2. 재고(stock)가 16권 미만인 책 삭제. DELETE FROM book WHERE stock \u003c 16; SELECT * FROM book; -- ★ 주의: UPDATE / DELETE 에서 WHERE 를 빼면 전체 행이 수정·삭제됩니다. -- 예) DELETE FROM book; -\u003e book 전체 삭제 ③ 출력 결과 — 각 SELECT * FROM book;에서 변화가 확인된다. INSERT 후 14행, UPDATE 후 Soumission 가격·Poetry 재고 변경, DELETE 후 평점 1·재고 16미만 책이 사라진다.\n④ 한 줄씩 뜯어보기\nINSERT INTO book (컬럼...) VALUES (값...) : 컬럼을 명시한 삽입. INSERT INTO book VALUES (...) : 컬럼 생략 → 테이블 정의 순서대로 값이 들어간다. UPDATE book SET price = 39.99 WHERE title = 'Soumission' : 조건에 맞는 행의 price만 변경. SET stock = stock + 5 : 기존 값 기반 연산도 가능. DELETE FROM book WHERE rating = 1 : 조건에 맞는 행 삭제. ⑤ 💡 팁 — UPDATE·DELETE는 반드시 WHERE를 확인하라. WHERE를 빼면 전체 행이 대상이 된다(DELETE FROM book; = 전부 삭제). 실무에서 가장 위험한 실수다.\n참고: 판서 기록의 과제 표현(“재고=15 삭제”)과 정답 SQL의 WHERE stock \u003c 16(재고 16 미만)에 표현 차이가 있다. 본 노트는 **정답 파일 기준 stock \u003c 16**을 그대로 따랐다 [원문 확인 필요].\n10 · (보너스) book 테이블로 SELECT 연산자 복습 ① 한 줄 설명 — 앞서 chinook으로 배운 연산자들을 book 테이블로 한 번 더 복습한다.\n② 코드 (출처: Day01_dml_lecture.sql 하단 보너스)\n-- 카테고리 종류만 보기 (DISTINCT) SELECT DISTINCT category FROM book; -- 가격이 40 이상인 책 (비교 연산자) SELECT * FROM book WHERE price \u003e= 40; -- 제목에 'the' 가 들어간 책 (LIKE, 대소문자 무시됨) SELECT * FROM book WHERE title LIKE '%the%'; -- 가격이 비싼 순으로 정렬 (ORDER BY) SELECT title, price FROM book ORDER BY price DESC; ③ 출력 결과 — 카테고리 종류, 40 이상 책, ’the’ 포함 책, 가격 내림차순 목록.\n④ 한 줄씩 뜯어보기\n위 SELECT 연산자(DISTINCT/WHERE/LIKE/ORDER BY)를 그대로 book에 적용한 것. 단, DELETE 이후라 남은 데이터 기준으로 결과가 나온다. ⑤ 💡 팁 — 같은 연산자도 테이블만 바꾸면 똑같이 동작한다. 작은 테이블(book)로 결과를 눈으로 확인하면 동작이 더 명확하게 보인다.\n📚 보충 자료 강사 정답 SQL: Day01_lecture.sql(SELECT), Day01_dml_lecture.sql(DML) — 본 노트 쿼리의 원본 실습 DB: chinook.db(SQLite Tutorial 샘플) book 데이터 출처: https://books.toscrape.com/ (제목·가격) + 연습용 임의값(카테고리·평점·재고) SQLite 공식 문서 — https://www.sqlite.org/lang.html 다시 강조: 이 노트의 쿼리·예시는 학습용 정리다. 6/8 쿼리는 강사 정답 파일에서 그대로 가져왔으나, 실행 결과는 DB 데이터 버전에 따라 미세하게 다를 수 있다.\n마무리 오늘 실습의 뼈대는 두 가지다. (1) SELECT로 골라보기 — 컬럼 선택, DISTINCT, WHERE·복합조건·BETWEEN/IN, LIKE, ORDER BY를 chinook으로 익혔다. (2) DML로 바꾸기 — 안전을 위해 직접 만든 book 테이블에서 INSERT·UPDATE·DELETE를 연습했다. 핵심 습관 한 가지만 챙기자 — UPDATE·DELETE 실행 전 WHERE를 꼭 확인. 그리고 스크립트는 항상 위에서부터 순서대로 실행하자.\n🔗 연관 노트 6/8 SQL 시작하기 강의 정리 — 오늘 쿼리의 개념 정리 ",
-  "wordCount" : "2023",
-  "inLanguage": "en",
-  "datePublished": "2026-06-08T09:00:00+09:00",
-  "dateModified": "2026-06-08T09:00:00+09:00",
-  "author":{
-    "@type": "Person",
-    "name": "yw8837"
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "AI_6스터디",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://yw8837.github.io/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-<body id="top">
-    <header class="header">
-    <nav class="header-nav">
-        <div class="logo">
-            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
-                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <ul id="menu" class="menu">
-            <li>
-                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
-                    <span>📚 Year Study</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
-                    <span>강의 정리</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
-                    <span>실습 정리</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
-                    <span>프로젝트</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
-    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-            <a href="/">홈</a>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-            <a href="/posts/">Posts</a>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-        <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
-</nav>
-    <h1 class="post-title entry-hint-parent">
-      6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트
-    </h1>
-    <div class="post-description">
-      6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다.
-    </div>
-    <div class="post-meta">
-
-<span title='2026-06-08 09:00:00 +0900 KST'>2026년 6월 8일</span>&nbsp;·&nbsp;<span>10 분</span>&nbsp;·&nbsp;<span>yw8837</span>
-
-</div>
-  </header> <details class="toc" >
-    <summary accesskey="c" title="(Alt + C)">
-        <span class="title">목차</span>
-    </summary>
-
-    <div class="inner"><ul>
-            <li>
-                <a href="#-%ec%8b%a4%ec%8a%b5-%eb%85%b8%ed%8a%b8" aria-label="🧪 실습 노트">🧪 실습 노트</a><ul>
-                    
-            <li>
-                <a href="#01--select--from--%ec%bb%ac%eb%9f%bc-%ec%84%a0%ed%83%9d--limit" aria-label="01 · SELECT / FROM · 컬럼 선택 · LIMIT">01 · SELECT / FROM · 컬럼 선택 · LIMIT</a></li>
-            <li>
-                <a href="#02--distinct-%ec%a4%91%eb%b3%b5-%ec%a0%9c%ea%b1%b0" aria-label="02 · DISTINCT (중복 제거)">02 · DISTINCT (중복 제거)</a></li>
-            <li>
-                <a href="#03--where--%eb%b9%84%ea%b5%90-%ec%97%b0%ec%82%b0%ec%9e%90" aria-label="03 · WHERE &#43; 비교 연산자">03 · WHERE + 비교 연산자</a></li>
-            <li>
-                <a href="#04--%eb%b3%b5%ed%95%a9-%ec%a1%b0%ea%b1%b4-and--or--not" aria-label="04 · 복합 조건 (AND / OR / NOT)">04 · 복합 조건 (AND / OR / NOT)</a></li>
-            <li>
-                <a href="#05--%ea%b8%b0%ed%83%80-%ec%97%b0%ec%82%b0%ec%9e%90-between--in--not-in" aria-label="05 · 기타 연산자 (BETWEEN / IN / NOT IN)">05 · 기타 연산자 (BETWEEN / IN / NOT IN)</a></li>
-            <li>
-                <a href="#06--like-%ed%8c%a8%ed%84%b4-%ea%b2%80%ec%83%89" aria-label="06 · LIKE (패턴 검색)">06 · LIKE (패턴 검색)</a></li>
-            <li>
-                <a href="#07--order-by-%ec%a0%95%eb%a0%ac" aria-label="07 · ORDER BY (정렬)">07 · ORDER BY (정렬)</a></li>
-            <li>
-                <a href="#08--dml-%ec%a4%80%eb%b9%84--book-%ed%85%8c%ec%9d%b4%eb%b8%94-%ec%83%9d%ec%84%b1--%ec%8b%9c%eb%93%9c" aria-label="08 · DML 준비 — book 테이블 생성 &#43; 시드">08 · DML 준비 — book 테이블 생성 + 시드</a></li>
-            <li>
-                <a href="#09--insert--update--delete" aria-label="09 · INSERT / UPDATE / DELETE">09 · INSERT / UPDATE / DELETE</a></li>
-            <li>
-                <a href="#10--%eb%b3%b4%eb%84%88%ec%8a%a4-book-%ed%85%8c%ec%9d%b4%eb%b8%94%eb%a1%9c-select-%ec%97%b0%ec%82%b0%ec%9e%90-%eb%b3%b5%ec%8a%b5" aria-label="10 · (보너스) book 테이블로 SELECT 연산자 복습">10 · (보너스) book 테이블로 SELECT 연산자 복습</a></li></ul>
-            </li>
-            <li>
-                <a href="#-%eb%b3%b4%ec%b6%a9-%ec%9e%90%eb%a3%8c" aria-label="📚 보충 자료">📚 보충 자료</a><ul>
-                    
-            <li>
-                <a href="#%eb%a7%88%eb%ac%b4%eb%a6%ac" aria-label="마무리">마무리</a></li>
-            <li>
-                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
-            </li>
-        </ul>
-        </li>
-        </ul>
-    </div>
-</details>
-
-  <div class="post-content md-content"><blockquote>
-<p>🧪 <strong>이 노트는 실습용 쿼리 모음이다.</strong> 6/8 쿼리는 강사님 정답 파일(<code>Day01_lecture.sql</code>, <code>Day01_dml_lecture.sql</code>)에서 <strong>그대로 가져온 것</strong>이라 안심하고 따라 해도 된다(6/9 노트와 달리 재구성이 아니다). 실습 DB는 <strong>chinook</strong>(SELECT용), DML은 <strong>직접 만든 book 테이블</strong>에서 진행한다.</p>
-<p>⚠️ 한 줄 주의: 이 노트의 쿼리·예시는 학습용 정리이며, 실행 결과는 데이터 버전에 따라 조금씩 다를 수 있다.</p>
-</blockquote>
-<h1 id="-실습-노트">🧪 실습 노트<a hidden class="anchor" aria-hidden="true" href="#-실습-노트">#</a></h1>
-<p>순서대로 따라 하면 된다. 위에서 아래로 실행해야 의존성이 끊기지 않는다(특히 6번 book 테이블은 생성→시드→DML 순서 필수).</p>
-<ol>
-<li>SELECT / FROM · 컬럼 선택 · LIMIT</li>
-<li>DISTINCT (중복 제거)</li>
-<li>WHERE + 비교 연산자</li>
-<li>복합 조건 (AND / OR / NOT)</li>
-<li>기타 연산자 (BETWEEN / IN / NOT IN)</li>
-<li>LIKE (패턴 검색)</li>
-<li>ORDER BY (정렬)</li>
-<li>DML 준비 — book 테이블 생성 + 시드</li>
-<li>INSERT / UPDATE / DELETE</li>
-</ol>
-<hr>
-<h2 id="01--select--from--컬럼-선택--limit">01 · SELECT / FROM · 컬럼 선택 · LIMIT<a hidden class="anchor" aria-hidden="true" href="#01--select--from--컬럼-선택--limit">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — 가장 기본. 어떤 컬럼을(SELECT) 어느 테이블에서(FROM) 가져올지 지정한다.</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 문제 1. albums 테이블에서 앨범 제목(Title)만 모두 보여주세요.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">Title</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. artists 테이블의 모든 정보를 보여주세요.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">artists</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 3. tracks 테이블의 모든 컬럼을 앞 10건만 보여주세요.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 4. tracks 테이블에서 곡 이름(Name)과 단가(UnitPrice)만 보여주세요. (앞 10건)
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">UnitPrice</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 문제 1은 앨범 제목 한 컬럼, 문제 2는 artists 전체 컬럼, 문제 3·4는 10행만 출력된다.</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li><code>SELECT Title</code> : Title 컬럼만 고른다. 여러 개면 <code>Name, UnitPrice</code>처럼 콤마로.</li>
-<li><code>SELECT *</code> : <code>*</code>는 모든 컬럼.</li>
-<li><code>FROM albums</code> : 데이터를 가져올 테이블.</li>
-<li><code>LIMIT 10</code> : 앞 10건만. 데이터가 많을 때 미리보기용.</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — 큰 테이블을 통째로 <code>SELECT *</code>하면 느리다. 처음엔 <code>LIMIT 10</code>으로 구조를 확인하고 시작하자.</p>
-<hr>
-<h2 id="02--distinct-중복-제거">02 · DISTINCT (중복 제거)<a hidden class="anchor" aria-hidden="true" href="#02--distinct-중복-제거">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — 뒤에 오는 컬럼의 중복을 제거하고 보여준다.</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 문제 1. customers 테이블에서 Country를 중복 없이.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">Country</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. tracks 테이블에서 UnitPrice의 종류를 중복 없이.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">UnitPrice</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 3. City와 Country를 함께 중복 없이.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">City</span><span class="p">,</span><span class="w"> </span><span class="n">Country</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 문제 1은 고객 국가의 &ldquo;종류&quot;만, 문제 3은 (City, Country) 조합의 종류만 출력된다.</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li><code>DISTINCT Country</code> : Country 값에서 중복을 없앤다.</li>
-<li><code>DISTINCT City, Country</code> : <strong>두 컬럼 조합</strong> 기준으로 중복 제거.</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — 컬럼이 2개 이상이면 &ldquo;조합&rdquo; 기준이라, 같은 도시여도 나라가 다르면 별개로 본다. &ldquo;나라 종류 수만 알고 싶다&quot;면 컬럼 하나만 DISTINCT 하자.</p>
-<hr>
-<h2 id="03--where--비교-연산자">03 · WHERE + 비교 연산자<a hidden class="anchor" aria-hidden="true" href="#03--where--비교-연산자">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — 조건에 맞는 행만 걸러낸다.</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 문제 1. Country가 &#39;USA&#39;인 고객.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USA&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. UnitPrice가 0.99 초과인 곡. (앞 10건)
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">UnitPrice</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">99</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 3. invoices에서 Total이 10 이상인 건.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">invoices</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Total</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 각 조건을 만족하는 행만 출력된다.</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li><code>WHERE Country = 'USA'</code> : 문자열은 <strong>작은따옴표</strong>로 감싼다.</li>
-<li><code>WHERE UnitPrice &gt; 0.99</code> : 숫자는 따옴표 없이. <code>&gt;</code>는 초과, <code>&gt;=</code>는 이상.</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — <code>=</code> 하나는 &ldquo;같다&rdquo;(비교)다. 헷갈려서 따옴표를 빼면 컬럼/문자열 오류가 난다. 문자열 비교는 항상 따옴표 확인.</p>
-<hr>
-<h2 id="04--복합-조건-and--or--not">04 · 복합 조건 (AND / OR / NOT)<a hidden class="anchor" aria-hidden="true" href="#04--복합-조건-and--or--not">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — 여러 조건을 AND·OR·NOT으로 묶는다.</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 문제 1. Country가 &#39;USA&#39; 그리고 State가 &#39;CA&#39;인 고객.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USA&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">State</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;CA&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. Country가 &#39;USA&#39; 이거나 &#39;Canada&#39;인 고객.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USA&#39;</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Canada&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 3. Country가 &#39;USA&#39;가 아닌 고객.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USA&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- (WHERE Country != &#39;USA&#39; 와 동일)
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 문제 1은 두 조건 모두 만족, 문제 2는 둘 중 하나, 문제 3은 USA가 아닌 고객.</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li><code>AND</code> : 둘 다 만족해야 통과.</li>
-<li><code>OR</code> : 하나만 만족해도 통과.</li>
-<li><code>NOT Country = 'USA'</code> : 조건의 반대. <code>Country != 'USA'</code>와 같다.</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — 같은 컬럼을 여러 값과 OR로 길게 나열할 거면, 다음 절의 <code>IN(...)</code>이 훨씬 깔끔하다.</p>
-<hr>
-<h2 id="05--기타-연산자-between--in--not-in">05 · 기타 연산자 (BETWEEN / IN / NOT IN)<a hidden class="anchor" aria-hidden="true" href="#05--기타-연산자-between--in--not-in">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — 범위(BETWEEN)와 목록(IN/NOT IN)으로 조건을 건다.</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 문제 1. Total이 5~10 사이(포함)인 인보이스.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">invoices</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Total</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. 미국, 캐나다, 브라질 고객.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Canada&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Brazil&#39;</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 3. 위 세 나라를 제외한 나머지.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Country</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;USA&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Canada&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Brazil&#39;</span><span class="p">);</span><span class="w">
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 문제 1은 5~10 범위(경계 포함), 문제 2는 세 나라, 문제 3은 그 외 나라.</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li><code>BETWEEN 5 AND 10</code> : 5와 10을 <strong>포함</strong>하는 범위.</li>
-<li><code>IN ('USA', 'Canada', 'Brazil')</code> : 목록 중 하나라도 일치.</li>
-<li><code>NOT IN (...)</code> : 목록에 없는 것.</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — <code>BETWEEN</code>은 경계값을 포함한다. &ldquo;5 초과 10 미만&quot;이 필요하면 <code>Total &gt; 5 AND Total &lt; 10</code>처럼 직접 써야 한다.</p>
-<hr>
-<h2 id="06--like-패턴-검색">06 · LIKE (패턴 검색)<a hidden class="anchor" aria-hidden="true" href="#06--like-패턴-검색">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — 특정 문자가 포함된 문자열을 와일드카드 <code>%</code>로 찾는다.</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 문제 1. 제목이 &#39;Rock&#39;으로 시작하는 앨범.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;Rock%&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. 제목이 &#39;Live&#39;로 끝나는 앨범.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%Live&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 3. 곡 이름에 &#39;Love&#39;가 들어간 곡. (앞 10건)
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%Love%&#39;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — &lsquo;Rock…&rsquo; 시작 앨범, &lsquo;…Live&rsquo; 끝 앨범, &lsquo;Love&rsquo; 포함 곡(10건).</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li><code>'Rock%'</code> : Rock으로 <strong>시작</strong>(% = 뒤에 아무거나).</li>
-<li><code>'%Live'</code> : Live로 <strong>끝남</strong>(% = 앞에 아무거나).</li>
-<li><code>'%Love%'</code> : Love <strong>포함</strong>(앞뒤 아무거나).</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — <code>%</code>는 &ldquo;임의의 문자열&quot;이다. 한 글자만 매칭하는 <code>_</code>(언더스코어)도 있다. SQLite의 LIKE는 기본적으로 대소문자를 구분하지 않는다.</p>
-<hr>
-<h2 id="07--order-by-정렬">07 · ORDER BY (정렬)<a hidden class="anchor" aria-hidden="true" href="#07--order-by-정렬">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — 결과를 오름차순(ASC)·내림차순(DESC)으로 정렬한다.</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 문제 1. tracks를 UnitPrice 내림차순으로. (앞 10건)
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">UnitPrice</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">tracks</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">UnitPrice</span><span class="w"> </span><span class="k">DESC</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. 결제 금액이 가장 큰 인보이스 5건.
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">invoices</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">Total</span><span class="w"> </span><span class="k">DESC</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 3. 앨범 제목을 알파벳 오름차순으로. (앞 10건)
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">Title</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">albums</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">Title</span><span class="w"> </span><span class="k">ASC</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 단가 높은 순 10곡, 결제액 큰 순 5건, 제목 알파벳 순 10개.</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li><code>ORDER BY UnitPrice DESC</code> : UnitPrice 기준 <strong>내림차순</strong>(큰 값부터).</li>
-<li><code>ORDER BY Title ASC</code> : Title 기준 <strong>오름차순</strong>(작은 값/A부터). ASC는 기본값이라 생략 가능.</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — <code>ORDER BY ... DESC</code> + <code>LIMIT n</code> 조합이 &ldquo;상위 n개&rdquo; 뽑는 단골 패턴이다(예: 매출 TOP 5). 여기 <code>DESC</code>는 정렬용으로, 6/8 강의의 <code>DESC 테이블명</code>(구조 보기)과 다른 기능이다.</p>
-<hr>
-<h2 id="08--dml-준비--book-테이블-생성--시드">08 · DML 준비 — book 테이블 생성 + 시드<a hidden class="anchor" aria-hidden="true" href="#08--dml-준비--book-테이블-생성--시드">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — chinook를 건드리지 않기 위해, DML 연습용 <code>book</code> 테이블을 새로 만들고 데이터를 채운다.</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_dml_lecture.sql</code>, 원문 그대로)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 이미 있으면 지우고 새로 만들어, 몇 번을 실행해도 에러가 안 나게 함
-</span></span></span><span class="line"><span class="cl"><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">book</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">id</span><span class="w">       </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">title</span><span class="w">    </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">category</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">price</span><span class="w">    </span><span class="nb">REAL</span><span class="p">,</span><span class="w">     </span><span class="c1">-- 단위: £ (사이트 값, 무작위라 의미는 없음)
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">rating</span><span class="w">   </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">  </span><span class="c1">-- 1~5 (연습용)
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">stock</span><span class="w">    </span><span class="nb">INTEGER</span><span class="w">   </span><span class="c1">-- 재고 수량 (연습용)
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">category</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">,</span><span class="w"> </span><span class="n">rating</span><span class="p">,</span><span class="w"> </span><span class="n">stock</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;A Light in the Attic&#39;</span><span class="p">,</span><span class="w">                 </span><span class="s1">&#39;Poetry&#39;</span><span class="p">,</span><span class="w">             </span><span class="mi">51</span><span class="p">.</span><span class="mi">77</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">22</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;Tipping the Velvet&#39;</span><span class="p">,</span><span class="w">                   </span><span class="s1">&#39;Historical Fiction&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">53</span><span class="p">.</span><span class="mi">74</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;Soumission&#39;</span><span class="p">,</span><span class="w">                           </span><span class="s1">&#39;Fiction&#39;</span><span class="p">,</span><span class="w">            </span><span class="mi">50</span><span class="p">.</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;Sharp Objects&#39;</span><span class="p">,</span><span class="w">                        </span><span class="s1">&#39;Mystery&#39;</span><span class="p">,</span><span class="w">            </span><span class="mi">47</span><span class="p">.</span><span class="mi">82</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;Sapiens: A Brief History of Humankind&#39;</span><span class="p">,</span><span class="s1">&#39;History&#39;</span><span class="p">,</span><span class="w">            </span><span class="mi">54</span><span class="p">.</span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;The Requiem Red&#39;</span><span class="p">,</span><span class="w">                       </span><span class="s1">&#39;Young Adult&#39;</span><span class="p">,</span><span class="w">        </span><span class="mi">22</span><span class="p">.</span><span class="mi">65</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;The Dirty Little Secrets of Getting Your Dream Job&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Business&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">33</span><span class="p">.</span><span class="mi">34</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;The Black Maria&#39;</span><span class="p">,</span><span class="w">                       </span><span class="s1">&#39;Poetry&#39;</span><span class="p">,</span><span class="w">             </span><span class="mi">52</span><span class="p">.</span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="w">  </span><span class="s1">&#39;Starving Hearts&#39;</span><span class="p">,</span><span class="w">                       </span><span class="s1">&#39;Fiction&#39;</span><span class="p">,</span><span class="w">            </span><span class="mi">13</span><span class="p">.</span><span class="mi">99</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Shakespeare&#39;&#39;s Sonnets&#39;</span><span class="p">,</span><span class="w">                </span><span class="s1">&#39;Poetry&#39;</span><span class="p">,</span><span class="w">             </span><span class="mi">20</span><span class="p">.</span><span class="mi">66</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Scott Pilgrim&#39;&#39;s Precious Little Life&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Sequential Art&#39;</span><span class="p">,</span><span class="w">     </span><span class="mi">52</span><span class="p">.</span><span class="mi">29</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Rip it Up and Start Again&#39;</span><span class="p">,</span><span class="w">             </span><span class="s1">&#39;Music&#39;</span><span class="p">,</span><span class="w">              </span><span class="mi">35</span><span class="p">.</span><span class="mi">02</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 시드가 잘 들어갔는지 확인
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 마지막 <code>SELECT * FROM book;</code>에서 12개 행이 모두 출력되면 성공이다.</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li><code>DROP TABLE IF EXISTS book</code> : book이 있으면 지운다. 덕분에 <strong>몇 번 실행해도 에러가 안 난다</strong>(재실행 가능 패턴).</li>
-<li><code>CREATE TABLE book (...)</code> : 컬럼과 자료형(INTEGER/TEXT/REAL)을 정의. <code>id INTEGER PRIMARY KEY</code>는 각 행을 구분하는 <strong>기본 키</strong>.</li>
-<li><code>INSERT INTO book ... VALUES (...), (...)</code> : 여러 행을 한 번에 삽입.</li>
-<li><code>'Shakespeare''s Sonnets'</code> : 제목 속 작은따옴표는 **두 번(<code>''</code>)**으로 이스케이프.</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — <code>DROP TABLE IF EXISTS</code> → <code>CREATE</code> → <code>INSERT</code> 순서를 한 스크립트에 묶어두면, 데이터가 꼬여도 위에서부터 다시 실행해 <strong>언제든 초기 상태로 복구</strong>할 수 있다.</p>
-<blockquote>
-<p>데이터 출처: 제목·가격은 <a href="https://books.toscrape.com/">https://books.toscrape.com/</a> 의 값, 카테고리·평점·재고는 연습용 임의값이다.</p>
-</blockquote>
-<hr>
-<h2 id="09--insert--update--delete">09 · INSERT / UPDATE / DELETE<a hidden class="anchor" aria-hidden="true" href="#09--insert--update--delete">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — book 테이블에 행을 추가(INSERT)·수정(UPDATE)·삭제(DELETE)한다. (8번을 먼저 실행해 book이 있어야 한다.)</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_dml_lecture.sql</code>)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 8. INSERT --------------------------------------------------
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 1. 신간 &#39;It&#39;&#39;s Only the Himalayas&#39; (Travel, £45.17, 평점 2, 재고 19) 추가.
-</span></span></span><span class="line"><span class="cl"><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">category</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">,</span><span class="w"> </span><span class="n">rating</span><span class="p">,</span><span class="w"> </span><span class="n">stock</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;It&#39;&#39;s Only the Himalayas&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Travel&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">45</span><span class="p">.</span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. 컬럼명 생략 방식으로 &#39;Set Me Free&#39; (Young Adult, £17.46, 평점 5, 재고 19) 추가.
-</span></span></span><span class="line"><span class="cl"><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">book</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Set Me Free&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Young Adult&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">.</span><span class="mi">46</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 9. UPDATE --------------------------------------------------
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 1. &#39;Soumission&#39; 가격을 50.10 -&gt; 39.99 로 변경.
-</span></span></span><span class="line"><span class="cl"><span class="k">UPDATE</span><span class="w"> </span><span class="n">book</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">SET</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">39</span><span class="p">.</span><span class="mi">99</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Soumission&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. Poetry 책들의 stock 을 기존 값 + 5 로 변경.
-</span></span></span><span class="line"><span class="cl"><span class="k">UPDATE</span><span class="w"> </span><span class="n">book</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">SET</span><span class="w"> </span><span class="n">stock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stock</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">5</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Poetry&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 10. DELETE -------------------------------------------------
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 1. 평점이 1점인 책들을 모두 삭제.
-</span></span></span><span class="line"><span class="cl"><span class="k">DELETE</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 문제 2. 재고(stock)가 16권 미만인 책 삭제.
-</span></span></span><span class="line"><span class="cl"><span class="k">DELETE</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="n">stock</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- ★ 주의: UPDATE / DELETE 에서 WHERE 를 빼면 전체 행이 수정·삭제됩니다.
-</span></span></span><span class="line"><span class="cl"><span class="c1">--         예) DELETE FROM book;  -&gt; book 전체 삭제
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 각 <code>SELECT * FROM book;</code>에서 변화가 확인된다. INSERT 후 14행, UPDATE 후 Soumission 가격·Poetry 재고 변경, DELETE 후 평점 1·재고 16미만 책이 사라진다.</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li><code>INSERT INTO book (컬럼...) VALUES (값...)</code> : 컬럼을 명시한 삽입.</li>
-<li><code>INSERT INTO book VALUES (...)</code> : 컬럼 생략 → <strong>테이블 정의 순서대로</strong> 값이 들어간다.</li>
-<li><code>UPDATE book SET price = 39.99 WHERE title = 'Soumission'</code> : 조건에 맞는 행의 price만 변경.</li>
-<li><code>SET stock = stock + 5</code> : <strong>기존 값 기반 연산</strong>도 가능.</li>
-<li><code>DELETE FROM book WHERE rating = 1</code> : 조건에 맞는 행 삭제.</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — <code>UPDATE</code>·<code>DELETE</code>는 <strong>반드시 <code>WHERE</code>를 확인</strong>하라. <code>WHERE</code>를 빼면 전체 행이 대상이 된다(<code>DELETE FROM book;</code> = 전부 삭제). 실무에서 가장 위험한 실수다.</p>
-<blockquote>
-<p>참고: 판서 기록의 과제 표현(&ldquo;재고=15 삭제&rdquo;)과 정답 SQL의 <code>WHERE stock &lt; 16</code>(재고 16 미만)에 표현 차이가 있다. 본 노트는 **정답 파일 기준 <code>stock &lt; 16</code>**을 그대로 따랐다 <code>[원문 확인 필요]</code>.</p>
-</blockquote>
-<hr>
-<h2 id="10--보너스-book-테이블로-select-연산자-복습">10 · (보너스) book 테이블로 SELECT 연산자 복습<a hidden class="anchor" aria-hidden="true" href="#10--보너스-book-테이블로-select-연산자-복습">#</a></h2>
-<p><strong>① 한 줄 설명</strong> — 앞서 chinook으로 배운 연산자들을 book 테이블로 한 번 더 복습한다.</p>
-<p><strong>② 코드</strong> (출처: <code>Day01_dml_lecture.sql</code> 하단 보너스)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 카테고리 종류만 보기 (DISTINCT)
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 가격이 40 이상인 책 (비교 연산자)
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">40</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 제목에 &#39;the&#39; 가 들어간 책 (LIKE, 대소문자 무시됨)
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%the%&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- 가격이 비싼 순으로 정렬 (ORDER BY)
-</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 카테고리 종류, 40 이상 책, &rsquo;the&rsquo; 포함 책, 가격 내림차순 목록.</p>
-<p><strong>④ 한 줄씩 뜯어보기</strong></p>
-<ul>
-<li>위 SELECT 연산자(DISTINCT/WHERE/LIKE/ORDER BY)를 그대로 book에 적용한 것. 단, DELETE 이후라 남은 데이터 기준으로 결과가 나온다.</li>
-</ul>
-<p><strong>⑤ 💡 팁</strong> — 같은 연산자도 테이블만 바꾸면 똑같이 동작한다. 작은 테이블(book)로 결과를 눈으로 확인하면 동작이 더 명확하게 보인다.</p>
-<hr>
-<h1 id="-보충-자료">📚 보충 자료<a hidden class="anchor" aria-hidden="true" href="#-보충-자료">#</a></h1>
-<ul>
-<li>강사 정답 SQL: <code>Day01_lecture.sql</code>(SELECT), <code>Day01_dml_lecture.sql</code>(DML) — 본 노트 쿼리의 원본</li>
-<li>실습 DB: <code>chinook.db</code>(SQLite Tutorial 샘플)</li>
-<li>book 데이터 출처: <a href="https://books.toscrape.com/">https://books.toscrape.com/</a> (제목·가격) + 연습용 임의값(카테고리·평점·재고)</li>
-<li>SQLite 공식 문서 — <a href="https://www.sqlite.org/lang.html">https://www.sqlite.org/lang.html</a></li>
-</ul>
-<blockquote>
-<p>다시 강조: <strong>이 노트의 쿼리·예시는 학습용 정리다.</strong> 6/8 쿼리는 강사 정답 파일에서 그대로 가져왔으나, 실행 결과는 DB 데이터 버전에 따라 미세하게 다를 수 있다.</p>
-</blockquote>
-<h2 id="마무리">마무리<a hidden class="anchor" aria-hidden="true" href="#마무리">#</a></h2>
-<p>오늘 실습의 뼈대는 두 가지다. <strong>(1) SELECT로 골라보기</strong> — 컬럼 선택, DISTINCT, WHERE·복합조건·BETWEEN/IN, LIKE, ORDER BY를 chinook으로 익혔다. <strong>(2) DML로 바꾸기</strong> — 안전을 위해 직접 만든 book 테이블에서 INSERT·UPDATE·DELETE를 연습했다. 핵심 습관 한 가지만 챙기자 — <strong><code>UPDATE</code>·<code>DELETE</code> 실행 전 <code>WHERE</code>를 꼭 확인.</strong> 그리고 스크립트는 항상 위에서부터 순서대로 실행하자.</p>
-<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
-<ul>
-<li><a href="/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/">6/8 SQL 시작하기 강의 정리</a> — 오늘 쿼리의 개념 정리</li>
-</ul>
-
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="https://yw8837.github.io/tags/sql/">SQL</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/">실습</a></li>
-      <li><a href="https://yw8837.github.io/tags/select/">SELECT</a></li>
-      <li><a href="https://yw8837.github.io/tags/dml/">DML</a></li>
-      <li><a href="https://yw8837.github.io/tags/chinook/">Chinook</a></li>
-      <li><a href="https://yw8837.github.io/tags/sqlite/">SQLite</a></li>
-      <li><a href="https://yw8837.github.io/tags/where/">WHERE</a></li>
-      <li><a href="https://yw8837.github.io/tags/like/">LIKE</a></li>
-      <li><a href="https://yw8837.github.io/tags/order-by/">ORDER BY</a></li>
-    </ul>
-<nav class="paginav">
-  <a class="prev" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/">
-    <span class="title">« 이전 페이지</span>
-    <span>6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음</span>
-  </a>
-  <a class="next" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-05-%EC%83%9D%EC%84%B1%ED%98%95-ai-%EA%B8%B0%EC%B4%88-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-    <span class="title">다음 페이지 »</span>
-    <span>6/5 생성형 AI 기초 — 도구 활용 워크플로 &amp; SCQA 작성 실습 노트</span>
-  </a>
-</nav>
-
-  </footer>
-</article>
-    </main>
-    
-<footer class="footer">
-        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
-        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
-
-    
-    
-    <span>
-        Powered by
-        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
-        <polyline points="17 11 12 6 7 11"></polyline>
-        <polyline points="17 18 12 13 7 18"></polyline>
-    </svg>
-</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
-
-<script>
-    let menu = document.getElementById('menu');
-    if (menu) {
-        
-        const scrollPosition = localStorage.getItem("menu-scroll-position");
-        if (scrollPosition) {
-            menu.scrollLeft = parseInt(scrollPosition, 10);
-        }
-        
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
-</script>
-<script>
-    var toplink = document.getElementById("top-link");
-    window.onscroll = function () {
-        const scrollThreshold = window.innerHeight;
-        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
-            toplink.classList.remove("hidden");
-        } else {
-            toplink.classList.add("hidden");
-        }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        const html = document.querySelector("html");
-        if (html.dataset.theme === "dark") {
-            html.dataset.theme = 'light';
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            html.dataset.theme = 'dark';
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = '복사';
-
-        function copyingDone() {
-            copybutton.innerHTML = '복사 완료!';
-            setTimeout(() => {
-                copybutton.innerHTML = '복사';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
-</script>
-</body>
-
-</html>
+<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트 | AI_6스터디</title><meta name=keywords content="SQL,실습,SELECT,DML,chinook,SQLite,WHERE,LIKE,ORDER BY"><meta name=description content="6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다."><meta name=author content="yw8837"><link rel=canonical href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><link crossorigin=anonymous href=/assets/css/stylesheet.css rel="preload stylesheet" as=style><link rel=icon href=https://yw8837.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://yw8837.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://yw8837.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://yw8837.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yw8837.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script><script>var doNotTrack=!1,dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes";if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-EQR4094Q13")}</script><meta property="og:url" content="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"><meta property="og:site_name" content="AI_6스터디"><meta property="og:title" content="6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트"><meta property="og:description" content="6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다."><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-06-08T09:00:00+09:00"><meta property="article:modified_time" content="2026-06-08T09:00:00+09:00"><meta property="article:tag" content="SQL"><meta property="article:tag" content="실습"><meta property="article:tag" content="SELECT"><meta property="article:tag" content="DML"><meta property="article:tag" content="Chinook"><meta property="article:tag" content="SQLite"><meta name=twitter:card content="summary"><meta name=twitter:title content="6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트"><meta name=twitter:description content="6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yw8837.github.io/posts/"},{"@type":"ListItem","position":2,"name":"6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트","item":"https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트","name":"6\/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트","description":"6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다.","keywords":["SQL","실습","SELECT","DML","chinook","SQLite","WHERE","LIKE","ORDER BY"],"articleBody":" 🧪 이 노트는 실습용 쿼리 모음이다. 6/8 쿼리는 강사님 정답 파일(Day01_lecture.sql, Day01_dml_lecture.sql)에서 그대로 가져온 것이라 안심하고 따라 해도 된다(6/9 노트와 달리 재구성이 아니다). 실습 DB는 chinook(SELECT용), DML은 직접 만든 book 테이블에서 진행한다.\n⚠️ 한 줄 주의: 이 노트의 쿼리·예시는 학습용 정리이며, 실행 결과는 데이터 버전에 따라 조금씩 다를 수 있다.\n🧪 실습 노트 순서대로 따라 하면 된다. 위에서 아래로 실행해야 의존성이 끊기지 않는다(특히 6번 book 테이블은 생성→시드→DML 순서 필수).\nSELECT / FROM · 컬럼 선택 · LIMIT DISTINCT (중복 제거) WHERE + 비교 연산자 복합 조건 (AND / OR / NOT) 기타 연산자 (BETWEEN / IN / NOT IN) LIKE (패턴 검색) ORDER BY (정렬) DML 준비 — book 테이블 생성 + 시드 INSERT / UPDATE / DELETE 01 · SELECT / FROM · 컬럼 선택 · LIMIT ① 한 줄 설명 — 가장 기본. 어떤 컬럼을(SELECT) 어느 테이블에서(FROM) 가져올지 지정한다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. albums 테이블에서 앨범 제목(Title)만 모두 보여주세요. SELECT Title FROM albums; -- 문제 2. artists 테이블의 모든 정보를 보여주세요. SELECT * FROM artists; -- 문제 3. tracks 테이블의 모든 컬럼을 앞 10건만 보여주세요. SELECT * FROM tracks LIMIT 10; -- 문제 4. tracks 테이블에서 곡 이름(Name)과 단가(UnitPrice)만 보여주세요. (앞 10건) SELECT Name, UnitPrice FROM tracks LIMIT 10; ③ 출력 결과 — 문제 1은 앨범 제목 한 컬럼, 문제 2는 artists 전체 컬럼, 문제 3·4는 10행만 출력된다.\n④ 한 줄씩 뜯어보기\nSELECT Title : Title 컬럼만 고른다. 여러 개면 Name, UnitPrice처럼 콤마로. SELECT * : *는 모든 컬럼. FROM albums : 데이터를 가져올 테이블. LIMIT 10 : 앞 10건만. 데이터가 많을 때 미리보기용. ⑤ 💡 팁 — 큰 테이블을 통째로 SELECT *하면 느리다. 처음엔 LIMIT 10으로 구조를 확인하고 시작하자.\n02 · DISTINCT (중복 제거) ① 한 줄 설명 — 뒤에 오는 컬럼의 중복을 제거하고 보여준다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. customers 테이블에서 Country를 중복 없이. SELECT DISTINCT Country FROM customers; -- 문제 2. tracks 테이블에서 UnitPrice의 종류를 중복 없이. SELECT DISTINCT UnitPrice FROM tracks; -- 문제 3. City와 Country를 함께 중복 없이. SELECT DISTINCT City, Country FROM customers; ③ 출력 결과 — 문제 1은 고객 국가의 “종류\"만, 문제 3은 (City, Country) 조합의 종류만 출력된다.\n④ 한 줄씩 뜯어보기\nDISTINCT Country : Country 값에서 중복을 없앤다. DISTINCT City, Country : 두 컬럼 조합 기준으로 중복 제거. ⑤ 💡 팁 — 컬럼이 2개 이상이면 “조합” 기준이라, 같은 도시여도 나라가 다르면 별개로 본다. “나라 종류 수만 알고 싶다\"면 컬럼 하나만 DISTINCT 하자.\n03 · WHERE + 비교 연산자 ① 한 줄 설명 — 조건에 맞는 행만 걸러낸다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. Country가 'USA'인 고객. SELECT * FROM customers WHERE Country = 'USA'; -- 문제 2. UnitPrice가 0.99 초과인 곡. (앞 10건) SELECT * FROM tracks WHERE UnitPrice \u003e 0.99 LIMIT 10; -- 문제 3. invoices에서 Total이 10 이상인 건. SELECT * FROM invoices WHERE Total \u003e= 10; ③ 출력 결과 — 각 조건을 만족하는 행만 출력된다.\n④ 한 줄씩 뜯어보기\nWHERE Country = 'USA' : 문자열은 작은따옴표로 감싼다. WHERE UnitPrice \u003e 0.99 : 숫자는 따옴표 없이. \u003e는 초과, \u003e=는 이상. ⑤ 💡 팁 — = 하나는 “같다”(비교)다. 헷갈려서 따옴표를 빼면 컬럼/문자열 오류가 난다. 문자열 비교는 항상 따옴표 확인.\n04 · 복합 조건 (AND / OR / NOT) ① 한 줄 설명 — 여러 조건을 AND·OR·NOT으로 묶는다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. Country가 'USA' 그리고 State가 'CA'인 고객. SELECT * FROM customers WHERE Country = 'USA' AND State = 'CA'; -- 문제 2. Country가 'USA' 이거나 'Canada'인 고객. SELECT * FROM customers WHERE Country = 'USA' OR Country = 'Canada'; -- 문제 3. Country가 'USA'가 아닌 고객. SELECT * FROM customers WHERE NOT Country = 'USA'; -- (WHERE Country != 'USA' 와 동일) ③ 출력 결과 — 문제 1은 두 조건 모두 만족, 문제 2는 둘 중 하나, 문제 3은 USA가 아닌 고객.\n④ 한 줄씩 뜯어보기\nAND : 둘 다 만족해야 통과. OR : 하나만 만족해도 통과. NOT Country = 'USA' : 조건의 반대. Country != 'USA'와 같다. ⑤ 💡 팁 — 같은 컬럼을 여러 값과 OR로 길게 나열할 거면, 다음 절의 IN(...)이 훨씬 깔끔하다.\n05 · 기타 연산자 (BETWEEN / IN / NOT IN) ① 한 줄 설명 — 범위(BETWEEN)와 목록(IN/NOT IN)으로 조건을 건다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. Total이 5~10 사이(포함)인 인보이스. SELECT * FROM invoices WHERE Total BETWEEN 5 AND 10; -- 문제 2. 미국, 캐나다, 브라질 고객. SELECT * FROM customers WHERE Country IN ('USA', 'Canada', 'Brazil'); -- 문제 3. 위 세 나라를 제외한 나머지. SELECT * FROM customers WHERE Country NOT IN ('USA', 'Canada', 'Brazil'); ③ 출력 결과 — 문제 1은 5~10 범위(경계 포함), 문제 2는 세 나라, 문제 3은 그 외 나라.\n④ 한 줄씩 뜯어보기\nBETWEEN 5 AND 10 : 5와 10을 포함하는 범위. IN ('USA', 'Canada', 'Brazil') : 목록 중 하나라도 일치. NOT IN (...) : 목록에 없는 것. ⑤ 💡 팁 — BETWEEN은 경계값을 포함한다. “5 초과 10 미만\"이 필요하면 Total \u003e 5 AND Total \u003c 10처럼 직접 써야 한다.\n06 · LIKE (패턴 검색) ① 한 줄 설명 — 특정 문자가 포함된 문자열을 와일드카드 %로 찾는다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. 제목이 'Rock'으로 시작하는 앨범. SELECT * FROM albums WHERE Title LIKE 'Rock%'; -- 문제 2. 제목이 'Live'로 끝나는 앨범. SELECT * FROM albums WHERE Title LIKE '%Live'; -- 문제 3. 곡 이름에 'Love'가 들어간 곡. (앞 10건) SELECT * FROM tracks WHERE Name LIKE '%Love%' LIMIT 10; ③ 출력 결과 — ‘Rock…’ 시작 앨범, ‘…Live’ 끝 앨범, ‘Love’ 포함 곡(10건).\n④ 한 줄씩 뜯어보기\n'Rock%' : Rock으로 시작(% = 뒤에 아무거나). '%Live' : Live로 끝남(% = 앞에 아무거나). '%Love%' : Love 포함(앞뒤 아무거나). ⑤ 💡 팁 — %는 “임의의 문자열\"이다. 한 글자만 매칭하는 _(언더스코어)도 있다. SQLite의 LIKE는 기본적으로 대소문자를 구분하지 않는다.\n07 · ORDER BY (정렬) ① 한 줄 설명 — 결과를 오름차순(ASC)·내림차순(DESC)으로 정렬한다.\n② 코드 (출처: Day01_lecture.sql)\n-- 문제 1. tracks를 UnitPrice 내림차순으로. (앞 10건) SELECT Name, UnitPrice FROM tracks ORDER BY UnitPrice DESC LIMIT 10; -- 문제 2. 결제 금액이 가장 큰 인보이스 5건. SELECT * FROM invoices ORDER BY Total DESC LIMIT 5; -- 문제 3. 앨범 제목을 알파벳 오름차순으로. (앞 10건) SELECT Title FROM albums ORDER BY Title ASC LIMIT 10; ③ 출력 결과 — 단가 높은 순 10곡, 결제액 큰 순 5건, 제목 알파벳 순 10개.\n④ 한 줄씩 뜯어보기\nORDER BY UnitPrice DESC : UnitPrice 기준 내림차순(큰 값부터). ORDER BY Title ASC : Title 기준 오름차순(작은 값/A부터). ASC는 기본값이라 생략 가능. ⑤ 💡 팁 — ORDER BY ... DESC + LIMIT n 조합이 “상위 n개” 뽑는 단골 패턴이다(예: 매출 TOP 5). 여기 DESC는 정렬용으로, 6/8 강의의 DESC 테이블명(구조 보기)과 다른 기능이다.\n08 · DML 준비 — book 테이블 생성 + 시드 ① 한 줄 설명 — chinook를 건드리지 않기 위해, DML 연습용 book 테이블을 새로 만들고 데이터를 채운다.\n② 코드 (출처: Day01_dml_lecture.sql, 원문 그대로)\n-- 이미 있으면 지우고 새로 만들어, 몇 번을 실행해도 에러가 안 나게 함 DROP TABLE IF EXISTS book; CREATE TABLE book ( id INTEGER PRIMARY KEY, title TEXT, category TEXT, price REAL, -- 단위: £ (사이트 값, 무작위라 의미는 없음) rating INTEGER, -- 1~5 (연습용) stock INTEGER -- 재고 수량 (연습용) ); INSERT INTO book (id, title, category, price, rating, stock) VALUES (1, 'A Light in the Attic', 'Poetry', 51.77, 3, 22), (2, 'Tipping the Velvet', 'Historical Fiction', 53.74, 1, 20), (3, 'Soumission', 'Fiction', 50.10, 1, 20), (4, 'Sharp Objects', 'Mystery', 47.82, 4, 20), (5, 'Sapiens: A Brief History of Humankind','History', 54.23, 5, 20), (6, 'The Requiem Red', 'Young Adult', 22.65, 1, 19), (7, 'The Dirty Little Secrets of Getting Your Dream Job', 'Business', 33.34, 4, 19), (8, 'The Black Maria', 'Poetry', 52.15, 1, 19), (9, 'Starving Hearts', 'Fiction', 13.99, 2, 18), (10, 'Shakespeare''s Sonnets', 'Poetry', 20.66, 4, 18), (11, 'Scott Pilgrim''s Precious Little Life', 'Sequential Art', 52.29, 5, 16), (12, 'Rip it Up and Start Again', 'Music', 35.02, 5, 15); -- 시드가 잘 들어갔는지 확인 SELECT * FROM book; ③ 출력 결과 — 마지막 SELECT * FROM book;에서 12개 행이 모두 출력되면 성공이다.\n④ 한 줄씩 뜯어보기\nDROP TABLE IF EXISTS book : book이 있으면 지운다. 덕분에 몇 번 실행해도 에러가 안 난다(재실행 가능 패턴). CREATE TABLE book (...) : 컬럼과 자료형(INTEGER/TEXT/REAL)을 정의. id INTEGER PRIMARY KEY는 각 행을 구분하는 기본 키. INSERT INTO book ... VALUES (...), (...) : 여러 행을 한 번에 삽입. 'Shakespeare''s Sonnets' : 제목 속 작은따옴표는 **두 번('')**으로 이스케이프. ⑤ 💡 팁 — DROP TABLE IF EXISTS → CREATE → INSERT 순서를 한 스크립트에 묶어두면, 데이터가 꼬여도 위에서부터 다시 실행해 언제든 초기 상태로 복구할 수 있다.\n데이터 출처: 제목·가격은 https://books.toscrape.com/ 의 값, 카테고리·평점·재고는 연습용 임의값이다.\n09 · INSERT / UPDATE / DELETE ① 한 줄 설명 — book 테이블에 행을 추가(INSERT)·수정(UPDATE)·삭제(DELETE)한다. (8번을 먼저 실행해 book이 있어야 한다.)\n② 코드 (출처: Day01_dml_lecture.sql)\n-- 8. INSERT -------------------------------------------------- -- 문제 1. 신간 'It''s Only the Himalayas' (Travel, £45.17, 평점 2, 재고 19) 추가. INSERT INTO book (id, title, category, price, rating, stock) VALUES (13, 'It''s Only the Himalayas', 'Travel', 45.17, 2, 19); -- 문제 2. 컬럼명 생략 방식으로 'Set Me Free' (Young Adult, £17.46, 평점 5, 재고 19) 추가. INSERT INTO book VALUES (14, 'Set Me Free', 'Young Adult', 17.46, 5, 19); SELECT * FROM book; -- 9. UPDATE -------------------------------------------------- -- 문제 1. 'Soumission' 가격을 50.10 -\u003e 39.99 로 변경. UPDATE book SET price = 39.99 WHERE title = 'Soumission'; -- 문제 2. Poetry 책들의 stock 을 기존 값 + 5 로 변경. UPDATE book SET stock = stock + 5 WHERE category = 'Poetry'; SELECT * FROM book; -- 10. DELETE ------------------------------------------------- -- 문제 1. 평점이 1점인 책들을 모두 삭제. DELETE FROM book WHERE rating = 1; -- 문제 2. 재고(stock)가 16권 미만인 책 삭제. DELETE FROM book WHERE stock \u003c 16; SELECT * FROM book; -- ★ 주의: UPDATE / DELETE 에서 WHERE 를 빼면 전체 행이 수정·삭제됩니다. -- 예) DELETE FROM book; -\u003e book 전체 삭제 ③ 출력 결과 — 각 SELECT * FROM book;에서 변화가 확인된다. INSERT 후 14행, UPDATE 후 Soumission 가격·Poetry 재고 변경, DELETE 후 평점 1·재고 16미만 책이 사라진다.\n④ 한 줄씩 뜯어보기\nINSERT INTO book (컬럼...) VALUES (값...) : 컬럼을 명시한 삽입. INSERT INTO book VALUES (...) : 컬럼 생략 → 테이블 정의 순서대로 값이 들어간다. UPDATE book SET price = 39.99 WHERE title = 'Soumission' : 조건에 맞는 행의 price만 변경. SET stock = stock + 5 : 기존 값 기반 연산도 가능. DELETE FROM book WHERE rating = 1 : 조건에 맞는 행 삭제. ⑤ 💡 팁 — UPDATE·DELETE는 반드시 WHERE를 확인하라. WHERE를 빼면 전체 행이 대상이 된다(DELETE FROM book; = 전부 삭제). 실무에서 가장 위험한 실수다.\n참고: 판서 기록의 과제 표현(“재고=15 삭제”)과 정답 SQL의 WHERE stock \u003c 16(재고 16 미만)에 표현 차이가 있다. 본 노트는 **정답 파일 기준 stock \u003c 16**을 그대로 따랐다 [원문 확인 필요].\n10 · (보너스) book 테이블로 SELECT 연산자 복습 ① 한 줄 설명 — 앞서 chinook으로 배운 연산자들을 book 테이블로 한 번 더 복습한다.\n② 코드 (출처: Day01_dml_lecture.sql 하단 보너스)\n-- 카테고리 종류만 보기 (DISTINCT) SELECT DISTINCT category FROM book; -- 가격이 40 이상인 책 (비교 연산자) SELECT * FROM book WHERE price \u003e= 40; -- 제목에 'the' 가 들어간 책 (LIKE, 대소문자 무시됨) SELECT * FROM book WHERE title LIKE '%the%'; -- 가격이 비싼 순으로 정렬 (ORDER BY) SELECT title, price FROM book ORDER BY price DESC; ③ 출력 결과 — 카테고리 종류, 40 이상 책, ’the’ 포함 책, 가격 내림차순 목록.\n④ 한 줄씩 뜯어보기\n위 SELECT 연산자(DISTINCT/WHERE/LIKE/ORDER BY)를 그대로 book에 적용한 것. 단, DELETE 이후라 남은 데이터 기준으로 결과가 나온다. ⑤ 💡 팁 — 같은 연산자도 테이블만 바꾸면 똑같이 동작한다. 작은 테이블(book)로 결과를 눈으로 확인하면 동작이 더 명확하게 보인다.\n📚 보충 자료 강사 정답 SQL: Day01_lecture.sql(SELECT), Day01_dml_lecture.sql(DML) — 본 노트 쿼리의 원본 실습 DB: chinook.db(SQLite Tutorial 샘플) book 데이터 출처: https://books.toscrape.com/ (제목·가격) + 연습용 임의값(카테고리·평점·재고) SQLite 공식 문서 — https://www.sqlite.org/lang.html 다시 강조: 이 노트의 쿼리·예시는 학습용 정리다. 6/8 쿼리는 강사 정답 파일에서 그대로 가져왔으나, 실행 결과는 DB 데이터 버전에 따라 미세하게 다를 수 있다.\n마무리 오늘 실습의 뼈대는 두 가지다. (1) SELECT로 골라보기 — 컬럼 선택, DISTINCT, WHERE·복합조건·BETWEEN/IN, LIKE, ORDER BY를 chinook으로 익혔다. (2) DML로 바꾸기 — 안전을 위해 직접 만든 book 테이블에서 INSERT·UPDATE·DELETE를 연습했다. 핵심 습관 한 가지만 챙기자 — UPDATE·DELETE 실행 전 WHERE를 꼭 확인. 그리고 스크립트는 항상 위에서부터 순서대로 실행하자.\n🔗 연관 노트 6/8 SQL 시작하기 강의 정리 — 오늘 쿼리의 개념 정리 ","wordCount":"2023","inLanguage":"en","datePublished":"2026-06-08T09:00:00+09:00","dateModified":"2026-06-08T09:00:00+09:00","author":{"@type":"Person","name":"yw8837"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"AI_6스터디","logo":{"@type":"ImageObject","url":"https://yw8837.github.io/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=header-nav><div class=logo><a href=https://yw8837.github.io/ accesskey=h title="AI_6스터디 (Alt + H)">AI_6스터디</a><div class=logo-switches><button id=theme-toggle class=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
+<svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+<svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu class=menu><li><a href=https://yw8837.github.io/categories/year-study/ title="📚 Year Study"><span>📚 Year Study</span></a></li><li><a href=https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/ title="강의 정리"><span>강의 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/ title="실습 정리"><span>실습 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/ title=프로젝트><span>프로젝트</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><nav class=breadcrumbs role=navigation aria-label=Breadcrumb><a href=/>홈</a>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg>
+<a href=/posts/>Posts</a>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg></nav><h1 class="post-title entry-hint-parent">6/8 SQL 시작하기 — SELECT·DML 실습 쿼리 노트</h1><div class=post-description>6/8 SQL 시작하기 실습 코드 노트. chinook DB 기반 SELECT 7종(DISTINCT·WHERE·복합조건·BETWEEN/IN·LIKE·ORDER BY)과 book 테이블 생성·시드, INSERT·UPDATE·DELETE(DML)를 강사 정답 SQL(Day01_lecture.sql, Day01_dml_lecture.sql) 그대로 정리한다.</div><div class=post-meta><span title='2026-06-08 09:00:00 +0900 KST'>2026년 6월 8일</span>&nbsp;·&nbsp;<span>10 분</span>&nbsp;·&nbsp;<span>yw8837</span></div></header><details class=toc><summary accesskey=c title="(Alt + C)"><span class=title>목차</span></summary><div class=inner><ul><li><a href=#-%ec%8b%a4%ec%8a%b5-%eb%85%b8%ed%8a%b8 aria-label="🧪 실습 노트">🧪 실습 노트</a><ul><li><a href=#01--select--from--%ec%bb%ac%eb%9f%bc-%ec%84%a0%ed%83%9d--limit aria-label="01 · SELECT / FROM · 컬럼 선택 · LIMIT">01 · SELECT / FROM · 컬럼 선택 · LIMIT</a></li><li><a href=#02--distinct-%ec%a4%91%eb%b3%b5-%ec%a0%9c%ea%b1%b0 aria-label="02 · DISTINCT (중복 제거)">02 · DISTINCT (중복 제거)</a></li><li><a href=#03--where--%eb%b9%84%ea%b5%90-%ec%97%b0%ec%82%b0%ec%9e%90 aria-label="03 · WHERE + 비교 연산자">03 · WHERE + 비교 연산자</a></li><li><a href=#04--%eb%b3%b5%ed%95%a9-%ec%a1%b0%ea%b1%b4-and--or--not aria-label="04 · 복합 조건 (AND / OR / NOT)">04 · 복합 조건 (AND / OR / NOT)</a></li><li><a href=#05--%ea%b8%b0%ed%83%80-%ec%97%b0%ec%82%b0%ec%9e%90-between--in--not-in aria-label="05 · 기타 연산자 (BETWEEN / IN / NOT IN)">05 · 기타 연산자 (BETWEEN / IN / NOT IN)</a></li><li><a href=#06--like-%ed%8c%a8%ed%84%b4-%ea%b2%80%ec%83%89 aria-label="06 · LIKE (패턴 검색)">06 · LIKE (패턴 검색)</a></li><li><a href=#07--order-by-%ec%a0%95%eb%a0%ac aria-label="07 · ORDER BY (정렬)">07 · ORDER BY (정렬)</a></li><li><a href=#08--dml-%ec%a4%80%eb%b9%84--book-%ed%85%8c%ec%9d%b4%eb%b8%94-%ec%83%9d%ec%84%b1--%ec%8b%9c%eb%93%9c aria-label="08 · DML 준비 — book 테이블 생성 + 시드">08 · DML 준비 — book 테이블 생성 + 시드</a></li><li><a href=#09--insert--update--delete aria-label="09 · INSERT / UPDATE / DELETE">09 · INSERT / UPDATE / DELETE</a></li><li><a href=#10--%eb%b3%b4%eb%84%88%ec%8a%a4-book-%ed%85%8c%ec%9d%b4%eb%b8%94%eb%a1%9c-select-%ec%97%b0%ec%82%b0%ec%9e%90-%eb%b3%b5%ec%8a%b5 aria-label="10 · (보너스) book 테이블로 SELECT 연산자 복습">10 · (보너스) book 테이블로 SELECT 연산자 복습</a></li></ul></li><li><a href=#-%eb%b3%b4%ec%b6%a9-%ec%9e%90%eb%a3%8c aria-label="📚 보충 자료">📚 보충 자료</a><ul><li><a href=#%eb%a7%88%eb%ac%b4%eb%a6%ac aria-label=마무리>마무리</a></li><li><a href=#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8 aria-label="🔗 연관 노트">🔗 연관 노트</a></li></ul></li></ul></div></details><div class="post-content md-content"><blockquote><p>🧪 <strong>이 노트는 실습용 쿼리 모음이다.</strong> 6/8 쿼리는 강사님 정답 파일(<code>Day01_lecture.sql</code>, <code>Day01_dml_lecture.sql</code>)에서 <strong>그대로 가져온 것</strong>이라 안심하고 따라 해도 된다(6/9 노트와 달리 재구성이 아니다). 실습 DB는 <strong>chinook</strong>(SELECT용), DML은 <strong>직접 만든 book 테이블</strong>에서 진행한다.</p><p>⚠️ 한 줄 주의: 이 노트의 쿼리·예시는 학습용 정리이며, 실행 결과는 데이터 버전에 따라 조금씩 다를 수 있다.</p></blockquote><h1 id=-실습-노트>🧪 실습 노트<a hidden class=anchor aria-hidden=true href=#-실습-노트>#</a></h1><p>순서대로 따라 하면 된다. 위에서 아래로 실행해야 의존성이 끊기지 않는다(특히 6번 book 테이블은 생성→시드→DML 순서 필수).</p><ol><li>SELECT / FROM · 컬럼 선택 · LIMIT</li><li>DISTINCT (중복 제거)</li><li>WHERE + 비교 연산자</li><li>복합 조건 (AND / OR / NOT)</li><li>기타 연산자 (BETWEEN / IN / NOT IN)</li><li>LIKE (패턴 검색)</li><li>ORDER BY (정렬)</li><li>DML 준비 — book 테이블 생성 + 시드</li><li>INSERT / UPDATE / DELETE</li></ol><hr><h2 id=01--select--from--컬럼-선택--limit>01 · SELECT / FROM · 컬럼 선택 · LIMIT<a hidden class=anchor aria-hidden=true href=#01--select--from--컬럼-선택--limit>#</a></h2><p><strong>① 한 줄 설명</strong> — 가장 기본. 어떤 컬럼을(SELECT) 어느 테이블에서(FROM) 가져올지 지정한다.</p><p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 문제 1. albums 테이블에서 앨범 제목(Title)만 모두 보여주세요.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>Title</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. artists 테이블의 모든 정보를 보여주세요.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>artists</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 3. tracks 테이블의 모든 컬럼을 앞 10건만 보여주세요.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 4. tracks 테이블에서 곡 이름(Name)과 단가(UnitPrice)만 보여주세요. (앞 10건)
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>Name</span><span class=p>,</span><span class=w> </span><span class=n>UnitPrice</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 문제 1은 앨범 제목 한 컬럼, 문제 2는 artists 전체 컬럼, 문제 3·4는 10행만 출력된다.</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li><code>SELECT Title</code> : Title 컬럼만 고른다. 여러 개면 <code>Name, UnitPrice</code>처럼 콤마로.</li><li><code>SELECT *</code> : <code>*</code>는 모든 컬럼.</li><li><code>FROM albums</code> : 데이터를 가져올 테이블.</li><li><code>LIMIT 10</code> : 앞 10건만. 데이터가 많을 때 미리보기용.</li></ul><p><strong>⑤ 💡 팁</strong> — 큰 테이블을 통째로 <code>SELECT *</code>하면 느리다. 처음엔 <code>LIMIT 10</code>으로 구조를 확인하고 시작하자.</p><hr><h2 id=02--distinct-중복-제거>02 · DISTINCT (중복 제거)<a hidden class=anchor aria-hidden=true href=#02--distinct-중복-제거>#</a></h2><p><strong>① 한 줄 설명</strong> — 뒤에 오는 컬럼의 중복을 제거하고 보여준다.</p><p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 문제 1. customers 테이블에서 Country를 중복 없이.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>DISTINCT</span><span class=w> </span><span class=n>Country</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. tracks 테이블에서 UnitPrice의 종류를 중복 없이.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>DISTINCT</span><span class=w> </span><span class=n>UnitPrice</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 3. City와 Country를 함께 중복 없이.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>DISTINCT</span><span class=w> </span><span class=n>City</span><span class=p>,</span><span class=w> </span><span class=n>Country</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 문제 1은 고객 국가의 &ldquo;종류"만, 문제 3은 (City, Country) 조합의 종류만 출력된다.</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li><code>DISTINCT Country</code> : Country 값에서 중복을 없앤다.</li><li><code>DISTINCT City, Country</code> : <strong>두 컬럼 조합</strong> 기준으로 중복 제거.</li></ul><p><strong>⑤ 💡 팁</strong> — 컬럼이 2개 이상이면 &ldquo;조합&rdquo; 기준이라, 같은 도시여도 나라가 다르면 별개로 본다. &ldquo;나라 종류 수만 알고 싶다"면 컬럼 하나만 DISTINCT 하자.</p><hr><h2 id=03--where--비교-연산자>03 · WHERE + 비교 연산자<a hidden class=anchor aria-hidden=true href=#03--where--비교-연산자>#</a></h2><p><strong>① 한 줄 설명</strong> — 조건에 맞는 행만 걸러낸다.</p><p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 문제 1. Country가 &#39;USA&#39;인 고객.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;USA&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. UnitPrice가 0.99 초과인 곡. (앞 10건)
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>UnitPrice</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=mi>0</span><span class=p>.</span><span class=mi>99</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 3. invoices에서 Total이 10 이상인 건.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>invoices</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Total</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 각 조건을 만족하는 행만 출력된다.</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li><code>WHERE Country = 'USA'</code> : 문자열은 <strong>작은따옴표</strong>로 감싼다.</li><li><code>WHERE UnitPrice > 0.99</code> : 숫자는 따옴표 없이. <code>></code>는 초과, <code>>=</code>는 이상.</li></ul><p><strong>⑤ 💡 팁</strong> — <code>=</code> 하나는 &ldquo;같다&rdquo;(비교)다. 헷갈려서 따옴표를 빼면 컬럼/문자열 오류가 난다. 문자열 비교는 항상 따옴표 확인.</p><hr><h2 id=04--복합-조건-and--or--not>04 · 복합 조건 (AND / OR / NOT)<a hidden class=anchor aria-hidden=true href=#04--복합-조건-and--or--not>#</a></h2><p><strong>① 한 줄 설명</strong> — 여러 조건을 AND·OR·NOT으로 묶는다.</p><p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 문제 1. Country가 &#39;USA&#39; 그리고 State가 &#39;CA&#39;인 고객.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;USA&#39;</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=k>State</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;CA&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. Country가 &#39;USA&#39; 이거나 &#39;Canada&#39;인 고객.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;USA&#39;</span><span class=w> </span><span class=k>OR</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Canada&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 3. Country가 &#39;USA&#39;가 아닌 고객.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;USA&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- (WHERE Country != &#39;USA&#39; 와 동일)
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 문제 1은 두 조건 모두 만족, 문제 2는 둘 중 하나, 문제 3은 USA가 아닌 고객.</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li><code>AND</code> : 둘 다 만족해야 통과.</li><li><code>OR</code> : 하나만 만족해도 통과.</li><li><code>NOT Country = 'USA'</code> : 조건의 반대. <code>Country != 'USA'</code>와 같다.</li></ul><p><strong>⑤ 💡 팁</strong> — 같은 컬럼을 여러 값과 OR로 길게 나열할 거면, 다음 절의 <code>IN(...)</code>이 훨씬 깔끔하다.</p><hr><h2 id=05--기타-연산자-between--in--not-in>05 · 기타 연산자 (BETWEEN / IN / NOT IN)<a hidden class=anchor aria-hidden=true href=#05--기타-연산자-between--in--not-in>#</a></h2><p><strong>① 한 줄 설명</strong> — 범위(BETWEEN)와 목록(IN/NOT IN)으로 조건을 건다.</p><p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 문제 1. Total이 5~10 사이(포함)인 인보이스.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>invoices</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Total</span><span class=w> </span><span class=k>BETWEEN</span><span class=w> </span><span class=mi>5</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. 미국, 캐나다, 브라질 고객.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;USA&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Canada&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Brazil&#39;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 3. 위 세 나라를 제외한 나머지.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>customers</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Country</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>IN</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;USA&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Canada&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Brazil&#39;</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 문제 1은 5~10 범위(경계 포함), 문제 2는 세 나라, 문제 3은 그 외 나라.</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li><code>BETWEEN 5 AND 10</code> : 5와 10을 <strong>포함</strong>하는 범위.</li><li><code>IN ('USA', 'Canada', 'Brazil')</code> : 목록 중 하나라도 일치.</li><li><code>NOT IN (...)</code> : 목록에 없는 것.</li></ul><p><strong>⑤ 💡 팁</strong> — <code>BETWEEN</code>은 경계값을 포함한다. &ldquo;5 초과 10 미만"이 필요하면 <code>Total > 5 AND Total &lt; 10</code>처럼 직접 써야 한다.</p><hr><h2 id=06--like-패턴-검색>06 · LIKE (패턴 검색)<a hidden class=anchor aria-hidden=true href=#06--like-패턴-검색>#</a></h2><p><strong>① 한 줄 설명</strong> — 특정 문자가 포함된 문자열을 와일드카드 <code>%</code>로 찾는다.</p><p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 문제 1. 제목이 &#39;Rock&#39;으로 시작하는 앨범.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Title</span><span class=w> </span><span class=k>LIKE</span><span class=w> </span><span class=s1>&#39;Rock%&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. 제목이 &#39;Live&#39;로 끝나는 앨범.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Title</span><span class=w> </span><span class=k>LIKE</span><span class=w> </span><span class=s1>&#39;%Live&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 3. 곡 이름에 &#39;Love&#39;가 들어간 곡. (앞 10건)
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>Name</span><span class=w> </span><span class=k>LIKE</span><span class=w> </span><span class=s1>&#39;%Love%&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — &lsquo;Rock…&rsquo; 시작 앨범, &lsquo;…Live&rsquo; 끝 앨범, &lsquo;Love&rsquo; 포함 곡(10건).</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li><code>'Rock%'</code> : Rock으로 <strong>시작</strong>(% = 뒤에 아무거나).</li><li><code>'%Live'</code> : Live로 <strong>끝남</strong>(% = 앞에 아무거나).</li><li><code>'%Love%'</code> : Love <strong>포함</strong>(앞뒤 아무거나).</li></ul><p><strong>⑤ 💡 팁</strong> — <code>%</code>는 &ldquo;임의의 문자열"이다. 한 글자만 매칭하는 <code>_</code>(언더스코어)도 있다. SQLite의 LIKE는 기본적으로 대소문자를 구분하지 않는다.</p><hr><h2 id=07--order-by-정렬>07 · ORDER BY (정렬)<a hidden class=anchor aria-hidden=true href=#07--order-by-정렬>#</a></h2><p><strong>① 한 줄 설명</strong> — 결과를 오름차순(ASC)·내림차순(DESC)으로 정렬한다.</p><p><strong>② 코드</strong> (출처: <code>Day01_lecture.sql</code>)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 문제 1. tracks를 UnitPrice 내림차순으로. (앞 10건)
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>Name</span><span class=p>,</span><span class=w> </span><span class=n>UnitPrice</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>tracks</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>UnitPrice</span><span class=w> </span><span class=k>DESC</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. 결제 금액이 가장 큰 인보이스 5건.
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>invoices</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>Total</span><span class=w> </span><span class=k>DESC</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>LIMIT</span><span class=w> </span><span class=mi>5</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 3. 앨범 제목을 알파벳 오름차순으로. (앞 10건)
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>Title</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>albums</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>Title</span><span class=w> </span><span class=k>ASC</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>LIMIT</span><span class=w> </span><span class=mi>10</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 단가 높은 순 10곡, 결제액 큰 순 5건, 제목 알파벳 순 10개.</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li><code>ORDER BY UnitPrice DESC</code> : UnitPrice 기준 <strong>내림차순</strong>(큰 값부터).</li><li><code>ORDER BY Title ASC</code> : Title 기준 <strong>오름차순</strong>(작은 값/A부터). ASC는 기본값이라 생략 가능.</li></ul><p><strong>⑤ 💡 팁</strong> — <code>ORDER BY ... DESC</code> + <code>LIMIT n</code> 조합이 &ldquo;상위 n개&rdquo; 뽑는 단골 패턴이다(예: 매출 TOP 5). 여기 <code>DESC</code>는 정렬용으로, 6/8 강의의 <code>DESC 테이블명</code>(구조 보기)과 다른 기능이다.</p><hr><h2 id=08--dml-준비--book-테이블-생성--시드>08 · DML 준비 — book 테이블 생성 + 시드<a hidden class=anchor aria-hidden=true href=#08--dml-준비--book-테이블-생성--시드>#</a></h2><p><strong>① 한 줄 설명</strong> — chinook를 건드리지 않기 위해, DML 연습용 <code>book</code> 테이블을 새로 만들고 데이터를 채운다.</p><p><strong>② 코드</strong> (출처: <code>Day01_dml_lecture.sql</code>, 원문 그대로)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 이미 있으면 지우고 새로 만들어, 몇 번을 실행해도 에러가 안 나게 함
+</span></span></span><span class=line><span class=cl><span class=k>DROP</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=k>IF</span><span class=w> </span><span class=k>EXISTS</span><span class=w> </span><span class=n>book</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>id</span><span class=w>       </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>title</span><span class=w>    </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>category</span><span class=w> </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>price</span><span class=w>    </span><span class=nb>REAL</span><span class=p>,</span><span class=w>     </span><span class=c1>-- 단위: £ (사이트 값, 무작위라 의미는 없음)
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>rating</span><span class=w>   </span><span class=nb>INTEGER</span><span class=p>,</span><span class=w>  </span><span class=c1>-- 1~5 (연습용)
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>stock</span><span class=w>    </span><span class=nb>INTEGER</span><span class=w>   </span><span class=c1>-- 재고 수량 (연습용)
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=p>(</span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>title</span><span class=p>,</span><span class=w> </span><span class=n>category</span><span class=p>,</span><span class=w> </span><span class=n>price</span><span class=p>,</span><span class=w> </span><span class=n>rating</span><span class=p>,</span><span class=w> </span><span class=n>stock</span><span class=p>)</span><span class=w> </span><span class=k>VALUES</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>1</span><span class=p>,</span><span class=w>  </span><span class=s1>&#39;A Light in the Attic&#39;</span><span class=p>,</span><span class=w>                 </span><span class=s1>&#39;Poetry&#39;</span><span class=p>,</span><span class=w>             </span><span class=mi>51</span><span class=p>.</span><span class=mi>77</span><span class=p>,</span><span class=w> </span><span class=mi>3</span><span class=p>,</span><span class=w> </span><span class=mi>22</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>2</span><span class=p>,</span><span class=w>  </span><span class=s1>&#39;Tipping the Velvet&#39;</span><span class=p>,</span><span class=w>                   </span><span class=s1>&#39;Historical Fiction&#39;</span><span class=p>,</span><span class=w> </span><span class=mi>53</span><span class=p>.</span><span class=mi>74</span><span class=p>,</span><span class=w> </span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=mi>20</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>3</span><span class=p>,</span><span class=w>  </span><span class=s1>&#39;Soumission&#39;</span><span class=p>,</span><span class=w>                           </span><span class=s1>&#39;Fiction&#39;</span><span class=p>,</span><span class=w>            </span><span class=mi>50</span><span class=p>.</span><span class=mi>10</span><span class=p>,</span><span class=w> </span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=mi>20</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>4</span><span class=p>,</span><span class=w>  </span><span class=s1>&#39;Sharp Objects&#39;</span><span class=p>,</span><span class=w>                        </span><span class=s1>&#39;Mystery&#39;</span><span class=p>,</span><span class=w>            </span><span class=mi>47</span><span class=p>.</span><span class=mi>82</span><span class=p>,</span><span class=w> </span><span class=mi>4</span><span class=p>,</span><span class=w> </span><span class=mi>20</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>5</span><span class=p>,</span><span class=w>  </span><span class=s1>&#39;Sapiens: A Brief History of Humankind&#39;</span><span class=p>,</span><span class=s1>&#39;History&#39;</span><span class=p>,</span><span class=w>            </span><span class=mi>54</span><span class=p>.</span><span class=mi>23</span><span class=p>,</span><span class=w> </span><span class=mi>5</span><span class=p>,</span><span class=w> </span><span class=mi>20</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>6</span><span class=p>,</span><span class=w>  </span><span class=s1>&#39;The Requiem Red&#39;</span><span class=p>,</span><span class=w>                       </span><span class=s1>&#39;Young Adult&#39;</span><span class=p>,</span><span class=w>        </span><span class=mi>22</span><span class=p>.</span><span class=mi>65</span><span class=p>,</span><span class=w> </span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=mi>19</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>7</span><span class=p>,</span><span class=w>  </span><span class=s1>&#39;The Dirty Little Secrets of Getting Your Dream Job&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Business&#39;</span><span class=p>,</span><span class=w> </span><span class=mi>33</span><span class=p>.</span><span class=mi>34</span><span class=p>,</span><span class=w> </span><span class=mi>4</span><span class=p>,</span><span class=w> </span><span class=mi>19</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>8</span><span class=p>,</span><span class=w>  </span><span class=s1>&#39;The Black Maria&#39;</span><span class=p>,</span><span class=w>                       </span><span class=s1>&#39;Poetry&#39;</span><span class=p>,</span><span class=w>             </span><span class=mi>52</span><span class=p>.</span><span class=mi>15</span><span class=p>,</span><span class=w> </span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=mi>19</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>9</span><span class=p>,</span><span class=w>  </span><span class=s1>&#39;Starving Hearts&#39;</span><span class=p>,</span><span class=w>                       </span><span class=s1>&#39;Fiction&#39;</span><span class=p>,</span><span class=w>            </span><span class=mi>13</span><span class=p>.</span><span class=mi>99</span><span class=p>,</span><span class=w> </span><span class=mi>2</span><span class=p>,</span><span class=w> </span><span class=mi>18</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>10</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Shakespeare&#39;&#39;s Sonnets&#39;</span><span class=p>,</span><span class=w>                </span><span class=s1>&#39;Poetry&#39;</span><span class=p>,</span><span class=w>             </span><span class=mi>20</span><span class=p>.</span><span class=mi>66</span><span class=p>,</span><span class=w> </span><span class=mi>4</span><span class=p>,</span><span class=w> </span><span class=mi>18</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>11</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Scott Pilgrim&#39;&#39;s Precious Little Life&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Sequential Art&#39;</span><span class=p>,</span><span class=w>     </span><span class=mi>52</span><span class=p>.</span><span class=mi>29</span><span class=p>,</span><span class=w> </span><span class=mi>5</span><span class=p>,</span><span class=w> </span><span class=mi>16</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>(</span><span class=mi>12</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Rip it Up and Start Again&#39;</span><span class=p>,</span><span class=w>             </span><span class=s1>&#39;Music&#39;</span><span class=p>,</span><span class=w>              </span><span class=mi>35</span><span class=p>.</span><span class=mi>02</span><span class=p>,</span><span class=w> </span><span class=mi>5</span><span class=p>,</span><span class=w> </span><span class=mi>15</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 시드가 잘 들어갔는지 확인
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 마지막 <code>SELECT * FROM book;</code>에서 12개 행이 모두 출력되면 성공이다.</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li><code>DROP TABLE IF EXISTS book</code> : book이 있으면 지운다. 덕분에 <strong>몇 번 실행해도 에러가 안 난다</strong>(재실행 가능 패턴).</li><li><code>CREATE TABLE book (...)</code> : 컬럼과 자료형(INTEGER/TEXT/REAL)을 정의. <code>id INTEGER PRIMARY KEY</code>는 각 행을 구분하는 <strong>기본 키</strong>.</li><li><code>INSERT INTO book ... VALUES (...), (...)</code> : 여러 행을 한 번에 삽입.</li><li><code>'Shakespeare''s Sonnets'</code> : 제목 속 작은따옴표는 **두 번(<code>''</code>)**으로 이스케이프.</li></ul><p><strong>⑤ 💡 팁</strong> — <code>DROP TABLE IF EXISTS</code> → <code>CREATE</code> → <code>INSERT</code> 순서를 한 스크립트에 묶어두면, 데이터가 꼬여도 위에서부터 다시 실행해 <strong>언제든 초기 상태로 복구</strong>할 수 있다.</p><blockquote><p>데이터 출처: 제목·가격은 <a href=https://books.toscrape.com/>https://books.toscrape.com/</a> 의 값, 카테고리·평점·재고는 연습용 임의값이다.</p></blockquote><hr><h2 id=09--insert--update--delete>09 · INSERT / UPDATE / DELETE<a hidden class=anchor aria-hidden=true href=#09--insert--update--delete>#</a></h2><p><strong>① 한 줄 설명</strong> — book 테이블에 행을 추가(INSERT)·수정(UPDATE)·삭제(DELETE)한다. (8번을 먼저 실행해 book이 있어야 한다.)</p><p><strong>② 코드</strong> (출처: <code>Day01_dml_lecture.sql</code>)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 8. INSERT --------------------------------------------------
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 1. 신간 &#39;It&#39;&#39;s Only the Himalayas&#39; (Travel, £45.17, 평점 2, 재고 19) 추가.
+</span></span></span><span class=line><span class=cl><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=p>(</span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>title</span><span class=p>,</span><span class=w> </span><span class=n>category</span><span class=p>,</span><span class=w> </span><span class=n>price</span><span class=p>,</span><span class=w> </span><span class=n>rating</span><span class=p>,</span><span class=w> </span><span class=n>stock</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>VALUES</span><span class=w> </span><span class=p>(</span><span class=mi>13</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;It&#39;&#39;s Only the Himalayas&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Travel&#39;</span><span class=p>,</span><span class=w> </span><span class=mi>45</span><span class=p>.</span><span class=mi>17</span><span class=p>,</span><span class=w> </span><span class=mi>2</span><span class=p>,</span><span class=w> </span><span class=mi>19</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. 컬럼명 생략 방식으로 &#39;Set Me Free&#39; (Young Adult, £17.46, 평점 5, 재고 19) 추가.
+</span></span></span><span class=line><span class=cl><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=n>book</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>VALUES</span><span class=w> </span><span class=p>(</span><span class=mi>14</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Set Me Free&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;Young Adult&#39;</span><span class=p>,</span><span class=w> </span><span class=mi>17</span><span class=p>.</span><span class=mi>46</span><span class=p>,</span><span class=w> </span><span class=mi>5</span><span class=p>,</span><span class=w> </span><span class=mi>19</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 9. UPDATE --------------------------------------------------
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 1. &#39;Soumission&#39; 가격을 50.10 -&gt; 39.99 로 변경.
+</span></span></span><span class=line><span class=cl><span class=k>UPDATE</span><span class=w> </span><span class=n>book</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>SET</span><span class=w> </span><span class=n>price</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>39</span><span class=p>.</span><span class=mi>99</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>title</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Soumission&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. Poetry 책들의 stock 을 기존 값 + 5 로 변경.
+</span></span></span><span class=line><span class=cl><span class=k>UPDATE</span><span class=w> </span><span class=n>book</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>SET</span><span class=w> </span><span class=n>stock</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>stock</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=mi>5</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>category</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s1>&#39;Poetry&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 10. DELETE -------------------------------------------------
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 1. 평점이 1점인 책들을 모두 삭제.
+</span></span></span><span class=line><span class=cl><span class=k>DELETE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>rating</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>1</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 문제 2. 재고(stock)가 16권 미만인 책 삭제.
+</span></span></span><span class=line><span class=cl><span class=k>DELETE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>WHERE</span><span class=w> </span><span class=n>stock</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=mi>16</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- ★ 주의: UPDATE / DELETE 에서 WHERE 를 빼면 전체 행이 수정·삭제됩니다.
+</span></span></span><span class=line><span class=cl><span class=c1>--         예) DELETE FROM book;  -&gt; book 전체 삭제
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 각 <code>SELECT * FROM book;</code>에서 변화가 확인된다. INSERT 후 14행, UPDATE 후 Soumission 가격·Poetry 재고 변경, DELETE 후 평점 1·재고 16미만 책이 사라진다.</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li><code>INSERT INTO book (컬럼...) VALUES (값...)</code> : 컬럼을 명시한 삽입.</li><li><code>INSERT INTO book VALUES (...)</code> : 컬럼 생략 → <strong>테이블 정의 순서대로</strong> 값이 들어간다.</li><li><code>UPDATE book SET price = 39.99 WHERE title = 'Soumission'</code> : 조건에 맞는 행의 price만 변경.</li><li><code>SET stock = stock + 5</code> : <strong>기존 값 기반 연산</strong>도 가능.</li><li><code>DELETE FROM book WHERE rating = 1</code> : 조건에 맞는 행 삭제.</li></ul><p><strong>⑤ 💡 팁</strong> — <code>UPDATE</code>·<code>DELETE</code>는 <strong>반드시 <code>WHERE</code>를 확인</strong>하라. <code>WHERE</code>를 빼면 전체 행이 대상이 된다(<code>DELETE FROM book;</code> = 전부 삭제). 실무에서 가장 위험한 실수다.</p><blockquote><p>참고: 판서 기록의 과제 표현(&ldquo;재고=15 삭제&rdquo;)과 정답 SQL의 <code>WHERE stock &lt; 16</code>(재고 16 미만)에 표현 차이가 있다. 본 노트는 **정답 파일 기준 <code>stock &lt; 16</code>**을 그대로 따랐다 <code>[원문 확인 필요]</code>.</p></blockquote><hr><h2 id=10--보너스-book-테이블로-select-연산자-복습>10 · (보너스) book 테이블로 SELECT 연산자 복습<a hidden class=anchor aria-hidden=true href=#10--보너스-book-테이블로-select-연산자-복습>#</a></h2><p><strong>① 한 줄 설명</strong> — 앞서 chinook으로 배운 연산자들을 book 테이블로 한 번 더 복습한다.</p><p><strong>② 코드</strong> (출처: <code>Day01_dml_lecture.sql</code> 하단 보너스)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- 카테고리 종류만 보기 (DISTINCT)
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=k>DISTINCT</span><span class=w> </span><span class=n>category</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 가격이 40 이상인 책 (비교 연산자)
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>price</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=mi>40</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 제목에 &#39;the&#39; 가 들어간 책 (LIKE, 대소문자 무시됨)
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=n>title</span><span class=w> </span><span class=k>LIKE</span><span class=w> </span><span class=s1>&#39;%the%&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- 가격이 비싼 순으로 정렬 (ORDER BY)
+</span></span></span><span class=line><span class=cl><span class=k>SELECT</span><span class=w> </span><span class=n>title</span><span class=p>,</span><span class=w> </span><span class=n>price</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>book</span><span class=w> </span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=n>price</span><span class=w> </span><span class=k>DESC</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></div><p><strong>③ 출력 결과</strong> — 카테고리 종류, 40 이상 책, &rsquo;the&rsquo; 포함 책, 가격 내림차순 목록.</p><p><strong>④ 한 줄씩 뜯어보기</strong></p><ul><li>위 SELECT 연산자(DISTINCT/WHERE/LIKE/ORDER BY)를 그대로 book에 적용한 것. 단, DELETE 이후라 남은 데이터 기준으로 결과가 나온다.</li></ul><p><strong>⑤ 💡 팁</strong> — 같은 연산자도 테이블만 바꾸면 똑같이 동작한다. 작은 테이블(book)로 결과를 눈으로 확인하면 동작이 더 명확하게 보인다.</p><hr><h1 id=-보충-자료>📚 보충 자료<a hidden class=anchor aria-hidden=true href=#-보충-자료>#</a></h1><ul><li>강사 정답 SQL: <code>Day01_lecture.sql</code>(SELECT), <code>Day01_dml_lecture.sql</code>(DML) — 본 노트 쿼리의 원본</li><li>실습 DB: <code>chinook.db</code>(SQLite Tutorial 샘플)</li><li>book 데이터 출처: <a href=https://books.toscrape.com/>https://books.toscrape.com/</a> (제목·가격) + 연습용 임의값(카테고리·평점·재고)</li><li>SQLite 공식 문서 — <a href=https://www.sqlite.org/lang.html>https://www.sqlite.org/lang.html</a></li></ul><blockquote><p>다시 강조: <strong>이 노트의 쿼리·예시는 학습용 정리다.</strong> 6/8 쿼리는 강사 정답 파일에서 그대로 가져왔으나, 실행 결과는 DB 데이터 버전에 따라 미세하게 다를 수 있다.</p></blockquote><h2 id=마무리>마무리<a hidden class=anchor aria-hidden=true href=#마무리>#</a></h2><p>오늘 실습의 뼈대는 두 가지다. <strong>(1) SELECT로 골라보기</strong> — 컬럼 선택, DISTINCT, WHERE·복합조건·BETWEEN/IN, LIKE, ORDER BY를 chinook으로 익혔다. <strong>(2) DML로 바꾸기</strong> — 안전을 위해 직접 만든 book 테이블에서 INSERT·UPDATE·DELETE를 연습했다. 핵심 습관 한 가지만 챙기자 — <strong><code>UPDATE</code>·<code>DELETE</code> 실행 전 <code>WHERE</code>를 꼭 확인.</strong> 그리고 스크립트는 항상 위에서부터 순서대로 실행하자.</p><h2 id=-연관-노트>🔗 연관 노트<a hidden class=anchor aria-hidden=true href=#-연관-노트>#</a></h2><ul><li><a href=/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/>6/8 SQL 시작하기 강의 정리</a> — 오늘 쿼리의 개념 정리</li></ul></div><footer class=post-footer><ul class=post-tags><li><a href=https://yw8837.github.io/tags/sql/>SQL</a></li><li><a href=https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/>실습</a></li><li><a href=https://yw8837.github.io/tags/select/>SELECT</a></li><li><a href=https://yw8837.github.io/tags/dml/>DML</a></li><li><a href=https://yw8837.github.io/tags/chinook/>Chinook</a></li><li><a href=https://yw8837.github.io/tags/sqlite/>SQLite</a></li><li><a href=https://yw8837.github.io/tags/where/>WHERE</a></li><li><a href=https://yw8837.github.io/tags/like/>LIKE</a></li><li><a href=https://yw8837.github.io/tags/order-by/>ORDER BY</a></li></ul><nav class=paginav><a class=prev href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-08-sql-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/><span class=title>« 이전 페이지</span>
+<span>6/8 SQL 시작하기 — DB 개념부터 SELECT·DML까지, 데이터를 다루는 첫걸음</span>
+</a><a class=next href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-05-%EC%83%9D%EC%84%B1%ED%98%95-ai-%EA%B8%B0%EC%B4%88-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><span class=title>다음 페이지 »</span>
+<span>6/5 생성형 AI 기초 — 도구 활용 워크플로 & SCQA 작성 실습 노트</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2026 <a href=https://yw8837.github.io/>AI_6스터디</a></span> ·
+<a href=/posts/privacy-policy/>개인정보처리방침</a> · <a href=/posts/disclaimer/>서비스 이용 안내</a> ·
+<span>Powered by
+<a href="https://gohugo.io/?utm_source=papermod" rel=noopener target=_blank>Hugo</a> &
+<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top id=top-link class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey=g><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></a><div style=text-align:center;margin-top:8px;font-size:13px;color:#888><a href=/posts/privacy-policy/ style=color:#888>개인정보처리방침</a> · <a href=/posts/disclaimer/ style=color:#888>서비스 이용 안내</a></div><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var toplink=document.getElementById("top-link");window.onscroll=function(){const e=window.innerHeight;document.body.scrollTop>e||document.documentElement.scrollTop>e?toplink.classList.remove("hidden"):toplink.classList.add("hidden")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="복사";function s(){t.innerHTML="복사 완료!",setTimeout(()=>{t.innerHTML="복사"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

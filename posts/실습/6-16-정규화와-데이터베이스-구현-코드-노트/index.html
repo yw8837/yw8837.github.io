@@ -1,812 +1,131 @@
-<!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>6/16 정규화 &amp; 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트 | AI_6스터디</title>
-<meta name="keywords" content="데이터베이스, 실습, 정규화, Normalization, SQL, SQLite, 1NF, 2NF, 3NF, CREATE, 복합키, 외래키, 이상현상, Anomaly, normalization_compare, Streamlit, MySQL, 인덱스, PRAGMA, 초보자">
-<meta name="description" content="6/16 정규화 &amp; 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py &#43; Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다.">
-<meta name="author" content="yw8837">
-<link rel="canonical" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://yw8837.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://yw8837.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://yw8837.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://yw8837.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://yw8837.github.io/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-                color-scheme: dark;
-            }
-
-            .list {
-                background: var(--theme);
-            }
-
-            .toc {
-                background: var(--entry);
-            }
-        }
-
-    </style>
-</noscript>
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else if (localStorage.getItem("pref-theme") === "light") {
-       document.querySelector("html").dataset.theme = 'light';
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else {
-        document.querySelector("html").dataset.theme = 'light';
-    }
-
-</script>
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script>
-      <script>
-        var doNotTrack = false;
-        if ( true ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
-        }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-EQR4094Q13');
-        }
-      </script><meta property="og:url" content="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">
-  <meta property="og:site_name" content="AI_6스터디">
-  <meta property="og:title" content="6/16 정규화 & 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트">
-  <meta property="og:description" content="6/16 정규화 &amp; 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py &#43; Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다.">
-  <meta property="og:locale" content="ko">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2026-06-16T09:00:00+09:00">
-    <meta property="article:modified_time" content="2026-06-16T09:00:00+09:00">
-    <meta property="article:tag" content="데이터베이스">
-    <meta property="article:tag" content="실습">
-    <meta property="article:tag" content="정규화">
-    <meta property="article:tag" content="Normalization">
-    <meta property="article:tag" content="SQL">
-    <meta property="article:tag" content="SQLite">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="6/16 정규화 & 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트">
-  <meta name="twitter:description" content="6/16 정규화 &amp; 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py &#43; Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다.">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://yw8837.github.io/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "6/16 정규화 \u0026 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트",
-      "item": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "6/16 정규화 \u0026 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트",
-  "name": "6\/16 정규화 \u0026 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트",
-  "description": "6/16 정규화 \u0026 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py + Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다.",
-  "keywords": [
-    "데이터베이스", "실습", "정규화", "Normalization", "SQL", "SQLite", "1NF", "2NF", "3NF", "CREATE", "복합키", "외래키", "이상현상", "Anomaly", "normalization_compare", "Streamlit", "MySQL", "인덱스", "PRAGMA", "초보자"
-  ],
-  "articleBody": " 📌 정답 출처 안내. 아래 정규화 SQL은 강사 답지(비정규화.sql, 1NF.sql, 2NF.sql, 3NF.sql)와 데모(normalization_compare/norm_db.py, README.md)에서 그대로 가져왔다. 표시가 없으면 모두 ✅ 실제 답지이고, 원본 SQL은 변경하지 않았다.\n🗄️ 실습 DBMS는 SQLite (normalization_compare/normalization.db, norm_db.py의 sqlite3). 정규화 SQL은 ERD Editor import용 CREATE TABLE이다. ⚠️ 후반 DB 구현 슬라이드(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX)는 MySQL 기준이라 SQLite엔 없거나 문법이 다르다 — §05에서 따로 정리한다.\n🧪 실습 노트 00. 4단계 데모 구성 — 같은 데이터, 4개 DB 01. 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교) 02. 정규화 SQL ① 비정규화 → 1NF (원자값) ✅ 03. 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅ 04. 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅ 05. ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이) 00 · 4단계 데모 구성 — 같은 데이터, 4개 DB ① 이 데모의 아이디어는 한 줄이다 — 완전히 같은 학생·수강 데이터를 비정규화·1NF·2NF·3NF 네 단계 DB에 각각 저장해두고, 똑같은 갱신/삽입/삭제 작업을 해보며 어느 단계에서 사고(이상현상)가 나는지 비교한다.\n② 공통 시드 데이터 (README 표 / norm_db.py 주석):\n학번 학생 학과 수강 101 김민준 CS 컴퓨터공학 CS301(A+), CS302(A) 102 이서연 EE 전자공학 CS301(B+) 과목: CS301 데이터베이스(김교수, 301호), CS302 운영체제(박교수, 302호) 학과: CS 컴퓨터공학(공학관 A동), EE 전자공학(공학관 B동) ④ 같은 데이터를 4번 저장하는 이유는, “입력은 같은데 정규화 단계만 다르면 결과가 어떻게 갈리는지” 를 통제된 비교로 보기 위해서다. UI도 입력도 동일하고, 오직 테이블 설계만 다르다.\n💡 6/15 constraint_demo가 “UI는 같은데 제약 설계가 틀리면 가입이 막힌다\"였다면, 오늘 데모는 “입력은 같은데 정규화 단계가 낮으면 데이터가 꼬인다“를 보여주는 짝이다.\n01 · 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교) 오늘의 백미. Streamlit 앱에서 4개 탭(비정규화/1NF/2NF/3NF)을 두고, 동일한 작업을 단계별로 실행해 이상현상을 눈으로 비교한다.\n실행법 cd normalization_compare uv sync uv run streamlit run app.py # http://localhost:8501 ★ 핵심 — 단계별 이상 상태 표 ① 이 표가 오늘 실습 전체의 결론이다 (README + norm_db.py의 SCENARIO_ANOMALY).\n단계 갱신(학과) 갱신(교수) 삽입 삭제 종합 비정규화 존재 존재 존재 존재 ❌ 이상 구조 1NF 존재 존재 존재 존재 ❌ 이상 구조 2NF 잔존 정상 정상 정상 ⚠ 이행 종속 잔존 3NF 정상 정상 정상 정상 ✅ 정상 ④ 표 읽는 법 — norm_db.py의 라벨 그대로:\nrisk=“이상 존재” → 비정규화·1NF: 구조적으로 이상에 취약 partial=“일부 잔존” → 2NF: 부분 종속은 해소됐지만 이행 종속 때문에 학과 갱신 이상만 남음 ok=“정상” → 3NF: 모든 이상 해소 💡 이 표의 핵심은 2NF 행이다. 2NF는 부분 종속을 없앴는데도 학과 갱신 한 칸만 “잔존” 이다. 바로 그 한 칸이 2NF와 3NF의 차이(이행 종속)를 눈으로 보여준다 — 학과를 독립 테이블로 빼는 3NF가 되어야 그 칸도 “정상\"이 된다.\n4가지 시나리오 (norm_db.py 함수 / README ➊~➍) ① 같은 작업을 4단계 DB에서 각각 실행해, 단계마다 결과가 어떻게 다른지 본다.\n➊ 학과 건물 변경 = 갱신 이상 (update_dept_building) — 학과코드 + 새 건물명 입력\n비정규화/1NF: 같은 학과 정보가 여러 행에 중복 → “첫 row만 수정하면 같은 학과인데 건물이 row마다 달라질 수 있음” 2NF: student_2nf에 학과가 학생별로 중복 → “dept_building이 학생 row마다 다를 수 있음”(이행 종속 잔존) 3NF: UPDATE department ... WHERE dept_code = ? → 학과 마스터 1곳만 수정(정상) ➋ 교수 연구실 변경 = 갱신 이상 (update_professor_office) — 과목코드 + 새 연구실 입력\n비정규화: 다중값 셀 전체를 다시 저장해야 함 / 1NF: 해당 과목의 모든 수강 row 수정 필요 2NF: UPDATE course_2nf ... 1 row → 모든 수강 조회에 반영(정상) / 3NF: UPDATE professor ... 1 row(정상) ➌ 수강 등록 = 삽입 이상 (add_enrollment) — 학번/과목/성적 입력 (기본 과목명 ‘네트워크’, 교수 ‘최교수’, 연구실 ‘401호’)\n비정규화: 다중값 셀에 콤마로 이어 붙임 → 원자값·무결성 위반 / 1NF: 원자값 삽입은 되지만 학과·교수 정보가 row마다 중복 2NF/3NF: enrollment/enrollment_3nf에 성적만 추가(과목 없으면 마스터 테이블에 먼저 INSERT) → 정상 ➍ 학생 수강 삭제 = 삭제 이상 (delete_student_records) — 학번 입력\n비정규화: 학생 row 삭제 → 해당 학생·수강·학과 정보가 모두 사라짐 / 1NF: 수강 row 삭제 → 학생 마스터가 없어 학생 정보 복구 불가 2NF/3NF: enrollment에서 수강만 삭제 → student_2nf/student 마스터에 학생 정보 유지(정상) ⑤ 추가로 check_data_issues가 각 단계의 실제 데이터 불일치를 자동 탐지한다 — 비정규화는 course_ids 중복, 1NF는 “같은 학생인데 dept_building이 row마다 다름”/“과목 교수 연구실이 row마다 다름”, 2NF는 “학과 dept_building이 학생 row마다 다름”, 3NF는 (정상이면) 없음.\n💡 데모 전체의 학습 포인트: UI·입력이 같아도 DB 정규화 단계에 따라 이상현상 발생 여부가 달라진다. 비정규화·1NF는 구조적으로 이상에 취약, 2NF는 부분 종속만 해소돼 학과 갱신 이상이 잔존, 3NF에서 모든 이상이 해소된다.\n02 · 정규화 SQL ① 비정규화 → 1NF (원자값) ✅ ① 위 데모가 내부에서 단계별로 쓰는 테이블 구조를, 답지 SQL로 직접 본다. 먼저 모든 게 한 테이블에 들어간 비정규화 상태다.\n[0단계] 비정규화 — student_course_all (다중값, PK 없음)\n-- ✅ 실제 답지 (비정규화.sql) CREATE TABLE student_course_all ( student_id INTEGER, student_name TEXT, course_ids TEXT, course_names TEXT, grades TEXT, professor_name TEXT, professor_office TEXT, dept_code TEXT, dept_name TEXT, dept_building TEXT ); ④ 무엇이 문제인가:\nPK가 없다 → 행을 유일하게 식별 못 함 course_ids·course_names·grades가 다중값(콤마 구분) → WHERE·JOIN·ORDER BY가 정상 동작 불가 학생이 N과목 수강하면 professor_name·dept_name 등이 행마다 중복 복제 ⚠ 메모(원문 차이 보존): norm_db.py 안의 동명 테이블은 student_id INTEGER PRIMARY KEY + professor_names/professor_offices(복수형)로 정의돼 있다(다중값 강조 + 4단계 공존을 위한 변형). 답지 비정규화.sql(위)은 professor_name/professor_office(단수형)다. 둘 다 원문 그대로 인용한다.\n[1NF] 원자값 + 복합 PK — student_course_1nf\n-- ✅ 실제 답지 (1NF.sql) CREATE TABLE student_course_1nf ( student_id INTEGER, course_id TEXT, student_name TEXT, course_name TEXT, grade TEXT, professor_name TEXT, professor_office TEXT, dept_code TEXT, dept_name TEXT, dept_building TEXT, PRIMARY KEY (student_id, course_id) ); ④ 무엇이 바뀌었나(= 1NF가 제거한 것): 다중값 컬럼(course_ids 등)을 원자값으로 풀고, 한 행 = “한 학생의 한 과목\"이 되도록 복합 PK (student_id, course_id) 를 줬다. 아직 남은 문제: 여전히 단일 테이블이라 student_name·학과·교수 정보가 행마다 중복된다 → 2NF·3NF로.\n03 · 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅ ① 복합키 (student_id, course_id)의 일부에만 매달린 컬럼을 별도 테이블로 빼낸다. 1테이블 → 3테이블.\n-- ✅ 실제 답지 (2NF.sql) CREATE TABLE student_2nf ( student_id INTEGER PRIMARY KEY, student_name TEXT NOT NULL, dept_code TEXT, dept_name TEXT, dept_building TEXT ); CREATE TABLE course_2nf ( course_id TEXT PRIMARY KEY, course_name TEXT NOT NULL, professor_name TEXT, professor_office TEXT ); CREATE TABLE enrollment ( student_id INTEGER NOT NULL, course_id TEXT NOT NULL, grade TEXT, PRIMARY KEY (student_id, course_id), FOREIGN KEY (student_id) REFERENCES student_2nf(student_id), FOREIGN KEY (course_id) REFERENCES course_2nf(course_id) ); ④ 무엇이 바뀌었나(= 2NF가 제거한 것):\nstudent_name은 student_id에만 종속(부분 종속) → student_2nf로 분리 course_name·professor_*는 course_id에만 종속(부분 종속) → course_2nf로 분리 grade(성적)만 복합키 둘 다 필요(완전 종속) → 연결 테이블 enrollment에 남음 ⚠ 메모(이행 종속 잔존): student_2nf 안에 dept_code/dept_name/dept_building 3컬럼이 아직 함께 있다. 학번 → 학과코드 → 학과건물이라는 이행 종속이 남아서, 데모에서 “2NF 학과 갱신 이상 잔존(partial)“으로 나타난다. → 3NF에서 해소.\n04 · 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅ ① 2NF에 남은 학번 → 학과코드 → 학과건물 이행 종속을 끊는다. 학과·교수를 독립 마스터 테이블로 분리하고 FK로 연결 → 5테이블.\n-- ✅ 실제 답지 (3NF.sql) CREATE TABLE department ( dept_id INTEGER PRIMARY KEY AUTOINCREMENT, dept_code TEXT UNIQUE NOT NULL, dept_name TEXT NOT NULL, dept_building TEXT NOT NULL ); CREATE TABLE professor ( professor_id INTEGER PRIMARY KEY AUTOINCREMENT, professor_name TEXT NOT NULL, professor_office TEXT, dept_id INTEGER, FOREIGN KEY (dept_id) REFERENCES department(dept_id) ); CREATE TABLE student ( student_id INTEGER PRIMARY KEY, student_name TEXT NOT NULL, dept_id INTEGER NOT NULL, FOREIGN KEY (dept_id) REFERENCES department(dept_id) ); CREATE TABLE course ( course_id TEXT PRIMARY KEY, course_name TEXT NOT NULL, professor_id INTEGER NOT NULL, FOREIGN KEY (professor_id) REFERENCES professor(professor_id) ); CREATE TABLE enrollment_3nf ( student_id INTEGER NOT NULL, course_id TEXT NOT NULL, grade TEXT, PRIMARY KEY (student_id, course_id), FOREIGN KEY (student_id) REFERENCES student(student_id), FOREIGN KEY (course_id) REFERENCES course(course_id) ); ④ 무엇이 바뀌었나(= 3NF가 제거한 것):\n학과를 department 마스터로 분리 → student는 dept_id(FK)만 가짐 → 학번→학과코드→학과건물 이행 종속 해소(학과 건물은 이제 department 한 곳에서만 관리) 교수를 professor 마스터로 분리 → course는 professor_id(FK)만 가짐 결과: 모든 갱신/삽입/삭제 이상 해소(데모 3NF = 정상) ⚠ 메모(원문 차이 보존):\n연결 테이블 이름이 2NF는 enrollment, 3NF는 enrollment_3nf로 다르다 — norm_db.py가 4단계를 한 DB에 공존시키려 일부러 분리한 것이라 답지 원문 그대로 둔다. norm_db.py의 3NF professor.dept_id는 INTEGER NOT NULL인데, 답지 3NF.sql(위)은 INTEGER(NOT NULL 없음)다. 분해 구조·FK는 동일하고, 원문 차이만 보존한다. 05 · ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이) ① 슬라이드 후반 DB 구현은 MySQL CLI 기준이다. 위 정규화 실습(SQLite)과 무엇이 다른지를 표로 정리한다. (개념 설명은 강의 노트 08~11 참고.)\n② MySQL 기준 명령:\n-- ⚠ MySQL 기준 — 데이터베이스 단위 관리 CREATE DATABASE shared_kickboard; SHOW DATABASES; USE shared_kickboard; DROP DATABASE shared_kickboard; -- ⚠ MySQL 기준 — DCL (사용자 권한 관리) CREATE USER 유저이름@localhost IDENTIFIED BY '비밀번호'; GRANT ALL PRIVILEGES ON 데이터베이스.테이블 TO 유저이름@localhost; FLUSH PRIVILEGES; SHOW GRANTS FOR 유저이름@localhost; REVOKE ALL ON 데이터베이스.테이블 FROM 유저이름@localhost; -- ⚠ MySQL 기준 — 인덱스 CREATE INDEX 인덱스명 ON 테이블명(컬럼명); SHOW INDEX FROM 테이블명; ALTER TABLE 테이블명 DROP INDEX 인덱스명; ④ SQLite vs MySQL 차이 — 이 회차 핵심 주의점:\n기능 MySQL (슬라이드) SQLite (실습) DB 단위 CREATE DATABASE / USE 없음 (파일 1개 = DB 1개) 사용자·권한 CREATE USER·GRANT·REVOKE·SHOW GRANTS·FLUSH PRIVILEGES 없음 (사용자/권한 개념 자체가 없음) 인덱스 조회 SHOW INDEX FROM 테이블 미지원 → PRAGMA index_list(테이블) 인덱스 삭제 ALTER TABLE ... DROP INDEX 인덱스명 DROP INDEX 인덱스명; (문법 다름) 인덱스 생성 CREATE INDEX ... 동일 트랜잭션 COMMIT/ROLLBACK 동일(지원) ENUM 자료형(킥보드 ERD) ENUM('대여','반납') 없음 → CHECK로 대체 ⚠️ 정리: 실습 코드(정규화 SQL·norm_db.py)는 SQLite — INTEGER PRIMARY KEY AUTOINCREMENT·TEXT·PRAGMA foreign_keys = ON. 반면 DB 구현 슬라이드(위 명령들)는 MySQL 전용 기능을 다수 포함한다. 같은 SQL이라도 DBMS가 다르면 안 되는 게 있다는 걸 회차 내내 라벨로 구분했다.\n📚 보충 자료 정규화 SQL 답지: 비정규화.sql / 1NF.sql / 2NF.sql / 3NF.sql (ERD Editor import용 CREATE TABLE) — 강사 정답. 본 노트는 verbatim 수록. 정규화 데모: normalization_compare/ — README.md(이상 상태 표 + 4시나리오), norm_db.py(sqlite3, SCENARIO_ANOMALY·check_data_issues·4개 작업 함수), app.py(Streamlit). 실행: cd normalization_compare \u0026\u0026 uv sync \u0026\u0026 uv run streamlit run app.py 실습 DB: normalization.db (SQLite). 4단계 테이블이 한 DB에 공존(enrollment vs enrollment_3nf로 분리). MySQL 공식 문서 — GRANT/REVOKE, CREATE INDEX (DB 구현 슬라이드 기준) SQLite 공식 문서 — PRAGMA Statements(index_list), DROP INDEX (MySQL과 문법 차이) 📌 정리: 오늘 SQL은 거의 전부 ✅ 실제 답지(비정규화.sql/1NF.sql/2NF.sql/3NF.sql, norm_db.py)이고 변형하지 않았다. ⚠ 라벨은 MySQL 기준 슬라이드이거나 SQLite와의 차이를 가리킨다. 실습은 SQLite, DB 구현 슬라이드는 MySQL이라는 점을 코드마다 라벨로 구분했다.\n마무리 오늘 실습의 백미는 normalization_compare 다 — 완전히 같은 학생·수강 데이터를 비정규화·1NF·2NF·3NF 네 DB에 넣고, 같은 갱신/삽입/삭제를 해보며 어느 단계에서 이상현상이 나는지를 표 하나로 정리했다. 핵심은 2NF 행 — 부분 종속은 해소됐지만 학과 갱신 이상만 “잔존” 하고, 그 한 칸이 3NF(학과를 department로 분리)에서야 “정상\"이 된다. 그 뒤 답지 SQL로 student_course_all → student_course_1nf → student_2nf/course_2nf/enrollment → department/professor/student/course/enrollment_3nf의 단계별 분해를 verbatim으로 따라가며, 각 단계가 어떤 종속(다중값·부분·이행)을 제거하는지 짚었다. 마지막으로 DB 구현 슬라이드의 MySQL 명령(DATABASE·DCL·인덱스)이 SQLite에선 안 되거나 문법이 다르다는 차이를 표로 구분했다. 한 줄 결론 — 입력이 같아도 정규화 단계가 낮으면 데이터가 꼬이고, 3NF에서 비로소 모든 이상이 사라진다.\n🔗 연관 노트 6/16 정규화 \u0026 데이터베이스 구현 — 오늘 실습의 개념 정리(이상현상·함수 종속·1NF/2NF/3NF·BCNF/4NF/5NF·역정규화·MySQL DB 구현) 6/15 데이터베이스 개요 \u0026 구성하기 코드 노트 — 지난 실습(제약조건·복합PK·FK로 school_db 5테이블 만들기, constraint_demo). 오늘은 그 테이블들을 정규화 단계로 나누는 실습으로 이어진다 ",
-  "wordCount" : "1753",
-  "inLanguage": "en",
-  "datePublished": "2026-06-16T09:00:00+09:00",
-  "dateModified": "2026-06-16T09:00:00+09:00",
-  "author":{
-    "@type": "Person",
-    "name": "yw8837"
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "AI_6스터디",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://yw8837.github.io/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
-<body id="top">
-    <header class="header">
-    <nav class="header-nav">
-        <div class="logo">
-            <a href="https://yw8837.github.io/" accesskey="h" title="AI_6스터디 (Alt + H)">AI_6스터디</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
-                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <ul id="menu" class="menu">
-            <li>
-                <a href="https://yw8837.github.io/categories/year-study/" title="📚 Year Study">
-                    <span>📚 Year Study</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/" title="강의 정리">
-                    <span>강의 정리</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/" title="실습 정리">
-                    <span>실습 정리</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/" title="프로젝트">
-                    <span>프로젝트</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
-    <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb">
-            <a href="/">홈</a>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-            <a href="/posts/">Posts</a>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-        <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
-</nav>
-    <h1 class="post-title entry-hint-parent">
-      6/16 정규화 &amp; 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트
-    </h1>
-    <div class="post-description">
-      6/16 정규화 &amp; 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py &#43; Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다.
-    </div>
-    <div class="post-meta">
-
-<span title='2026-06-16 09:00:00 +0900 KST'>2026년 6월 16일</span>&nbsp;·&nbsp;<span>9 분</span>&nbsp;·&nbsp;<span>yw8837</span>
-
-</div>
-  </header> <details class="toc" >
-    <summary accesskey="c" title="(Alt + C)">
-        <span class="title">목차</span>
-    </summary>
-
-    <div class="inner"><ul>
-            <li>
-                <a href="#-%ec%8b%a4%ec%8a%b5-%eb%85%b8%ed%8a%b8" aria-label="🧪 실습 노트">🧪 실습 노트</a><ul>
-                    
-            <li>
-                <a href="#00--4%eb%8b%a8%ea%b3%84-%eb%8d%b0%eb%aa%a8-%ea%b5%ac%ec%84%b1--%ea%b0%99%ec%9d%80-%eb%8d%b0%ec%9d%b4%ed%84%b0-4%ea%b0%9c-db" aria-label="00 · 4단계 데모 구성 — 같은 데이터, 4개 DB">00 · 4단계 데모 구성 — 같은 데이터, 4개 DB</a></li>
-            <li>
-                <a href="#01---%ed%95%98%ec%9d%b4%eb%9d%bc%ec%9d%b4%ed%8a%b8--normalization_compare-%ec%9d%b4%ec%83%81%ed%98%84%ec%83%81-4%eb%8b%a8%ea%b3%84-%eb%b9%84%ea%b5%90" aria-label="01 · 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교)">01 · 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교)</a><ul>
-                    
-            <li>
-                <a href="#%ec%8b%a4%ed%96%89%eb%b2%95" aria-label="실행법">실행법</a></li>
-            <li>
-                <a href="#-%ed%95%b5%ec%8b%ac--%eb%8b%a8%ea%b3%84%eb%b3%84-%ec%9d%b4%ec%83%81-%ec%83%81%ed%83%9c-%ed%91%9c" aria-label="★ 핵심 — 단계별 이상 상태 표">★ 핵심 — 단계별 이상 상태 표</a></li>
-            <li>
-                <a href="#4%ea%b0%80%ec%a7%80-%ec%8b%9c%eb%82%98%eb%a6%ac%ec%98%a4-norm_dbpy-%ed%95%a8%ec%88%98--readme-" aria-label="4가지 시나리오 (norm_db.py 함수 / README ➊~➍)">4가지 시나리오 (norm_db.py 함수 / README ➊~➍)</a></li></ul>
-            </li>
-            <li>
-                <a href="#02--%ec%a0%95%ea%b7%9c%ed%99%94-sql--%eb%b9%84%ec%a0%95%ea%b7%9c%ed%99%94--1nf-%ec%9b%90%ec%9e%90%ea%b0%92-" aria-label="02 · 정규화 SQL ① 비정규화 → 1NF (원자값) ✅">02 · 정규화 SQL ① 비정규화 → 1NF (원자값) ✅</a></li>
-            <li>
-                <a href="#03--%ec%a0%95%ea%b7%9c%ed%99%94-sql--2nf-%eb%b6%80%eb%b6%84-%ed%95%a8%ec%88%98-%ec%a2%85%ec%86%8d-%ec%a0%9c%ea%b1%b0-" aria-label="03 · 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅">03 · 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅</a></li>
-            <li>
-                <a href="#04--%ec%a0%95%ea%b7%9c%ed%99%94-sql--3nf-%ec%9d%b4%ed%96%89-%ed%95%a8%ec%88%98-%ec%a2%85%ec%86%8d-%ec%a0%9c%ea%b1%b0-" aria-label="04 · 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅">04 · 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅</a></li>
-            <li>
-                <a href="#05---mysql-%ea%b8%b0%ec%a4%80--db-%ec%83%9d%ec%84%b1--dcl--%ec%9d%b8%eb%8d%b1%ec%8a%a4-sqlite%ec%99%80-%ec%b0%a8%ec%9d%b4" aria-label="05 · ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이)">05 · ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이)</a></li></ul>
-            </li>
-            <li>
-                <a href="#-%eb%b3%b4%ec%b6%a9-%ec%9e%90%eb%a3%8c" aria-label="📚 보충 자료">📚 보충 자료</a><ul>
-                    
-            <li>
-                <a href="#%eb%a7%88%eb%ac%b4%eb%a6%ac" aria-label="마무리">마무리</a></li>
-            <li>
-                <a href="#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8" aria-label="🔗 연관 노트">🔗 연관 노트</a>
-            </li>
-        </ul>
-        </li>
-        </ul>
-    </div>
-</details>
-
-  <div class="post-content md-content"><blockquote>
-<p>📌 <strong>정답 출처 안내.</strong> 아래 정규화 SQL은 강사 <strong>답지</strong>(<code>비정규화.sql</code>, <code>1NF.sql</code>, <code>2NF.sql</code>, <code>3NF.sql</code>)와 데모(<code>normalization_compare/norm_db.py</code>, <code>README.md</code>)에서 <strong>그대로</strong> 가져왔다. 표시가 없으면 모두 <code>✅ 실제 답지</code>이고, 원본 SQL은 변경하지 않았다.</p>
-<p>🗄️ <strong>실습 DBMS는 SQLite</strong> (<code>normalization_compare/normalization.db</code>, <code>norm_db.py</code>의 <code>sqlite3</code>). 정규화 SQL은 ERD Editor import용 <code>CREATE TABLE</code>이다.
-⚠️ <strong>후반 DB 구현 슬라이드(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX)는 MySQL 기준</strong>이라 SQLite엔 없거나 문법이 다르다 — §05에서 따로 정리한다.</p>
-</blockquote>
-<h1 id="-실습-노트">🧪 실습 노트<a hidden class="anchor" aria-hidden="true" href="#-실습-노트">#</a></h1>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">00. 4단계 데모 구성 — 같은 데이터, 4개 DB
-</span></span><span class="line"><span class="cl">01. 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교)
-</span></span><span class="line"><span class="cl">02. 정규화 SQL ① 비정규화 → 1NF (원자값) ✅
-</span></span><span class="line"><span class="cl">03. 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅
-</span></span><span class="line"><span class="cl">04. 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅
-</span></span><span class="line"><span class="cl">05. ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이)
-</span></span></code></pre></div><hr>
-<h2 id="00--4단계-데모-구성--같은-데이터-4개-db">00 · 4단계 데모 구성 — 같은 데이터, 4개 DB<a hidden class="anchor" aria-hidden="true" href="#00--4단계-데모-구성--같은-데이터-4개-db">#</a></h2>
-<p>① 이 데모의 아이디어는 한 줄이다 — <strong>완전히 같은 학생·수강 데이터를 비정규화·1NF·2NF·3NF 네 단계 DB에 각각 저장</strong>해두고, 똑같은 갱신/삽입/삭제 작업을 해보며 <strong>어느 단계에서 사고(이상현상)가 나는지</strong> 비교한다.</p>
-<p>② 공통 시드 데이터 (README 표 / <code>norm_db.py</code> 주석):</p>
-<table>
-	<thead>
-			<tr>
-					<th>학번</th>
-					<th>학생</th>
-					<th>학과</th>
-					<th>수강</th>
-			</tr>
-	</thead>
-	<tbody>
-			<tr>
-					<td>101</td>
-					<td>김민준</td>
-					<td>CS 컴퓨터공학</td>
-					<td>CS301(A+), CS302(A)</td>
-			</tr>
-			<tr>
-					<td>102</td>
-					<td>이서연</td>
-					<td>EE 전자공학</td>
-					<td>CS301(B+)</td>
-			</tr>
-	</tbody>
-</table>
-<ul>
-<li>과목: <strong>CS301 데이터베이스</strong>(김교수, 301호), <strong>CS302 운영체제</strong>(박교수, 302호)</li>
-<li>학과: CS 컴퓨터공학(공학관 A동), EE 전자공학(공학관 B동)</li>
-</ul>
-<p>④ 같은 데이터를 4번 저장하는 이유는, <strong>&ldquo;입력은 같은데 정규화 단계만 다르면 결과가 어떻게 갈리는지&rdquo;</strong> 를 통제된 비교로 보기 위해서다. UI도 입력도 동일하고, <strong>오직 테이블 설계만</strong> 다르다.</p>
-<blockquote>
-<p>💡 6/15 <code>constraint_demo</code>가 &ldquo;UI는 같은데 제약 설계가 틀리면 가입이 막힌다&quot;였다면, 오늘 데모는 &ldquo;<strong>입력은 같은데 정규화 단계가 낮으면 데이터가 꼬인다</strong>&ldquo;를 보여주는 짝이다.</p>
-</blockquote>
-<hr>
-<h2 id="01---하이라이트--normalization_compare-이상현상-4단계-비교">01 · 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교)<a hidden class="anchor" aria-hidden="true" href="#01---하이라이트--normalization_compare-이상현상-4단계-비교">#</a></h2>
-<p>오늘의 백미. Streamlit 앱에서 4개 탭(비정규화/1NF/2NF/3NF)을 두고, 동일한 작업을 단계별로 실행해 이상현상을 눈으로 비교한다.</p>
-<h3 id="실행법">실행법<a hidden class="anchor" aria-hidden="true" href="#실행법">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> normalization_compare
-</span></span><span class="line"><span class="cl">uv sync
-</span></span><span class="line"><span class="cl">uv run streamlit run app.py
-</span></span><span class="line"><span class="cl"><span class="c1"># http://localhost:8501</span>
-</span></span></code></pre></div><h3 id="-핵심--단계별-이상-상태-표">★ 핵심 — 단계별 이상 상태 표<a hidden class="anchor" aria-hidden="true" href="#-핵심--단계별-이상-상태-표">#</a></h3>
-<p>① 이 표가 오늘 실습 전체의 <strong>결론</strong>이다 (README + <code>norm_db.py</code>의 <code>SCENARIO_ANOMALY</code>).</p>
-<table>
-	<thead>
-			<tr>
-					<th>단계</th>
-					<th style="text-align: center">갱신(학과)</th>
-					<th style="text-align: center">갱신(교수)</th>
-					<th style="text-align: center">삽입</th>
-					<th style="text-align: center">삭제</th>
-					<th>종합</th>
-			</tr>
-	</thead>
-	<tbody>
-			<tr>
-					<td><strong>비정규화</strong></td>
-					<td style="text-align: center">존재</td>
-					<td style="text-align: center">존재</td>
-					<td style="text-align: center">존재</td>
-					<td style="text-align: center">존재</td>
-					<td>❌ 이상 구조</td>
-			</tr>
-			<tr>
-					<td><strong>1NF</strong></td>
-					<td style="text-align: center">존재</td>
-					<td style="text-align: center">존재</td>
-					<td style="text-align: center">존재</td>
-					<td style="text-align: center">존재</td>
-					<td>❌ 이상 구조</td>
-			</tr>
-			<tr>
-					<td><strong>2NF</strong></td>
-					<td style="text-align: center"><strong>잔존</strong></td>
-					<td style="text-align: center">정상</td>
-					<td style="text-align: center">정상</td>
-					<td style="text-align: center">정상</td>
-					<td>⚠ 이행 종속 잔존</td>
-			</tr>
-			<tr>
-					<td><strong>3NF</strong></td>
-					<td style="text-align: center">정상</td>
-					<td style="text-align: center">정상</td>
-					<td style="text-align: center">정상</td>
-					<td style="text-align: center">정상</td>
-					<td>✅ <strong>정상</strong></td>
-			</tr>
-	</tbody>
-</table>
-<p>④ 표 읽는 법 — <code>norm_db.py</code>의 라벨 그대로:</p>
-<ul>
-<li><code>risk</code>=&ldquo;이상 존재&rdquo; → 비정규화·1NF: 구조적으로 이상에 취약</li>
-<li><code>partial</code>=&ldquo;일부 잔존&rdquo; → 2NF: 부분 종속은 해소됐지만 <strong>이행 종속 때문에 학과 갱신 이상만 남음</strong></li>
-<li><code>ok</code>=&ldquo;정상&rdquo; → 3NF: 모든 이상 해소</li>
-</ul>
-<blockquote>
-<p>💡 <strong>이 표의 핵심은 2NF 행이다.</strong> 2NF는 부분 종속을 없앴는데도 <strong>학과 갱신 한 칸만 &ldquo;잔존&rdquo;</strong> 이다. 바로 그 한 칸이 <em>2NF와 3NF의 차이</em>(이행 종속)를 눈으로 보여준다 — 학과를 독립 테이블로 빼는 3NF가 되어야 그 칸도 &ldquo;정상&quot;이 된다.</p>
-</blockquote>
-<h3 id="4가지-시나리오-norm_dbpy-함수--readme-">4가지 시나리오 (norm_db.py 함수 / README ➊~➍)<a hidden class="anchor" aria-hidden="true" href="#4가지-시나리오-norm_dbpy-함수--readme-">#</a></h3>
-<p>① 같은 작업을 4단계 DB에서 각각 실행해, 단계마다 결과가 어떻게 다른지 본다.</p>
-<p><strong>➊ 학과 건물 변경 = 갱신 이상</strong> (<code>update_dept_building</code>) — 학과코드 + 새 건물명 입력</p>
-<ul>
-<li><strong>비정규화/1NF:</strong> 같은 학과 정보가 여러 행에 중복 → &ldquo;첫 row만 수정하면 같은 학과인데 건물이 row마다 달라질 수 있음&rdquo;</li>
-<li><strong>2NF:</strong> <code>student_2nf</code>에 학과가 학생별로 중복 → &ldquo;dept_building이 학생 row마다 다를 수 있음&rdquo;(<strong>이행 종속 잔존</strong>)</li>
-<li><strong>3NF:</strong> <code>UPDATE department ... WHERE dept_code = ?</code> → <strong>학과 마스터 1곳만 수정</strong>(정상)</li>
-</ul>
-<p><strong>➋ 교수 연구실 변경 = 갱신 이상</strong> (<code>update_professor_office</code>) — 과목코드 + 새 연구실 입력</p>
-<ul>
-<li><strong>비정규화:</strong> 다중값 셀 전체를 다시 저장해야 함 / <strong>1NF:</strong> 해당 과목의 모든 수강 row 수정 필요</li>
-<li><strong>2NF:</strong> <code>UPDATE course_2nf ...</code> 1 row → 모든 수강 조회에 반영(정상) / <strong>3NF:</strong> <code>UPDATE professor ...</code> 1 row(정상)</li>
-</ul>
-<p><strong>➌ 수강 등록 = 삽입 이상</strong> (<code>add_enrollment</code>) — 학번/과목/성적 입력 (기본 과목명 &lsquo;네트워크&rsquo;, 교수 &lsquo;최교수&rsquo;, 연구실 &lsquo;401호&rsquo;)</p>
-<ul>
-<li><strong>비정규화:</strong> 다중값 셀에 콤마로 이어 붙임 → <strong>원자값·무결성 위반</strong> / <strong>1NF:</strong> 원자값 삽입은 되지만 학과·교수 정보가 row마다 중복</li>
-<li><strong>2NF/3NF:</strong> <code>enrollment</code>/<code>enrollment_3nf</code>에 성적만 추가(과목 없으면 마스터 테이블에 먼저 INSERT) → 정상</li>
-</ul>
-<p><strong>➍ 학생 수강 삭제 = 삭제 이상</strong> (<code>delete_student_records</code>) — 학번 입력</p>
-<ul>
-<li><strong>비정규화:</strong> 학생 row 삭제 → 해당 학생·수강·학과 정보가 <strong>모두 사라짐</strong> / <strong>1NF:</strong> 수강 row 삭제 → 학생 마스터가 없어 <strong>학생 정보 복구 불가</strong></li>
-<li><strong>2NF/3NF:</strong> <code>enrollment</code>에서 수강만 삭제 → <code>student_2nf</code>/<code>student</code> 마스터에 학생 정보 유지(정상)</li>
-</ul>
-<p>⑤ 추가로 <code>check_data_issues</code>가 각 단계의 <strong>실제 데이터 불일치를 자동 탐지</strong>한다 — 비정규화는 <code>course_ids</code> 중복, 1NF는 &ldquo;같은 학생인데 dept_building이 row마다 다름&rdquo;/&ldquo;과목 교수 연구실이 row마다 다름&rdquo;, 2NF는 &ldquo;학과 dept_building이 학생 row마다 다름&rdquo;, 3NF는 (정상이면) 없음.</p>
-<blockquote>
-<p>💡 <strong>데모 전체의 학습 포인트:</strong> <strong>UI·입력이 같아도 DB 정규화 단계에 따라 이상현상 발생 여부가 달라진다.</strong> 비정규화·1NF는 구조적으로 이상에 취약, 2NF는 부분 종속만 해소돼 <strong>학과 갱신 이상이 잔존</strong>, 3NF에서 <strong>모든 이상이 해소</strong>된다.</p>
-</blockquote>
-<hr>
-<h2 id="02--정규화-sql--비정규화--1nf-원자값-">02 · 정규화 SQL ① 비정규화 → 1NF (원자값) ✅<a hidden class="anchor" aria-hidden="true" href="#02--정규화-sql--비정규화--1nf-원자값-">#</a></h2>
-<p>① 위 데모가 내부에서 단계별로 쓰는 테이블 구조를, 답지 SQL로 직접 본다. 먼저 <strong>모든 게 한 테이블에 들어간 비정규화</strong> 상태다.</p>
-<p><strong>[0단계] 비정규화 — <code>student_course_all</code></strong> (다중값, PK 없음)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- ✅ 실제 답지 (비정규화.sql)
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">student_course_all</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_id</span><span class="w">       </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_name</span><span class="w">     </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_ids</span><span class="w">       </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_names</span><span class="w">     </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">grades</span><span class="w">           </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_name</span><span class="w">   </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_office</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_code</span><span class="w">        </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_name</span><span class="w">        </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_building</span><span class="w">    </span><span class="nb">TEXT</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span></code></pre></div><p>④ 무엇이 문제인가:</p>
-<ul>
-<li><strong>PK가 없다</strong> → 행을 유일하게 식별 못 함</li>
-<li><code>course_ids</code>·<code>course_names</code>·<code>grades</code>가 <strong>다중값</strong>(콤마 구분) → <code>WHERE</code>·<code>JOIN</code>·<code>ORDER BY</code>가 정상 동작 불가</li>
-<li>학생이 N과목 수강하면 <code>professor_name</code>·<code>dept_name</code> 등이 <strong>행마다 중복 복제</strong></li>
-</ul>
-<blockquote>
-<p>⚠ <strong>메모(원문 차이 보존):</strong> <code>norm_db.py</code> 안의 동명 테이블은 <code>student_id INTEGER PRIMARY KEY</code> + <code>professor_names</code>/<code>professor_offices</code>(<strong>복수형</strong>)로 정의돼 있다(다중값 강조 + 4단계 공존을 위한 변형). 답지 <code>비정규화.sql</code>(위)은 <code>professor_name</code>/<code>professor_office</code>(<strong>단수형</strong>)다. 둘 다 원문 그대로 인용한다.</p>
-</blockquote>
-<p><strong>[1NF] 원자값 + 복합 PK — <code>student_course_1nf</code></strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- ✅ 실제 답지 (1NF.sql)
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">student_course_1nf</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_id</span><span class="w">       </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_id</span><span class="w">        </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_name</span><span class="w">     </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_name</span><span class="w">      </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">grade</span><span class="w">            </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_name</span><span class="w">   </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_office</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_code</span><span class="w">        </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_name</span><span class="w">        </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_building</span><span class="w">    </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span><span class="w"> </span><span class="n">course_id</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span></code></pre></div><p>④ <strong>무엇이 바뀌었나(= 1NF가 제거한 것):</strong> 다중값 컬럼(<code>course_ids</code> 등)을 <strong>원자값</strong>으로 풀고, 한 행 = &ldquo;한 학생의 한 과목&quot;이 되도록 <strong>복합 PK <code>(student_id, course_id)</code></strong> 를 줬다.
-<strong>아직 남은 문제:</strong> 여전히 단일 테이블이라 <code>student_name</code>·학과·교수 정보가 행마다 중복된다 → 2NF·3NF로.</p>
-<hr>
-<h2 id="03--정규화-sql--2nf-부분-함수-종속-제거-">03 · 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅<a hidden class="anchor" aria-hidden="true" href="#03--정규화-sql--2nf-부분-함수-종속-제거-">#</a></h2>
-<p>① 복합키 <code>(student_id, course_id)</code>의 <strong>일부에만 매달린 컬럼</strong>을 별도 테이블로 빼낸다. 1테이블 → <strong>3테이블</strong>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- ✅ 실제 답지 (2NF.sql)
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">student_2nf</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_id</span><span class="w">    </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_name</span><span class="w">  </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_code</span><span class="w">     </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_name</span><span class="w">     </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_building</span><span class="w"> </span><span class="nb">TEXT</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">course_2nf</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_id</span><span class="w">        </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_name</span><span class="w">      </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_name</span><span class="w">   </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_office</span><span class="w"> </span><span class="nb">TEXT</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">enrollment</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_id</span><span class="w">  </span><span class="nb">TEXT</span><span class="w">    </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">grade</span><span class="w">      </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span><span class="w"> </span><span class="n">course_id</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">student_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">student_2nf</span><span class="p">(</span><span class="n">student_id</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">course_id</span><span class="p">)</span><span class="w">  </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">course_2nf</span><span class="p">(</span><span class="n">course_id</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span></code></pre></div><p>④ <strong>무엇이 바뀌었나(= 2NF가 제거한 것):</strong></p>
-<ul>
-<li><code>student_name</code>은 <code>student_id</code>에만 종속(부분 종속) → <code>student_2nf</code>로 분리</li>
-<li><code>course_name</code>·<code>professor_*</code>는 <code>course_id</code>에만 종속(부분 종속) → <code>course_2nf</code>로 분리</li>
-<li><code>grade</code>(성적)만 복합키 <strong>둘 다</strong> 필요(완전 종속) → 연결 테이블 <code>enrollment</code>에 남음</li>
-</ul>
-<blockquote>
-<p>⚠ <strong>메모(이행 종속 잔존):</strong> <code>student_2nf</code> 안에 <strong><code>dept_code</code>/<code>dept_name</code>/<code>dept_building</code> 3컬럼이 아직 함께</strong> 있다. <code>학번 → 학과코드 → 학과건물</code>이라는 <strong>이행 종속</strong>이 남아서, 데모에서 &ldquo;2NF 학과 갱신 이상 잔존(partial)&ldquo;으로 나타난다. → 3NF에서 해소.</p>
-</blockquote>
-<hr>
-<h2 id="04--정규화-sql--3nf-이행-함수-종속-제거-">04 · 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅<a hidden class="anchor" aria-hidden="true" href="#04--정규화-sql--3nf-이행-함수-종속-제거-">#</a></h2>
-<p>① 2NF에 남은 <code>학번 → 학과코드 → 학과건물</code> 이행 종속을 끊는다. 학과·교수를 <strong>독립 마스터 테이블로 분리</strong>하고 FK로 연결 → <strong>5테이블</strong>.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- ✅ 실제 답지 (3NF.sql)
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">department</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_id</span><span class="w">       </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_code</span><span class="w">     </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_name</span><span class="w">     </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_building</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">professor</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_id</span><span class="w">     </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_name</span><span class="w">   </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_office</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_id</span><span class="w">          </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">dept_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">department</span><span class="p">(</span><span class="n">dept_id</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">student</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_id</span><span class="w">   </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dept_id</span><span class="w">      </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">dept_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">department</span><span class="p">(</span><span class="n">dept_id</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">course</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_id</span><span class="w">    </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_name</span><span class="w">  </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">professor_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">professor_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">professor</span><span class="p">(</span><span class="n">professor_id</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">enrollment_3nf</span><span class="w"> </span><span class="p">(</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">student_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">course_id</span><span class="w">  </span><span class="nb">TEXT</span><span class="w">    </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">grade</span><span class="w">      </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span><span class="w"> </span><span class="n">course_id</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">student_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">student</span><span class="p">(</span><span class="n">student_id</span><span class="p">),</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">course_id</span><span class="p">)</span><span class="w">  </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">course</span><span class="p">(</span><span class="n">course_id</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">);</span><span class="w">
-</span></span></span></code></pre></div><p>④ <strong>무엇이 바뀌었나(= 3NF가 제거한 것):</strong></p>
-<ul>
-<li>학과를 <strong><code>department</code></strong> 마스터로 분리 → <code>student</code>는 <code>dept_id</code>(FK)만 가짐 → <code>학번→학과코드→학과건물</code> <strong>이행 종속 해소</strong>(학과 건물은 이제 <code>department</code> 한 곳에서만 관리)</li>
-<li>교수를 <strong><code>professor</code></strong> 마스터로 분리 → <code>course</code>는 <code>professor_id</code>(FK)만 가짐</li>
-<li>결과: 모든 갱신/삽입/삭제 이상 해소(데모 3NF = 정상)</li>
-</ul>
-<blockquote>
-<p>⚠ <strong>메모(원문 차이 보존):</strong></p>
-<ul>
-<li>연결 테이블 이름이 2NF는 <code>enrollment</code>, 3NF는 <code>enrollment_3nf</code>로 <strong>다르다</strong> — <code>norm_db.py</code>가 4단계를 한 DB에 공존시키려 일부러 분리한 것이라 답지 원문 그대로 둔다.</li>
-<li><code>norm_db.py</code>의 3NF <code>professor.dept_id</code>는 <code>INTEGER NOT NULL</code>인데, 답지 <code>3NF.sql</code>(위)은 <code>INTEGER</code>(NOT NULL 없음)다. 분해 구조·FK는 동일하고, 원문 차이만 보존한다.</li>
-</ul>
-</blockquote>
-<hr>
-<h2 id="05---mysql-기준--db-생성--dcl--인덱스-sqlite와-차이">05 · ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이)<a hidden class="anchor" aria-hidden="true" href="#05---mysql-기준--db-생성--dcl--인덱스-sqlite와-차이">#</a></h2>
-<p>① 슬라이드 후반 DB 구현은 <strong>MySQL CLI 기준</strong>이다. 위 정규화 실습(SQLite)과 <strong>무엇이 다른지</strong>를 표로 정리한다. (개념 설명은 <a href="/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/">강의 노트 08~11</a> 참고.)</p>
-<p>② MySQL 기준 명령:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- ⚠ MySQL 기준 — 데이터베이스 단위 관리
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">shared_kickboard</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">SHOW</span><span class="w"> </span><span class="n">DATABASES</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="n">USE</span><span class="w"> </span><span class="n">shared_kickboard</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">DROP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">shared_kickboard</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- ⚠ MySQL 기준 — DCL (사용자 권한 관리)
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="err">유저이름</span><span class="o">@</span><span class="n">localhost</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="s1">&#39;비밀번호&#39;</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">GRANT</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="err">데이터베이스</span><span class="p">.</span><span class="err">테이블</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="err">유저이름</span><span class="o">@</span><span class="n">localhost</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="n">FLUSH</span><span class="w"> </span><span class="k">PRIVILEGES</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">SHOW</span><span class="w"> </span><span class="n">GRANTS</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="err">유저이름</span><span class="o">@</span><span class="n">localhost</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">REVOKE</span><span class="w"> </span><span class="k">ALL</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="err">데이터베이스</span><span class="p">.</span><span class="err">테이블</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="err">유저이름</span><span class="o">@</span><span class="n">localhost</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="c1">-- ⚠ MySQL 기준 — 인덱스
-</span></span></span><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="err">인덱스명</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="err">테이블명</span><span class="p">(</span><span class="err">컬럼명</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">SHOW</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="err">테이블명</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="err">테이블명</span><span class="w"> </span><span class="k">DROP</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="err">인덱스명</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p>④ <strong>SQLite vs MySQL 차이 — 이 회차 핵심 주의점:</strong></p>
-<table>
-	<thead>
-			<tr>
-					<th>기능</th>
-					<th>MySQL (슬라이드)</th>
-					<th>SQLite (실습)</th>
-			</tr>
-	</thead>
-	<tbody>
-			<tr>
-					<td>DB 단위</td>
-					<td><code>CREATE DATABASE</code> / <code>USE</code></td>
-					<td><strong>없음</strong> (파일 1개 = DB 1개)</td>
-			</tr>
-			<tr>
-					<td>사용자·권한</td>
-					<td><code>CREATE USER</code>·<code>GRANT</code>·<code>REVOKE</code>·<code>SHOW GRANTS</code>·<code>FLUSH PRIVILEGES</code></td>
-					<td><strong>없음</strong> (사용자/권한 개념 자체가 없음)</td>
-			</tr>
-			<tr>
-					<td>인덱스 조회</td>
-					<td><code>SHOW INDEX FROM 테이블</code></td>
-					<td><strong>미지원</strong> → <code>PRAGMA index_list(테이블)</code></td>
-			</tr>
-			<tr>
-					<td>인덱스 삭제</td>
-					<td><code>ALTER TABLE ... DROP INDEX 인덱스명</code></td>
-					<td><code>DROP INDEX 인덱스명;</code> (문법 다름)</td>
-			</tr>
-			<tr>
-					<td>인덱스 생성</td>
-					<td><code>CREATE INDEX ...</code></td>
-					<td><strong>동일</strong></td>
-			</tr>
-			<tr>
-					<td>트랜잭션</td>
-					<td><code>COMMIT</code>/<code>ROLLBACK</code></td>
-					<td><strong>동일</strong>(지원)</td>
-			</tr>
-			<tr>
-					<td>ENUM 자료형(킥보드 ERD)</td>
-					<td><code>ENUM('대여','반납')</code></td>
-					<td><strong>없음</strong> → <code>CHECK</code>로 대체</td>
-			</tr>
-	</tbody>
-</table>
-<blockquote>
-<p>⚠️ <strong>정리:</strong> 실습 코드(정규화 SQL·<code>norm_db.py</code>)는 <strong>SQLite</strong> — <code>INTEGER PRIMARY KEY AUTOINCREMENT</code>·<code>TEXT</code>·<code>PRAGMA foreign_keys = ON</code>. 반면 DB 구현 슬라이드(위 명령들)는 <strong>MySQL 전용</strong> 기능을 다수 포함한다. 같은 SQL이라도 <strong>DBMS가 다르면 안 되는 게 있다</strong>는 걸 회차 내내 라벨로 구분했다.</p>
-</blockquote>
-<hr>
-<h1 id="-보충-자료">📚 보충 자료<a hidden class="anchor" aria-hidden="true" href="#-보충-자료">#</a></h1>
-<ul>
-<li>정규화 SQL 답지: <code>비정규화.sql</code> / <code>1NF.sql</code> / <code>2NF.sql</code> / <code>3NF.sql</code> (ERD Editor import용 CREATE TABLE) — 강사 정답. 본 노트는 verbatim 수록.</li>
-<li>정규화 데모: <code>normalization_compare/</code> — <code>README.md</code>(이상 상태 표 + 4시나리오), <code>norm_db.py</code>(<code>sqlite3</code>, <code>SCENARIO_ANOMALY</code>·<code>check_data_issues</code>·4개 작업 함수), <code>app.py</code>(Streamlit). 실행: <code>cd normalization_compare &amp;&amp; uv sync &amp;&amp; uv run streamlit run app.py</code></li>
-<li>실습 DB: <code>normalization.db</code> (SQLite). 4단계 테이블이 한 DB에 공존(<code>enrollment</code> vs <code>enrollment_3nf</code>로 분리).</li>
-<li>MySQL 공식 문서 — GRANT/REVOKE, CREATE INDEX (DB 구현 슬라이드 기준)</li>
-<li>SQLite 공식 문서 — PRAGMA Statements(<code>index_list</code>), DROP INDEX (MySQL과 문법 차이)</li>
-</ul>
-<blockquote>
-<p>📌 <strong>정리:</strong> 오늘 SQL은 거의 전부 <code>✅ 실제 답지</code>(<code>비정규화.sql</code>/<code>1NF.sql</code>/<code>2NF.sql</code>/<code>3NF.sql</code>, <code>norm_db.py</code>)이고 변형하지 않았다. <code>⚠</code> 라벨은 <strong>MySQL 기준 슬라이드</strong>이거나 <strong>SQLite와의 차이</strong>를 가리킨다. 실습은 SQLite, DB 구현 슬라이드는 MySQL이라는 점을 코드마다 라벨로 구분했다.</p>
-</blockquote>
-<h2 id="마무리">마무리<a hidden class="anchor" aria-hidden="true" href="#마무리">#</a></h2>
-<p>오늘 실습의 백미는 <strong><code>normalization_compare</code></strong> 다 — <em>완전히 같은 학생·수강 데이터</em>를 비정규화·1NF·2NF·3NF 네 DB에 넣고, 같은 갱신/삽입/삭제를 해보며 <strong>어느 단계에서 이상현상이 나는지</strong>를 표 하나로 정리했다. 핵심은 <strong>2NF 행</strong> — 부분 종속은 해소됐지만 <strong>학과 갱신 이상만 &ldquo;잔존&rdquo;</strong> 하고, 그 한 칸이 3NF(학과를 <code>department</code>로 분리)에서야 &ldquo;정상&quot;이 된다. 그 뒤 답지 SQL로 <code>student_course_all → student_course_1nf → student_2nf/course_2nf/enrollment → department/professor/student/course/enrollment_3nf</code>의 <strong>단계별 분해</strong>를 verbatim으로 따라가며, 각 단계가 <strong>어떤 종속(다중값·부분·이행)을 제거하는지</strong> 짚었다. 마지막으로 DB 구현 슬라이드의 MySQL 명령(DATABASE·DCL·인덱스)이 <strong>SQLite에선 안 되거나 문법이 다르다</strong>는 차이를 표로 구분했다. 한 줄 결론 — <strong>입력이 같아도 정규화 단계가 낮으면 데이터가 꼬이고, 3NF에서 비로소 모든 이상이 사라진다.</strong></p>
-<h2 id="-연관-노트">🔗 연관 노트<a hidden class="anchor" aria-hidden="true" href="#-연관-노트">#</a></h2>
-<ul>
-<li><a href="/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/">6/16 정규화 &amp; 데이터베이스 구현</a> — 오늘 실습의 개념 정리(이상현상·함수 종속·1NF/2NF/3NF·BCNF/4NF/5NF·역정규화·MySQL DB 구현)</li>
-<li><a href="/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/">6/15 데이터베이스 개요 &amp; 구성하기 코드 노트</a> — 지난 실습(제약조건·복합PK·FK로 <code>school_db</code> 5테이블 만들기, <code>constraint_demo</code>). 오늘은 그 테이블들을 <em>정규화 단계로 나누는</em> 실습으로 이어진다</li>
-</ul>
-
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="https://yw8837.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/">데이터베이스</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/">실습</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%A0%95%EA%B7%9C%ED%99%94/">정규화</a></li>
-      <li><a href="https://yw8837.github.io/tags/normalization/">Normalization</a></li>
-      <li><a href="https://yw8837.github.io/tags/sql/">SQL</a></li>
-      <li><a href="https://yw8837.github.io/tags/sqlite/">SQLite</a></li>
-      <li><a href="https://yw8837.github.io/tags/1nf/">1NF</a></li>
-      <li><a href="https://yw8837.github.io/tags/2nf/">2NF</a></li>
-      <li><a href="https://yw8837.github.io/tags/3nf/">3NF</a></li>
-      <li><a href="https://yw8837.github.io/tags/create/">CREATE</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EB%B3%B5%ED%95%A9%ED%82%A4/">복합키</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%99%B8%EB%9E%98%ED%82%A4/">외래키</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%9D%B4%EC%83%81%ED%98%84%EC%83%81/">이상현상</a></li>
-      <li><a href="https://yw8837.github.io/tags/anomaly/">Anomaly</a></li>
-      <li><a href="https://yw8837.github.io/tags/normalization_compare/">Normalization_compare</a></li>
-      <li><a href="https://yw8837.github.io/tags/streamlit/">Streamlit</a></li>
-      <li><a href="https://yw8837.github.io/tags/mysql/">MySQL</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%9D%B8%EB%8D%B1%EC%8A%A4/">인덱스</a></li>
-      <li><a href="https://yw8837.github.io/tags/pragma/">PRAGMA</a></li>
-      <li><a href="https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/">초보자</a></li>
-    </ul>
-<nav class="paginav">
-  <a class="prev" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88/">
-    <span class="title">« 이전 페이지</span>
-    <span>6/17 데이터 리터러시 &amp; NumPy 기초 — 데이터를 읽는 눈과, 분석 패키지의 뼈대</span>
-  </a>
-  <a class="next" href="https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/">
-    <span class="title">다음 페이지 »</span>
-    <span>6/16 정규화 &amp; 데이터베이스 구현 — 같은 데이터인데 왜 1NF·2NF·3NF로 쪼개야 하는가</span>
-  </a>
-</nav>
-
-  </footer>
-</article>
-    </main>
-    
-<footer class="footer">
-        <span>&copy; 2026 <a href="https://yw8837.github.io/">AI_6스터디</a></span> · 
-        <a href="/posts/privacy-policy/">개인정보처리방침</a> · <a href="/posts/disclaimer/">서비스 이용 안내</a> · 
-
-    
-    
-    <span>
-        Powered by
-        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
-        <polyline points="17 11 12 6 7 11"></polyline>
-        <polyline points="17 18 12 13 7 18"></polyline>
-    </svg>
-</a><div style="text-align:center;margin-top:8px;font-size:13px;color:#888;"><a href="/posts/privacy-policy/" style="color:#888;">개인정보처리방침</a> · <a href="/posts/disclaimer/" style="color:#888;">서비스 이용 안내</a></div>
-
-<script>
-    let menu = document.getElementById('menu');
-    if (menu) {
-        
-        const scrollPosition = localStorage.getItem("menu-scroll-position");
-        if (scrollPosition) {
-            menu.scrollLeft = parseInt(scrollPosition, 10);
-        }
-        
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
-</script>
-<script>
-    var toplink = document.getElementById("top-link");
-    window.onscroll = function () {
-        const scrollThreshold = window.innerHeight;
-        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
-            toplink.classList.remove("hidden");
-        } else {
-            toplink.classList.add("hidden");
-        }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        const html = document.querySelector("html");
-        if (html.dataset.theme === "dark") {
-            html.dataset.theme = 'light';
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            html.dataset.theme = 'dark';
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = '복사';
-
-        function copyingDone() {
-            copybutton.innerHTML = '복사 완료!';
-            setTimeout(() => {
-                copybutton.innerHTML = '복사';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
-</script>
-</body>
-
-</html>
+<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>6/16 정규화 & 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트 | AI_6스터디</title><meta name=keywords content="데이터베이스,실습,정규화,Normalization,SQL,SQLite,1NF,2NF,3NF,CREATE,복합키,외래키,이상현상,Anomaly,normalization_compare,Streamlit,MySQL,인덱스,PRAGMA,초보자"><meta name=description content="6/16 정규화 & 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py + Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다."><meta name=author content="yw8837"><link rel=canonical href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><link crossorigin=anonymous href=/assets/css/stylesheet.css rel="preload stylesheet" as=style><link rel=icon href=https://yw8837.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://yw8837.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://yw8837.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://yw8837.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yw8837.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-EQR4094Q13"></script><script>var doNotTrack=!1,dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes";if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-EQR4094Q13")}</script><meta property="og:url" content="https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"><meta property="og:site_name" content="AI_6스터디"><meta property="og:title" content="6/16 정규화 & 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트"><meta property="og:description" content="6/16 정규화 & 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py + Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다."><meta property="og:locale" content="ko"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-06-16T09:00:00+09:00"><meta property="article:modified_time" content="2026-06-16T09:00:00+09:00"><meta property="article:tag" content="데이터베이스"><meta property="article:tag" content="실습"><meta property="article:tag" content="정규화"><meta property="article:tag" content="Normalization"><meta property="article:tag" content="SQL"><meta property="article:tag" content="SQLite"><meta name=twitter:card content="summary"><meta name=twitter:title content="6/16 정규화 & 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트"><meta name=twitter:description content="6/16 정규화 & 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py + Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yw8837.github.io/posts/"},{"@type":"ListItem","position":2,"name":"6/16 정규화 \u0026 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트","item":"https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"6/16 정규화 \u0026 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트","name":"6\/16 정규화 \u0026 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트","description":"6/16 정규화 \u0026 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py + Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다.","keywords":["데이터베이스","실습","정규화","Normalization","SQL","SQLite","1NF","2NF","3NF","CREATE","복합키","외래키","이상현상","Anomaly","normalization_compare","Streamlit","MySQL","인덱스","PRAGMA","초보자"],"articleBody":" 📌 정답 출처 안내. 아래 정규화 SQL은 강사 답지(비정규화.sql, 1NF.sql, 2NF.sql, 3NF.sql)와 데모(normalization_compare/norm_db.py, README.md)에서 그대로 가져왔다. 표시가 없으면 모두 ✅ 실제 답지이고, 원본 SQL은 변경하지 않았다.\n🗄️ 실습 DBMS는 SQLite (normalization_compare/normalization.db, norm_db.py의 sqlite3). 정규화 SQL은 ERD Editor import용 CREATE TABLE이다. ⚠️ 후반 DB 구현 슬라이드(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX)는 MySQL 기준이라 SQLite엔 없거나 문법이 다르다 — §05에서 따로 정리한다.\n🧪 실습 노트 00. 4단계 데모 구성 — 같은 데이터, 4개 DB 01. 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교) 02. 정규화 SQL ① 비정규화 → 1NF (원자값) ✅ 03. 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅ 04. 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅ 05. ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이) 00 · 4단계 데모 구성 — 같은 데이터, 4개 DB ① 이 데모의 아이디어는 한 줄이다 — 완전히 같은 학생·수강 데이터를 비정규화·1NF·2NF·3NF 네 단계 DB에 각각 저장해두고, 똑같은 갱신/삽입/삭제 작업을 해보며 어느 단계에서 사고(이상현상)가 나는지 비교한다.\n② 공통 시드 데이터 (README 표 / norm_db.py 주석):\n학번 학생 학과 수강 101 김민준 CS 컴퓨터공학 CS301(A+), CS302(A) 102 이서연 EE 전자공학 CS301(B+) 과목: CS301 데이터베이스(김교수, 301호), CS302 운영체제(박교수, 302호) 학과: CS 컴퓨터공학(공학관 A동), EE 전자공학(공학관 B동) ④ 같은 데이터를 4번 저장하는 이유는, “입력은 같은데 정규화 단계만 다르면 결과가 어떻게 갈리는지” 를 통제된 비교로 보기 위해서다. UI도 입력도 동일하고, 오직 테이블 설계만 다르다.\n💡 6/15 constraint_demo가 “UI는 같은데 제약 설계가 틀리면 가입이 막힌다\"였다면, 오늘 데모는 “입력은 같은데 정규화 단계가 낮으면 데이터가 꼬인다“를 보여주는 짝이다.\n01 · 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교) 오늘의 백미. Streamlit 앱에서 4개 탭(비정규화/1NF/2NF/3NF)을 두고, 동일한 작업을 단계별로 실행해 이상현상을 눈으로 비교한다.\n실행법 cd normalization_compare uv sync uv run streamlit run app.py # http://localhost:8501 ★ 핵심 — 단계별 이상 상태 표 ① 이 표가 오늘 실습 전체의 결론이다 (README + norm_db.py의 SCENARIO_ANOMALY).\n단계 갱신(학과) 갱신(교수) 삽입 삭제 종합 비정규화 존재 존재 존재 존재 ❌ 이상 구조 1NF 존재 존재 존재 존재 ❌ 이상 구조 2NF 잔존 정상 정상 정상 ⚠ 이행 종속 잔존 3NF 정상 정상 정상 정상 ✅ 정상 ④ 표 읽는 법 — norm_db.py의 라벨 그대로:\nrisk=“이상 존재” → 비정규화·1NF: 구조적으로 이상에 취약 partial=“일부 잔존” → 2NF: 부분 종속은 해소됐지만 이행 종속 때문에 학과 갱신 이상만 남음 ok=“정상” → 3NF: 모든 이상 해소 💡 이 표의 핵심은 2NF 행이다. 2NF는 부분 종속을 없앴는데도 학과 갱신 한 칸만 “잔존” 이다. 바로 그 한 칸이 2NF와 3NF의 차이(이행 종속)를 눈으로 보여준다 — 학과를 독립 테이블로 빼는 3NF가 되어야 그 칸도 “정상\"이 된다.\n4가지 시나리오 (norm_db.py 함수 / README ➊~➍) ① 같은 작업을 4단계 DB에서 각각 실행해, 단계마다 결과가 어떻게 다른지 본다.\n➊ 학과 건물 변경 = 갱신 이상 (update_dept_building) — 학과코드 + 새 건물명 입력\n비정규화/1NF: 같은 학과 정보가 여러 행에 중복 → “첫 row만 수정하면 같은 학과인데 건물이 row마다 달라질 수 있음” 2NF: student_2nf에 학과가 학생별로 중복 → “dept_building이 학생 row마다 다를 수 있음”(이행 종속 잔존) 3NF: UPDATE department ... WHERE dept_code = ? → 학과 마스터 1곳만 수정(정상) ➋ 교수 연구실 변경 = 갱신 이상 (update_professor_office) — 과목코드 + 새 연구실 입력\n비정규화: 다중값 셀 전체를 다시 저장해야 함 / 1NF: 해당 과목의 모든 수강 row 수정 필요 2NF: UPDATE course_2nf ... 1 row → 모든 수강 조회에 반영(정상) / 3NF: UPDATE professor ... 1 row(정상) ➌ 수강 등록 = 삽입 이상 (add_enrollment) — 학번/과목/성적 입력 (기본 과목명 ‘네트워크’, 교수 ‘최교수’, 연구실 ‘401호’)\n비정규화: 다중값 셀에 콤마로 이어 붙임 → 원자값·무결성 위반 / 1NF: 원자값 삽입은 되지만 학과·교수 정보가 row마다 중복 2NF/3NF: enrollment/enrollment_3nf에 성적만 추가(과목 없으면 마스터 테이블에 먼저 INSERT) → 정상 ➍ 학생 수강 삭제 = 삭제 이상 (delete_student_records) — 학번 입력\n비정규화: 학생 row 삭제 → 해당 학생·수강·학과 정보가 모두 사라짐 / 1NF: 수강 row 삭제 → 학생 마스터가 없어 학생 정보 복구 불가 2NF/3NF: enrollment에서 수강만 삭제 → student_2nf/student 마스터에 학생 정보 유지(정상) ⑤ 추가로 check_data_issues가 각 단계의 실제 데이터 불일치를 자동 탐지한다 — 비정규화는 course_ids 중복, 1NF는 “같은 학생인데 dept_building이 row마다 다름”/“과목 교수 연구실이 row마다 다름”, 2NF는 “학과 dept_building이 학생 row마다 다름”, 3NF는 (정상이면) 없음.\n💡 데모 전체의 학습 포인트: UI·입력이 같아도 DB 정규화 단계에 따라 이상현상 발생 여부가 달라진다. 비정규화·1NF는 구조적으로 이상에 취약, 2NF는 부분 종속만 해소돼 학과 갱신 이상이 잔존, 3NF에서 모든 이상이 해소된다.\n02 · 정규화 SQL ① 비정규화 → 1NF (원자값) ✅ ① 위 데모가 내부에서 단계별로 쓰는 테이블 구조를, 답지 SQL로 직접 본다. 먼저 모든 게 한 테이블에 들어간 비정규화 상태다.\n[0단계] 비정규화 — student_course_all (다중값, PK 없음)\n-- ✅ 실제 답지 (비정규화.sql) CREATE TABLE student_course_all ( student_id INTEGER, student_name TEXT, course_ids TEXT, course_names TEXT, grades TEXT, professor_name TEXT, professor_office TEXT, dept_code TEXT, dept_name TEXT, dept_building TEXT ); ④ 무엇이 문제인가:\nPK가 없다 → 행을 유일하게 식별 못 함 course_ids·course_names·grades가 다중값(콤마 구분) → WHERE·JOIN·ORDER BY가 정상 동작 불가 학생이 N과목 수강하면 professor_name·dept_name 등이 행마다 중복 복제 ⚠ 메모(원문 차이 보존): norm_db.py 안의 동명 테이블은 student_id INTEGER PRIMARY KEY + professor_names/professor_offices(복수형)로 정의돼 있다(다중값 강조 + 4단계 공존을 위한 변형). 답지 비정규화.sql(위)은 professor_name/professor_office(단수형)다. 둘 다 원문 그대로 인용한다.\n[1NF] 원자값 + 복합 PK — student_course_1nf\n-- ✅ 실제 답지 (1NF.sql) CREATE TABLE student_course_1nf ( student_id INTEGER, course_id TEXT, student_name TEXT, course_name TEXT, grade TEXT, professor_name TEXT, professor_office TEXT, dept_code TEXT, dept_name TEXT, dept_building TEXT, PRIMARY KEY (student_id, course_id) ); ④ 무엇이 바뀌었나(= 1NF가 제거한 것): 다중값 컬럼(course_ids 등)을 원자값으로 풀고, 한 행 = “한 학생의 한 과목\"이 되도록 복합 PK (student_id, course_id) 를 줬다. 아직 남은 문제: 여전히 단일 테이블이라 student_name·학과·교수 정보가 행마다 중복된다 → 2NF·3NF로.\n03 · 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅ ① 복합키 (student_id, course_id)의 일부에만 매달린 컬럼을 별도 테이블로 빼낸다. 1테이블 → 3테이블.\n-- ✅ 실제 답지 (2NF.sql) CREATE TABLE student_2nf ( student_id INTEGER PRIMARY KEY, student_name TEXT NOT NULL, dept_code TEXT, dept_name TEXT, dept_building TEXT ); CREATE TABLE course_2nf ( course_id TEXT PRIMARY KEY, course_name TEXT NOT NULL, professor_name TEXT, professor_office TEXT ); CREATE TABLE enrollment ( student_id INTEGER NOT NULL, course_id TEXT NOT NULL, grade TEXT, PRIMARY KEY (student_id, course_id), FOREIGN KEY (student_id) REFERENCES student_2nf(student_id), FOREIGN KEY (course_id) REFERENCES course_2nf(course_id) ); ④ 무엇이 바뀌었나(= 2NF가 제거한 것):\nstudent_name은 student_id에만 종속(부분 종속) → student_2nf로 분리 course_name·professor_*는 course_id에만 종속(부분 종속) → course_2nf로 분리 grade(성적)만 복합키 둘 다 필요(완전 종속) → 연결 테이블 enrollment에 남음 ⚠ 메모(이행 종속 잔존): student_2nf 안에 dept_code/dept_name/dept_building 3컬럼이 아직 함께 있다. 학번 → 학과코드 → 학과건물이라는 이행 종속이 남아서, 데모에서 “2NF 학과 갱신 이상 잔존(partial)“으로 나타난다. → 3NF에서 해소.\n04 · 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅ ① 2NF에 남은 학번 → 학과코드 → 학과건물 이행 종속을 끊는다. 학과·교수를 독립 마스터 테이블로 분리하고 FK로 연결 → 5테이블.\n-- ✅ 실제 답지 (3NF.sql) CREATE TABLE department ( dept_id INTEGER PRIMARY KEY AUTOINCREMENT, dept_code TEXT UNIQUE NOT NULL, dept_name TEXT NOT NULL, dept_building TEXT NOT NULL ); CREATE TABLE professor ( professor_id INTEGER PRIMARY KEY AUTOINCREMENT, professor_name TEXT NOT NULL, professor_office TEXT, dept_id INTEGER, FOREIGN KEY (dept_id) REFERENCES department(dept_id) ); CREATE TABLE student ( student_id INTEGER PRIMARY KEY, student_name TEXT NOT NULL, dept_id INTEGER NOT NULL, FOREIGN KEY (dept_id) REFERENCES department(dept_id) ); CREATE TABLE course ( course_id TEXT PRIMARY KEY, course_name TEXT NOT NULL, professor_id INTEGER NOT NULL, FOREIGN KEY (professor_id) REFERENCES professor(professor_id) ); CREATE TABLE enrollment_3nf ( student_id INTEGER NOT NULL, course_id TEXT NOT NULL, grade TEXT, PRIMARY KEY (student_id, course_id), FOREIGN KEY (student_id) REFERENCES student(student_id), FOREIGN KEY (course_id) REFERENCES course(course_id) ); ④ 무엇이 바뀌었나(= 3NF가 제거한 것):\n학과를 department 마스터로 분리 → student는 dept_id(FK)만 가짐 → 학번→학과코드→학과건물 이행 종속 해소(학과 건물은 이제 department 한 곳에서만 관리) 교수를 professor 마스터로 분리 → course는 professor_id(FK)만 가짐 결과: 모든 갱신/삽입/삭제 이상 해소(데모 3NF = 정상) ⚠ 메모(원문 차이 보존):\n연결 테이블 이름이 2NF는 enrollment, 3NF는 enrollment_3nf로 다르다 — norm_db.py가 4단계를 한 DB에 공존시키려 일부러 분리한 것이라 답지 원문 그대로 둔다. norm_db.py의 3NF professor.dept_id는 INTEGER NOT NULL인데, 답지 3NF.sql(위)은 INTEGER(NOT NULL 없음)다. 분해 구조·FK는 동일하고, 원문 차이만 보존한다. 05 · ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이) ① 슬라이드 후반 DB 구현은 MySQL CLI 기준이다. 위 정규화 실습(SQLite)과 무엇이 다른지를 표로 정리한다. (개념 설명은 강의 노트 08~11 참고.)\n② MySQL 기준 명령:\n-- ⚠ MySQL 기준 — 데이터베이스 단위 관리 CREATE DATABASE shared_kickboard; SHOW DATABASES; USE shared_kickboard; DROP DATABASE shared_kickboard; -- ⚠ MySQL 기준 — DCL (사용자 권한 관리) CREATE USER 유저이름@localhost IDENTIFIED BY '비밀번호'; GRANT ALL PRIVILEGES ON 데이터베이스.테이블 TO 유저이름@localhost; FLUSH PRIVILEGES; SHOW GRANTS FOR 유저이름@localhost; REVOKE ALL ON 데이터베이스.테이블 FROM 유저이름@localhost; -- ⚠ MySQL 기준 — 인덱스 CREATE INDEX 인덱스명 ON 테이블명(컬럼명); SHOW INDEX FROM 테이블명; ALTER TABLE 테이블명 DROP INDEX 인덱스명; ④ SQLite vs MySQL 차이 — 이 회차 핵심 주의점:\n기능 MySQL (슬라이드) SQLite (실습) DB 단위 CREATE DATABASE / USE 없음 (파일 1개 = DB 1개) 사용자·권한 CREATE USER·GRANT·REVOKE·SHOW GRANTS·FLUSH PRIVILEGES 없음 (사용자/권한 개념 자체가 없음) 인덱스 조회 SHOW INDEX FROM 테이블 미지원 → PRAGMA index_list(테이블) 인덱스 삭제 ALTER TABLE ... DROP INDEX 인덱스명 DROP INDEX 인덱스명; (문법 다름) 인덱스 생성 CREATE INDEX ... 동일 트랜잭션 COMMIT/ROLLBACK 동일(지원) ENUM 자료형(킥보드 ERD) ENUM('대여','반납') 없음 → CHECK로 대체 ⚠️ 정리: 실습 코드(정규화 SQL·norm_db.py)는 SQLite — INTEGER PRIMARY KEY AUTOINCREMENT·TEXT·PRAGMA foreign_keys = ON. 반면 DB 구현 슬라이드(위 명령들)는 MySQL 전용 기능을 다수 포함한다. 같은 SQL이라도 DBMS가 다르면 안 되는 게 있다는 걸 회차 내내 라벨로 구분했다.\n📚 보충 자료 정규화 SQL 답지: 비정규화.sql / 1NF.sql / 2NF.sql / 3NF.sql (ERD Editor import용 CREATE TABLE) — 강사 정답. 본 노트는 verbatim 수록. 정규화 데모: normalization_compare/ — README.md(이상 상태 표 + 4시나리오), norm_db.py(sqlite3, SCENARIO_ANOMALY·check_data_issues·4개 작업 함수), app.py(Streamlit). 실행: cd normalization_compare \u0026\u0026 uv sync \u0026\u0026 uv run streamlit run app.py 실습 DB: normalization.db (SQLite). 4단계 테이블이 한 DB에 공존(enrollment vs enrollment_3nf로 분리). MySQL 공식 문서 — GRANT/REVOKE, CREATE INDEX (DB 구현 슬라이드 기준) SQLite 공식 문서 — PRAGMA Statements(index_list), DROP INDEX (MySQL과 문법 차이) 📌 정리: 오늘 SQL은 거의 전부 ✅ 실제 답지(비정규화.sql/1NF.sql/2NF.sql/3NF.sql, norm_db.py)이고 변형하지 않았다. ⚠ 라벨은 MySQL 기준 슬라이드이거나 SQLite와의 차이를 가리킨다. 실습은 SQLite, DB 구현 슬라이드는 MySQL이라는 점을 코드마다 라벨로 구분했다.\n마무리 오늘 실습의 백미는 normalization_compare 다 — 완전히 같은 학생·수강 데이터를 비정규화·1NF·2NF·3NF 네 DB에 넣고, 같은 갱신/삽입/삭제를 해보며 어느 단계에서 이상현상이 나는지를 표 하나로 정리했다. 핵심은 2NF 행 — 부분 종속은 해소됐지만 학과 갱신 이상만 “잔존” 하고, 그 한 칸이 3NF(학과를 department로 분리)에서야 “정상\"이 된다. 그 뒤 답지 SQL로 student_course_all → student_course_1nf → student_2nf/course_2nf/enrollment → department/professor/student/course/enrollment_3nf의 단계별 분해를 verbatim으로 따라가며, 각 단계가 어떤 종속(다중값·부분·이행)을 제거하는지 짚었다. 마지막으로 DB 구현 슬라이드의 MySQL 명령(DATABASE·DCL·인덱스)이 SQLite에선 안 되거나 문법이 다르다는 차이를 표로 구분했다. 한 줄 결론 — 입력이 같아도 정규화 단계가 낮으면 데이터가 꼬이고, 3NF에서 비로소 모든 이상이 사라진다.\n🔗 연관 노트 6/16 정규화 \u0026 데이터베이스 구현 — 오늘 실습의 개념 정리(이상현상·함수 종속·1NF/2NF/3NF·BCNF/4NF/5NF·역정규화·MySQL DB 구현) 6/15 데이터베이스 개요 \u0026 구성하기 코드 노트 — 지난 실습(제약조건·복합PK·FK로 school_db 5테이블 만들기, constraint_demo). 오늘은 그 테이블들을 정규화 단계로 나누는 실습으로 이어진다 ","wordCount":"1753","inLanguage":"en","datePublished":"2026-06-16T09:00:00+09:00","dateModified":"2026-06-16T09:00:00+09:00","author":{"@type":"Person","name":"yw8837"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yw8837.github.io/posts/%EC%8B%A4%EC%8A%B5/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/"},"publisher":{"@type":"Organization","name":"AI_6스터디","logo":{"@type":"ImageObject","url":"https://yw8837.github.io/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=header-nav><div class=logo><a href=https://yw8837.github.io/ accesskey=h title="AI_6스터디 (Alt + H)">AI_6스터디</a><div class=logo-switches><button id=theme-toggle class=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
+<svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+<svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu class=menu><li><a href=https://yw8837.github.io/categories/year-study/ title="📚 Year Study"><span>📚 Year Study</span></a></li><li><a href=https://yw8837.github.io/categories/%EA%B0%95%EC%9D%98-%EC%A0%95%EB%A6%AC/ title="강의 정리"><span>강의 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%EC%8B%A4%EC%8A%B5-%EC%A0%95%EB%A6%AC/ title="실습 정리"><span>실습 정리</span></a></li><li><a href=https://yw8837.github.io/categories/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/ title=프로젝트><span>프로젝트</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><nav class=breadcrumbs role=navigation aria-label=Breadcrumb><a href=/>홈</a>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg>
+<a href=/posts/>Posts</a>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"/></svg></nav><h1 class="post-title entry-hint-parent">6/16 정규화 & 데이터베이스 구현 — normalization_compare 데모·단계별 CREATE TABLE 실습 노트</h1><div class=post-description>6/16 정규화 & 데이터베이스 구현 실습 코드 노트. 하이라이트 normalization_compare(norm_db.py + Streamlit)로 동일 데이터를 비정규화·1NF·2NF·3NF DB에 저장해 4시나리오(학과건물·교수연구실·수강등록·학생삭제)의 이상현상을 비교하고, 이상 상태 표(2NF=학과갱신 이행종속 잔존, 3NF=정상)를 중심에 둔다. 정규화 SQL 답지(student_course_all→student_course_1nf→student_2nf/course_2nf/enrollment→department/professor/student/course/enrollment_3nf)를 단계별 CREATE TABLE verbatim으로 수록하고 각 단계의 종속 제거를 설명한다. 실습 SQLite와 슬라이드 MySQL(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX) 차이를 라벨로 구분한다.</div><div class=post-meta><span title='2026-06-16 09:00:00 +0900 KST'>2026년 6월 16일</span>&nbsp;·&nbsp;<span>9 분</span>&nbsp;·&nbsp;<span>yw8837</span></div></header><details class=toc><summary accesskey=c title="(Alt + C)"><span class=title>목차</span></summary><div class=inner><ul><li><a href=#-%ec%8b%a4%ec%8a%b5-%eb%85%b8%ed%8a%b8 aria-label="🧪 실습 노트">🧪 실습 노트</a><ul><li><a href=#00--4%eb%8b%a8%ea%b3%84-%eb%8d%b0%eb%aa%a8-%ea%b5%ac%ec%84%b1--%ea%b0%99%ec%9d%80-%eb%8d%b0%ec%9d%b4%ed%84%b0-4%ea%b0%9c-db aria-label="00 · 4단계 데모 구성 — 같은 데이터, 4개 DB">00 · 4단계 데모 구성 — 같은 데이터, 4개 DB</a></li><li><a href=#01---%ed%95%98%ec%9d%b4%eb%9d%bc%ec%9d%b4%ed%8a%b8--normalization_compare-%ec%9d%b4%ec%83%81%ed%98%84%ec%83%81-4%eb%8b%a8%ea%b3%84-%eb%b9%84%ea%b5%90 aria-label="01 · 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교)">01 · 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교)</a><ul><li><a href=#%ec%8b%a4%ed%96%89%eb%b2%95 aria-label=실행법>실행법</a></li><li><a href=#-%ed%95%b5%ec%8b%ac--%eb%8b%a8%ea%b3%84%eb%b3%84-%ec%9d%b4%ec%83%81-%ec%83%81%ed%83%9c-%ed%91%9c aria-label="★ 핵심 — 단계별 이상 상태 표">★ 핵심 — 단계별 이상 상태 표</a></li><li><a href=#4%ea%b0%80%ec%a7%80-%ec%8b%9c%eb%82%98%eb%a6%ac%ec%98%a4-norm_dbpy-%ed%95%a8%ec%88%98--readme- aria-label="4가지 시나리오 (norm_db.py 함수 / README ➊~➍)">4가지 시나리오 (norm_db.py 함수 / README ➊~➍)</a></li></ul></li><li><a href=#02--%ec%a0%95%ea%b7%9c%ed%99%94-sql--%eb%b9%84%ec%a0%95%ea%b7%9c%ed%99%94--1nf-%ec%9b%90%ec%9e%90%ea%b0%92- aria-label="02 · 정규화 SQL ① 비정규화 → 1NF (원자값) ✅">02 · 정규화 SQL ① 비정규화 → 1NF (원자값) ✅</a></li><li><a href=#03--%ec%a0%95%ea%b7%9c%ed%99%94-sql--2nf-%eb%b6%80%eb%b6%84-%ed%95%a8%ec%88%98-%ec%a2%85%ec%86%8d-%ec%a0%9c%ea%b1%b0- aria-label="03 · 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅">03 · 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅</a></li><li><a href=#04--%ec%a0%95%ea%b7%9c%ed%99%94-sql--3nf-%ec%9d%b4%ed%96%89-%ed%95%a8%ec%88%98-%ec%a2%85%ec%86%8d-%ec%a0%9c%ea%b1%b0- aria-label="04 · 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅">04 · 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅</a></li><li><a href=#05---mysql-%ea%b8%b0%ec%a4%80--db-%ec%83%9d%ec%84%b1--dcl--%ec%9d%b8%eb%8d%b1%ec%8a%a4-sqlite%ec%99%80-%ec%b0%a8%ec%9d%b4 aria-label="05 · ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이)">05 · ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이)</a></li></ul></li><li><a href=#-%eb%b3%b4%ec%b6%a9-%ec%9e%90%eb%a3%8c aria-label="📚 보충 자료">📚 보충 자료</a><ul><li><a href=#%eb%a7%88%eb%ac%b4%eb%a6%ac aria-label=마무리>마무리</a></li><li><a href=#-%ec%97%b0%ea%b4%80-%eb%85%b8%ed%8a%b8 aria-label="🔗 연관 노트">🔗 연관 노트</a></li></ul></li></ul></div></details><div class="post-content md-content"><blockquote><p>📌 <strong>정답 출처 안내.</strong> 아래 정규화 SQL은 강사 <strong>답지</strong>(<code>비정규화.sql</code>, <code>1NF.sql</code>, <code>2NF.sql</code>, <code>3NF.sql</code>)와 데모(<code>normalization_compare/norm_db.py</code>, <code>README.md</code>)에서 <strong>그대로</strong> 가져왔다. 표시가 없으면 모두 <code>✅ 실제 답지</code>이고, 원본 SQL은 변경하지 않았다.</p><p>🗄️ <strong>실습 DBMS는 SQLite</strong> (<code>normalization_compare/normalization.db</code>, <code>norm_db.py</code>의 <code>sqlite3</code>). 정규화 SQL은 ERD Editor import용 <code>CREATE TABLE</code>이다.
+⚠️ <strong>후반 DB 구현 슬라이드(GRANT/REVOKE·CREATE DATABASE·SHOW INDEX)는 MySQL 기준</strong>이라 SQLite엔 없거나 문법이 다르다 — §05에서 따로 정리한다.</p></blockquote><h1 id=-실습-노트>🧪 실습 노트<a hidden class=anchor aria-hidden=true href=#-실습-노트>#</a></h1><div class=highlight><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>00. 4단계 데모 구성 — 같은 데이터, 4개 DB
+</span></span><span class=line><span class=cl>01. 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교)
+</span></span><span class=line><span class=cl>02. 정규화 SQL ① 비정규화 → 1NF (원자값) ✅
+</span></span><span class=line><span class=cl>03. 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅
+</span></span><span class=line><span class=cl>04. 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅
+</span></span><span class=line><span class=cl>05. ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이)
+</span></span></code></pre></div><hr><h2 id=00--4단계-데모-구성--같은-데이터-4개-db>00 · 4단계 데모 구성 — 같은 데이터, 4개 DB<a hidden class=anchor aria-hidden=true href=#00--4단계-데모-구성--같은-데이터-4개-db>#</a></h2><p>① 이 데모의 아이디어는 한 줄이다 — <strong>완전히 같은 학생·수강 데이터를 비정규화·1NF·2NF·3NF 네 단계 DB에 각각 저장</strong>해두고, 똑같은 갱신/삽입/삭제 작업을 해보며 <strong>어느 단계에서 사고(이상현상)가 나는지</strong> 비교한다.</p><p>② 공통 시드 데이터 (README 표 / <code>norm_db.py</code> 주석):</p><table><thead><tr><th>학번</th><th>학생</th><th>학과</th><th>수강</th></tr></thead><tbody><tr><td>101</td><td>김민준</td><td>CS 컴퓨터공학</td><td>CS301(A+), CS302(A)</td></tr><tr><td>102</td><td>이서연</td><td>EE 전자공학</td><td>CS301(B+)</td></tr></tbody></table><ul><li>과목: <strong>CS301 데이터베이스</strong>(김교수, 301호), <strong>CS302 운영체제</strong>(박교수, 302호)</li><li>학과: CS 컴퓨터공학(공학관 A동), EE 전자공학(공학관 B동)</li></ul><p>④ 같은 데이터를 4번 저장하는 이유는, <strong>&ldquo;입력은 같은데 정규화 단계만 다르면 결과가 어떻게 갈리는지&rdquo;</strong> 를 통제된 비교로 보기 위해서다. UI도 입력도 동일하고, <strong>오직 테이블 설계만</strong> 다르다.</p><blockquote><p>💡 6/15 <code>constraint_demo</code>가 &ldquo;UI는 같은데 제약 설계가 틀리면 가입이 막힌다"였다면, 오늘 데모는 &ldquo;<strong>입력은 같은데 정규화 단계가 낮으면 데이터가 꼬인다</strong>&ldquo;를 보여주는 짝이다.</p></blockquote><hr><h2 id=01---하이라이트--normalization_compare-이상현상-4단계-비교>01 · 🔥 하이라이트 — normalization_compare (이상현상 4단계 비교)<a hidden class=anchor aria-hidden=true href=#01---하이라이트--normalization_compare-이상현상-4단계-비교>#</a></h2><p>오늘의 백미. Streamlit 앱에서 4개 탭(비정규화/1NF/2NF/3NF)을 두고, 동일한 작업을 단계별로 실행해 이상현상을 눈으로 비교한다.</p><h3 id=실행법>실행법<a hidden class=anchor aria-hidden=true href=#실행법>#</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>cd</span> normalization_compare
+</span></span><span class=line><span class=cl>uv sync
+</span></span><span class=line><span class=cl>uv run streamlit run app.py
+</span></span><span class=line><span class=cl><span class=c1># http://localhost:8501</span>
+</span></span></code></pre></div><h3 id=-핵심--단계별-이상-상태-표>★ 핵심 — 단계별 이상 상태 표<a hidden class=anchor aria-hidden=true href=#-핵심--단계별-이상-상태-표>#</a></h3><p>① 이 표가 오늘 실습 전체의 <strong>결론</strong>이다 (README + <code>norm_db.py</code>의 <code>SCENARIO_ANOMALY</code>).</p><table><thead><tr><th>단계</th><th style=text-align:center>갱신(학과)</th><th style=text-align:center>갱신(교수)</th><th style=text-align:center>삽입</th><th style=text-align:center>삭제</th><th>종합</th></tr></thead><tbody><tr><td><strong>비정규화</strong></td><td style=text-align:center>존재</td><td style=text-align:center>존재</td><td style=text-align:center>존재</td><td style=text-align:center>존재</td><td>❌ 이상 구조</td></tr><tr><td><strong>1NF</strong></td><td style=text-align:center>존재</td><td style=text-align:center>존재</td><td style=text-align:center>존재</td><td style=text-align:center>존재</td><td>❌ 이상 구조</td></tr><tr><td><strong>2NF</strong></td><td style=text-align:center><strong>잔존</strong></td><td style=text-align:center>정상</td><td style=text-align:center>정상</td><td style=text-align:center>정상</td><td>⚠ 이행 종속 잔존</td></tr><tr><td><strong>3NF</strong></td><td style=text-align:center>정상</td><td style=text-align:center>정상</td><td style=text-align:center>정상</td><td style=text-align:center>정상</td><td>✅ <strong>정상</strong></td></tr></tbody></table><p>④ 표 읽는 법 — <code>norm_db.py</code>의 라벨 그대로:</p><ul><li><code>risk</code>=&ldquo;이상 존재&rdquo; → 비정규화·1NF: 구조적으로 이상에 취약</li><li><code>partial</code>=&ldquo;일부 잔존&rdquo; → 2NF: 부분 종속은 해소됐지만 <strong>이행 종속 때문에 학과 갱신 이상만 남음</strong></li><li><code>ok</code>=&ldquo;정상&rdquo; → 3NF: 모든 이상 해소</li></ul><blockquote><p>💡 <strong>이 표의 핵심은 2NF 행이다.</strong> 2NF는 부분 종속을 없앴는데도 <strong>학과 갱신 한 칸만 &ldquo;잔존&rdquo;</strong> 이다. 바로 그 한 칸이 <em>2NF와 3NF의 차이</em>(이행 종속)를 눈으로 보여준다 — 학과를 독립 테이블로 빼는 3NF가 되어야 그 칸도 &ldquo;정상"이 된다.</p></blockquote><h3 id=4가지-시나리오-norm_dbpy-함수--readme->4가지 시나리오 (norm_db.py 함수 / README ➊~➍)<a hidden class=anchor aria-hidden=true href=#4가지-시나리오-norm_dbpy-함수--readme->#</a></h3><p>① 같은 작업을 4단계 DB에서 각각 실행해, 단계마다 결과가 어떻게 다른지 본다.</p><p><strong>➊ 학과 건물 변경 = 갱신 이상</strong> (<code>update_dept_building</code>) — 학과코드 + 새 건물명 입력</p><ul><li><strong>비정규화/1NF:</strong> 같은 학과 정보가 여러 행에 중복 → &ldquo;첫 row만 수정하면 같은 학과인데 건물이 row마다 달라질 수 있음&rdquo;</li><li><strong>2NF:</strong> <code>student_2nf</code>에 학과가 학생별로 중복 → &ldquo;dept_building이 학생 row마다 다를 수 있음&rdquo;(<strong>이행 종속 잔존</strong>)</li><li><strong>3NF:</strong> <code>UPDATE department ... WHERE dept_code = ?</code> → <strong>학과 마스터 1곳만 수정</strong>(정상)</li></ul><p><strong>➋ 교수 연구실 변경 = 갱신 이상</strong> (<code>update_professor_office</code>) — 과목코드 + 새 연구실 입력</p><ul><li><strong>비정규화:</strong> 다중값 셀 전체를 다시 저장해야 함 / <strong>1NF:</strong> 해당 과목의 모든 수강 row 수정 필요</li><li><strong>2NF:</strong> <code>UPDATE course_2nf ...</code> 1 row → 모든 수강 조회에 반영(정상) / <strong>3NF:</strong> <code>UPDATE professor ...</code> 1 row(정상)</li></ul><p><strong>➌ 수강 등록 = 삽입 이상</strong> (<code>add_enrollment</code>) — 학번/과목/성적 입력 (기본 과목명 &lsquo;네트워크&rsquo;, 교수 &lsquo;최교수&rsquo;, 연구실 &lsquo;401호&rsquo;)</p><ul><li><strong>비정규화:</strong> 다중값 셀에 콤마로 이어 붙임 → <strong>원자값·무결성 위반</strong> / <strong>1NF:</strong> 원자값 삽입은 되지만 학과·교수 정보가 row마다 중복</li><li><strong>2NF/3NF:</strong> <code>enrollment</code>/<code>enrollment_3nf</code>에 성적만 추가(과목 없으면 마스터 테이블에 먼저 INSERT) → 정상</li></ul><p><strong>➍ 학생 수강 삭제 = 삭제 이상</strong> (<code>delete_student_records</code>) — 학번 입력</p><ul><li><strong>비정규화:</strong> 학생 row 삭제 → 해당 학생·수강·학과 정보가 <strong>모두 사라짐</strong> / <strong>1NF:</strong> 수강 row 삭제 → 학생 마스터가 없어 <strong>학생 정보 복구 불가</strong></li><li><strong>2NF/3NF:</strong> <code>enrollment</code>에서 수강만 삭제 → <code>student_2nf</code>/<code>student</code> 마스터에 학생 정보 유지(정상)</li></ul><p>⑤ 추가로 <code>check_data_issues</code>가 각 단계의 <strong>실제 데이터 불일치를 자동 탐지</strong>한다 — 비정규화는 <code>course_ids</code> 중복, 1NF는 &ldquo;같은 학생인데 dept_building이 row마다 다름&rdquo;/&ldquo;과목 교수 연구실이 row마다 다름&rdquo;, 2NF는 &ldquo;학과 dept_building이 학생 row마다 다름&rdquo;, 3NF는 (정상이면) 없음.</p><blockquote><p>💡 <strong>데모 전체의 학습 포인트:</strong> <strong>UI·입력이 같아도 DB 정규화 단계에 따라 이상현상 발생 여부가 달라진다.</strong> 비정규화·1NF는 구조적으로 이상에 취약, 2NF는 부분 종속만 해소돼 <strong>학과 갱신 이상이 잔존</strong>, 3NF에서 <strong>모든 이상이 해소</strong>된다.</p></blockquote><hr><h2 id=02--정규화-sql--비정규화--1nf-원자값->02 · 정규화 SQL ① 비정규화 → 1NF (원자값) ✅<a hidden class=anchor aria-hidden=true href=#02--정규화-sql--비정규화--1nf-원자값->#</a></h2><p>① 위 데모가 내부에서 단계별로 쓰는 테이블 구조를, 답지 SQL로 직접 본다. 먼저 <strong>모든 게 한 테이블에 들어간 비정규화</strong> 상태다.</p><p><strong>[0단계] 비정규화 — <code>student_course_all</code></strong> (다중값, PK 없음)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- ✅ 실제 답지 (비정규화.sql)
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>student_course_all</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_id</span><span class=w>       </span><span class=nb>INTEGER</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_name</span><span class=w>     </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_ids</span><span class=w>       </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_names</span><span class=w>     </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>grades</span><span class=w>           </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_name</span><span class=w>   </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_office</span><span class=w> </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_code</span><span class=w>        </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_name</span><span class=w>        </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_building</span><span class=w>    </span><span class=nb>TEXT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span></code></pre></div><p>④ 무엇이 문제인가:</p><ul><li><strong>PK가 없다</strong> → 행을 유일하게 식별 못 함</li><li><code>course_ids</code>·<code>course_names</code>·<code>grades</code>가 <strong>다중값</strong>(콤마 구분) → <code>WHERE</code>·<code>JOIN</code>·<code>ORDER BY</code>가 정상 동작 불가</li><li>학생이 N과목 수강하면 <code>professor_name</code>·<code>dept_name</code> 등이 <strong>행마다 중복 복제</strong></li></ul><blockquote><p>⚠ <strong>메모(원문 차이 보존):</strong> <code>norm_db.py</code> 안의 동명 테이블은 <code>student_id INTEGER PRIMARY KEY</code> + <code>professor_names</code>/<code>professor_offices</code>(<strong>복수형</strong>)로 정의돼 있다(다중값 강조 + 4단계 공존을 위한 변형). 답지 <code>비정규화.sql</code>(위)은 <code>professor_name</code>/<code>professor_office</code>(<strong>단수형</strong>)다. 둘 다 원문 그대로 인용한다.</p></blockquote><p><strong>[1NF] 원자값 + 복합 PK — <code>student_course_1nf</code></strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- ✅ 실제 답지 (1NF.sql)
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>student_course_1nf</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_id</span><span class=w>       </span><span class=nb>INTEGER</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_id</span><span class=w>        </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_name</span><span class=w>     </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_name</span><span class=w>      </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>grade</span><span class=w>            </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_name</span><span class=w>   </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_office</span><span class=w> </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_code</span><span class=w>        </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_name</span><span class=w>        </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_building</span><span class=w>    </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>student_id</span><span class=p>,</span><span class=w> </span><span class=n>course_id</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span></code></pre></div><p>④ <strong>무엇이 바뀌었나(= 1NF가 제거한 것):</strong> 다중값 컬럼(<code>course_ids</code> 등)을 <strong>원자값</strong>으로 풀고, 한 행 = &ldquo;한 학생의 한 과목"이 되도록 <strong>복합 PK <code>(student_id, course_id)</code></strong> 를 줬다.
+<strong>아직 남은 문제:</strong> 여전히 단일 테이블이라 <code>student_name</code>·학과·교수 정보가 행마다 중복된다 → 2NF·3NF로.</p><hr><h2 id=03--정규화-sql--2nf-부분-함수-종속-제거->03 · 정규화 SQL ② 2NF (부분 함수 종속 제거) ✅<a hidden class=anchor aria-hidden=true href=#03--정규화-sql--2nf-부분-함수-종속-제거->#</a></h2><p>① 복합키 <code>(student_id, course_id)</code>의 <strong>일부에만 매달린 컬럼</strong>을 별도 테이블로 빼낸다. 1테이블 → <strong>3테이블</strong>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- ✅ 실제 답지 (2NF.sql)
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>student_2nf</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_id</span><span class=w>    </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_name</span><span class=w>  </span><span class=nb>TEXT</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_code</span><span class=w>     </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_name</span><span class=w>     </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_building</span><span class=w> </span><span class=nb>TEXT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>course_2nf</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_id</span><span class=w>        </span><span class=nb>TEXT</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_name</span><span class=w>      </span><span class=nb>TEXT</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_name</span><span class=w>   </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_office</span><span class=w> </span><span class=nb>TEXT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>enrollment</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_id</span><span class=w> </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_id</span><span class=w>  </span><span class=nb>TEXT</span><span class=w>    </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>grade</span><span class=w>      </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>student_id</span><span class=p>,</span><span class=w> </span><span class=n>course_id</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>FOREIGN</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>student_id</span><span class=p>)</span><span class=w> </span><span class=k>REFERENCES</span><span class=w> </span><span class=n>student_2nf</span><span class=p>(</span><span class=n>student_id</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>FOREIGN</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>course_id</span><span class=p>)</span><span class=w>  </span><span class=k>REFERENCES</span><span class=w> </span><span class=n>course_2nf</span><span class=p>(</span><span class=n>course_id</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span></code></pre></div><p>④ <strong>무엇이 바뀌었나(= 2NF가 제거한 것):</strong></p><ul><li><code>student_name</code>은 <code>student_id</code>에만 종속(부분 종속) → <code>student_2nf</code>로 분리</li><li><code>course_name</code>·<code>professor_*</code>는 <code>course_id</code>에만 종속(부분 종속) → <code>course_2nf</code>로 분리</li><li><code>grade</code>(성적)만 복합키 <strong>둘 다</strong> 필요(완전 종속) → 연결 테이블 <code>enrollment</code>에 남음</li></ul><blockquote><p>⚠ <strong>메모(이행 종속 잔존):</strong> <code>student_2nf</code> 안에 <strong><code>dept_code</code>/<code>dept_name</code>/<code>dept_building</code> 3컬럼이 아직 함께</strong> 있다. <code>학번 → 학과코드 → 학과건물</code>이라는 <strong>이행 종속</strong>이 남아서, 데모에서 &ldquo;2NF 학과 갱신 이상 잔존(partial)&ldquo;으로 나타난다. → 3NF에서 해소.</p></blockquote><hr><h2 id=04--정규화-sql--3nf-이행-함수-종속-제거->04 · 정규화 SQL ③ 3NF (이행 함수 종속 제거) ✅<a hidden class=anchor aria-hidden=true href=#04--정규화-sql--3nf-이행-함수-종속-제거->#</a></h2><p>① 2NF에 남은 <code>학번 → 학과코드 → 학과건물</code> 이행 종속을 끊는다. 학과·교수를 <strong>독립 마스터 테이블로 분리</strong>하고 FK로 연결 → <strong>5테이블</strong>.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- ✅ 실제 답지 (3NF.sql)
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>department</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_id</span><span class=w>       </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=n>AUTOINCREMENT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_code</span><span class=w>     </span><span class=nb>TEXT</span><span class=w> </span><span class=k>UNIQUE</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_name</span><span class=w>     </span><span class=nb>TEXT</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_building</span><span class=w> </span><span class=nb>TEXT</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>professor</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_id</span><span class=w>     </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=n>AUTOINCREMENT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_name</span><span class=w>   </span><span class=nb>TEXT</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_office</span><span class=w> </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_id</span><span class=w>          </span><span class=nb>INTEGER</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>FOREIGN</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>dept_id</span><span class=p>)</span><span class=w> </span><span class=k>REFERENCES</span><span class=w> </span><span class=n>department</span><span class=p>(</span><span class=n>dept_id</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>student</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_id</span><span class=w>   </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_name</span><span class=w> </span><span class=nb>TEXT</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dept_id</span><span class=w>      </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>FOREIGN</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>dept_id</span><span class=p>)</span><span class=w> </span><span class=k>REFERENCES</span><span class=w> </span><span class=n>department</span><span class=p>(</span><span class=n>dept_id</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>course</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_id</span><span class=w>    </span><span class=nb>TEXT</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_name</span><span class=w>  </span><span class=nb>TEXT</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>professor_id</span><span class=w> </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>FOREIGN</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>professor_id</span><span class=p>)</span><span class=w> </span><span class=k>REFERENCES</span><span class=w> </span><span class=n>professor</span><span class=p>(</span><span class=n>professor_id</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>enrollment_3nf</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>student_id</span><span class=w> </span><span class=nb>INTEGER</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>course_id</span><span class=w>  </span><span class=nb>TEXT</span><span class=w>    </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>grade</span><span class=w>      </span><span class=nb>TEXT</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>student_id</span><span class=p>,</span><span class=w> </span><span class=n>course_id</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>FOREIGN</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>student_id</span><span class=p>)</span><span class=w> </span><span class=k>REFERENCES</span><span class=w> </span><span class=n>student</span><span class=p>(</span><span class=n>student_id</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>FOREIGN</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=n>course_id</span><span class=p>)</span><span class=w>  </span><span class=k>REFERENCES</span><span class=w> </span><span class=n>course</span><span class=p>(</span><span class=n>course_id</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>);</span><span class=w>
+</span></span></span></code></pre></div><p>④ <strong>무엇이 바뀌었나(= 3NF가 제거한 것):</strong></p><ul><li>학과를 <strong><code>department</code></strong> 마스터로 분리 → <code>student</code>는 <code>dept_id</code>(FK)만 가짐 → <code>학번→학과코드→학과건물</code> <strong>이행 종속 해소</strong>(학과 건물은 이제 <code>department</code> 한 곳에서만 관리)</li><li>교수를 <strong><code>professor</code></strong> 마스터로 분리 → <code>course</code>는 <code>professor_id</code>(FK)만 가짐</li><li>결과: 모든 갱신/삽입/삭제 이상 해소(데모 3NF = 정상)</li></ul><blockquote><p>⚠ <strong>메모(원문 차이 보존):</strong></p><ul><li>연결 테이블 이름이 2NF는 <code>enrollment</code>, 3NF는 <code>enrollment_3nf</code>로 <strong>다르다</strong> — <code>norm_db.py</code>가 4단계를 한 DB에 공존시키려 일부러 분리한 것이라 답지 원문 그대로 둔다.</li><li><code>norm_db.py</code>의 3NF <code>professor.dept_id</code>는 <code>INTEGER NOT NULL</code>인데, 답지 <code>3NF.sql</code>(위)은 <code>INTEGER</code>(NOT NULL 없음)다. 분해 구조·FK는 동일하고, 원문 차이만 보존한다.</li></ul></blockquote><hr><h2 id=05---mysql-기준--db-생성--dcl--인덱스-sqlite와-차이>05 · ⚠ MySQL 기준 — DB 생성 / DCL / 인덱스 (SQLite와 차이)<a hidden class=anchor aria-hidden=true href=#05---mysql-기준--db-생성--dcl--인덱스-sqlite와-차이>#</a></h2><p>① 슬라이드 후반 DB 구현은 <strong>MySQL CLI 기준</strong>이다. 위 정규화 실습(SQLite)과 <strong>무엇이 다른지</strong>를 표로 정리한다. (개념 설명은 <a href=/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/>강의 노트 08~11</a> 참고.)</p><p>② MySQL 기준 명령:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=c1>-- ⚠ MySQL 기준 — 데이터베이스 단위 관리
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>DATABASE</span><span class=w> </span><span class=n>shared_kickboard</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>SHOW</span><span class=w> </span><span class=n>DATABASES</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>USE</span><span class=w> </span><span class=n>shared_kickboard</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>DROP</span><span class=w> </span><span class=k>DATABASE</span><span class=w> </span><span class=n>shared_kickboard</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- ⚠ MySQL 기준 — DCL (사용자 권한 관리)
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>USER</span><span class=w> </span><span class=err>유저이름</span><span class=o>@</span><span class=n>localhost</span><span class=w> </span><span class=n>IDENTIFIED</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=s1>&#39;비밀번호&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>GRANT</span><span class=w> </span><span class=k>ALL</span><span class=w> </span><span class=k>PRIVILEGES</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=err>데이터베이스</span><span class=p>.</span><span class=err>테이블</span><span class=w> </span><span class=k>TO</span><span class=w> </span><span class=err>유저이름</span><span class=o>@</span><span class=n>localhost</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>FLUSH</span><span class=w> </span><span class=k>PRIVILEGES</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>SHOW</span><span class=w> </span><span class=n>GRANTS</span><span class=w> </span><span class=k>FOR</span><span class=w> </span><span class=err>유저이름</span><span class=o>@</span><span class=n>localhost</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>REVOKE</span><span class=w> </span><span class=k>ALL</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=err>데이터베이스</span><span class=p>.</span><span class=err>테이블</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=err>유저이름</span><span class=o>@</span><span class=n>localhost</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=c1>-- ⚠ MySQL 기준 — 인덱스
+</span></span></span><span class=line><span class=cl><span class=k>CREATE</span><span class=w> </span><span class=k>INDEX</span><span class=w> </span><span class=err>인덱스명</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=err>테이블명</span><span class=p>(</span><span class=err>컬럼명</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>SHOW</span><span class=w> </span><span class=k>INDEX</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=err>테이블명</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>ALTER</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=err>테이블명</span><span class=w> </span><span class=k>DROP</span><span class=w> </span><span class=k>INDEX</span><span class=w> </span><span class=err>인덱스명</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></div><p>④ <strong>SQLite vs MySQL 차이 — 이 회차 핵심 주의점:</strong></p><table><thead><tr><th>기능</th><th>MySQL (슬라이드)</th><th>SQLite (실습)</th></tr></thead><tbody><tr><td>DB 단위</td><td><code>CREATE DATABASE</code> / <code>USE</code></td><td><strong>없음</strong> (파일 1개 = DB 1개)</td></tr><tr><td>사용자·권한</td><td><code>CREATE USER</code>·<code>GRANT</code>·<code>REVOKE</code>·<code>SHOW GRANTS</code>·<code>FLUSH PRIVILEGES</code></td><td><strong>없음</strong> (사용자/권한 개념 자체가 없음)</td></tr><tr><td>인덱스 조회</td><td><code>SHOW INDEX FROM 테이블</code></td><td><strong>미지원</strong> → <code>PRAGMA index_list(테이블)</code></td></tr><tr><td>인덱스 삭제</td><td><code>ALTER TABLE ... DROP INDEX 인덱스명</code></td><td><code>DROP INDEX 인덱스명;</code> (문법 다름)</td></tr><tr><td>인덱스 생성</td><td><code>CREATE INDEX ...</code></td><td><strong>동일</strong></td></tr><tr><td>트랜잭션</td><td><code>COMMIT</code>/<code>ROLLBACK</code></td><td><strong>동일</strong>(지원)</td></tr><tr><td>ENUM 자료형(킥보드 ERD)</td><td><code>ENUM('대여','반납')</code></td><td><strong>없음</strong> → <code>CHECK</code>로 대체</td></tr></tbody></table><blockquote><p>⚠️ <strong>정리:</strong> 실습 코드(정규화 SQL·<code>norm_db.py</code>)는 <strong>SQLite</strong> — <code>INTEGER PRIMARY KEY AUTOINCREMENT</code>·<code>TEXT</code>·<code>PRAGMA foreign_keys = ON</code>. 반면 DB 구현 슬라이드(위 명령들)는 <strong>MySQL 전용</strong> 기능을 다수 포함한다. 같은 SQL이라도 <strong>DBMS가 다르면 안 되는 게 있다</strong>는 걸 회차 내내 라벨로 구분했다.</p></blockquote><hr><h1 id=-보충-자료>📚 보충 자료<a hidden class=anchor aria-hidden=true href=#-보충-자료>#</a></h1><ul><li>정규화 SQL 답지: <code>비정규화.sql</code> / <code>1NF.sql</code> / <code>2NF.sql</code> / <code>3NF.sql</code> (ERD Editor import용 CREATE TABLE) — 강사 정답. 본 노트는 verbatim 수록.</li><li>정규화 데모: <code>normalization_compare/</code> — <code>README.md</code>(이상 상태 표 + 4시나리오), <code>norm_db.py</code>(<code>sqlite3</code>, <code>SCENARIO_ANOMALY</code>·<code>check_data_issues</code>·4개 작업 함수), <code>app.py</code>(Streamlit). 실행: <code>cd normalization_compare && uv sync && uv run streamlit run app.py</code></li><li>실습 DB: <code>normalization.db</code> (SQLite). 4단계 테이블이 한 DB에 공존(<code>enrollment</code> vs <code>enrollment_3nf</code>로 분리).</li><li>MySQL 공식 문서 — GRANT/REVOKE, CREATE INDEX (DB 구현 슬라이드 기준)</li><li>SQLite 공식 문서 — PRAGMA Statements(<code>index_list</code>), DROP INDEX (MySQL과 문법 차이)</li></ul><blockquote><p>📌 <strong>정리:</strong> 오늘 SQL은 거의 전부 <code>✅ 실제 답지</code>(<code>비정규화.sql</code>/<code>1NF.sql</code>/<code>2NF.sql</code>/<code>3NF.sql</code>, <code>norm_db.py</code>)이고 변형하지 않았다. <code>⚠</code> 라벨은 <strong>MySQL 기준 슬라이드</strong>이거나 <strong>SQLite와의 차이</strong>를 가리킨다. 실습은 SQLite, DB 구현 슬라이드는 MySQL이라는 점을 코드마다 라벨로 구분했다.</p></blockquote><h2 id=마무리>마무리<a hidden class=anchor aria-hidden=true href=#마무리>#</a></h2><p>오늘 실습의 백미는 <strong><code>normalization_compare</code></strong> 다 — <em>완전히 같은 학생·수강 데이터</em>를 비정규화·1NF·2NF·3NF 네 DB에 넣고, 같은 갱신/삽입/삭제를 해보며 <strong>어느 단계에서 이상현상이 나는지</strong>를 표 하나로 정리했다. 핵심은 <strong>2NF 행</strong> — 부분 종속은 해소됐지만 <strong>학과 갱신 이상만 &ldquo;잔존&rdquo;</strong> 하고, 그 한 칸이 3NF(학과를 <code>department</code>로 분리)에서야 &ldquo;정상"이 된다. 그 뒤 답지 SQL로 <code>student_course_all → student_course_1nf → student_2nf/course_2nf/enrollment → department/professor/student/course/enrollment_3nf</code>의 <strong>단계별 분해</strong>를 verbatim으로 따라가며, 각 단계가 <strong>어떤 종속(다중값·부분·이행)을 제거하는지</strong> 짚었다. 마지막으로 DB 구현 슬라이드의 MySQL 명령(DATABASE·DCL·인덱스)이 <strong>SQLite에선 안 되거나 문법이 다르다</strong>는 차이를 표로 구분했다. 한 줄 결론 — <strong>입력이 같아도 정규화 단계가 낮으면 데이터가 꼬이고, 3NF에서 비로소 모든 이상이 사라진다.</strong></p><h2 id=-연관-노트>🔗 연관 노트<a hidden class=anchor aria-hidden=true href=#-연관-노트>#</a></h2><ul><li><a href=/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/>6/16 정규화 & 데이터베이스 구현</a> — 오늘 실습의 개념 정리(이상현상·함수 종속·1NF/2NF/3NF·BCNF/4NF/5NF·역정규화·MySQL DB 구현)</li><li><a href=/posts/%EC%8B%A4%EC%8A%B5/6-15-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B0%9C%EC%9A%94%EC%99%80-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0-%EC%BD%94%EB%93%9C-%EB%85%B8%ED%8A%B8/>6/15 데이터베이스 개요 & 구성하기 코드 노트</a> — 지난 실습(제약조건·복합PK·FK로 <code>school_db</code> 5테이블 만들기, <code>constraint_demo</code>). 오늘은 그 테이블들을 <em>정규화 단계로 나누는</em> 실습으로 이어진다</li></ul></div><footer class=post-footer><ul class=post-tags><li><a href=https://yw8837.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/>데이터베이스</a></li><li><a href=https://yw8837.github.io/tags/%EC%8B%A4%EC%8A%B5/>실습</a></li><li><a href=https://yw8837.github.io/tags/%EC%A0%95%EA%B7%9C%ED%99%94/>정규화</a></li><li><a href=https://yw8837.github.io/tags/normalization/>Normalization</a></li><li><a href=https://yw8837.github.io/tags/sql/>SQL</a></li><li><a href=https://yw8837.github.io/tags/sqlite/>SQLite</a></li><li><a href=https://yw8837.github.io/tags/1nf/>1NF</a></li><li><a href=https://yw8837.github.io/tags/2nf/>2NF</a></li><li><a href=https://yw8837.github.io/tags/3nf/>3NF</a></li><li><a href=https://yw8837.github.io/tags/create/>CREATE</a></li><li><a href=https://yw8837.github.io/tags/%EB%B3%B5%ED%95%A9%ED%82%A4/>복합키</a></li><li><a href=https://yw8837.github.io/tags/%EC%99%B8%EB%9E%98%ED%82%A4/>외래키</a></li><li><a href=https://yw8837.github.io/tags/%EC%9D%B4%EC%83%81%ED%98%84%EC%83%81/>이상현상</a></li><li><a href=https://yw8837.github.io/tags/anomaly/>Anomaly</a></li><li><a href=https://yw8837.github.io/tags/normalization_compare/>Normalization_compare</a></li><li><a href=https://yw8837.github.io/tags/streamlit/>Streamlit</a></li><li><a href=https://yw8837.github.io/tags/mysql/>MySQL</a></li><li><a href=https://yw8837.github.io/tags/%EC%9D%B8%EB%8D%B1%EC%8A%A4/>인덱스</a></li><li><a href=https://yw8837.github.io/tags/pragma/>PRAGMA</a></li><li><a href=https://yw8837.github.io/tags/%EC%B4%88%EB%B3%B4%EC%9E%90/>초보자</a></li></ul><nav class=paginav><a class=prev href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-17-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A6%AC%ED%84%B0%EB%9F%AC%EC%8B%9C%EC%99%80-numpy-%EA%B8%B0%EC%B4%88/><span class=title>« 이전 페이지</span>
+<span>6/17 데이터 리터러시 & NumPy 기초 — 데이터를 읽는 눈과, 분석 패키지의 뼈대</span>
+</a><a class=next href=https://yw8837.github.io/posts/%EA%B0%95%EC%9D%98/6-16-%EC%A0%95%EA%B7%9C%ED%99%94%EC%99%80-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EA%B5%AC%ED%98%84/><span class=title>다음 페이지 »</span>
+<span>6/16 정규화 & 데이터베이스 구현 — 같은 데이터인데 왜 1NF·2NF·3NF로 쪼개야 하는가</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2026 <a href=https://yw8837.github.io/>AI_6스터디</a></span> ·
+<a href=/posts/privacy-policy/>개인정보처리방침</a> · <a href=/posts/disclaimer/>서비스 이용 안내</a> ·
+<span>Powered by
+<a href="https://gohugo.io/?utm_source=papermod" rel=noopener target=_blank>Hugo</a> &
+<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top id=top-link class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey=g><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></a><div style=text-align:center;margin-top:8px;font-size:13px;color:#888><a href=/posts/privacy-policy/ style=color:#888>개인정보처리방침</a> · <a href=/posts/disclaimer/ style=color:#888>서비스 이용 안내</a></div><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var toplink=document.getElementById("top-link");window.onscroll=function(){const e=window.innerHeight;document.body.scrollTop>e||document.documentElement.scrollTop>e?toplink.classList.remove("hidden"):toplink.classList.add("hidden")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="복사";function s(){t.innerHTML="복사 완료!",setTimeout(()=>{t.innerHTML="복사"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
