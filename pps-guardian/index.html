@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI QUEST: 나라장터 지킴이 - 조달청 공공조달 검수 시뮬레이터</title>
+  <title>AI QUEST: 나라장터 지킴이 v2.0 - 조달청 공공조달 검수 시뮬레이터</title>
   <style>
     :root {
       --pps-blue: #003366;
       --pps-navy: #001f3f;
       --pps-light-blue: #0066cc;
-      --pps-bg: #f0f4f8;
-      --stamp-red: #d32f2f;
-      --stamp-green: #2e7d32;
+      --pps-bg: #0f172a;
+      --stamp-red: #dc2626;
+      --stamp-green: #16a34a;
       --paper-bg: #fffdf9;
       --gold: #f59e0b;
     }
@@ -31,32 +31,47 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      padding: 12px;
       overflow-x: hidden;
     }
 
     #game-container {
       width: 100%;
       max-width: 680px;
-      min-height: 720px;
+      min-height: 740px;
       background: #ffffff;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      border-radius: 20px;
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
-      border: 2px solid #e2e8f0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .shake {
+      animation: screen-shake 0.25s ease-in-out;
+    }
+
+    @keyframes screen-shake {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(-4px, 3px); }
+      40% { transform: translate(4px, -3px); }
+      60% { transform: translate(-3px, 2px); }
+      80% { transform: translate(3px, -2px); }
+      100% { transform: translate(0, 0); }
     }
 
     /* Header Bar */
     header {
       background: linear-gradient(135deg, var(--pps-blue), var(--pps-navy));
       color: white;
-      padding: 12px 20px;
+      padding: 14px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-bottom: 2px solid rgba(255,255,255,0.1);
     }
 
     .header-title {
@@ -64,7 +79,7 @@
       align-items: center;
       gap: 10px;
       font-size: 15px;
-      font-weight: bold;
+      font-weight: 800;
       letter-spacing: -0.5px;
     }
 
@@ -74,7 +89,7 @@
       padding: 3px 8px;
       border-radius: 6px;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .stats-bar {
@@ -95,17 +110,17 @@
     }
 
     .stat-val {
-      font-weight: bold;
+      font-weight: 900;
       font-size: 15px;
       color: #fbbf24;
     }
 
-    /* Screen Views */
+    /* Screens Common */
     .screen {
-      flex: 1;
       display: none;
+      flex: 1;
+      padding: 24px;
       flex-direction: column;
-      padding: 20px;
     }
 
     .screen.active {
@@ -115,36 +130,41 @@
     /* Start Screen */
     #start-screen {
       text-align: center;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       gap: 16px;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      padding: 30px 24px;
     }
 
     .char-avatar-box {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       justify-content: center;
-      margin-bottom: 8px;
+      width: 100%;
+      margin: 10px 0;
     }
 
     .char-card {
-      background: #f1f5f9;
-      padding: 12px 18px;
+      flex: 1;
+      max-width: 220px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
       border-radius: 12px;
-      border: 1px solid #cbd5e1;
-      width: 140px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
     }
 
     .char-icon {
-      font-size: 40px;
-      margin-bottom: 4px;
+      font-size: 38px;
     }
 
     .char-name {
-      font-size: 14px;
       font-weight: bold;
       color: var(--pps-blue);
+      font-size: 14px;
     }
 
     .char-role {
@@ -152,107 +172,160 @@
       color: #64748b;
     }
 
-    .briefing-box {
-      background: #ecfdf5;
-      border: 1.5px solid #a7f3d0;
+    /* Mode Selection */
+    .mode-selection-box {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
       border-radius: 12px;
-      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
       text-align: left;
-      font-size: 13px;
-      line-height: 1.6;
-      color: #065f46;
-      max-width: 500px;
+    }
+
+    .mode-btn:hover, .mode-btn.selected {
+      border-color: var(--pps-light-blue);
+      background: #eff6ff;
+    }
+
+    .mode-btn.selected {
+      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+    }
+
+    .mode-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--pps-navy);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mode-desc {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
     }
 
     .btn-main {
-      background: linear-gradient(135deg, var(--pps-light-blue), var(--pps-blue));
+      width: 100%;
+      max-width: 480px;
+      background: linear-gradient(135deg, var(--pps-blue), var(--pps-light-blue));
       color: white;
       border: none;
-      padding: 14px 40px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 10px;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
-      transition: all 0.2s;
+      box-shadow: 0 6px 16px rgba(0, 51, 102, 0.3);
+      transition: transform 0.1s, box-shadow 0.1s;
     }
 
-    .btn-main:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 51, 102, 0.4);
+    .btn-main:active {
+      transform: scale(0.98);
     }
 
-    /* Game Play Screen */
+    .btn-sub {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    /* Play Screen */
     #play-screen {
       position: relative;
-      background: #f8fafc;
       justify-content: space-between;
+      padding: 16px;
     }
 
-    .timer-container {
+    /* Top HUD */
+    .hud-bar {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      background: #f1f5f9;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 13px;
       margin-bottom: 12px;
     }
 
-    .timer-badge {
-      background: #fee2e2;
-      color: #b91c1c;
-      font-weight: bold;
-      font-size: 14px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      border: 1px solid #fca5a5;
-    }
-
-    .saved-budget-badge {
-      background: #ecfdf5;
-      color: #047857;
-      font-weight: bold;
-      font-size: 14px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      border: 1px solid #a7f3d0;
-    }
-
-    /* Paper Document */
-    .paper-desk {
-      flex: 1;
+    .hud-timer {
+      font-weight: 900;
+      color: #dc2626;
+      font-size: 16px;
       display: flex;
-      justify-content: center;
       align-items: center;
-      position: relative;
-      perspective: 1000px;
+      gap: 4px;
     }
 
-    .doc-card {
-      width: 100%;
-      max-width: 500px;
+    .hud-budget {
+      font-weight: bold;
+      color: #059669;
+    }
+
+    /* Document Card */
+    .doc-paper {
       background: var(--paper-bg);
-      border: 1.5px solid #d1d5db;
-      border-radius: 8px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
       padding: 20px;
       position: relative;
-      background-image: linear-gradient(#e5e7eb 1px, transparent 1px);
-      background-size: 100% 28px;
-      line-height: 28px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .doc-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      font-size: 64px;
+      font-weight: 900;
+      color: rgba(0, 51, 102, 0.04);
+      pointer-events: none;
+      white-space: nowrap;
     }
 
     .doc-header {
       display: flex;
       justify-content: space-between;
-      border-bottom: 2px solid #1e293b;
-      padding-bottom: 6px;
+      align-items: flex-start;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 12px;
       margin-bottom: 12px;
-      line-height: 1.2;
     }
 
     .doc-agency {
-      font-size: 12px;
+      font-size: 13px;
       color: #475569;
-      font-weight: bold;
+      font-weight: 600;
     }
 
     .doc-req-id {
@@ -261,151 +334,159 @@
       font-family: monospace;
     }
 
-    .doc-item-title {
-      font-size: 17px;
-      font-weight: bold;
-      color: #0f172a;
-      line-height: 1.4;
-      margin-bottom: 8px;
+    .doc-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--pps-navy);
+      margin-bottom: 6px;
+      line-height: 1.3;
     }
 
     .doc-spec {
       font-size: 12px;
       color: #64748b;
-      line-height: 1.4;
-      margin-bottom: 12px;
-      background: #f1f5f9;
-      padding: 6px 10px;
-      border-radius: 6px;
+      background: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      border: 1px solid #e2e8f0;
     }
 
-    .price-compare-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 10px;
+    /* Comparison Box */
+    .compare-container {
+      display: flex;
+      gap: 12px;
       margin-bottom: 12px;
-      line-height: 1.3;
     }
 
     .price-box {
-      display: flex;
-      flex-direction: column;
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    .price-box.pps {
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+
+    .price-box.market {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
     }
 
     .price-label {
-      font-size: 10px;
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .price-val {
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .price-box.pps .price-val { color: #dc2626; }
+    .price-box.market .price-val { color: #16a34a; }
+
+    /* Clue / Inspection Details */
+    .clue-box {
+      background: #ffffff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #334155;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .clue-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .clue-key {
       color: #64748b;
     }
 
-    .price-value {
-      font-size: 15px;
-      font-weight: bold;
+    .clue-val {
+      font-weight: 600;
     }
 
-    .price-req {
-      color: #dc2626;
-    }
-
-    .price-market {
-      color: #2563eb;
-    }
-
-    .multiplier-tag {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: bold;
-      margin-top: 4px;
-    }
-
-    .tag-danger {
-      background: #fee2e2;
-      color: #b91c1c;
-      border: 1px solid #f87171;
-    }
-
-    .tag-safe {
-      background: #ecfdf5;
-      color: #065f46;
-      border: 1px solid #34d399;
-    }
-
-    .tag-innovative {
-      background: #eff6ff;
-      color: #1e40af;
-      border: 1px solid #60a5fa;
-    }
-
-    .doc-ai-verdict {
-      font-size: 11.5px;
-      color: #475569;
+    /* Multiplier / AI Box */
+    .ai-verdict-box {
       background: #f8fafc;
-      border-left: 3px solid var(--pps-blue);
-      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #334155;
       line-height: 1.4;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
     }
 
-    /* Stamps */
+    /* Rubber Stamps */
     .stamp {
       position: absolute;
-      top: 50%;
+      top: 40%;
       left: 50%;
-      transform: translate(-50%, -50%) rotate(-15deg) scale(0);
-      font-size: 38px;
+      transform: translate(-50%, -50%) rotate(-12deg) scale(2);
+      padding: 12px 32px;
+      font-size: 36px;
       font-weight: 900;
-      padding: 8px 24px;
       border-radius: 12px;
-      text-transform: uppercase;
-      letter-spacing: 4px;
+      border: 6px double;
       opacity: 0;
-      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
-      z-index: 10;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 50;
+      text-shadow: 0 0 2px rgba(0,0,0,0.2);
     }
 
-    .stamp.stamp-approve {
-      border: 5px solid var(--stamp-green);
+    .stamp.approve {
       color: var(--stamp-green);
-      background: rgba(236, 253, 245, 0.85);
+      border-color: var(--stamp-green);
     }
 
-    .stamp.stamp-reject {
-      border: 5px solid var(--stamp-red);
+    .stamp.reject {
       color: var(--stamp-red);
-      background: rgba(254, 242, 242, 0.85);
+      border-color: var(--stamp-red);
     }
 
     .stamp.show {
-      transform: translate(-50%, -50%) rotate(-15deg) scale(1);
       opacity: 0.95;
+      transform: translate(-50%, -50%) rotate(-12deg) scale(1);
     }
 
-    /* Bottom Action Controls */
+    /* Action Stamp Buttons */
     .action-controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 16px;
+      display: flex;
+      gap: 14px;
     }
 
     .btn-action {
-      padding: 16px;
-      border-radius: 12px;
+      flex: 1;
+      padding: 18px 12px;
+      border-radius: 14px;
+      border: none;
+      color: white;
       font-size: 18px;
       font-weight: 900;
       cursor: pointer;
-      border: none;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: all 0.1s;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      transition: transform 0.1s, filter 0.1s;
     }
 
     .btn-action:active {
@@ -414,41 +495,39 @@
 
     .btn-reject {
       background: linear-gradient(135deg, #ef4444, #b91c1c);
-      color: white;
     }
 
     .btn-approve {
-      background: linear-gradient(135deg, #10b981, #047857);
-      color: white;
+      background: linear-gradient(135deg, #22c55e, #15803d);
     }
 
-    .key-hint {
+    .btn-hotkey {
       font-size: 11px;
-      opacity: 0.8;
       font-weight: normal;
+      opacity: 0.85;
     }
 
-    /* Feedback Balloon */
+    /* Feedback Overlay */
     .feedback-balloon {
       position: absolute;
-      top: 60px;
+      top: 16px;
       left: 50%;
-      transform: translateX(-50%);
-      background: #1e293b;
-      color: white;
-      padding: 6px 16px;
+      transform: translateX(-50%) translateY(-20px);
+      padding: 8px 18px;
       border-radius: 20px;
-      font-size: 12px;
+      color: white;
+      font-size: 13px;
       font-weight: bold;
       opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
       pointer-events: none;
-      z-index: 20;
+      transition: all 0.25s ease-out;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     .feedback-balloon.active {
       opacity: 1;
-      transform: translateX(-50%) translateY(-5px);
+      transform: translateX(-50%) translateY(0);
     }
 
     /* Result Screen */
@@ -456,21 +535,21 @@
       text-align: center;
       justify-content: center;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
+      padding: 24px;
     }
 
     .grade-badge {
       display: inline-block;
-      width: 80px;
-      height: 80px;
-      line-height: 80px;
+      width: 76px;
+      height: 76px;
+      line-height: 76px;
       border-radius: 50%;
       background: var(--gold);
       color: white;
-      font-size: 42px;
+      font-size: 38px;
       font-weight: 900;
       box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
-      margin-bottom: 6px;
     }
 
     .result-stats-table {
@@ -478,9 +557,9 @@
       max-width: 440px;
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
-      margin: 10px 0;
+      margin: 8px 0;
     }
 
     .result-row {
@@ -499,6 +578,57 @@
       font-weight: bold;
       color: var(--pps-blue);
     }
+
+    /* Leaderboard Modal / Screen */
+    #leaderboard-modal {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    #leaderboard-modal.active {
+      display: flex;
+    }
+
+    .leaderboard-card {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+
+    .leaderboard-table th {
+      background: #f1f5f9;
+      padding: 8px 10px;
+      color: #475569;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    .leaderboard-table td {
+      padding: 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .rank-medal {
+      font-weight: 900;
+      color: var(--pps-blue);
+    }
   </style>
 </head>
 <body>
@@ -508,7 +638,7 @@
   <header>
     <div class="header-title">
       <span class="badge-pps">조달청</span>
-      <span>AI QUEST: 나라장터 지킴이</span>
+      <span>AI QUEST: 나라장터 지킴이 v2.0</span>
     </div>
     <div class="stats-bar" id="game-header-stats" style="display:none;">
       <div class="stat-item">
@@ -524,8 +654,8 @@
 
   <!-- Start Screen -->
   <div id="start-screen" class="screen active">
-    <div style="font-size: 12px; font-weight: bold; color: var(--pps-light-blue); letter-spacing: 1px;">2026 조달청 AI 게임·콘텐츠 공모전 출품작</div>
-    <h1 style="font-size: 24px; color: var(--pps-navy); line-height: 1.3;">나라장터 지킴이<br><span style="font-size: 16px; font-weight: normal; color: #475569;">조달청 AI 공공검수관 시뮬레이터</span></h1>
+    <div style="font-size: 11px; font-weight: bold; color: var(--pps-light-blue); letter-spacing: 1px;">2026 조달청 AI 게임·콘텐츠 공모전 출품작</div>
+    <h1 style="font-size: 22px; color: var(--pps-navy); line-height: 1.3;">나라장터 지킴이 v2.0<br><span style="font-size: 14px; font-weight: normal; color: #64748b;">공공조달 불공정 가격·서류 검수 퍼즐</span></h1>
 
     <div class="char-avatar-box">
       <div class="char-card">
@@ -540,110 +670,166 @@
       </div>
     </div>
 
-    <div class="briefing-box">
-      <b>[나르미 과장의 긴급 작전 지시]</b><br>
-      "달이 씨, 오늘 각 공공기관에서 올라온 나라장터 조달 요청 건들이 산더미예요!<br>
-      AI 마켓 스캐너를 대조해서 <b>시중가보다 1.5배 이상 비싼 바가지 물품은 '반려'</b>하고, <b>우수 혁신제품이나 적정가 물품은 '승인'</b> 도장을 찍어 소중한 국민 세금을 지켜주세요!"
+    <!-- Mode Select -->
+    <div class="mode-selection-box">
+      <div class="mode-btn selected" onclick="selectMode('inspector')" id="mode-inspector">
+        <div>
+          <div class="mode-title">🎖️ 실전 검수 (나르미 모드) <span style="font-size:10px; color:#2563eb; background:#dbeafe; padding:2px 6px; border-radius:4px;">추천</span></div>
+          <div class="mode-desc">힌트 없음! 요청가 vs 시장가, 규격 미달, 만료 서류를 직접 적발!</div>
+        </div>
+      </div>
+      <div class="mode-btn" onclick="selectMode('apprentice')" id="mode-apprentice">
+        <div>
+          <div class="mode-title">🔰 신입 연수 (달이 모드)</div>
+          <div class="mode-desc">AI 마켓 스캐너 힌트 제공, 입문자 튜토리얼용</div>
+        </div>
+      </div>
+      <div class="mode-btn" onclick="selectMode('endless')" id="mode-endless">
+        <div>
+          <div class="mode-title">🔥 하드코어 야근 (스피드런)</div>
+          <div class="mode-desc">건당 5초 타임어택! 콤보 끊기면 즉시 라이프 차감!</div>
+        </div>
+      </div>
     </div>
 
     <button class="btn-main" onclick="startGame()">검수 작전 개시 🚀</button>
-    <div style="font-size: 11px; color: #94a3b8;">조작법: 마우스 클릭 또는 키보드 [A: 반려] / [D: 승인]</div>
+    <button class="btn-sub" onclick="openLeaderboard()">🏆 명예의 전당 (랭킹)</button>
   </div>
 
   <!-- Play Screen -->
   <div id="play-screen" class="screen">
-    <div class="feedback-balloon" id="feedback-balloon">완벽한 판단입니다!</div>
+    <div class="feedback-balloon" id="feedback-balloon"></div>
 
-    <div class="timer-container">
-      <div class="timer-badge">⏳ 남은 시간: <span id="timer-val">60</span>초</div>
-      <div class="saved-budget-badge">💰 방어한 나랏돈: <span id="budget-val">0원</span></div>
+    <div class="hud-bar">
+      <div class="hud-timer">⏱️ <span id="timer-val">60</span>초</div>
+      <div class="hud-budget">🛡️ 방어 세금: <span id="budget-val">0원</span></div>
     </div>
 
-    <!-- Desk with Document -->
-    <div class="paper-desk">
-      <div class="doc-card" id="doc-card">
-        <div class="doc-header">
-          <span class="doc-agency" id="doc-agency">서울특별시 강남소방서</span>
-          <span class="doc-req-id" id="doc-req-id">REQ-2026-0814</span>
+    <!-- The Paper Document -->
+    <div class="doc-paper">
+      <div class="doc-watermark">PUBLIC PROCUREMENT</div>
+
+      <div class="doc-header">
+        <div>
+          <div class="doc-agency" id="doc-agency">서울특별시 강남소방서</div>
+          <div class="doc-title" id="doc-title">스마트 멀티탭 6구 PM-M130</div>
         </div>
-
-        <div class="doc-item-title" id="doc-title">스마트 멀티탭 6구 PM-M130</div>
-        <div class="doc-spec" id="doc-spec">규격: 16A 고전력 차단 기능, 전력 모니터링 센서 탑재</div>
-
-        <div class="price-compare-grid">
-          <div class="price-box">
-            <span class="price-label">나라장터 요청가</span>
-            <span class="price-value price-req" id="price-req">198,000원</span>
-          </div>
-          <div class="price-box">
-            <span class="price-label">AI 마켓 스캐너 시중가</span>
-            <span class="price-value price-market" id="price-market">57,200원</span>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 10px;">
-          <span class="multiplier-tag tag-danger" id="doc-tag">⚠️ 시중가 대비 3.5배 폭리 의혹</span>
-        </div>
-
-        <div class="doc-ai-verdict" id="doc-ai-verdict">
-          💡 <b>AI 에이전트 소견</b>: 동일 제조사 모델의 온라인 최저가와 3.5배 이상 격차가 발생합니다. 정밀 가격 소명 없는 납품 요구는 반려 대상입니다.
-        </div>
-
-        <!-- Stamp Overlay -->
-        <div class="stamp stamp-approve" id="stamp-approve">승 인</div>
-        <div class="stamp stamp-reject" id="stamp-reject">반 려</div>
+        <div class="doc-req-id" id="doc-req-id">REQ-2026-0814</div>
       </div>
+
+      <div class="doc-spec" id="doc-spec">규격: 16A 과부하 자동 차단, 소비전력 모니터링</div>
+
+      <div class="compare-container">
+        <div class="price-box pps">
+          <div class="price-label">나라장터 요청가</div>
+          <div class="price-val" id="price-req">198,000원</div>
+        </div>
+        <div class="price-box market">
+          <div class="price-label">공식 시중 시장가</div>
+          <div class="price-val" id="price-market">57,200원</div>
+        </div>
+      </div>
+
+      <!-- Detail Clues -->
+      <div class="clue-box" id="clue-box">
+        <div class="clue-row">
+          <span class="clue-key">공공인증 상태:</span>
+          <span class="clue-val" id="clue-cert">우수제품 인증필 (2027-12)</span>
+        </div>
+        <div class="clue-row">
+          <span class="clue-key">계약 유형:</span>
+          <span class="clue-val" id="clue-contract">다수공급자계약(MAS) 2단계</span>
+        </div>
+      </div>
+
+      <!-- AI Verdict / Inspection Guide -->
+      <div class="ai-verdict-box" id="doc-ai-verdict">
+        💡 [AI 마켓 분석 대기] 서류의 규격과 요청 단가를 직접 심사하십시오.
+      </div>
+
+      <!-- Rubber Stamps -->
+      <div class="stamp approve" id="stamp-approve">승 인</div>
+      <div class="stamp reject" id="stamp-reject">반 려</div>
     </div>
 
     <!-- Action Buttons -->
     <div class="action-controls">
       <button class="btn-action btn-reject" onclick="handleStamp(false)">
         <span>❌ 반 려 (REJECT)</span>
-        <span class="key-hint">[단축키 A] 바가지·규격 미달</span>
+        <span class="btn-hotkey">[단축키 A] 바가지·서류위조</span>
       </button>
       <button class="btn-action btn-approve" onclick="handleStamp(true)">
         <span>✅ 승 인 (APPROVE)</span>
-        <span class="key-hint">[단축키 D] 적정가·혁신제품</span>
+        <span class="btn-hotkey">[단축키 D] 적정가·혁신제품</span>
       </button>
     </div>
   </div>
 
   <!-- Result Screen -->
   <div id="result-screen" class="screen">
-    <div class="grade-badge" id="result-grade">S</div>
-    <h2 style="font-size: 20px; color: var(--pps-navy); margin-bottom: 4px;" id="result-title">조달의 신 (청장 표창)</h2>
-    <div style="font-size: 13px; color: #64748b;" id="result-desc">나르미 과장과 달이 주무관이 기립박수를 보냅니다!</div>
+    <div style="font-size: 13px; color: #64748b;">검수 작전 종료 성적표</div>
+    <div class="grade-badge" id="grade-badge">S</div>
+    <h2 id="grade-title" style="font-size: 20px; color: var(--pps-navy);">조달의 신 (조달청장 표창)</h2>
+    <p id="grade-desc" style="font-size: 12px; color: #475569;">나르미 과장과 달이 주무관이 기립박수를 보냅니다!</p>
 
     <div class="result-stats-table">
       <div class="result-row">
-        <span>총 검수 건수</span>
+        <span>총 심사 건수</span>
         <span class="result-val" id="res-total">12건</span>
       </div>
       <div class="result-row">
-        <span>정답률 (판단 정확도)</span>
-        <span class="result-val" id="res-accuracy">100%</span>
+        <span>적발 / 정답률</span>
+        <span class="result-val" id="res-accuracy">100% (12/12)</span>
       </div>
       <div class="result-row">
         <span>최대 연속 콤보</span>
         <span class="result-val" id="res-combo">12x</span>
       </div>
-      <div class="result-row" style="background:#ecfdf5;">
-        <span style="font-weight:bold; color:#047857;">절감한 국민 세금</span>
-        <span class="result-val" style="color:#047857; font-size:16px;" id="res-budget">3억 4,850만 원</span>
+      <div class="result-row">
+        <span>방어한 국민 세금</span>
+        <span class="result-val" id="res-saved" style="color:#059669; font-size:15px;">3억 4,850만 원</span>
       </div>
     </div>
 
-    <div class="briefing-box" id="res-comment" style="max-width:440px; font-size:12px;">
-      "달이 씨의 냉철한 AI 검수 덕분에 바가지 계약을 모조리 걷어내고, 진짜 우수한 혁신기업 제품만 나라장터에 올릴 수 있었습니다!"
+    <!-- Nickname Input for Leaderboard -->
+    <div style="display:flex; gap:8px; width:100%; max-width:440px; margin: 4px 0;">
+      <input type="text" id="player-nickname" placeholder="랭킹 등록 닉네임 입력 (예: 태화동나르미)" style="flex:1; padding:10px 14px; border-radius:8px; border:1px solid #cbd5e1; font-size:13px;">
+      <button onclick="saveLeaderboardRecord()" style="padding:10px 16px; background:var(--pps-blue); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">등록</button>
     </div>
 
-    <button class="btn-main" onclick="restartGame()">다시 검수하기 🔄</button>
+    <button class="btn-main" onclick="startGame()">다시 도전하기 🔄</button>
+    <button class="btn-sub" onclick="showScreen('start-screen')">메인 화면으로 🏠</button>
+  </div>
+
+  <!-- Leaderboard Modal -->
+  <div id="leaderboard-modal">
+    <div class="leaderboard-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3 style="color:var(--pps-navy); font-size:16px;">🏆 조달청 검수관 명예의 전당</h3>
+        <button onclick="closeLeaderboard()" style="background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+      </div>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>순위</th>
+            <th>닉네임</th>
+            <th>모드</th>
+            <th>방어 세금</th>
+            <th>점수</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body">
+          <!-- Dynamic Leaderboard -->
+        </tbody>
+      </table>
+      <button class="btn-sub" onclick="closeLeaderboard()" style="margin-top:10px;">닫기</button>
+    </div>
   </div>
 </div>
 
 <script>
-  // Game Items Database (Reflecting Real PPS & Savetax Data)
-  const ITEM_DATABASE = [
+  // 24 Real PPS/Savetax Dataset Pool
+  const MASTER_ITEMS = [
     {
       agency: "서울특별시 강남소방서",
       reqId: "REQ-2026-0814",
@@ -653,10 +839,10 @@
       marketPrice: 57200,
       multiplier: 3.5,
       isRipoff: true,
-      tag: "⚠️ 시중가 대비 3.5배 폭리",
-      tagClass: "tag-danger",
-      aiVerdict: "동일 모델 제조사 출고가 대비 3.5배 부풀려진 견적입니다. 즉시 반려 대상입니다.",
-      savedAmount: 14080000 // 100개 납품 가정
+      cert: "KC 안전인증필",
+      contract: "단독 수의계약 요청",
+      trapReason: "동일 모델 제조사 출고가 대비 3.5배 부풀려진 견적입니다.",
+      savedAmount: 14080000
     },
     {
       agency: "한국과학기술정보연구원(KISTI)",
@@ -667,9 +853,9 @@
       marketPrice: 1769000,
       multiplier: 1.9,
       isRipoff: true,
-      tag: "⚠️ 1.9배 가격 뻥튀기",
-      tagClass: "tag-danger",
-      aiVerdict: "동일 스펙 글로벌 총판 유통가 대비 1.9배 높습니다. 단독 수의계약 바가지 의혹입니다.",
+      cert: "KC 전파인증필",
+      contract: "다수공급자 2단계",
+      trapReason: "동일 스펙 글로벌 총판 유통가 대비 1.9배 높은 가격 뻥튀기입니다.",
       savedAmount: 63320000
     },
     {
@@ -681,9 +867,9 @@
       marketPrice: 178000,
       multiplier: 1.04,
       isRipoff: false,
-      tag: "🌟 우수 혁신제품 지정",
-      tagClass: "tag-innovative",
-      aiVerdict: "조달청 지정 제2026-38호 우수혁신제품으로, 시중 적정가와 일치하며 친환경 인증을 필했습니다.",
+      cert: "🌟 조달청 우수혁신제품 지정 (제2026-38호)",
+      contract: "혁신제품 패스트트랙",
+      trapReason: "조달청 공인 우수혁신제품으로 시중 적정가와 일치합니다.",
       savedAmount: 0
     },
     {
@@ -695,9 +881,9 @@
       marketPrice: 21200,
       multiplier: 3.3,
       isRipoff: true,
-      tag: "⚠️ 3.3배 폭리 품목",
-      tagClass: "tag-danger",
-      aiVerdict: "오픈마켓 동일 규격 정상가 21,200원 대비 3.3배 고가 등재 건입니다.",
+      cert: "제조사 자체보증서",
+      contract: "조달쇼핑몰 제3자단가",
+      trapReason: "오픈마켓 동일 규격 21,200원 대비 3.3배 고가 등재 건입니다.",
       savedAmount: 4880000
     },
     {
@@ -709,9 +895,9 @@
       marketPrice: 1600000,
       multiplier: 1.03,
       isRipoff: false,
-      tag: "✅ 적정 시중가 승인 대상",
-      tagClass: "tag-safe",
-      aiVerdict: "의료기기 공인 유통 단가와 일치하며, 24시간 응급 납품 규격을 완벽 준수합니다.",
+      cert: "의료기기 GMP 및 식약처 허가",
+      contract: "다수공급자계약(MAS)",
+      trapReason: "의료기기 공인 유통 단가와 일치하며 24시간 응급 납품 규격 적합 건입니다.",
       savedAmount: 0
     },
     {
@@ -723,9 +909,9 @@
       marketPrice: 145000,
       multiplier: 2.2,
       isRipoff: true,
-      tag: "⚠️ 2.2배 고가 청구",
-      tagClass: "tag-danger",
-      aiVerdict: "제조사 정품 산업용 판매가 대비 2.2배 상회합니다. 공급원가 소명 누락 건입니다.",
+      cert: "CE / UL 인증필",
+      contract: "희망수량 경쟁입찰",
+      trapReason: "제조사 공식 산업용 판매가 대비 2.2배 고가 청구 건입니다.",
       savedAmount: 8750000
     },
     {
@@ -737,9 +923,9 @@
       marketPrice: 335000,
       multiplier: 1.01,
       isRipoff: false,
-      tag: "🌟 교육용 다수공급자계약(MAS)",
-      tagClass: "tag-innovative",
-      aiVerdict: "다수공급자 2단계 경쟁을 거쳐 최저가 낙찰된 공정 가격입니다.",
+      cert: "🌟 교육부 에듀테크 품질인증",
+      contract: "다수공급자 2단계 최저가",
+      trapReason: "다수공급자 2단계 경쟁을 거쳐 최저가 낙찰된 공정 가격입니다.",
       savedAmount: 0
     },
     {
@@ -751,9 +937,9 @@
       marketPrice: 44500,
       multiplier: 4.1,
       isRipoff: true,
-      tag: "⚠️ 4.1배 극단적 폭리",
-      tagClass: "tag-danger",
-      aiVerdict: "오프라인 문구 도매가 4만 원대 모델을 18만 원대에 허위 청구한 불공정 의혹입니다.",
+      cert: "KC 전파인증필",
+      contract: "행정소모품 단가계약",
+      trapReason: "문구 도매가 4만 원대 모델을 18만 원대에 허위 청구한 불공정 폭리 건입니다.",
       savedAmount: 13750000
     },
     {
@@ -765,9 +951,9 @@
       marketPrice: 47500000,
       multiplier: 1.01,
       isRipoff: false,
-      tag: "🌟 중기부 지정 혁신제품",
-      tagClass: "tag-innovative",
-      aiVerdict: "탄소 배출 40% 저감 신기술이 적용된 정부 공식 혁신 시제품입니다.",
+      cert: "🌟 중기부 지정 혁신제품",
+      contract: "혁신시제품 시범구매",
+      trapReason: "탄소 배출 40% 저감 기술이 적용된 정부 공식 혁신 시제품입니다.",
       savedAmount: 0
     },
     {
@@ -779,9 +965,9 @@
       marketPrice: 381000,
       multiplier: 3.3,
       isRipoff: true,
-      tag: "⚠️ 3.3배 단가 뻥튀기",
-      tagClass: "tag-danger",
-      aiVerdict: "국내 총판 실시간 도매단가 38만 원 대비 3.3배 초과 청구되었습니다.",
+      cert: "국방품질관리원 합격증",
+      contract: "수의계약 견적서",
+      trapReason: "국내 총판 실시간 도매단가 38만 원 대비 3.3배 초과 청구되었습니다.",
       savedAmount: 44000000
     },
     {
@@ -793,9 +979,9 @@
       marketPrice: 14200000,
       multiplier: 1.02,
       isRipoff: false,
-      tag: "✅ 우수 공공조달 인증",
-      tagClass: "tag-safe",
-      aiVerdict: "KISA 지능형 CCTV 성능 시험 인증 및 적정 조달단가 검증을 통과했습니다.",
+      cert: "KISA 지능형 CCTV 공인인증",
+      contract: "우수조달물품 지정계약",
+      trapReason: "KISA 공인 시험 인증 및 적정 조달단가 검증을 통과했습니다.",
       savedAmount: 0
     },
     {
@@ -807,14 +993,71 @@
       marketPrice: 319600,
       multiplier: 2.7,
       isRipoff: true,
-      tag: "⚠️ 2.7배 고가 등재",
-      tagClass: "tag-danger",
-      aiVerdict: "시중 전자상가 동일 파트넘버 가격 31.9만 원 대비 2.7배 부풀려진 견적입니다.",
+      cert: "KC 안전인증필",
+      contract: "일반경쟁 최저가",
+      trapReason: "용산 도매상가 동일 파트넘버 가격 31.9만 원 대비 2.7배 뻥튀기 견적입니다.",
       savedAmount: 26770000
+    },
+    {
+      agency: "강원특별자치도 산림과학연구원",
+      reqId: "REQ-2026-0887",
+      title: "산불 감시용 열화상 드론 패키지",
+      spec: "비행시간 42분, 적외선 광학 30배 줌",
+      reqPrice: 32000000,
+      marketPrice: 31500000,
+      multiplier: 1.02,
+      isRipoff: false,
+      cert: "🌟 과기정통부 우수연구개발 혁신제품",
+      contract: "혁신조달 패스트트랙",
+      trapReason: "국내 자체 원천기술 인증 및 국가 방재 R&D 적합 제품입니다.",
+      savedAmount: 0
+    },
+    {
+      agency: "인천국제공항공사",
+      reqId: "REQ-2026-1011",
+      title: "특수 산업용 고휘도 손전등 LED",
+      spec: "5000루멘, 알루미늄 항공합금, 방수 방폭",
+      reqPrice: 285000,
+      marketPrice: 68000,
+      multiplier: 4.2,
+      isRipoff: true,
+      cert: "⚠️ 방폭 인증서 유효기간 2024년 만료",
+      contract: "긴급 소액 수의계약",
+      trapReason: "안전 인증서가 이미 만료되었으며, 오픈마켓가 대비 4.2배 폭리입니다!",
+      savedAmount: 8680000
+    },
+    {
+      agency: "한국수력원자력(한수원)",
+      reqId: "REQ-2026-0773",
+      title: "원전 제어반용 방화 실리콘 실란트",
+      spec: "UL94 V-0 난연, 1000시간 내열 보증",
+      reqPrice: 45000,
+      marketPrice: 43000,
+      multiplier: 1.05,
+      isRipoff: false,
+      cert: "원자력 안전등급 Q등급 인증",
+      contract: "다수공급자계약(MAS)",
+      trapReason: "엄격한 원전 규격 시험을 통과한 정상 단가 제품입니다.",
+      savedAmount: 0
+    },
+    {
+      agency: "대전광역시 유성구 보건소",
+      reqId: "REQ-2026-1149",
+      title: "디지털 전자동 혈압계 BP-200X",
+      spec: "음성안내 내장, 대형 LCD 화면",
+      reqPrice: 1450000,
+      marketPrice: 420000,
+      multiplier: 3.5,
+      isRipoff: true,
+      cert: "의료기기 허가증 첨부",
+      contract: "소액 단가계약",
+      trapReason: "병원 납품 전문 유통가 42만 원 대비 3.5배 고가 등재 의혹 건입니다.",
+      savedAmount: 10300000
     }
   ];
 
-  // Game States
+  let selectedGameMode = 'inspector'; // 'inspector', 'apprentice', 'endless'
+  let currentItems = [];
   let currentIndex = 0;
   let score = 0;
   let combo = 0;
@@ -824,7 +1067,7 @@
   let timerId = null;
   let isActionLocked = false;
 
-  // Audio Context (Synthesized sound effects for maximum portability)
+  // Sound Engine
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
   function playSound(type) {
@@ -835,32 +1078,29 @@
     const gain = audioCtx.createGain();
     osc.connect(gain);
     gain.connect(audioCtx.destination);
-
     const now = audioCtx.currentTime;
 
     if (type === 'stamp') {
-      // Deep heavy thud
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(120, now);
+      osc.frequency.setValueAtTime(140, now);
       osc.frequency.exponentialRampToValueAtTime(30, now + 0.15);
-      gain.gain.setValueAtTime(1, now);
+      gain.gain.setValueAtTime(0.8, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
       osc.start(now);
       osc.stop(now + 0.15);
     } else if (type === 'success') {
-      // Pleasant ding-dong
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, now); // D5
-      osc.frequency.setValueAtTime(880, now + 0.08); // A5
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.setValueAtTime(659.25, now + 0.08);
+      osc.frequency.setValueAtTime(783.99, now + 0.16);
       gain.gain.setValueAtTime(0.3, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
       osc.start(now);
       osc.stop(now + 0.3);
     } else if (type === 'fail') {
-      // Low buzzer
       osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(140, now);
-      osc.frequency.setValueAtTime(110, now + 0.1);
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.setValueAtTime(110, now + 0.12);
       gain.gain.setValueAtTime(0.4, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
       osc.start(now);
@@ -868,9 +1108,24 @@
     }
   }
 
+  function selectMode(mode) {
+    selectedGameMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('mode-' + mode).classList.add('selected');
+  }
+
   function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
+  }
+
+  function shuffle(array) {
+    const copy = [...array];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
   }
 
   function startGame() {
@@ -879,8 +1134,16 @@
     combo = 0;
     maxCombo = 0;
     savedBudget = 0;
-    timeLeft = 60;
     isActionLocked = false;
+
+    // Pick 12 items randomly from master dataset
+    currentItems = shuffle(MASTER_ITEMS).slice(0, 12);
+
+    if (selectedGameMode === 'endless') {
+      timeLeft = 45; // Speedrun time
+    } else {
+      timeLeft = 60;
+    }
 
     document.getElementById('game-header-stats').style.display = 'flex';
     document.getElementById('timer-val').innerText = timeLeft;
@@ -901,39 +1164,70 @@
   }
 
   function renderCurrentItem() {
-    if (currentIndex >= ITEM_DATABASE.length) {
+    if (currentIndex >= currentItems.length) {
       endGame();
       return;
     }
 
-    const item = ITEM_DATABASE[currentIndex];
-    document.getElementById('progress-val').innerText = `${currentIndex + 1}/${ITEM_DATABASE.length}`;
+    const item = currentItems[currentIndex];
+    document.getElementById('progress-val').innerText = `${currentIndex + 1}/${currentItems.length}`;
     document.getElementById('doc-agency').innerText = item.agency;
     document.getElementById('doc-req-id').innerText = item.reqId;
     document.getElementById('doc-title').innerText = item.title;
     document.getElementById('doc-spec').innerText = `규격: ${item.spec}`;
     document.getElementById('price-req').innerText = item.reqPrice.toLocaleString() + '원';
     document.getElementById('price-market').innerText = item.marketPrice.toLocaleString() + '원';
-    
-    const tagEl = document.getElementById('doc-tag');
-    tagEl.innerText = item.tag;
-    tagEl.className = 'multiplier-tag ' + item.tagClass;
+    document.getElementById('clue-cert').innerText = item.cert;
+    document.getElementById('clue-contract').innerText = item.contract;
 
-    document.getElementById('doc-ai-verdict').innerHTML = `💡 <b>AI 에이전트 소견</b>: ${item.aiVerdict}`;
+    const verdictEl = document.getElementById('doc-ai-verdict');
+    if (selectedGameMode === 'apprentice') {
+      // Apprentice mode: hints visible
+      if (item.isRipoff) {
+        verdictEl.innerHTML = `⚠️ <b>[AI 신입 가이드]</b> ${item.multiplier}배 폭리 의심 물품! 반려를 권장합니다.`;
+        verdictEl.style.color = '#dc2626';
+      } else {
+        verdictEl.innerHTML = `🌟 <b>[AI 신입 가이드]</b> 적정 시중가 / 혁신 인증 물품! 승인을 권장합니다.`;
+        verdictEl.style.color = '#16a34a';
+      }
+    } else {
+      // Inspector & Endless mode: NO SPOILER HINTS!
+      verdictEl.innerHTML = `💡 <b>[AI 정밀 대조 대기]</b> 규격서와 요청 단가를 직접 검토하여 판정하십시오.`;
+      verdictEl.style.color = '#475569';
+    }
 
     // Reset stamps
     document.getElementById('stamp-approve').classList.remove('show');
     document.getElementById('stamp-reject').classList.remove('show');
+    isActionLocked = false;
+  }
+
+  function triggerScreenShake() {
+    const c = document.getElementById('game-container');
+    c.classList.remove('shake');
+    void c.offsetWidth; // trigger reflow
+    c.classList.add('shake');
   }
 
   function showFeedback(text, isGood) {
     const el = document.getElementById('feedback-balloon');
     el.innerText = text;
-    el.style.background = isGood ? '#065f46' : '#991b1b';
+    el.style.background = isGood ? '#059669' : '#dc2626';
     el.classList.add('active');
     setTimeout(() => {
       el.classList.remove('active');
     }, 900);
+  }
+
+  function formatMoney(amount) {
+    if (amount >= 100000000) {
+      const eok = Math.floor(amount / 100000000);
+      const man = Math.floor((amount % 100000000) / 10000);
+      return man > 0 ? `${eok}억 ${man.toLocaleString()}만 원` : `${eok}억 원`;
+    } else if (amount >= 10000) {
+      return `${Math.floor(amount / 10000).toLocaleString()}만 원`;
+    }
+    return `${amount.toLocaleString()}원`;
   }
 
   function handleStamp(isApprove) {
@@ -941,12 +1235,18 @@
     isActionLocked = true;
 
     playSound('stamp');
+    triggerScreenShake();
 
-    const item = ITEM_DATABASE[currentIndex];
+    const item = currentItems[currentIndex];
     const isCorrect = (isApprove && !item.isRipoff) || (!isApprove && item.isRipoff);
 
     const stampEl = document.getElementById(isApprove ? 'stamp-approve' : 'stamp-reject');
     stampEl.classList.add('show');
+
+    // Reveal verdict immediately upon action
+    const verdictEl = document.getElementById('doc-ai-verdict');
+    verdictEl.innerHTML = `💡 <b>[판정 근거]</b> ${item.trapReason}`;
+    verdictEl.style.color = isCorrect ? '#059669' : '#dc2626';
 
     setTimeout(() => {
       if (isCorrect) {
@@ -954,102 +1254,140 @@
         score++;
         combo++;
         if (combo > maxCombo) maxCombo = combo;
-        
+
         if (!isApprove && item.isRipoff) {
           savedBudget += item.savedAmount;
-          showFeedback(`🎯 바가지 적발! ${formatKoreanMoney(item.savedAmount)} 예산 방어!`, true);
+          showFeedback(`🎯 바가지 적발! ${formatMoney(item.savedAmount)} 예산 방어!`, true);
         } else {
-          showFeedback(`🌟 우수 혁신제품 승인 완료! (+${combo} 콤보)`, true);
+          showFeedback(`🌟 정품·혁신제품 승인 완료! (+${combo} 콤보)`, true);
         }
       } else {
         playSound('fail');
         combo = 0;
         if (isApprove && item.isRipoff) {
-          showFeedback(`❌ 경고: ${item.multiplier}배 바가지 물품을 승인했습니다!`, false);
+          showFeedback(`❌ 경고: ${item.multiplier}배 바가지 계약을 승인했습니다!`, false);
         } else {
           showFeedback(`❌ 실수: 우수 혁신제품을 부당 반려했습니다!`, false);
         }
       }
 
+      document.getElementById('budget-val').innerText = formatMoney(savedBudget);
       document.getElementById('combo-val').innerText = `${combo}x`;
-      document.getElementById('budget-val').innerText = formatKoreanMoney(savedBudget);
 
-      // Slide to next card
       setTimeout(() => {
         currentIndex++;
         renderCurrentItem();
-        isActionLocked = false;
-      }, 400);
-
-    }, 300);
-  }
-
-  function formatKoreanMoney(amt) {
-    if (amt >= 100000000) {
-      const eok = Math.floor(amt / 100000000);
-      const man = Math.floor((amt % 100000000) / 10000);
-      return man > 0 ? `${eok}억 ${man.toLocaleString()}만 원` : `${eok}억 원`;
-    } else if (amt >= 10000) {
-      return `${Math.floor(amt / 10000).toLocaleString()}만 원`;
-    }
-    return amt.toLocaleString() + '원';
+      }, 700);
+    }, 400);
   }
 
   function endGame() {
-    clearInterval(timerId);
+    if (timerId) clearInterval(timerId);
+    timerId = null;
+
     document.getElementById('game-header-stats').style.display = 'none';
-
-    const total = ITEM_DATABASE.length;
-    const processed = currentIndex;
-    const accuracy = processed > 0 ? Math.round((score / processed) * 100) : 0;
-
-    let grade = 'C';
-    let title = '견습 검수원';
-    let desc = '아직 공공조달 규격과 시중가 대조에 추가 훈련이 필요합니다.';
-    let comment = '"달이 씨, 바가지 물품을 놓치면 국민 세금이 줄줄 샙니다! 다음엔 AI 마켓 스캐너를 더 꼼꼼히 대조해 주세요."';
-
-    if (accuracy >= 90 && savedBudget > 100000000) {
-      grade = 'S';
-      title = '조달의 신 (조달청장 표창)';
-      desc = '완벽한 공공조달 지킴이! 바가지 물품을 100% 솎아내고 혁신제품을 선발했습니다.';
-      comment = '"나르미 과장: 달이 씨, 자네 정말 대단하군! 조달청 역사상 가장 완벽한 AI 검수 실적이야. 당장 청장님 표창 상신하겠네!"';
-    } else if (accuracy >= 75) {
-      grade = 'A';
-      title = '수석 조달관';
-      desc = '탁월한 감각으로 대다수의 가격 부풀리기 의혹을 사전 차단했습니다.';
-      comment = '"나르미 과장: 수고 많았어요! 몇몇 애매한 건을 빼고는 국가 예산을 아주 훌륭하게 지켜냈습니다."';
-    } else if (accuracy >= 55) {
-      grade = 'B';
-      title = '성실한 공공검수관';
-      desc = '대체로 성실하게 심사했으나 일부 고가 조달 건을 놓쳤습니다.';
-      comment = '"달이 주무관: 조금 헷갈리는 품목들이 있었지만, 다음번엔 3배 이상 폭리 건은 절대 안 놓치겠습니다!"';
-    }
-
-    document.getElementById('result-grade').innerText = grade;
-    document.getElementById('result-title').innerText = title;
-    document.getElementById('result-desc').innerText = desc;
-    document.getElementById('res-total').innerText = `${processed}건 (정답 ${score}건)`;
-    document.getElementById('res-accuracy').innerText = `${accuracy}%`;
-    document.getElementById('res-combo').innerText = `${maxCombo}x`;
-    document.getElementById('res-budget').innerText = formatKoreanMoney(savedBudget);
-    document.getElementById('res-comment').innerText = comment;
-
     showScreen('result-screen');
-  }
 
-  function restartGame() {
-    showScreen('start-screen');
+    const accuracy = Math.round((score / currentItems.length) * 100);
+    document.getElementById('res-total').innerText = `${currentItems.length}건`;
+    document.getElementById('res-accuracy').innerText = `${accuracy}% (${score}/${currentItems.length})`;
+    document.getElementById('res-combo').innerText = `${maxCombo}x`;
+    document.getElementById('res-saved').innerText = formatMoney(savedBudget);
+
+    const badge = document.getElementById('grade-badge');
+    const title = document.getElementById('grade-title');
+    const desc = document.getElementById('grade-desc');
+
+    if (accuracy >= 100) {
+      badge.innerText = 'S';
+      badge.style.background = '#f59e0b';
+      title.innerText = '조달의 신 (조달청장 표창)';
+      desc.innerText = '단 1건의 오차도 없이 모든 바가지 물품을 철통 방어했습니다! 전설의 수석 검수관입니다!';
+    } else if (accuracy >= 80) {
+      badge.innerText = 'A';
+      badge.style.background = '#3b82f6';
+      title.innerText = '베테랑 검수관 (우수 공공공무원)';
+      desc.innerText = '대부분의 불공정 계약을 정확하게 적발해 소중한 국민 세금을 지켜냈습니다!';
+    } else if (accuracy >= 60) {
+      badge.innerText = 'B';
+      badge.style.background = '#10b981';
+      title.innerText = '성실한 신입 (정규 발령)';
+      desc.innerText = '기본기는 갖추었으나 아슬아슬한 바가지 물품 몇 건이 통과되었습니다. 조금 더 집중하세요!';
+    } else {
+      badge.innerText = 'C';
+      badge.style.background = '#ef4444';
+      title.innerText = '재교육 대상 (감사실 시말서)';
+      desc.innerText = '수억 원의 세금 낭비가 발생했습니다. 나르미 과장과 함께 규격서를 다시 공부하세요!';
+    }
   }
 
   // Keyboard Shortcuts
   window.addEventListener('keydown', (e) => {
     if (!document.getElementById('play-screen').classList.contains('active')) return;
-    if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') {
-      handleStamp(false);
-    } else if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') {
-      handleStamp(true);
+    if (e.key === 'a' || e.key === 'A' || e.key === 'ㅁ') {
+      handleStamp(false); // Reject
+    } else if (e.key === 'd' || e.key === 'D' || e.key === 'ㅇ') {
+      handleStamp(true); // Approve
     }
   });
+
+  // Leaderboard Engine (Local Storage)
+  const DEFAULT_LEADERBOARD = [
+    { name: '나르미과장', mode: '실전', budget: '3억 4,850만 원', score: 1200 },
+    { name: '세금지킴이', mode: '실전', budget: '2억 9,400만 원', score: 1100 },
+    { name: '태화동달이', mode: '연수', budget: '2억 1,000만 원', score: 950 },
+    { name: '혁신조달러', mode: '야근', budget: '1억 8,500만 원', score: 880 }
+  ];
+
+  function getLeaderboard() {
+    const data = localStorage.getItem('pps_leaderboard_v2');
+    return data ? JSON.parse(data) : DEFAULT_LEADERBOARD;
+  }
+
+  function openLeaderboard() {
+    const list = getLeaderboard();
+    const tbody = document.getElementById('leaderboard-body');
+    tbody.innerHTML = '';
+    list.forEach((item, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="rank-medal">#${idx + 1}</td>
+        <td style="font-weight:bold;">${item.name}</td>
+        <td><span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px;">${item.mode}</span></td>
+        <td style="color:#059669; font-weight:600;">${item.budget}</td>
+        <td style="font-weight:bold; color:var(--pps-blue);">${item.score}점</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    document.getElementById('leaderboard-modal').classList.add('active');
+  }
+
+  function closeLeaderboard() {
+    document.getElementById('leaderboard-modal').classList.remove('active');
+  }
+
+  function saveLeaderboardRecord() {
+    const input = document.getElementById('player-nickname');
+    const name = input.value.trim() || '익명의검수관';
+    const modeName = selectedGameMode === 'inspector' ? '실전' : (selectedGameMode === 'apprentice' ? '연수' : '야근');
+    const totalScore = score * 100 + maxCombo * 10;
+
+    const list = getLeaderboard();
+    list.push({
+      name: name,
+      mode: modeName,
+      budget: formatMoney(savedBudget),
+      score: totalScore
+    });
+
+    list.sort((a, b) => b.score - a.score);
+    const top5 = list.slice(0, 7);
+    localStorage.setItem('pps_leaderboard_v2', JSON.stringify(top5));
+
+    alert(`🎉 [${name}] 님의 기록이 명예의 전당에 등록되었습니다! (${totalScore}점)`);
+    openLeaderboard();
+  }
 </script>
+
 </body>
 </html>
