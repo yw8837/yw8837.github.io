@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI QUEST: 나라장터 지킴이 - 조달청 공공조달 검수 시뮬레이터</title>
+  <style>
+    :root {
+      --pps-blue: #003366;
+      --pps-navy: #001f3f;
+      --pps-light-blue: #0066cc;
+      --pps-bg: #f0f4f8;
+      --stamp-red: #d32f2f;
+      --stamp-green: #2e7d32;
+      --paper-bg: #fffdf9;
+      --gold: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Nanum Gothic", sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--pps-bg);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #game-container {
+      width: 100%;
+      max-width: 680px;
+      min-height: 720px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid #e2e8f0;
+    }
+
+    /* Header Bar */
+    header {
+      background: linear-gradient(135deg, var(--pps-blue), var(--pps-navy));
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: -0.5px;
+    }
+
+    .badge-pps {
+      background: #ffffff;
+      color: var(--pps-blue);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    .stat-val {
+      font-weight: bold;
+      font-size: 15px;
+      color: #fbbf24;
+    }
+
+    /* Screen Views */
+    .screen {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* Start Screen */
+    #start-screen {
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .char-avatar-box {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .char-card {
+      background: #f1f5f9;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      width: 140px;
+    }
+
+    .char-icon {
+      font-size: 40px;
+      margin-bottom: 4px;
+    }
+
+    .char-name {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--pps-blue);
+    }
+
+    .char-role {
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .briefing-box {
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #065f46;
+      max-width: 500px;
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, var(--pps-light-blue), var(--pps-blue));
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 51, 102, 0.4);
+    }
+
+    /* Game Play Screen */
+    #play-screen {
+      position: relative;
+      background: #f8fafc;
+      justify-content: space-between;
+    }
+
+    .timer-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .timer-badge {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #fca5a5;
+    }
+
+    .saved-budget-badge {
+      background: #ecfdf5;
+      color: #047857;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* Paper Document */
+    .paper-desk {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .doc-card {
+      width: 100%;
+      max-width: 500px;
+      background: var(--paper-bg);
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      padding: 20px;
+      position: relative;
+      background-image: linear-gradient(#e5e7eb 1px, transparent 1px);
+      background-size: 100% 28px;
+      line-height: 28px;
+    }
+
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #1e293b;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .doc-agency {
+      font-size: 12px;
+      color: #475569;
+      font-weight: bold;
+    }
+
+    .doc-req-id {
+      font-size: 11px;
+      color: #94a3b8;
+      font-family: monospace;
+    }
+
+    .doc-item-title {
+      font-size: 17px;
+      font-weight: bold;
+      color: #0f172a;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .doc-spec {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      background: #f1f5f9;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+
+    .price-compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .price-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-label {
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    .price-value {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .price-req {
+      color: #dc2626;
+    }
+
+    .price-market {
+      color: #2563eb;
+    }
+
+    .multiplier-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    .tag-danger {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #f87171;
+    }
+
+    .tag-safe {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #34d399;
+    }
+
+    .tag-innovative {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #60a5fa;
+    }
+
+    .doc-ai-verdict {
+      font-size: 11.5px;
+      color: #475569;
+      background: #f8fafc;
+      border-left: 3px solid var(--pps-blue);
+      padding: 6px 10px;
+      line-height: 1.4;
+    }
+
+    /* Stamps */
+    .stamp {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg) scale(0);
+      font-size: 38px;
+      font-weight: 900;
+      padding: 8px 24px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .stamp.stamp-approve {
+      border: 5px solid var(--stamp-green);
+      color: var(--stamp-green);
+      background: rgba(236, 253, 245, 0.85);
+    }
+
+    .stamp.stamp-reject {
+      border: 5px solid var(--stamp-red);
+      color: var(--stamp-red);
+      background: rgba(254, 242, 242, 0.85);
+    }
+
+    .stamp.show {
+      transform: translate(-50%, -50%) rotate(-15deg) scale(1);
+      opacity: 0.95;
+    }
+
+    /* Bottom Action Controls */
+    .action-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .btn-action {
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.1s;
+    }
+
+    .btn-action:active {
+      transform: scale(0.96);
+    }
+
+    .btn-reject {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: white;
+    }
+
+    .btn-approve {
+      background: linear-gradient(135deg, #10b981, #047857);
+      color: white;
+    }
+
+    .key-hint {
+      font-size: 11px;
+      opacity: 0.8;
+      font-weight: normal;
+    }
+
+    /* Feedback Balloon */
+    .feedback-balloon {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .feedback-balloon.active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-5px);
+    }
+
+    /* Result Screen */
+    #result-screen {
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .grade-badge {
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: white;
+      font-size: 42px;
+      font-weight: 900;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+      margin-bottom: 6px;
+    }
+
+    .result-stats-table {
+      width: 100%;
+      max-width: 440px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid #edf2f7;
+      font-size: 13px;
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+    }
+
+    .result-val {
+      font-weight: bold;
+      color: var(--pps-blue);
+    }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  <!-- Header -->
+  <header>
+    <div class="header-title">
+      <span class="badge-pps">조달청</span>
+      <span>AI QUEST: 나라장터 지킴이</span>
+    </div>
+    <div class="stats-bar" id="game-header-stats" style="display:none;">
+      <div class="stat-item">
+        <span class="stat-label">진행도</span>
+        <span class="stat-val" id="progress-val">1/12</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">콤보</span>
+        <span class="stat-val" id="combo-val">0x</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Start Screen -->
+  <div id="start-screen" class="screen active">
+    <div style="font-size: 12px; font-weight: bold; color: var(--pps-light-blue); letter-spacing: 1px;">2026 조달청 AI 게임·콘텐츠 공모전 출품작</div>
+    <h1 style="font-size: 24px; color: var(--pps-navy); line-height: 1.3;">나라장터 지킴이<br><span style="font-size: 16px; font-weight: normal; color: #475569;">조달청 AI 공공검수관 시뮬레이터</span></h1>
+
+    <div class="char-avatar-box">
+      <div class="char-card">
+        <div class="char-icon">👨‍💼</div>
+        <div class="char-name">나르미 과장</div>
+        <div class="char-role">30세 / 베테랑 검수관</div>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">👩‍💻</div>
+        <div class="char-name">달이 주무관</div>
+        <div class="char-role">20세 / AI 조달 신입</div>
+      </div>
+    </div>
+
+    <div class="briefing-box">
+      <b>[나르미 과장의 긴급 작전 지시]</b><br>
+      "달이 씨, 오늘 각 공공기관에서 올라온 나라장터 조달 요청 건들이 산더미예요!<br>
+      AI 마켓 스캐너를 대조해서 <b>시중가보다 1.5배 이상 비싼 바가지 물품은 '반려'</b>하고, <b>우수 혁신제품이나 적정가 물품은 '승인'</b> 도장을 찍어 소중한 국민 세금을 지켜주세요!"
+    </div>
+
+    <button class="btn-main" onclick="startGame()">검수 작전 개시 🚀</button>
+    <div style="font-size: 11px; color: #94a3b8;">조작법: 마우스 클릭 또는 키보드 [A: 반려] / [D: 승인]</div>
+  </div>
+
+  <!-- Play Screen -->
+  <div id="play-screen" class="screen">
+    <div class="feedback-balloon" id="feedback-balloon">완벽한 판단입니다!</div>
+
+    <div class="timer-container">
+      <div class="timer-badge">⏳ 남은 시간: <span id="timer-val">60</span>초</div>
+      <div class="saved-budget-badge">💰 방어한 나랏돈: <span id="budget-val">0원</span></div>
+    </div>
+
+    <!-- Desk with Document -->
+    <div class="paper-desk">
+      <div class="doc-card" id="doc-card">
+        <div class="doc-header">
+          <span class="doc-agency" id="doc-agency">서울특별시 강남소방서</span>
+          <span class="doc-req-id" id="doc-req-id">REQ-2026-0814</span>
+        </div>
+
+        <div class="doc-item-title" id="doc-title">스마트 멀티탭 6구 PM-M130</div>
+        <div class="doc-spec" id="doc-spec">규격: 16A 고전력 차단 기능, 전력 모니터링 센서 탑재</div>
+
+        <div class="price-compare-grid">
+          <div class="price-box">
+            <span class="price-label">나라장터 요청가</span>
+            <span class="price-value price-req" id="price-req">198,000원</span>
+          </div>
+          <div class="price-box">
+            <span class="price-label">AI 마켓 스캐너 시중가</span>
+            <span class="price-value price-market" id="price-market">57,200원</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <span class="multiplier-tag tag-danger" id="doc-tag">⚠️ 시중가 대비 3.5배 폭리 의혹</span>
+        </div>
+
+        <div class="doc-ai-verdict" id="doc-ai-verdict">
+          💡 <b>AI 에이전트 소견</b>: 동일 제조사 모델의 온라인 최저가와 3.5배 이상 격차가 발생합니다. 정밀 가격 소명 없는 납품 요구는 반려 대상입니다.
+        </div>
+
+        <!-- Stamp Overlay -->
+        <div class="stamp stamp-approve" id="stamp-approve">승 인</div>
+        <div class="stamp stamp-reject" id="stamp-reject">반 려</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-controls">
+      <button class="btn-action btn-reject" onclick="handleStamp(false)">
+        <span>❌ 반 려 (REJECT)</span>
+        <span class="key-hint">[단축키 A] 바가지·규격 미달</span>
+      </button>
+      <button class="btn-action btn-approve" onclick="handleStamp(true)">
+        <span>✅ 승 인 (APPROVE)</span>
+        <span class="key-hint">[단축키 D] 적정가·혁신제품</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Result Screen -->
+  <div id="result-screen" class="screen">
+    <div class="grade-badge" id="result-grade">S</div>
+    <h2 style="font-size: 20px; color: var(--pps-navy); margin-bottom: 4px;" id="result-title">조달의 신 (청장 표창)</h2>
+    <div style="font-size: 13px; color: #64748b;" id="result-desc">나르미 과장과 달이 주무관이 기립박수를 보냅니다!</div>
+
+    <div class="result-stats-table">
+      <div class="result-row">
+        <span>총 검수 건수</span>
+        <span class="result-val" id="res-total">12건</span>
+      </div>
+      <div class="result-row">
+        <span>정답률 (판단 정확도)</span>
+        <span class="result-val" id="res-accuracy">100%</span>
+      </div>
+      <div class="result-row">
+        <span>최대 연속 콤보</span>
+        <span class="result-val" id="res-combo">12x</span>
+      </div>
+      <div class="result-row" style="background:#ecfdf5;">
+        <span style="font-weight:bold; color:#047857;">절감한 국민 세금</span>
+        <span class="result-val" style="color:#047857; font-size:16px;" id="res-budget">3억 4,850만 원</span>
+      </div>
+    </div>
+
+    <div class="briefing-box" id="res-comment" style="max-width:440px; font-size:12px;">
+      "달이 씨의 냉철한 AI 검수 덕분에 바가지 계약을 모조리 걷어내고, 진짜 우수한 혁신기업 제품만 나라장터에 올릴 수 있었습니다!"
+    </div>
+
+    <button class="btn-main" onclick="restartGame()">다시 검수하기 🔄</button>
+  </div>
+</div>
+
+<script>
+  // Game Items Database (Reflecting Real PPS & Savetax Data)
+  const ITEM_DATABASE = [
+    {
+      agency: "서울특별시 강남소방서",
+      reqId: "REQ-2026-0814",
+      title: "스마트 멀티탭 6구 PM-M130",
+      spec: "16A 과부하 자동 차단, 소비전력 모니터링",
+      reqPrice: 198000,
+      marketPrice: 57200,
+      multiplier: 3.5,
+      isRipoff: true,
+      tag: "⚠️ 시중가 대비 3.5배 폭리",
+      tagClass: "tag-danger",
+      aiVerdict: "동일 모델 제조사 출고가 대비 3.5배 부풀려진 견적입니다. 즉시 반려 대상입니다.",
+      savedAmount: 14080000 // 100개 납품 가정
+    },
+    {
+      agency: "한국과학기술정보연구원(KISTI)",
+      reqId: "REQ-2026-0922",
+      title: "서버용 고신뢰성 SSD 20TB",
+      spec: "NVMe PCIe 4.0, 엔터프라이즈 DWPD 3.0",
+      reqPrice: 3352000,
+      marketPrice: 1769000,
+      multiplier: 1.9,
+      isRipoff: true,
+      tag: "⚠️ 1.9배 가격 뻥튀기",
+      tagClass: "tag-danger",
+      aiVerdict: "동일 스펙 글로벌 총판 유통가 대비 1.9배 높습니다. 단독 수의계약 바가지 의혹입니다.",
+      savedAmount: 63320000
+    },
+    {
+      agency: "울산광역시 중구청",
+      reqId: "REQ-2026-1102",
+      title: "친환경 태양광 LED 가로등 컨트롤러",
+      spec: "IP68 방수, LoRa 무선 관제 탑재",
+      reqPrice: 185000,
+      marketPrice: 178000,
+      multiplier: 1.04,
+      isRipoff: false,
+      tag: "🌟 우수 혁신제품 지정",
+      tagClass: "tag-innovative",
+      aiVerdict: "조달청 지정 제2026-38호 우수혁신제품으로, 시중 적정가와 일치하며 친환경 인증을 필했습니다.",
+      savedAmount: 0
+    },
+    {
+      agency: "경기도 안양시청 정보통신과",
+      reqId: "REQ-2026-1044",
+      title: "광송수신 모듈 SFP-SX",
+      spec: "1.25Gbps 850nm 멀티모드 550m",
+      reqPrice: 70000,
+      marketPrice: 21200,
+      multiplier: 3.3,
+      isRipoff: true,
+      tag: "⚠️ 3.3배 폭리 품목",
+      tagClass: "tag-danger",
+      aiVerdict: "오픈마켓 동일 규격 정상가 21,200원 대비 3.3배 고가 등재 건입니다.",
+      savedAmount: 4880000
+    },
+    {
+      agency: "충남 예산소방서",
+      reqId: "REQ-2026-0719",
+      title: "휴대용 자동심장충격기(AED) 패키지",
+      spec: "자가진단 시스템, 음성안내 가이드 내장",
+      reqPrice: 1650000,
+      marketPrice: 1600000,
+      multiplier: 1.03,
+      isRipoff: false,
+      tag: "✅ 적정 시중가 승인 대상",
+      tagClass: "tag-safe",
+      aiVerdict: "의료기기 공인 유통 단가와 일치하며, 24시간 응급 납품 규격을 완벽 준수합니다.",
+      savedAmount: 0
+    },
+    {
+      agency: "한국천문연구원",
+      reqId: "REQ-2026-1188",
+      title: "스위칭 전원공급장치 NDR-240-48",
+      spec: "240W 48V 5A DIN레일 파워서플라이",
+      reqPrice: 320000,
+      marketPrice: 145000,
+      multiplier: 2.2,
+      isRipoff: true,
+      tag: "⚠️ 2.2배 고가 청구",
+      tagClass: "tag-danger",
+      aiVerdict: "제조사 정품 산업용 판매가 대비 2.2배 상회합니다. 공급원가 소명 누락 건입니다.",
+      savedAmount: 8750000
+    },
+    {
+      agency: "제주특별자치도 교육청",
+      reqId: "REQ-2026-1205",
+      title: "AI 디지털 교과서용 10.1인치 태블릿",
+      spec: "Stylus Pen 포함, 교육용 MDM 라이선스",
+      reqPrice: 340000,
+      marketPrice: 335000,
+      multiplier: 1.01,
+      isRipoff: false,
+      tag: "🌟 교육용 다수공급자계약(MAS)",
+      tagClass: "tag-innovative",
+      aiVerdict: "다수공급자 2단계 경쟁을 거쳐 최저가 낙찰된 공정 가격입니다.",
+      savedAmount: 0
+    },
+    {
+      agency: "부산 해운대구 보건소",
+      reqId: "REQ-2026-0955",
+      title: "사무용 유선전화기 GS-461C",
+      spec: "발신번호 표시, 단축다이얼 10개",
+      reqPrice: 182000,
+      marketPrice: 44500,
+      multiplier: 4.1,
+      isRipoff: true,
+      tag: "⚠️ 4.1배 극단적 폭리",
+      tagClass: "tag-danger",
+      aiVerdict: "오프라인 문구 도매가 4만 원대 모델을 18만 원대에 허위 청구한 불공정 의혹입니다.",
+      savedAmount: 13750000
+    },
+    {
+      agency: "국립중앙의료원",
+      reqId: "REQ-2026-0612",
+      title: "의료폐기물 멸균 분쇄기",
+      spec: "시간당 50kg 처리, 고온고압 증기멸균",
+      reqPrice: 48000000,
+      marketPrice: 47500000,
+      multiplier: 1.01,
+      isRipoff: false,
+      tag: "🌟 중기부 지정 혁신제품",
+      tagClass: "tag-innovative",
+      aiVerdict: "탄소 배출 40% 저감 신기술이 적용된 정부 공식 혁신 시제품입니다.",
+      savedAmount: 0
+    },
+    {
+      agency: "육군 군수사령부",
+      reqId: "REQ-2026-1133",
+      title: "네트워크 기가비트 스위치 24포트",
+      spec: "L2 스위치, PoE+ 370W 지원",
+      reqPrice: 1261000,
+      marketPrice: 381000,
+      multiplier: 3.3,
+      isRipoff: true,
+      tag: "⚠️ 3.3배 단가 뻥튀기",
+      tagClass: "tag-danger",
+      aiVerdict: "국내 총판 실시간 도매단가 38만 원 대비 3.3배 초과 청구되었습니다.",
+      savedAmount: 44000000
+    },
+    {
+      agency: "세종특별자치시 스마트시티과",
+      reqId: "REQ-2026-1089",
+      title: "지능형 CCTV 객체인식 분석 서버",
+      spec: "인공지능 가속기 4기 탑재, 선별관제",
+      reqPrice: 14500000,
+      marketPrice: 14200000,
+      multiplier: 1.02,
+      isRipoff: false,
+      tag: "✅ 우수 공공조달 인증",
+      tagClass: "tag-safe",
+      aiVerdict: "KISA 지능형 CCTV 성능 시험 인증 및 적정 조달단가 검증을 통과했습니다.",
+      savedAmount: 0
+    },
+    {
+      agency: "한국철도공사(코레일)",
+      reqId: "REQ-2026-1240",
+      title: "커브드 32인치 관제 모니터",
+      spec: "QHD 165Hz, sRGB 99%",
+      reqPrice: 855000,
+      marketPrice: 319600,
+      multiplier: 2.7,
+      isRipoff: true,
+      tag: "⚠️ 2.7배 고가 등재",
+      tagClass: "tag-danger",
+      aiVerdict: "시중 전자상가 동일 파트넘버 가격 31.9만 원 대비 2.7배 부풀려진 견적입니다.",
+      savedAmount: 26770000
+    }
+  ];
+
+  // Game States
+  let currentIndex = 0;
+  let score = 0;
+  let combo = 0;
+  let maxCombo = 0;
+  let savedBudget = 0;
+  let timeLeft = 60;
+  let timerId = null;
+  let isActionLocked = false;
+
+  // Audio Context (Synthesized sound effects for maximum portability)
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playSound(type) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'stamp') {
+      // Deep heavy thud
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(120, now);
+      osc.frequency.exponentialRampToValueAtTime(30, now + 0.15);
+      gain.gain.setValueAtTime(1, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } else if (type === 'success') {
+      // Pleasant ding-dong
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, now); // D5
+      osc.frequency.setValueAtTime(880, now + 0.08); // A5
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    } else if (type === 'fail') {
+      // Low buzzer
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.setValueAtTime(110, now + 0.1);
+      gain.gain.setValueAtTime(0.4, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+      osc.start(now);
+      osc.stop(now + 0.25);
+    }
+  }
+
+  function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+  }
+
+  function startGame() {
+    currentIndex = 0;
+    score = 0;
+    combo = 0;
+    maxCombo = 0;
+    savedBudget = 0;
+    timeLeft = 60;
+    isActionLocked = false;
+
+    document.getElementById('game-header-stats').style.display = 'flex';
+    document.getElementById('timer-val').innerText = timeLeft;
+    document.getElementById('budget-val').innerText = '0원';
+    document.getElementById('combo-val').innerText = '0x';
+
+    showScreen('play-screen');
+    renderCurrentItem();
+
+    if (timerId) clearInterval(timerId);
+    timerId = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer-val').innerText = timeLeft;
+      if (timeLeft <= 0) {
+        endGame();
+      }
+    }, 1000);
+  }
+
+  function renderCurrentItem() {
+    if (currentIndex >= ITEM_DATABASE.length) {
+      endGame();
+      return;
+    }
+
+    const item = ITEM_DATABASE[currentIndex];
+    document.getElementById('progress-val').innerText = `${currentIndex + 1}/${ITEM_DATABASE.length}`;
+    document.getElementById('doc-agency').innerText = item.agency;
+    document.getElementById('doc-req-id').innerText = item.reqId;
+    document.getElementById('doc-title').innerText = item.title;
+    document.getElementById('doc-spec').innerText = `규격: ${item.spec}`;
+    document.getElementById('price-req').innerText = item.reqPrice.toLocaleString() + '원';
+    document.getElementById('price-market').innerText = item.marketPrice.toLocaleString() + '원';
+    
+    const tagEl = document.getElementById('doc-tag');
+    tagEl.innerText = item.tag;
+    tagEl.className = 'multiplier-tag ' + item.tagClass;
+
+    document.getElementById('doc-ai-verdict').innerHTML = `💡 <b>AI 에이전트 소견</b>: ${item.aiVerdict}`;
+
+    // Reset stamps
+    document.getElementById('stamp-approve').classList.remove('show');
+    document.getElementById('stamp-reject').classList.remove('show');
+  }
+
+  function showFeedback(text, isGood) {
+    const el = document.getElementById('feedback-balloon');
+    el.innerText = text;
+    el.style.background = isGood ? '#065f46' : '#991b1b';
+    el.classList.add('active');
+    setTimeout(() => {
+      el.classList.remove('active');
+    }, 900);
+  }
+
+  function handleStamp(isApprove) {
+    if (isActionLocked) return;
+    isActionLocked = true;
+
+    playSound('stamp');
+
+    const item = ITEM_DATABASE[currentIndex];
+    const isCorrect = (isApprove && !item.isRipoff) || (!isApprove && item.isRipoff);
+
+    const stampEl = document.getElementById(isApprove ? 'stamp-approve' : 'stamp-reject');
+    stampEl.classList.add('show');
+
+    setTimeout(() => {
+      if (isCorrect) {
+        playSound('success');
+        score++;
+        combo++;
+        if (combo > maxCombo) maxCombo = combo;
+        
+        if (!isApprove && item.isRipoff) {
+          savedBudget += item.savedAmount;
+          showFeedback(`🎯 바가지 적발! ${formatKoreanMoney(item.savedAmount)} 예산 방어!`, true);
+        } else {
+          showFeedback(`🌟 우수 혁신제품 승인 완료! (+${combo} 콤보)`, true);
+        }
+      } else {
+        playSound('fail');
+        combo = 0;
+        if (isApprove && item.isRipoff) {
+          showFeedback(`❌ 경고: ${item.multiplier}배 바가지 물품을 승인했습니다!`, false);
+        } else {
+          showFeedback(`❌ 실수: 우수 혁신제품을 부당 반려했습니다!`, false);
+        }
+      }
+
+      document.getElementById('combo-val').innerText = `${combo}x`;
+      document.getElementById('budget-val').innerText = formatKoreanMoney(savedBudget);
+
+      // Slide to next card
+      setTimeout(() => {
+        currentIndex++;
+        renderCurrentItem();
+        isActionLocked = false;
+      }, 400);
+
+    }, 300);
+  }
+
+  function formatKoreanMoney(amt) {
+    if (amt >= 100000000) {
+      const eok = Math.floor(amt / 100000000);
+      const man = Math.floor((amt % 100000000) / 10000);
+      return man > 0 ? `${eok}억 ${man.toLocaleString()}만 원` : `${eok}억 원`;
+    } else if (amt >= 10000) {
+      return `${Math.floor(amt / 10000).toLocaleString()}만 원`;
+    }
+    return amt.toLocaleString() + '원';
+  }
+
+  function endGame() {
+    clearInterval(timerId);
+    document.getElementById('game-header-stats').style.display = 'none';
+
+    const total = ITEM_DATABASE.length;
+    const processed = currentIndex;
+    const accuracy = processed > 0 ? Math.round((score / processed) * 100) : 0;
+
+    let grade = 'C';
+    let title = '견습 검수원';
+    let desc = '아직 공공조달 규격과 시중가 대조에 추가 훈련이 필요합니다.';
+    let comment = '"달이 씨, 바가지 물품을 놓치면 국민 세금이 줄줄 샙니다! 다음엔 AI 마켓 스캐너를 더 꼼꼼히 대조해 주세요."';
+
+    if (accuracy >= 90 && savedBudget > 100000000) {
+      grade = 'S';
+      title = '조달의 신 (조달청장 표창)';
+      desc = '완벽한 공공조달 지킴이! 바가지 물품을 100% 솎아내고 혁신제품을 선발했습니다.';
+      comment = '"나르미 과장: 달이 씨, 자네 정말 대단하군! 조달청 역사상 가장 완벽한 AI 검수 실적이야. 당장 청장님 표창 상신하겠네!"';
+    } else if (accuracy >= 75) {
+      grade = 'A';
+      title = '수석 조달관';
+      desc = '탁월한 감각으로 대다수의 가격 부풀리기 의혹을 사전 차단했습니다.';
+      comment = '"나르미 과장: 수고 많았어요! 몇몇 애매한 건을 빼고는 국가 예산을 아주 훌륭하게 지켜냈습니다."';
+    } else if (accuracy >= 55) {
+      grade = 'B';
+      title = '성실한 공공검수관';
+      desc = '대체로 성실하게 심사했으나 일부 고가 조달 건을 놓쳤습니다.';
+      comment = '"달이 주무관: 조금 헷갈리는 품목들이 있었지만, 다음번엔 3배 이상 폭리 건은 절대 안 놓치겠습니다!"';
+    }
+
+    document.getElementById('result-grade').innerText = grade;
+    document.getElementById('result-title').innerText = title;
+    document.getElementById('result-desc').innerText = desc;
+    document.getElementById('res-total').innerText = `${processed}건 (정답 ${score}건)`;
+    document.getElementById('res-accuracy').innerText = `${accuracy}%`;
+    document.getElementById('res-combo').innerText = `${maxCombo}x`;
+    document.getElementById('res-budget').innerText = formatKoreanMoney(savedBudget);
+    document.getElementById('res-comment').innerText = comment;
+
+    showScreen('result-screen');
+  }
+
+  function restartGame() {
+    showScreen('start-screen');
+  }
+
+  // Keyboard Shortcuts
+  window.addEventListener('keydown', (e) => {
+    if (!document.getElementById('play-screen').classList.contains('active')) return;
+    if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') {
+      handleStamp(false);
+    } else if (e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') {
+      handleStamp(true);
+    }
+  });
+</script>
+</body>
+</html>
